@@ -788,6 +788,10 @@ winwidget_resize(winwidget winwid,
                  int w,
                  int h)
 {
+  Window ignored_window;
+  XWindowAttributes attributes;
+  int tc_x, tc_y;
+
   D_ENTER(4);
   if (opt.geom_flags) {
     winwid->had_resize = 1;
@@ -800,7 +804,16 @@ winwidget_resize(winwidget winwid,
       winwid->w = (w > scr->width) ? scr->width : w;
       winwid->h = (h > scr->height) ? scr->height : h;
     }
-    XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
+    /* XResizeWindow(disp, winwid->win, winwid->w, winwid->h); */
+    XGetWindowAttributes(disp, winwid->win, &attributes);
+    XTranslateCoordinates(disp, winwid->win, attributes.root,
+      -attributes.border_width - attributes.x,
+      -attributes.border_width - attributes.y,
+      &tc_x, &tc_y, &ignored_window);
+    winwid->x = tc_x;                     
+    winwid->y = tc_y;
+    XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+
     winwid->had_resize = 1;
     XFlush(disp);
 
