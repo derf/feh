@@ -99,7 +99,6 @@ SUBDIRS = src cam
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./src/config.h
-CONFIG_CLEAN_FILES =  feh.spec
 man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
