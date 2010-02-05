@@ -144,6 +144,7 @@ init_thumbnail_mode(void)
    index_image_width = td.w;
    index_image_height = td.h + title_area_h;
    td.im_main = imlib_create_image(index_image_width, index_image_height);
+   gib_imlib_image_set_has_alpha(td.im_main, 1);
 
    if (!td.im_main)
       eprintf("Imlib error creating index image, are you low on RAM?");
