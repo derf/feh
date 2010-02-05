@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "options.h"
 #include "support.h"
+#include <limits.h>
 Window ipc_win = None;
 Window my_ipc_win = None;
 Atom ipc_atom = None;
@@ -162,7 +163,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       /* string for sticking in ~/.fehbg */
       char *fehbg = NULL;
       char *home;
-      char filbuf[4096];
+      char filbuf[PATH_MAX];
 
       /* local display to set closedownmode on */
       Display *disp2;
@@ -170,11 +171,22 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       int depth2;
       XGCValues gcvalues;
       GC gc;
-      int w, h;
+      int in, out, w, h;
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
       
-      snprintf(filbuf, sizeof(filbuf), "\"%s\"", fil);
+      /* Put the filename in filbuf between ' and escape ' in the filename */
+      out = 0;
+      filbuf[out++] = '\'';
+      for (in = 0; fil[in] && out < (PATH_MAX-4); in++) {
+         if (fil[in] == '\'') {
+            filbuf[out++] = '\\';
+         }
+         filbuf[out++] = fil[in];
+      }
+      filbuf[out++] = '\'';
+      filbuf[out++] = 0;
+      
       if (scaled) {
          w = scr->width;
          h = scr->height;

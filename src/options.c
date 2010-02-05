@@ -985,7 +985,7 @@ show_usage(void)
 "                           Feh stores the commandline necessary to restore\n"
 "                           the background you chose in ~/.fehbg. So to have\n"
 "                           feh-set backgrounds restored when you restart X,\n"
-"                           add the line \"eval `cat $HOME/.fehbg`\" to your\n"
+"                           add the line \"`cat $HOME/.fehbg`\" to your\n"
 "                           X startup script (e.g. ~/.xsession). Note that\n"
 "                           you only need to do this for non E window\n"
 "                           managers.\n"
