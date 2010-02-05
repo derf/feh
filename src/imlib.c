@@ -289,10 +289,6 @@ feh_http_load_image(char *url)
       snprintf(cppid, sizeof(cppid), "%06ld", (long)ppid);
       tmpname_timestamper =
          estrjoin("", "/tmp/feh_", cppid, "_", basename, NULL);
-   }
-
-   if (opt.wget_timestamp)
-   {
       newurl = estrdup(url);
    }
    else
@@ -548,8 +544,8 @@ feh_http_load_image(char *url)
          }
          else
          {
-            execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname,
-                   quiet, (char*) NULL);
+            execlp("wget", "wget", "--cache=off", "-O", tmpname, newurl,
+               quiet, NULL);
          }
          eprintf("url: exec failed: wget:");
       }

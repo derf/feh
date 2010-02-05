@@ -1,3 +1,9 @@
+Sat Oct  1 07:25:00 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (imlib.c): Fix http grabbing via wget, wget --cache 0 is no longer valid
+               and treats the 0 as another URL.  Debian bug #330912.
+	           I view this as wget's fault, I'm sure others won't, however.
+  * (imlib.c): Tidy up a minor bit of bothersome logic while there.
+
 Fri Aug 05 17:29:55 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Patch from Matthias Drochner to fix compilation on older systems.
