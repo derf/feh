@@ -158,6 +158,7 @@ winwidget_create_window(winwidget ret,
                         int h)
 {
   XSetWindowAttributes attr;
+  XEvent ev;
   XClassHint *xch;
   MWMHints mwmhints;
   Atom prop = None;
@@ -255,6 +256,22 @@ winwidget_create_window(winwidget ret,
   if (mwmhints.flags) {
     XChangeProperty(disp, ret->win, prop, prop, 32, PropModeReplace,
                     (unsigned char *) &mwmhints, PROP_MWM_HINTS_ELEMENTS);
+  }
+  if (ret->full_screen) {
+    Atom prop_fs = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN",  False);
+	Atom prop_state = XInternAtom(disp, "_NET_WM_STATE", False);
+
+	memset(&ev, 0, sizeof(ev));
+	ev.xclient.type = ClientMessage;
+	ev.xclient.message_type = prop_state;
+	ev.xclient.display = disp;
+	ev.xclient.window = ret->win;
+	ev.xclient.format = 32;
+	ev.xclient.data.l[0] = (ret->full_screen ? 1 : 0);
+	ev.xclient.data.l[1] = prop_fs;
+
+    XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32,
+					PropModeReplace, &prop_fs, 1);
   }
 
   XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
