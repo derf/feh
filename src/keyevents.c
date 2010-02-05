@@ -385,10 +385,6 @@ feh_event_handle_keypress(XEvent * ev)
         if (opt.xinerama && xinerama_screens) {
           int i, rect[4];
 
-          /* FIXME: this doesn't do what it should;  XGetGeometry always
-           * returns x,y == 0,0.  I think that's due to the hints being passed
-           * (or more specifically, a missing hint) to X in winwidget_create
-           */
           winwidget_get_geometry(winwid, rect);
           /* printf("window: (%d, %d)\n", rect[0], rect[1]);
           printf("found %d screens.\n", num_xinerama_screens); */

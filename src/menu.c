@@ -2071,10 +2071,6 @@ feh_menu_cb_opt_fullscreen(feh_menu * m,
   if (opt.xinerama && xinerama_screens) {
     int i, rect[4];
 
-    /* FIXME: this doesn't do what it should;  XGetGeometry always
-     * returns x,y == 0,0.  I think that's due to the hints being passed
-     * (or more specifically, a missing hint) to X in winwidget_create
-     */
     winwidget_get_geometry(m->fehwin, rect);
     /* printf("window: (%d, %d)\n", rect[0], rect[1]);
     printf("found %d screens.\n", num_xinerama_screens); */

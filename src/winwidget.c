@@ -1034,12 +1034,16 @@ int winwidget_get_height(winwidget winwid) {
 
 void winwidget_get_geometry(winwidget winwid, int *rect) {
   int bw, bp;
+  Window child;
   D_ENTER(4);
   if (!rect)
     return;
 
   XGetGeometry(disp, winwid->win, &root, 
                &(rect[0]), &(rect[1]), &(rect[2]), &(rect[3]), &bw, &bp);
+
+  XTranslateCoordinates(disp, winwid->win, root,
+                          0, 0, &(rect[0]), &(rect[1]), &child);
 
   /* update the window geometry (in case it's inaccurate) */
   winwid->x = rect[0];
