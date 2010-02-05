@@ -112,7 +112,7 @@ current directory, one filename per line.
 .br
 If FILE doesn't exist, it will be created from the internal filelist at the
 end of a viewing session.  This is best used to store the results of complex
-sorts (-Spixels for example) for later viewing.  Any changes to the internal
+sorts (\-Spixels for example) for later viewing.  Any changes to the internal
 filelist (such as deleting a file or it being pruned for being unloadable)
 will be saved to FILE when feh exits. You can add files to filelists by
 specifying them on the commandline when also specifying the list.
@@ -140,7 +140,7 @@ Zoom picture to screen size in fullscreen (affected by --stretch and
 .TP 5
 .B --zoom PERCENT
 Zooms images by a PERCENT, when in full screen mode or when window geometry
-is fixed. If combined with --auto-zoom, zooming will be limited to the the
+is fixed. If combined with \-\-auto-zoom, zooming will be limited to the the
 size.
 .TP 5
 .B -w, --multiwindow
@@ -180,7 +180,7 @@ image, they are overlayed on the displayed image. e.g with caption path
 "images/captions/foo.jpg.txt"
 .TP 5
 .B -l, --list
-Don't display images. Analyse them and display an 'ls'-style listing.
+Don't display images. Analyse them and display an 'ls'\-style listing.
 Useful in scripts hunt out images of a certain size/resolution/type etc.
 .TP 5
 .B -L, --customlist FORMAT
@@ -214,7 +214,7 @@ list mode, the action will be run for each file listed. The action will be
 executed by /bin/sh. Use format specifiers to refer to image info. See
 FORMAT SPECIFIERS for examples
 .br
-Eg. feh -A "mv %f ~/images/%n" *
+Eg. feh \-A "mv %f ~/images/%n" *
 .br
 In slideshow mode, the next image will be shown after running the action,
 in multiwindow mode, the window will be closed.
@@ -296,7 +296,7 @@ Don't require CTRL+Button for panning in any mode -- just use the button (defaul
 .TP 5
 .B -4, --menu-button B
 Use CTRL+Button B to activate the menu in any mode.  Set to 0 to use any
-button.  This option is disabled if the -N or --no-menus option is set
+button.  This option is disabled if the \-N or \-\-no\-menus option is set
 (defaults to 3, usually the right button).
 .TP 5
 .B -5, --no-menu-ctrl-mask
@@ -363,19 +363,19 @@ prints the current file number
 \\n newline
 .fi
 .br
-Eg. feh -A "mv %f ~/images/%n" *
+Eg. feh \-A "mv %f ~/images/%n" *
 .SH MONTAGE MODE OPTIONS
 .TP 5
 .B -X, --ignore-aspect
 By default, the montage thumbnails will retain their aspect ratios, while
-fitting in --thumb-width and --thumb-height. This option will force them to
-be the size set by --thumb-width and --thumb-height This will prevent any
+fitting in \-\-thumb\-width and \-\-thumb\-height. This option will force them to
+be the size set by \-\-thumb-width and \-\-thumb-height This will prevent any
 whitespace in the final montage
 .TP 5
 .B -s, --stretch
 Normally, if an image is smaller than the specified thumbnail size, it will
 not be enlarged. If this option is set, the image will be scaled up to fit
-the thumnail size. (Aspect ratio will be maintained unless --ignore-aspect is
+the thumnail size. (Aspect ratio will be maintained unless \-\-ignore\-aspect is
 specified)
 .TP 5
 .B -y, --thumb-width NUM
@@ -416,11 +416,11 @@ Just save the created montage to FILE without displaying it (use in scripts)
 Use FONT to print the information under each thumbnail. FONT should be a
 truetype font, resident in the current directory, or in feh's font
 directory, and should be defined in the form fontname/size(points). (No
-extension). eg. --font myfont/12
+extension). eg. \-\-font myfont/12
 .TP 5
 .B --fontpath PATH
 Specify PATH as an extra directory in which to search for fonts, can use
-multiple times to add multiple paths, e.g --fontpath /path/a --fontpath
+multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
 /path/b.
 .TP 5
 .B --title-font FONT
@@ -484,7 +484,7 @@ Toggle fullscreen.
 Show popup menu.
 .TP 5
 .B c, C
-Caption entry mode. If --caption-path has been specified, then this enables
+Caption entry mode. If \-\-caption\-path has been specified, then this enables
 caption editing. The caption will turn yellow and be editable, hit enter to
 confirm and save the caption, or hit escape to cancel and revert the caption.
 .TP 5
@@ -555,8 +555,8 @@ left to zoom out, click once to restore 1x zoom), and mouse button 3 pans.
 Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to
 sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+
 button 3 activates the context-sensitive menu.  Buttons can be redefined
-with the -1 through -9 (or --*-button) cmdline flags.  All you people
-with million button mice can remove the ctrl mask with the --no-*-ctrl-mask
+with the \-1 through \-9 (or \-\-*\-button) cmdline flags.  All you people
+with million button mice can remove the ctrl mask with the \-\-no-*\-ctrl-mask
 options.
 .SH SUGGESTED USAGE EXAMPLES
 Here are some examples of nice option combinations to achieve cool results:
