@@ -198,7 +198,7 @@ slideshow_change_image(winwidget winwid, int change)
 
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
-   if (filelist_len < 2)
+   if (filelist_len < 2 && opt.cycle_once == 0)
       D_RETURN_(4);
 
    /* Ok. I do this in such an odd way to ensure that if the last or first *
