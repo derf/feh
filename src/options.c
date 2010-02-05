@@ -1196,7 +1196,7 @@ feh_create_default_config(char *rcfile)
            "orange --menu-bg " PREFIX "/share/feh/images/menubg_orange.png\n"
            "light --menu-bg " PREFIX "/share/feh/images/menubg_light.png\n"
            "black --menu-bg " PREFIX "/share/feh/images/menubg_black.png --menu-style " PREFIX "/share/feh/fonts/black.style\n"
-           "britney --menu-bg " PREFIX "/share/feh/images/menubg_britney.png\n");
+   );
    fclose(fp);
 
    D_RETURN_(4);
