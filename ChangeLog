@@ -1,3 +1,6 @@
+Sat Oct  1 08:05:06 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (imlib.c): Fix double free in feh_http_load_image
+               when using builtin HTTP support.
 Sat Oct  1 07:25:00 EDT 2005  Richard Lowe <richlowe@richlowe.net>
   * (imlib.c): Fix http grabbing via wget, wget --cache 0 is no longer valid
                and treats the 0 as another URL.  Debian bug #330912.

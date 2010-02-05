@@ -556,8 +556,8 @@ feh_http_load_image(char *url)
          if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
          {
             weprintf("url: wget failed to load URL %s\n", url);
-            free(tmpname);
             free(newurl);
+            free(tmpname);
             D_RETURN(4, NULL);
          }
          if (opt.wget_timestamp)
@@ -568,10 +568,10 @@ feh_http_load_image(char *url)
                      tmpname);
             system(cmd);
          }
+         free(newurl);
       }
    }
 
-   free(newurl);
    D_RETURN(4, tmpname);
 }
 
