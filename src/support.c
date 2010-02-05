@@ -162,6 +162,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       /* string for sticking in ~/.fehbg */
       char *fehbg = NULL;
       char *home;
+      char filbuf[4096];
 
       /* local display to set closedownmode on */
       Display *disp2;
@@ -173,6 +174,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
       
+      snprintf(filbuf, sizeof(filbuf), "\"%s\"", fil);
       if (scaled) {
          w = scr->width;
          h = scr->height;
@@ -189,7 +191,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
          gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0, w, h,
                                                     1, 0, 1);
-         fehbg = estrjoin(" ", "feh --bg-scale", fil, NULL);
+         fehbg = estrjoin(" ", "feh --bg-scale", filbuf, NULL);
       } else if (centered) {
          XGCValues gcval;
          GC gc;
@@ -216,14 +218,14 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          y = (h - gib_imlib_image_get_height(im)) >> 1;
          gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
-         fehbg = estrjoin(" ", "feh --bg-center", fil, NULL);
+         fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
       } else {
          w = gib_imlib_image_get_width(im);
          h = gib_imlib_image_get_height(im);
          pmap_d1 =
             XCreatePixmap(disp, root, w, h, depth);
          gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
-         fehbg = estrjoin(" ", "feh --bg-tile", fil, NULL);
+         fehbg = estrjoin(" ", "feh --bg-tile", filbuf, NULL);
       }
 
       if (fehbg) {
