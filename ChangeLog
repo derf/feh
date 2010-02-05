@@ -1,0 +1,2007 @@
+Sat Jul 23 00:30:09 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+	* Include the necessary jpegint header to get lossless rotation working in
+	the short term.
+
+Wed Jun 22 21:29:20 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (support.c): Better fix for debiag bug#292020
+
+Wed Jun 22 02:41:06 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (support.c): Ugly change to deal with the New (and guaranteed)
+                 way E17 tells us it's IPC window is a phony.
+  * (support.h): Support for the above.
+
+Wed Jun 22 01:04:20 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (support.c): Check for E17 via the presence of the
+                 ENLIGHTENMENT_VERSION atom, which right now is only there
+	         on E16.  I asked for this on E17, and two ints showing
+	         MAJOR and MINOR.  Let's see what happens (I'll fix the
+	         check if it comes).
+
+Tue Jun 21 23:34:17 EDT 2005  Richard Lowe <richlowe@richlowe.net>
+  * (support.c): Change references to Eterm to reference feh.
+  * (support.c): Fix Debian bug#292020 'feh crashes when it
+                 can't create ~/.fehbg file'.
+
+Wed Jun 01 12:29:40 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * fix transupp.c - ditching JPEG_INTERNALS broke exif tag preservation
+	* releasing as 1.3.3
+
+Fri May 06 20:23:39 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * back out fmmode (buggy, unportable) for now
+
+Sun May 01 00:15:11 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Releasing 1.3.1
+
+Sun May 01 00:05:43 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from From: Mathias Gumz <mathias.gumz@gmail.com>
+	  When setting a tiled background, tile the image into a root-sized
+		pixmap, rather than letting X do the tiling...
+	* fix a bug with --action's and thumbnail mode
+	* disable thumbnail caching by default :/ The spec doesn't support
+	  user-specified thumbnail sizes at the moment, and feh does.
+		Use --cache-thumbnails to enable caching for now.
+	* New option --cycle-once to exit a slideshow after one loop through it.
+
+Mon Mar 07 23:56:03 GMT 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Falko Schmidt <kaethorn@stud.uni-stuttgart.de>
+	  Adds --fmmode. I quote:
+     > In short, it enables the user to use feh as an image viewer used by a
+     > file manager like ROX-Filer or Nautilus when invoked with the --fmmode
+     > option. The file manager passes the file that the user wants to view to
+     > feh. My function then reads the directory in which the file resides and 
+     > first passes the current image, then alphabetically all the following 
+     > images and at last the images that are alphabetically before the current
+     > file to the 'filelist'.
+     > Afaik that's the default behaviour of gqview and gthumb.
+
+Mon Jan 24 15:34:53 GMT 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Ulrich Spoerlein <q@uni.de>
+	* Displays image num/total when in fullscreen
+
+Tue Jan 04 23:50:08 GMT 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Added option to hide the mouse pointer in full screen: --hide-pointer
+  * released 1.3.0 (1.2.[89]) were minor, feature-specific releases.
+
+Sat Sep 04 15:51:14 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Require giblib 1.2.4 now.
+  * Preparing for release of 1.2.7
+
+Sat Sep 04 15:43:22 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Applied large patch from Claes Nasten <pekdon@pekdon.net>
+  * Several tweaks to thumbnail.c including support for the "Thumbnail
+    Managing Standard" described at freedesktop.org. Thumbnails are cached in
+    a way which makes them accessible to other programs, under ~/.thumbnails
+    using md5sum filenames.
+  * He had to invoke libpng directly to write out the comments/tags required
+    by the spec, but that seems to be a trend with feh now so what the hell :p
+
+Sat Sep 04 12:35:46 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Nice patch from JC <jcm314@yahoo.com>
+  * Alongside the original --action option, adds --action1 through --action9,
+    allowing you to define multiple actions which can be run using the number
+    keys. Lets you set up a list of commands for organising images.
+
+Fri Sep 03 13:40:48 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Moved to subversion, previous CVS history lost...
+  * New method for rotating jpegs - does a lossless jpeg rotation (thanks,
+    IJG) and preserves EXIF data, as requested by many users :)
+  * Fix minor documentation omissions (debian bug reports)
+
+Sat Jul 24 14:52:19 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Various warning fixes from Claes Nasten <pekdon@pekdon.net> 
+
+Thu Jun 10 23:14:36 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Support full X geometry flags
+
+Sat Jan 03 19:04:11 EST 2004  Paul Duncan <pabs@pablotron.org>,
+
+  * removed extraneous XFlush
+  * switched to global file list length (avoid recalculating it
+    constantly)
+
+Tue May 27 14:55:02 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Released 1.2.6
+
+Fri May 23 14:23:49 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix debian bug #193964. segv on 'm' followed by cursor movement.
+
+Fri Apr 11 11:46:55 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Eric Dorland <eric.dorland@mail.mcgill.ca>
+  * Set icon name as well as title on change.
+
+Fri Apr 11 11:34:41 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Rami Lehti <rammer@vapaa.dc.inet.fi>
+  * New option not to jump to start of filelist when it's re-sorted.
+
+Tue Mar 18 19:07:17 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix bug reloading http images that fail to download on subsequent
+    attempts.
+
+Sun Feb 23 16:23:00 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Released 1.2.5, for small bugfix below.
+
+Sun Feb 23 16:19:15 GMT 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=169911
+  * Start of IPC code, not used yet.
+
+Mon Dec 23 01:19:17 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Experimental speedup for caption editing. Caches the bg pixmap for the
+    image (which doesn't change when you're just editing a caption) so only
+    the overlay needs to be re-rendered on each change to the caption.
+    Definitely makes a difference when editing captions on a large, fullscreen
+    image.
+
+Sun Dec 22 22:59:31 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Tweak event handling - don't nuke queued keyevents when we're accepting
+    input for caption entry.
+
+Sun Dec 22 13:50:16 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fixed wrapping for long lines with no spaces
+  * Caption editing, also requested by David Blackman <david@whizziwig.com>
+    Hit 'c', edit caption, enter to confirm the changes or Escape to revert.
+    (Only when --captions-path has been specified).
+  * Spotted a couple of minor bugs as I went through stuff, fixed those two.
+
+Sat Dec 21 20:32:40 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * New option --captions-path. Specify a path (relative to each image) to a
+    directory with captions in and feh will overlay them on the image. It even
+    does text wrapping and centering!
+    Example, run feh --captions-path captions testimages
+    for image testimages/donna1.jpg, feh will look for a caption in
+    testimages/captions/donna1.jpg.txt
+  * This feature was requested by David Blackman <david@whizziwig.com>
+
+Thu Dec 19 23:09:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fixed bug - segv when last image in slideshow is deleted.
+
+Thu Dec 05 16:04:24 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Released 1.2.3
+
+Thu Dec 05 03:32:29 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Got rid of black background for the "draw filename" and zoom display
+    texts. Added a dropshadow to aid visibility when there's no contrast
+    against the background.
+
+Thu Dec 05 01:28:44 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Keyboard control for menus :)
+  * Press 'm' to open the menu, escape to close it, arrow keys (or hjkl) to
+    navigate and space or enter to activate.
+
+Wed Dec 04 23:12:44 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Changed the way the menus work - you don't have to hold the mouse button
+    down to keep them open any more. I prefer the old way but that way doesn't
+    allow keyboard menu control.
+
+Wed Dec 04 21:30:29 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Found a couple of case statements without breaks in options.c
+  * New default menu, tweaked the menus a little, added code to specify the
+    menu bg image border and let the user tweak it.
+
+Sun Nov 24 22:47:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Daniel Ashbrook <anjiro@cc.gatech.edu> to bind a key (v) to
+    switching between window and fullscreen mode
+
+Sun Oct 20 22:45:01 2002 EDT, Paul Duncan <pabs@pablotron.org>
+
+  * added requested screen-clip option (allows you to disable window size
+    clipping based on screen geometry; ie, you can make pathologically large
+    windows, assuming you have the images to do so)
+  * disabled xinerama geometry check when using feh to set the background.
+  * cleaned up spelling and capitalization in menus
+
+Sun Oct 20 20:12:23 2002 EDT, Paul Duncan <pabs@pablotron.org>
+
+  * src/support.c: xinerama bugfix from Jon Bernard <jbernard@roanoke.edu>
+  * src/options.c: added 'Use Xinerama' toggle to option menu
+  * src/options.c: changed 'Keep http files' to 'Keep HTTP Files'
+    (pet peeve ;P)
+  * src/options.c: added 'Auto-Zoom' toggle to option menu
+  * feh.1: added info about --xinerama flag
+  * AUTHORS: added Jon Bernard
+
+Sun Oct 20 14:49:46 2002 EDT, Paul Duncan <pabs@pablotron.org>
+  
+  * New beveled, off-white background image for menus.  I made it the
+    default after consulting with the boss (eg Sue Gilbert).  Tom thinks
+    it's okay too.
+
+Sun Oct 20 05:48:40 2002 EDT  Paul Duncan <pabs@pablotron.org>
+  
+  * Added Xinerama support.  Currently defaults to fullscreen on the
+    first head (this can be fixed with a little work).
+  * Added winwidget_{move,get_geometry}();
+
+Wed Sep 11 19:53:31 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * REALLY release 1.2.1
+
+Wed Sep 11 19:52:24 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * autoconf fixes
+  * throw out the damn non-free "public domain" fonts.
+  * stick in yudit.ttf. it's not as pretty, but it is, apparently, DFSG
+    compliant etc.
+
+Wed Sep 11 19:44:25 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Release 1.2.1
+
+Wed Sep 11 19:43:24 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Panagiotis Issaris <takis.issaris@skynet.be>
+    - adds support for using the numeric keypad to scroll and zoom the image.
+
+Wed Jul 31 22:31:21 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fixed --draw-filename (was --draw_filename but not documented as such -
+    oops, that's been broken a terribly long time :))
+
+Tue Apr 16 19:19:11 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Release 1.2.0
+
+Fri Mar 08 21:04:07 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Omar Harriott <omar.harriott@csun.edu>
+  * fix filelist handling for filenames with spaces.
+
+Fri Feb 08 21:52:48 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Don't segv on save if win->file is NULL, use the mode + .png for the
+    filename, or noname.png as a last resort. Reported by mousey.
+
+Sun Feb 03 19:28:19 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Erp. s/wprintf/weprintf - I didn't notice the typo because wprintf is a
+    wide character printf. Luckily someone compiled feh on PPC and noticed the
+    bug.
+
+Wed Jan 30 13:54:29 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * New menu colour/style - "feh -Tblack src/testimages"
+
+Wed Jan 30 13:29:21 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Jens Laas <jens.laas@data.slu.se>
+  * Adds --zoom option. Here's what he said about it:
+    > What it does:
+    > zooms images by a fixed amount but never larger than the screen.
+    > Why:
+    > This is nice if you got a collection of images where some are small and
+    > can stand a small zoom. Large images are unaffected.
+    > When does it work, and how?
+    > You have to be in fullscreen mode _and_ have auto-zoom turned on.
+    > "feh -FZ --zoom 130 imagefile" will do the trick.
+    > -zoom percent  -- is the new switch.
+    >                   100 = orignal size,
+    >                   130 is 30% larger.
+  * I tweaked it abit to allow it to work (differently) without -Z.
+    feh -F --zoom 200 will zoom each image to 200%, regardless of the
+    resulting size. feh -FZ --zoom 200 will zoom each image up to a maximum
+    of 200%, but without generating an image larger than the screen.
+
+Sat Jan 26 16:20:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Use giblib fontstyles for menus, instead of hardcoding the shadow.
+  * Let users choose menu style with --menu-style. Standard giblib
+    semantics.
+
+Sat Jan 26 15:34:26 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * make sure fullscreen windows are really fullscreen.
+  * Haha! feh uses giblib now, pointless me maintaining two list
+    implementations and two imlib2 wrappers. Plus now I can add fontstyles :)
+
+Sat Jan 26 14:10:54 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Goodbye, non-free fonts, hello, free font. Turns out the guy who made
+    those "public domain" fonts doesn't actually want to release them under a
+    free license, so they gotta go.
+
+Mon Jan 14 19:51:18 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fixed --bg-seamless from the commandline.
+	* When you set a bg with feh, it now stores the necessary
+	commandline to restore that bg in ~/.fehbg. So for non-E
+	windowmanagers, that don't remember the bg, you can put "eval `cat
+	$HOME/.fehbg" in your .xsession, and your setting are remembered
+	when you restart X.
+
+Sun Jan 13 21:12:42 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Gah. imlib_image_set_format("JPG") does not work, yet jpg
+	does. I think that's dumb :( This work around makes saving work
+	with uppercase filenames.
+
+Sat Jan 12 03:01:59 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Stopped the bg code uselessly creating temp images when not
+	needed.
+
+Sun Jan  6 01:37:40 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Use < or > keys to do in place edit rotations, 90 degrees left
+	or right.
+
+Sun Jan  6 01:16:04 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fix unlikely but naughty segv.
+
+Sun Jan  6 00:49:35 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Some basic in place editing. Feh is not an editor, but when
+	viewing images I just grabbed from the digicam, it's really useful
+	to fix up the ones needing rotation.
+
+Tue Sep  4 23:47:42 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* --loadable and --unloadable modes should run --action on
+	matching files, fixed.
+
+Sun Aug 26 18:06:51 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Slightly tweaked menu sliding behaviour.
+	* About to release 1.1.0.
+
+Sat Aug 25 21:58:31 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Show zoom and new image size when zooming.
+
+Sat Aug 25 18:36:30 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* No need for cam to use -w as it spawns multiple feh processes.
+	* Can use options menu to switch between fullscreen and window
+	modes.
+	* Some fullscreen code cleanups. Now a per-window option.
+	* Menu code cleanups.
+
+Sat Aug 25 17:46:35 2001  Tom Gilbert  <tom@linuxbrit.co.uk>
+
+	* Fixed --geometry mode. When you resized the window it would still
+	center/size to the size you specified in --geometry. I think
+	--geometry should just say "don't change the window size", but the
+	user should still be able to :)
+	* Added a new menu option for freezing/unfreezing the window size.
+
+Sat Aug 25 02:49:54 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* okay. feh menus now support toggleable items.
+	* I was gonna use ellipses for the toggle state, but I found that
+	I had broken ellipses in imlib2 a while back (at least I think it
+	was me). So it's rectangles. I fixed imlib2 now, but there won't
+	be a release for a while.
+	* A couple of options can now be configured through the menus,
+	will add more in time.
+	* some other stuff I forget, I'm tired :)
+
+Fri Aug 24 08:44:46 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Even better, you can copy a pixmap between displays :) This is
+	much faster than Xput/get. Cheers raster.
+
+Thu Aug 23 19:04:57 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. So you can't copy a pixmap between two displays using
+	XCopyArea :) Fair enough, back to blechy XPut/XGetImage. It works
+	now with or without E, and Eterm is happy. Managed to avoid
+	leaking data into X through imlib2 or my own cached GCs, which is
+	nice :)
+	* Tested commandline too, works great with E or without. Finally.
+	* Also fixed a bug with the non-E centering code, it would only
+	have really worked for square images before ;-)
+
+Wed Aug 22 22:44:13 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, setting the pixmap and atoms works now, bar an imlib2 bug
+	we need to fix. So right now, rather than dump core, I leak X
+	connections whenever you set a BG. No big hit unless you do
+	thousands, and it's only temporary until we fix imlib2.
+	* This is mainly for raster to check out right now.
+
+Wed Aug 22 17:01:08 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, setting bg from cmdline when not running E was broken,
+	basically because we didn't XFlush before exiting. My bad.
+    * Ugh. I'm trying to emulate Esetroot, by setting the atoms needed to
+    tell Eterm where the bg pixmap is. Of course, when feh exits, the
+    pixmap is cleaned up by X, unless I do an XSetCloseDownMode(disp,
+    RetainPermanent); However, this means all my crap hangs around, I want
+    it to be cleaned up. So anyone know how I can make the pixmap stick
+    around in X, without leaving windows and other pixmaps there too?
+    (Esetroot lets it all hang out basically, but it's non graphical and
+    can afford to. It always exits after doing it's job and the next time
+    you run it, it frees the last pixmap it made).
+
+Mon Aug 20 20:58:47 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* If you specify a font that can't be loaded, feh attempts to fall
+	back to 'fixed', then '*'.
+
+Sat Aug 18 19:15:22 2001  Tom Gilber <tom@linuxbrit.co.uk>
+
+	* Added, 'w, W' and a menu option to resize the window to the
+	current image dimensions.
+
+Thu Aug 16 23:07:33 2001  Tom Gilbert <tom@linuxbrit.co.uk>
+
+	* Added 'x' to close a window but not exit everything.
+
+Thu Aug 16 00:23:26 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fook. Broke backgrounding in E for 1.0, enlightenment IPC does
+	NOT support "filename with a space" at all. You can't do
+	it. ARGH. Okay, so back that out.
+	* Add setting bg from commandline, quite useful because it'll use
+	E if it's there or fallback to X, i.e. it should always do the
+	right thing (hopes).
+	* FYI, it's --bg-scale, --bg-center, --bg-seamless, --bg-tile.
+
+Mon Aug 13 22:21:44 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed bug when using -g to reduce image proportionally,
+	calculated zoom was incorrect because I am a dick.
+
+Sun Aug 12 18:13:39 2001  Till Adam  <till@adam-lilienthal.de>
+
+	* slide menus to the left and/or up if they are off the screen and the
+	cursor is close to the right and/or bottom edge of the screen
+
+Sun Aug 12 00:24:38 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Uh that's not all I changed in the last commit.
+	* Panning is different now. It used to be ctrl+button 3, but this
+	was redefinable using cmdline/theme options. Now, instead, it's
+	combined with the next image button.
+	* ie. by default a single click of button 1 will change images, if
+	there is more than one image in the slideshow. Clicking and
+	dragging button 1 will pan, if the image is bigger than its
+	window. I find this more convenient, but let me know.
+
+Sun Aug 12 00:15:06 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Oops. Fixed bug with zooming out larger images when -g is used.
+	* Other fixes.
+
+Sat Aug 11 23:29:32 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed annoying bug where feh would limit window size to desktop
+	size only on the first image.
+
+Sat Aug 11 23:20:09 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -g, --geometry setting to fix feh's geometry. Stops
+	repeated resizing when browsing lots of pics. Please test this for
+	me as I want to get 1.0 out soon :)p
+
+Sat Aug 11 01:41:21 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Add image and filelist saving to context menus.
+	* Tidy menus.
+
+Sat Aug 11 01:25:15 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed missing break; in keyevent handler
+	* Changed the slideshow pause key from "s,S" to "h,H"
+	* New slideshow key "s,S" to save the current image to a unique
+	filename (generated in the same way as saved webcam images).
+	* New slideshow key "f,F" to save the current filelist, also to a
+	unique filename.
+	* Little cleanups.
+
+Thu Aug  9 23:57:41 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Oops. Went back to getopt_long. getopt_long_only is cool if you
+	only have a few cmdline options, but feh has a bunch and most
+	short option combos were coming up as "ambiguous". i.e. feh -Vw
+	actually ignores the -w. Fixed.
+
+Thu Aug  9 23:39:02 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Remembered some things I changed a while back and didn't put in
+	here, but they need to be in here or I'll forget forever.
+	* Fixed a race with multiple webcam-viewing feh instances by
+	adding feh PID to the tmp filename used to cache the downloaded
+	images. Other fixups to the remote-getting code.
+
+Thu Aug  9 23:16:58 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Load menu font just once and keep it around.
+	* New menu backgrounds.
+	* Fix detection of bad fonts.
+	* Allow use of --fontpath multiple times to add many paths
+	to the fontpath.
+
+Thu Aug  9 22:45:05 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Progressive loading is gone. It's useless in imlib2 because
+	imlib2 can't load from filehandles, it's real application is
+	gone. Plus people say without seeing the image load it "feels"
+	faster. This also simplifies a bunch of code and I feel cleaner
+	without it.
+	* Less pointless redraws, should be faster switching images now.
+	* Other bits.
+
+Thu Feb 15 11:25:45 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* A patch from labisso (David LaBissoniere <labiss@usit.net>)
+      to allow pausing of slideshows. Handy.
+
+Sun Jan 28 13:20:45 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* cam was using -Cwebcam, should be -Twebcam
+	* default generated ~/.fehrc used --keep-http in webcam mode, this
+	is probably not what most people want for the default, so I
+	removed it. Either blow away your ~/.fehrc or make this change
+	yourself to get it....
+	* Maybe fixed a memleak. I hope so, but it will take 3 days of
+	running cam to find out :-)
+	* After an idea and partial patch from KainX, added -G,
+	--wget-timestamp to use wget timestamping when downloading http
+	images. Useful when watching webcams, the idea is that wget only
+	downloads the webcam if it has changed since the last time. Nice
+	bandwidth saver. However, there is currently a bug in wget that
+	prevents this from working. KainX found it and I think he reported
+	it, so the next version should contain a fix.
+
+Wed Jan 17 20:33:31 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Reverted to using wget by default - the builtin stuff isn't
+	quite so tolerant about hangups and stuff, it kinda just blocks a
+	lot. Needs more work before replacing use of wget, which "just
+	works".
+
+Mon Dec 11 19:25:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a super-sweet patch from Benjamin Elijah Griffin
+	<bgriffin@cddb.com> to actually implement the builtin http
+	collection I started ages ago. I screwed with it only slightly,
+	it's a great patch. So now we can grab http images without
+	spawning a subprocess, and I have to say here it seems a little
+	faster too ;-)
+	* Added -Q, --wget option to use wget to grab http data just in
+	case you need to use a proxy, or something else stops the builtin
+	stuff from working...
+	* Misc tidyups etc..
+
+
+Tue Nov 28 00:45:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added support for --slideshow-delay as a float. -D0.25 for
+	example.
+
+Sat Oct 28 23:32:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Better check for imlib2.
+	* Only create files in current dir if keeping http images. Ones
+	that will be deleted on exit go in /tmp.
+
+Sun Oct 22 02:01:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Swapped the default right mouse button config. You now hold
+	ctrl to pan, or don't to get menus.
+	* Changed --no-menu-ctrl-mask to --menu-ctrl-mask
+	* Added --no-pan-ctrl-mask
+	* Use the options feh --no-pan-ctrl-mask --menu-ctrl-mask to
+	simulate the old behaviour, or add that line to ~/.fehrc to keep
+	it.
+	* Need to change all the --*-ctrl-mask options to booleans so it
+	is properly configurable, I think.
+
+Sat Oct 21 23:22:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed the -k option (to save files viewed by http). It now saves
+	the files into the *current* directory, with better filenames, eg
+	feh_000001_image.jpg for a file called image.jpg.
+	* Removed the use of the evil mkstemp function, not needed any
+	more.
+
+Fri Aug 25 16:41:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* rotation wasn't reset when image changed in fullscreen mode
+
+Sat Aug 19 16:07:29 2000  Paul Duncan  <pabs@pablotron.org>
+
+	* added multiple key loading to cam.  also updated the
+	documentation and chnaged the version number to 0.3.
+
+Fri Aug  4 12:09:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Sweet patch from Eric, changes window title to "Reloading:
+	<Former title>" when reloading an image. Neato :)
+
+Thu Aug  3 23:11:23 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Another fine patch from Eric Dorland, allows the configuration
+	of the reload button, --reload-button NUM. Also patches cam to use
+	button 1 to reload webcams :) Nifty ;)
+
+Thu Aug  3 23:04:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Patch from David LaBissoniere <labiss@usit.net>
+	Adds a --start-at NUM option for jumping to number NUM of the
+	filelist (either from a file or the commandline).
+	* Thanks David.
+
+Fri Jul 28 21:07:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --scale-down to automatically scale images down if they
+	are too big to fit on the screen. Only works with -P right now
+	because I am lame, but I'm on the case...
+	* The start of some builtin http code to replace wget. Part-done
+	and #ifdef'd out for now...
+
+Sun Jul  9 00:03:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed an ickle memleak when reloading a rotated image.
+
+Tue Jun 27 17:16:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More --title stuff from Eric. It now works in thumbnail mode,
+	and an additional --thumb-title can be used to set the title of
+	the individual thumbnail windows.
+
+Sun Jun 25 03:39:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Spec file fixes (I suck).
+	* Okay, if DEBUG is defined, then --debug-level NUM shows only
+	debug messages with a level equal to or below that
+	specified. Right now I'm using 0-5.
+
+Sun Jun 25 02:46:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Started reworking the debugging macros. Nothing to see here, yet
+	;)
+	* Another patch from Eric Dorland, makes --title work in all the
+	other modes but thumbnail mode.
+
+Sat Jun 24 23:43:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehehe. Patch from Eric Dorland <dorland@lords.com> arrived
+	just after the release ;-)
+	* New format specifiers, --title works in multiwindow mode, and
+	--title is passed through feh_printf, so the new format specifiers
+	may be used in it... Coolio.
+
+Sat Jun 24 21:27:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Released 0.9.9.
+
+Sat Jun 24 19:06:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* In multiwindow mode, handle events whilst opening windows. This
+	is very handy for when you accidentally do feh -rw / and have 14
+	million images opening. 'q' will quit at any time ;)
+
+Sat Jun 24 18:57:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixes for blending transparent stuff onto transparent stuff.
+	* Reindent and cleanup prior to release.
+
+Sat Jun 24 18:34:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix for a reload when rotated.
+
+Sat Jun 24 18:27:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Check panning after a zoom, move within constraints if
+	necessary.
+
+Sat Jun 24 18:15:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Constraints for panning.
+
+Sat Jun 24 17:00:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Context menu for thumbnail mode.
+
+Sat Jun 24 16:44:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix for segv when tring to get image info for a generated (not
+	on fs) image.
+
+Sat Jun 24 16:28:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix for rotation and panning and zooming in fullscreen mode.
+
+Sat Jun 24 12:21:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --title, with a nice clean patch from Eric Dorland
+	<dorland@lords.com>, allows you to set the window title to be used
+	for slideshow mode. He also modified cam to use this to label it's
+	windows. A combined perl and C patch - neato ;-)
+
+Sat Jun 24 00:46:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New menu item, Reset. It resets the zoom/pan/rotate etc.
+	* Currently only with -P (to be fixed), a reload does not force a
+	reset like it did before, so you can zoom a webcam and not have it
+	reset on reload.
+
+Sat Jun 24 00:13:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Thumbnails, when clicked, now all open the clicked image in the
+	same window. Much better for browsing.
+	* Menu fixups, more efficient now. Also, better context menus,
+	having the right options for the right window types.
+	* If you open a thumbnail, and then delete it or remove it from
+	the filelist, the thumbnail view will update to show the
+	fact. This is cool :-)
+
+Fri Jun 23 17:15:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Depreciated the FEH_OPTIONS envrionment variable in favour of
+	the configuration file themes.
+
+Fri Jun 23 14:46:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Mwahahaha. Asynchronous events for index, thumbnails and
+	collages. All events are handled while the images are
+	generated. You can quit, bring up menus, zoom, pan and rotate, all
+	whilst the image is still being created. Much better.
+	* Pass the progress function around instead of using the
+	context. Kills two bugs.
+
+Fri Jun 23 14:11:56 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Documentation fixups.
+	* --thumnbails can also be called with -t now.
+	* --title-font no longer has a short option.
+	* --theme is now also -T.
+	* Release preparations.
+
+Fri Jun 23 12:54:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* You can now select --bg trans to give indexes, collages,
+	montages and thumbnail selectors a transparent background.
+
+Fri Jun 23 12:18:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed a couple of minor bugs
+	* You can now open the same image multiple times... If you really
+	want to...
+
+Fri Jun 23 11:37:56 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Thumbnails now stored in a linked list.
+
+Thu Jun 22 23:57:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Optimisations to thumb hilites. Only show hilite when you can
+	click to open an image, don't show when over emtpy space, and 
+	don't re-render if the selection hasn't changed from the last
+	mouseover. Speeds it up a lot.
+
+Thu Jun 22 23:49:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now thumbnails show as they load too.
+	* AND :-)
+	* Thumbnail hiliting on mouseover from richlowe. Coolio ;-)
+
+Thu Jun 22 23:32:45 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Same for collage mode :)
+
+Thu Jun 22 23:28:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Woop. Something I should've done a WHILE ago. If progressive
+	loading is enabled (ie not -P), you can see the index/montage
+	being created in front of your eyes ;-) It's sweet.
+	* Next I will make it respond to events during the creation
+	(quiting/zooming while still creating), and make it work for
+	thumbnail and collage modes too.
+
+Thu Jun 22 22:23:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix for trying to reload a montage
+	* Rewrite of all linked-list code to a more generic form so I can
+	do more with it. I may have introduced bugs in this (big) rewrite,
+	so test test test ;-)
+	* Misc fixups
+
+Wed Jun 21 23:49:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Can set background from multiwindow and thumbnail modes now.
+
+Wed Jun 21 22:43:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Initial thumbnail mode, thanks to patches from richlowe and
+	modifications by me. Nice work dude. More to come, right now
+	there's just the click (although it works with a panned or zoomed
+	thumbnail list). To come - opening thumbs in a single window,
+	hiliting, and hey, the rest will be a surprise, okay? ;-)
+	* This is *initial* btw. I plan to properly add this to index and
+	montage modes, as it needn't be a seperate mode. There's lots of
+	duplication in the source right now, which needs to be cut down.
+
+Tue Jun 20 20:02:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed mousebutton swapping option code. It was broken for
+	certain combinations, now all seems well.
+	* Found a use for ctrl+button1 for now, it just blurs/sharpens the
+	image dynamically - for shits and giggles. It is somewhat spoiled
+	by the fact that imlib2 currently doesn't seem to care what radius
+	you pass to imlib_sharpen_image(), it always does the same thing.
+
+Mon Jun 19 17:47:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added new background setting mode. "Set seamless." It's purdy.
+
+Mon Jun 19 14:18:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Mwahaha. Now the window is resized when rotation starts (to fit
+	the rotated image in). Also, checks are drawn properly behind the
+	image, and rotation works well in combination with pan and zoom.
+	* Now that all that's done, rotation is slow as shit ;) We'll see
+	if we can speed that up next ;)
+
+Sun Jun 18 21:49:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* No more eesh. We use E ipc properly now. IPC code pinched from
+	Eterm - thanks KainX.
+
+Sun Jun 18 19:38:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Zooming is mostly fixed now. Works much better. A few little
+	tweaks and we'll be laughing :-)
+
+Sun Jun 18 16:11:47 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More menu styles. Remove your ~/.fehrc (let it regenerate) and
+	run feh -t wood, feh -t aluminium or feh -t aqua to see them.
+
+Sun Jun 18 14:53:17 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Better eesh availability determination, and a check that E is
+	actually being used at the time, too ;)
+
+Sun Jun 18 13:46:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now feh will query eesh for the number of desktops a user
+	has. If eesh is there, and there is more than one, the background
+	setting menu will offer a choice of which desktop to set.
+
+Sun Jun 18 03:47:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. Thanks to richlowe and me, the bg setting is getting
+	pretty cool now. It uses eesh under E, but if it can't find it,
+	nicely falls back to X calls. There are more options to come
+	(choosing which desktop etc), but for now, things are pretty sweet
+	;-)
+
+Sun Jun 18 01:29:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* The first part of some background setting code from richlowe 
+	<richlowe@btinternet.com> - more to come, it'll be sweet.
+	* Doesn't work yet btw, so don't get excited ;)
+
+Sun Jun 18 00:40:28 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New option, --rcfile FILE. Uses FILE instead of the normal
+	~/.fehrc or /etc/fehrc for parsing configs/themes from.
+
+Sun Jun 18 00:26:06 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now feh will write a default ~/.fehrc if none is found, but only
+	if there is no /etc/fehrc in place already.
+
+Sat Jun 17 23:46:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* A couple of nice new menu bgs from pabsmonkey.
+	* The example.fehrc has theme entries for them, so if you copy it
+	to ~/.fehrc, using feh --theme brushed will use the brushed menu
+	bg. Same for --theme chrome.
+
+Sat Jun 17 12:57:49 PDT 2000 Paul Duncan <pabs@pablotron.org>
+   
+   * wget is now quiet by default (wget -q). it's verbose if the
+   -V or --verbose flag is passed to feh.  Your terminal will
+   thank you.
+   * mirrored the same change too cam.  cam -V or cam --verbose
+   will enable verbose mode for feh and the forked wgets.
+   * the second mouse button now zooms again, and the third button
+   pans.
+   * added menu-button option too (-4 or --menu-button). ctrl+the
+   menu button brings up the menu.  defaults to the right mouse
+   button, and you can set it to 0 for any button (including ones
+   >3, there's no bounds checking).  This feature is disabled by
+   the -N or --no-menus flag.
+
+Sat Jun 17 20:41:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Apend ? and a random number to the image url for webcams so that
+	the image isn't cached. Much better.
+
+Fri Jun 16 22:52:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Menus can have a background image now. There is a default one,
+	courtesy of Pablo P Duncan (http://10k.dhs.org/~dmron/arch.html).
+	* You can use any image you like for the background, by using
+	--menu-bg FILE to select one. I had a small amount of fun using
+	Britney as my menu background. Strange, but true.
+
+Wed Jun 14 18:53:06 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --progress-gran NUM. Sets the progressive-loading
+	granularity to NUM, an integer between 0 and 100. This is the
+	percentage of the image to load before updating the display. 0 is
+	super-smooth, but slightly slower than 100, which loads the whole
+	image before showing anything. Use lower numbers to get
+	responsiveness over slow network connections...
+
+Sat Jun 10 21:25:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Zooming is back, and it's as it was before. I'm still not happy
+	with it, but it works again anyhow. Next: fix, fix, fix.
+	* Don't forget, you need to hold control to get menus now...
+
+Sat Jun 10 12:36:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Only render the current viewport. Big optimisation I should have
+	done earlier. Makes zooming big images smooooooooth ;-)
+	* Nearly finished the zooming rewrite, but it's disabled right now
+	(it's still a bit crappy).
+
+Sat Jun 10 00:05:10 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed check drawing after resize. Edge resistance against *all*
+	the edges, not just two of them ;-)
+
+Fri Jun  9 21:31:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fix fullscreen mode to work with new image placement code. Make
+	it work with --auto-zoom and --stretch too.
+	* Perform an antialiased pass after panning if needed.
+
+Fri Jun  9 19:48:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Edge resistance when panning. Much better.
+
+Thu Jun  8 22:02:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* First part of zooming/scaling rewrite. Only panning so far, but
+	it works nice. Zooming is current *disabled*.
+
+Sun Jun  4 15:44:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a wrapper to imlib2. I was getting some subtle bugs from
+	the singleton context (accidentally leaving context_antialias on,
+	not blending when I should be etc), and to fix them I was adding
+	lines and lines of context_set this, context_set that. I've
+	wrapped the imlib calls in an imlib1 
+	lots-of-params-per-function-call stylee, and now it's much more
+	readable and harder to break.
+	* In the process, made big speedups by not antialiasing when I
+	needn't, or blending when I shouldn't etc. Also blew away a few
+	hundred lines of context-setting.
+
+Fri Jun  2 22:58:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed pixmap resizing bug properly this time ;-)
+
+Thu Jun  1 19:36:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Correct oversite in sizing pixmaps.
+
+Wed May 24 20:21:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Massively speeded up image rendering and therefore zooming by
+	actually *thinking* about what I was doing and using a tiled
+	pixmap GC and XFillRectangle for drawing the background
+	checkerboard pattern. Much better. I'll clean it up a bit
+	next.
+
+Wed May 24 00:09:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed bug with --no-progressive and window resizing. The
+	rendering and resizing code is a *mess* now, which I'll have to
+	fix tomorrow (lots of duplication and a complex codepath). But at
+	least it works properly right now :-)
+
+Tue May 23 22:19:30 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Optimised event handling from nasty big switch() to a table of
+	pointers to functions.
+
+Sun May 21 20:53:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* About.png contributed by Phil Morris (marmot)
+	<marmot@vennercs.com>
+
+Sun May 21 10:01:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Gratituous eyecandy in the about box 'cos Boris asked nicely ;-)
+
+Sat May 20 01:09:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Wired cam into the Makefile.am
+
+Fri May 19 19:21:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* You can now use --action with list or customlists too. In these
+	modes, the action is run automatically for each file listed.
+
+Thu May 18 21:34:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Quotes, escaped quotes and escaped spaces in config files work
+	as one would expect. I think. Don't they?
+
+Thu May 18 20:43:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* \n now gets you a newline in a feh-interpreted string.
+
+Thu May 18 20:26:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Changed how -l and -L work. -L is now --customlist, which takes
+	a string argument. The string is a feh-printf format specifier,
+	just like those used for action definitions. (Eg %f for filename,
+	%w for width etc). The format specifier is used to form the list
+	output for each file. Example usage:
+	feh -L "<img src=\"%f\" alt=\"feh\" width=\"%w\" height=\"%h\">" pr0n.png
+	Stuck a new theme in the example.fehrc config, and found how lame
+	my config parsing code is :-) Quotes and escaped quotes currently
+	*do not* work right. I'm fixing it now :-)
+
+Tue May 16 17:51:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Ignore duplicate MotionNotify events
+	* Same for ConfigureNotify
+	* Saved some wasted cycles
+
+Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehe. Now I made a release I can break stuff again =P You can
+	resize the window again now, and it works okay, except zooming
+	isn't quite right when the window is bigger than the image right
+	now. I have to redo *all* that zooming code over the next week
+	or so 'cos it was shortsighted to start with :-(
+
+Sun May 14 17:34:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New "Image Info" submenu. It tells you stuff. About the
+	image. Hence the name.
+
+Sun May 14 16:03:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Reorganised and tidied the headers somewhat. Various cleanups.
+
+Sat May 13 20:53:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Add -N, --no-menus option for people who Just Want The Pr0n [tm]
+
+Sat May 13 20:35:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now you can press 'r' to reload images too.
+
+Sat May 13 20:24:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hide menu, *then* perform action. Otherwise hitting "reload" on
+	an http:// image over a slow connection keeps the mouse grab until
+	finished. Messy ;-)
+
+Sat May 13 19:54:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Make the menus slightly prettier. I wish I had an artistic bone
+	somewhere in my body...
+
+Sat May 13 18:04:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Use realpath() to cleanup paths before sticking them in a
+	filelist. Added --menu-font, -M so that you can use whatever font
+	you like for menus.
+
+Sat May 13 00:11:06 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Menus. They need some work, but are mostly good.
+	* I owe many thanks to raster here, 'cos I pinched some functions
+        from efm to save time :-)
+	* Added --auto-zoom. Currently only works with --no-progressive, I
+	need to fix that soonish...
+
+Tue May  9 22:04:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now --filelist is -f, relegating -font to -e. *shrug*.
+
+Tue May  9 21:57:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now --theme is -t instead of -C (duh).
+
+Tue May  9 21:35:34 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now --action is A, and --ignoreaspect is X.
+
+Tue May  9 21:30:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now randomize is -z, which makes a little more sense.
+
+Tue May  9 21:15:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Swapped -g and -c so that --collage gets the -c it fits, and
+	randomize gets -g. I need to rework all these short options,
+	they're a mess right now. Sorry if I break anyone's configs doing
+	this :-(
+
+Tue May  9 21:09:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Removed -B, --booth, as it's just a combo of options now doable
+	in the config file. I stuck it in the example config instead...
+
+Mon May  8 22:38:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Don't apply colormods to each whole image. First scale it to
+	thumbnail size, then apply the colormod to that.
+
+Mon May  8 22:08:41 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Made --alpha actually do stuff. I finally grokked color
+	modifiers, and now they're fun ;-) Imlib2.h is really gonna need
+	some comments at some point though - I had proper trial-and-error
+	fun and games there for a while ;-)
+
+Mon May  8 21:58:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* D'oh! if(foo & bar) isn't quite the same as if(foo &&
+	bar). Stupid cheap keyboards ;-)
+
+Mon May  8 13:12:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fun with dmalloc
+
+Mon May  8 13:10:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Ensure backgrounds of index and montage images are black by
+	default. Imlib2's behaviour changed in this respect at some point.
+
+Sun May  7 18:42:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed breakage (and segfault) when preloading images in verbose
+	mode if any of the images are unloadable. Stupid typo.
+
+Sun Apr 30 16:02:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added  -n, --reverse. Reverses the sort order.
+	Use this to invert the order of the filelist. Eg to sort in
+	reverse width order, use -nSwidth
+
+Sun Apr 30 15:13:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* In slideshow and muliwindow modes, DELETE now removes the
+	current file from the filelist. CTRL+DELETE deletes the files from
+	the filesystem and removes it from the filelist.
+
+Sun Apr 30 14:48:04 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Filelists can now be saved to and loaded from files, very much
+	like the playlists used by music players.
+	* Here's the details:
+            -e, --filelist FILE
+            This option is similar to the playlists used by music
+            software. If FILE exists, it will be read for a  list
+            of  files to load, in the order they appear. The for-
+            mat is a list of image filenames, absolute  or  rela-
+            tive to the current directory, one filename per line.
+            If FILE doesn't exist, it will be  created  from  the
+            internal  filelist  at  the end of a viewing session.
+            This is best used to store  the  results  of  complex
+            sorts  (-Spixels for example) for later viewing.  Any
+            changes to the internal filelist (such as deleting  a
+            file or it being pruned for being unloadable) will be
+            saved to FILE when feh exits. You can  add  files  to
+            filelists  by specifying them on the commandline when
+            also specifying the list.
+	* I quite like this option. The reason I added was that I've been
+	testing some boundary conditions by recursing through complex
+	directory trees / sorting 10,000 images by pixel size etc, and
+	that can take a while. Now I can do it once, save the filelist,
+	and refer to that in future. You can of course use it to organise
+	and group pics too. ~/lists/britney.list, ~/lists/laetitia.list.
+	Hmmmmmm.
+
+Sun Apr 30 02:40:01 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* PageUp/PageDown in slideshows will jump back/forward about
+	1/20th of the total number of files...
+
+Sat Apr 29 21:42:45 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hrm. Actually wait for X to resize the window before rendering
+	the pixmap, or the resize sometimes gets delayed...
+
+Sat Apr 29 04:52:20 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Heh. Sanely handle deleting the only/last image in the
+	slideshow.
+
+Thu Apr 27 16:10:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* You can delete files using ctrl-del in multiwindow mode too now.
+	* Smoothing now occurs as soon as you stop zooming. This also
+	massively tidied the event loop and killed a couple of nasty
+	globals.
+
+Thu Apr 27 14:39:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Spilt off the part of main_loop which loops for ever from the
+	part that responds to events. I now have a feh_main_iteration that
+	processes events and returns afterwards. This means I can process
+	events from outside the main loop. I'm gonna use this and the
+	new interruptable progressive loaders to do funky stuff soon ;-)
+
+Thu Apr 27 03:29:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Progressive loading api change.
+
+Tue Apr 25 01:41:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* I'm bored, and a little drunk, so I made it pass -pedantic, for
+	kicks.
+
+Mon Apr 24 22:29:52 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Make sure nothing's cached.
+
+Mon Apr 24 19:53:23 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Changed some of the debugging macros.
+	* Found and fixed wasted extra loops in option file parsing.
+
+Mon Apr 24 16:48:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Feh is hereby rereleased under a less restrictive license. Much
+	as I want to propagate Free software, I don't want to be a Free
+	software Nazi. Do with it what you wish.
+	* Various fixups, tweaks, and readability improvements.
+
+Mon Apr 24 04:47:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Finally got off my arse and made the text center under the
+	images in index mode.
+
+Mon Apr 24 04:21:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Now that I have the config file, feh can safely be called
+	without any paramters, they can all be defined in the theme.
+	This leaves my:
+	if(argc < 2) show_usage();
+	looking pretty stupid.
+
+Mon Apr 24 03:53:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added --fontpath, to allow an extra directory to be specified in
+	which to look for fonts. You can add this to /etc/fehrc or
+	~/.fehrc to make it permanent. Something like:
+	feh --fontpath /usr/share/ttfonts
+
+Sat Apr 22 01:48:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* A slideshow delay of zero is now permitted. It means "go as fast
+	as you can". I like it ;-) You can pause with the middle mouse
+	button.
+
+Wed Apr 19 19:42:45 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -g, --collage. Collage mode is like montage mode, except
+	the image thumbnails are distributed randomly. Run test26 for an
+	example.
+
+Tue Apr 11 18:20:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Make included getopt actually work if needed :)
+
+Sat Mar 25 17:42:43 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Event loop and zooming tweak.
+
+Sat Mar 25 02:09:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, well, seeing as feh isn't resize-friendly (it's just not
+	designed for it - use gimp for that stuff ;), I'm disabling
+	resizing of the window. Bite me :)
+
+Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Muhahaha. Config file. It had to be done, there are so many
+	options now. This is totally optional of course, if you don't
+	create one, you'll never notice the difference. Here's how it
+	works...
+	* If ~/.fehrc exists, or if not, but /etc/fehrc exists, feh will
+	look in it for name/options pairs. An example entry would be:
+	imagemap -rVq --thumb-width 40 --thumb-height 30
+	* You can use the theme in two ways. Either 
+	feh -C themename [images]
+	or you can create a symbolic link to feh with the name of the
+	options you want it to use. So from the example above:
+	ln -s `which feh` ~/bin/imagemap
+	Now I just run 'imagemap' to use those options.
+	A cooler example is
+	mkindex -iO index.jpg --title-font 20thcent/24 .
+        Notice the '.' at the end.
+	Now with a symlink I can create a mkindex command which will
+	create an index.jpg in the current directory. I just run:
+	$ mkindex.
+	* An example.fehrc is provided with a couple of cool examples.
+	
+Fri Mar 24 19:17:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Slightly increased the default index mode font size.
+
+Fri Mar 24 16:59:28 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Modified index mode to only show the image name below each
+	thumbnail, and added -I, --fullindex mode to provide the other
+	info (size, dimensions). Squashed a bug where the index print was
+	always made 30 pixels too tall ;)
+
+Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Feh will now read options from the environment variable
+	FEH_OPTIONS if it is set. These options will be loaded before
+	commandline ones, and so can be overidden. The syntax is the same
+	as the commandline, so multiples are allowed (eg "-Vq -Sname")
+	I would recommend export FEH_OPTIONS="-Vq" as being quite handy.
+
+Wed Mar 22 22:52:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Well, it might be an idea to tell wget to ignore server-cached
+	data when reloading webcams :)
+	DOH!
+
+Wed Mar 22 19:57:04 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Better man page. Examples of cool usage.
+
+Wed Mar 22 18:17:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Man page! Whee!
+
+Wed Mar 22 04:14:12 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added format specifiers for actions. %w width, %h height, %p
+	pixels, %s size, %t type (jpeg etc).
+
+Wed Mar 22 03:50:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* User definable actions for slideshow and multiwindow modes. Use
+	-X or --action STRING to define an action. The action will be run
+	when the ENTER key is pressed. The action should be in the form of
+	a shell command, using %f to represent the image filename
+	(including path), and %n to refer to it's name. Example:
+	feh -X "mv %f ~/images/%n"
+	Use this to go through some images and pick out the good ones :)
+	More format specifiers will follow...
+
+Wed Mar 22 02:55:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. I found a naughty bug of mine. If the last image of a
+	montage/index was not loadable - core was dumped. Nice bug. Fun to
+	find =) I blame redhat.
+
+Tue Mar 21 15:45:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Major cruft removal and tidying of code path. Progressive
+	loading code slightly less complex now.
+
+Tue Mar 21 15:18:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Big optimisation for progressive loading in fullscreen mode. I
+	was recreating the pixmap at every iteration - damnit ;)
+
+Mon Mar 20 21:54:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Dammit. Why do I find these things *after* a release?
+
+Mon Mar 20 19:24:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Released 0.7.0
+
+Sun Mar 19 20:55:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Main event loop tidy up.
+
+Sat Mar 18 21:59:55 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a coupla more tests...
+
+Sat Mar 18 21:56:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed stupid segfault using --list when there are no loadable
+	images.
+
+Sat Mar 18 14:06:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* --list tidy up.
+
+Sat Mar 18 02:56:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More --verbose twiddles.
+
+Sat Mar 18 02:18:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Made the --verbose output more useful, and prettier ;)
+
+Sat Mar 18 00:37:17 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Made the -V, --verbose option give cooler output on loading
+	mulitple images. It's pretty flim now.
+
+Sat Mar 18 00:32:42 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -U, --loadables, and -u, --unloadables. They don't show
+	images, just list all the files from the filelist that are
+	loadable or unloadable, respectively.
+
+Fri Mar 17 22:58:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Don't need to create checkerboard for list mode, montage mode,
+	index mode, etc...
+
+Fri Mar 17 22:43:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* We don't need to allocate space for the file info unless we
+	intend to use it. Saves RAM on big file lists...
+
+Fri Mar 17 22:18:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Big changes. I am tired ;)
+	* You can now sort the filelist in any mode.
+	* Sorting by name/filename is *fast*
+	* Sorting by image properties such as width, height, type etc
+	incurs a delay at startup while the images are preloaded. This
+	could get big for large lists of files.
+	* Added a -p, --preload option to force preloading before running
+	a slideshow. This weeds out images that imlib2 can't load so that
+	the initial number of slides is accurate. Normally, the bad/non
+	images are weeded out as you go, causing the number of slides to
+	update as things go. Preload is great for montage and index modes,
+	as it ensures the correctly sized space is allocated for the
+	images/thumbnails/whatever.
+
+Fri Mar 17 19:22:18 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* List modes can now sort by image info using -S, --sort. Allowed
+	sort modes are width, height, pixels, size, format, name,
+	filename. Default sort mode is none (ie order specified/read).
+	* eg. feh -lSpixels * to see the highest resolution images...
+
+Fri Mar 17 18:04:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -L, --longlist to allow for more detailed listings. Lists
+	are sorted by filename now too. (Until I write more sorting
+	options...)
+
+Thu Mar 16 19:47:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Slightly cleaner --list stuff...
+
+Thu Mar 16 17:46:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -l, --list mode. Doesn't display images, just analyses
+	them a little and spits out an 'ls' style listing with some basic
+	info. Useful in scripts. I intend to extend this somewhat soon.
+
+Thu Mar 16 16:40:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -q, --quiet option. Stops non-fatal image load errors
+	being reported. Useful when you want to do feh * on a directory
+	with some images, some other stuff. You'll only see what imlib2
+	can load.
+
+Wed Mar 15 21:32:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed bug using the short versions of --limit-width and
+	--limit-height
+
+Wed Mar 15 21:17:26 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Better still. Font size increases in fullscreen mode, but -d
+	works in windowed modes too now.
+
+Wed Mar 15 20:58:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hrm. Much better.
+
+Wed Mar 15 20:36:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -d, --draw_filename for use with fullscreen mode. It
+	sticks the filename up in the top left. Needs some more work yet.
+
+Sat Mar 11 23:35:20 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added proper commandline option parsing courtesy of getopt_long
+	:) Obviously not everyone has this, so I include it myself. Now
+	you can combine args in nice ways: "feh -kR20 http://some.webcam"
+	* It passes "make test" okay, but I reserve the right to have
+	broken something =) Let me know?
+
+Sat Mar 11 01:34:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* 0.6.4 released
+
+Tue Mar  7 23:07:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed evil segv due to uninitialised gc.
+
+Sat Mar  4 16:33:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* --help output for the new options.
+	* Added --booth, with is a shortcut for a fullscreen slideshow
+	with an auto-change every 20 seconds...
+
+Sat Mar  4 15:59:44 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Bah. Disabled zooming in fullscreen mode for now. I'll do the
+	math and fix it later.
+	* I think I'm gonna have to rewrite shedloads of it to support
+	window resizing etc...
+
+Sat Mar  4 14:46:42 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed progressive loading in fullscreen mode. Those callbacks
+	*are* on crack, but for them to make sense would be a big rewrite
+	I don't have time for now =)
+	* Unfortunately, zooming in fullscreen mode is broken, I'm looking
+	at this now. Also, I get a weird segv when I do "feh -F directory"
+	but not when I do "feh -F file" or "feh -F file1 file2", and not
+	when I do "feh directory" or "feh -b directory" etc. I'm trying to
+	work this out, but the fullscreen thing should be independent of
+	the filelist thing...
+
+Fri Mar  3 22:44:25 PST 2000  Michael Jennings <mej@eterm.org>
+
+	* Added two new options.  --randomize will take the file list and
+	rearrange it into a random order.  --full-screen or -F will create
+	a screen-sized borderless window (akin to a screensaver) and will
+	center the image within it.  NOTE:  At this point, full screen mode
+	only works if you disable the progressive callback.  I'm waaaay too
+	tired right now to try to make sense out of gilbertt's callback
+	logic. :-)  I'll try to fix it this weekend if he doesn't beat me
+	to it.
+	
+Wed Mar  1 15:13:04 PST 2000  Michael Jennings <mej@eterm.org>
+
+	* Math lib
+	
+Sun Feb 20 15:22:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Remove some crufty duplication.
+
+Sat Feb 19 17:11:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Reduced mem usage, tuned file handling. Tidied up.
+
+Sat Feb 19 00:55:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added -b, --borderless option. Can you guess what it does?
+
+Fri Feb 18 23:51:14 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Well, if I wasn't so dumb, I'd have realised that my last
+	comment only holds true for depths > 4000 or so. I don't have that
+	here. So, s/massive/fscking enormous/g.
+	* Fixed the *actual* problem, which was, of course, that I forgot
+	to close my damn dirents.
+	* Pull out the cl00bats, for I have goofed.
+
+Fri Feb 18 23:33:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, okay. I suck. There is a mild problem I have to fix when
+	running recursively on *massive* hierarchy's. Basically, I run out
+	of file descriptors :( At least it now aborts when this happens, but
+	I need to fix this.
+
+Fri Feb 18 21:13:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* configure.in: less stupid
+
+Fri Feb 18 20:51:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* index.c: misc tidyups
+
+Fri Feb 18 20:41:02 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Misc fixes and cleanups.
+
+Fri Feb 18 16:34:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Stupid, stupid, stupid. I am stupid.
+
+Thu Feb 17 23:14:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Ooh. Cool. Now slideshow/deletion numbering works more sanely -
+	thanks to the new filelist code.
+
+Thu Feb 17 23:13:22 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehe. That was more dumb than usual. Deleting files somewhat
+	destroyed the list, and caused nice segfaults.
+
+Thu Feb 17 22:05:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More file-list fixes.
+
+Thu Feb 17 21:55:53 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Note to self: if you prepend everything to a list, the resultant
+	list will be in reverse. You'll be needing to fix that =)
+
+Thu Feb 17 21:35:15 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Thank goodness for that :) I totally reworked the file handling
+	code, and things are cleaner internally now. The change shouldn't
+	show to a user, but for me, things are better.
+	* I broke stuff badly with this change, and only now have I got
+	everything back on track. There may be issues still, but it seems
+	good now, and I'll keep playing with it...
+
+Wed Feb  9 21:59:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Removed all the image modification code from feh, seeing as
+	dphase is working on ee2. No point duplicating everything :)
+	* I figure feh can view pr0n, while ee2 modifies it :) Something
+	like that, anyway.
+	* I never wanted the modification stuff in here really, it was
+	just feature creep. Feh is a viewer and montager. That is all :)
+
+Tue Jan 11 21:11:11 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hrm. Just so you know what order they come in, the images are
+	  now saved in /tmp (actually whatever tempdir is set up on your
+	  system) in the format "number"_"unique bit"_"original filename"
+
+Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. The cached images are now deleted. The filenames are no
+	  longer crap. ("Unique prefix"_feh_"original filename")
+	* New option -k, --keep-http, tell feh *not* to delete the files,
+	  so that you can later claim them from /tmp. Saves you
+	  downloading them again if you like them.
+	* A happy side effect of this is that if you use -k and -R to keep
+	  http and reload, and point the thing at a webcam, you'll capture
+	  each frame and save it as a separate image.
+	* I *can't* imagine why anyone would *want* that, but I thought
+	  I'd pass it on ;-)
+
+Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Caching of images loaded via http. When in slideshow mode, and
+	  the --reload option is not specified, a file loaded by http will
+	  be stored in /tmp to avoid reloading from the web it every time
+	  you loop through the slideshow or whatever.
+	* The --reload option disables caching
+	* Right now, the cached images are left in temp with crap
+	  filenames. I'm gonna fix it up so that they are normally deleted
+	  on program exit, but there will be an option to save them to the
+	  current directory. (So you still have the images after viewing
+	  them).
+
+Tue Jan 11 19:07:07 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* New option, -R, --reload. Lets you specify a time in seconds,
+	  feh will reload the image for you after this time. This works for
+	  normal files and urls. The image will not be cached, so it is
+	  ideal for viewing webcam images etc.
+
+Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Whee. Now feh can load images from urls.
+	* Specify an image starting with http:// and feh will use wget to
+	  load the image, store it in a temporary file and view it.
+	* You must have wget installed for this to work.
+	* I have some optimisations to add, the image is currently not
+	  cached, so if you have http files in a slideshow, they will reload
+	  each time you get to them ;) I'll do this soon.
+
+Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Finally got around to adding timers to feh. Now there is a new
+	  option, -D, or --slideshow-delay NUM. NUM is the time in seconds
+	  between changing slides for you. There is a new test to
+	  demonstrate this option.
+	* The timer will pause while you zoom, and will be reset if you
+	  change slides yourself.
+	* The timers code is loosely based on raster's epplet timer
+	  code, 'cos its cool. No need to re-invent the wheel ;)
+
+Mon Jan  3 18:29:46 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. feh is now capable of some minor touch-ups. Nothing major,
+	and no image saving yet, but it tests the selection and
+	modification code.
+	* We're not writing a full-blown editor here... The idea is to
+	browse through your images, select one, make minor changes if you
+	want, then set it as your desktop background.
+	* To test, toggle the various modes and use the left mouse button
+	to use 'em.
+	* 'c' - crop image to rectangle
+	* 'o' - increase contrast of rectangle
+	* 'b' - increase brightness of rectangle
+	* 'g' - increase gamma of rectangle
+	* 'Escape' - exit modification mode.
+	* I'll leave the rest of the modification stuff to Andrew ;-) I
+	guess maybe we should have some persistant rectangle selections,
+	but I don't want to go too far.
+
+Sat Jan  1 22:25:49 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* I prefer LineOnOffDash drawing more for selections :)
+
+Sat Jan  1 22:12:37 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* I'm alive!!! Somewhat hungover though ;)
+	* So, some changes to the rectangle selection code, some by
+	Andrew, some by me :) Again, press 'r' to test it.
+
+Sun Dec 26 22:57:53 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Take the gc creation out of the loop, as much as poss.
+	* Is xmas over now?
+	* Am I still drunk?
+
+Fri Dec 24 13:22:19 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* I've switched to using XFindContext et al to associate X Windows
+	with internal structures. Much faster than my rubbish list
+	searching.
+	* Dammit. Why don't people tell me you can *do* stuff like this ;)
+
+Fri Dec 24 01:01:49 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* And now we can crop :) Thanks Andrew.
+
+Thu Dec 23 20:45:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* We can now draw selection rectangles on windows using XORed
+	lines. This rules. Once the editing functions and menus are in
+	place, we'll use them to do stuff :)
+	* For now, press r to toggle line drawing, so you can see it for
+	yourself. Click and drag lmb to see.
+
+Wed Dec 22 23:37:27 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More stuff from Andrew (hoss), we're starting to add stuff for
+	drawing rectangles, applying mods to rectangles, setting
+	backgrounds (under any wm) and other stuff like that.
+
+Wed Dec 22 21:49:10 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Memory usage down by ONE THIRD :)
+	* I finally did the checkerboard bg thing the Right Way, and saved
+	lots of wasted RAM. Hooray.
+
+Wed Dec 22 20:47:11 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* And now index mode has a go at recommending the image size for
+	you, if you specify one too small.
+
+Wed Dec 22 18:23:42 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehe. Found it. Little bugger. *squish*
+
+Wed Dec 22 18:12:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More modify.c submissions from Andrew, including the start of
+	some very funky background setting and image scaling ::)
+	* A total rewrite of the index generating code to take into
+	account the font size and string length. The old version was
+	pretty unflim, so its nice to clean it up a bit. However, the niew
+	code still has a couple of issues, which I am looking into.
+
+Wed Dec 22 13:21:12 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, index mode now kinda takes into account the height of the
+	font you use. Width is on its way, but is more tricky.
+
+Wed Dec 22 02:17:01 1999  Michael Jennings <mej@eterm.org>
+
+	* Removed a warning, and added "make testclean"
+
+Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More modify.c submissions from Andrew, and some initial menu
+	work. The menus are not compiled in right now, and would core if I
+	did, so don't touch 'em for now :) They are only 5 mins work atm.
+	* I have #ifdef'ed out the code which uses X86VidMode extensions
+	until I can find out how common it is not to have them :)
+
+Tue Dec 21 18:40:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* The winwidget_rerender_image() function now checks for changed
+	dimensions and acts accordingly, and the rotate() function now
+	updates the width and height attributes. The modify.c functions
+	are now available for testing using 1-9, 0, -, = key presses.
+
+Tue Dec 21 18:01:15 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Encorporated modify.c, contributed by Andrew Glover
+	<aglover@axe.net>. These functions wrap imlib2 modification
+	functions, and will be handy when I make some menus :) We'll be
+	able to do scaling, tiling, color modifiers, and more.
+
+Tue Dec 21 03:28:30 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* And now the thing won't go mad when you hold down a change-slide
+	button in Slideshow mode... Before it stored *all* the KeyPresses
+	and responded to *all* of them. Hehe. It was fun watching it go
+	round though :)
+
+Mon Dec 20 17:35:25 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehe. Ooops. I only need to blend on zoom if the image *has* an
+	alpha channel. Hehe. Ok, now zooming is *much* faster and
+	smoother, and I am slightly less of an idiot.
+
+Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, I'm still a newbie at this X stuff :) Made some
+	optimisations to the main loop which speed things up a
+	bunch.
+	* Added better error handling when loading images.
+	* The Q or q key can now be used to exit the app in any mode.
+
+Mon Dec 20 15:22:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added some utility functions, so I don't have to write
+	if((s=malloc(blah))==NULL){fprintf("oops\n");exit(2);}
+	15 million times. It really bugs me ;-)
+
+Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Hehe. I like slideshow mode so much its now the default :)
+	Having multiple images pop up one-per-window can be quite evil, so
+	Slideshow mode is prefered. To open multiple images
+	one-per-window, you now need to specify -w or -multiwindow.
+	* I also fixed a couple of things, lowered slideshow overhead,
+	tightened up the main loop somewhat, and a coupla things really
+	late last night which I can't remember ;-)
+
+Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* For packaging reasons, I have changed the scripts to run feh in
+	the current dir, if it is there, but to fall back on the installed
+	copy.
+
+Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a .spec file for feh. Contributed by Alistair Sutton
+	<metallica@freenet.co.uk>, (who is obviously a metallica fan ;), 
+	and has written specs for me before ::) Thanks dude :)
+	* Urm. I haven't actually tested this yet :)
+
+Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Slideshow mode now has keyboard control ::)
+	Mouse button 1 still changes slides, but you now have:
+	p, P, <BACKSPACE>, <LEFT>  Goto previous slide
+	n, N, <SPACE>, <RIGHT>     Goto next slide
+	<HOME>                     Goto first slide
+	<END>                      Goto last slide
+	<DELETE>                   Delete the file currently being viewed
+	q, Q                       Quit the slideshow
+
+	More to come.
+
+Sun Dec 19 15:43:07 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Big performance improvements in the main loop. Squashed another
+	couple of bugs, and made things real stable. Tightened up the
+	tests somewhat, and split the source up more clearly.
+
+Sun Dec 19 02:58:35 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed a number of bugs introduced by the new progressive loading
+	and zooming code ::)
+
+Sat Dec 18 22:11:02 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Whee. Progressive loading works :) It can be disabled with -P,
+	--noprogressive, if you don't want it. Can't think why though. It
+	rocks. Thanks again go to Raster. Progressive loading callbacks
+	*rule*.
+
+Sat Dec 18 18:15:18 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* The fonts are now installed, and loaded from the installation
+	directory.
+
+Sat Dec 18 15:45:39 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay then, there is now a checkerboard background when
+	zooming out. There is a more memory efficent way of doing this,
+	but I'll do that later...
+
+Sat Dec 18 14:31:58 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Wheeeee! Thanks to Raster's example code, we now have zooming
+	Raster, you are my hero :)
+	So, middle-mouse button and drag -> zoom.
+	There are some things to tidy up (eg adding a background when
+	zooming out), but these are trivial compared to getting the
+	zooming working with multiple windows, which I just did ::)
+
+Fri Dec 17 22:00:57 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added titles to index prints. A title will only be printed if
+	you specify --title-font.
+
+Fri Dec 17 21:33:55 1999  Michael Jennings  <mej@eterm.org>
+
+	* Added "make test" to run the test scripts one by one.
+
+Fri Dec 17 21:32:16 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added more info the the index output :) Try test14 now :)
+
+Fri Dec 17 21:01:21 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added a couple of fonts, found one small for doing index prints,
+	tidied the directory structure a bit.
+
+Fri Dec 17 18:37:14 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added some new options, here's an excerpt from --help
+	-S, --slideshow  Enable slideshow mode. With this setting, instead
+                         of opening multiple windows for multiple image
+                         files, one window will be opened. Press mouse
+                         button one to flick through the images.
+	-i, --index      Enable Index mode. Index mode is similar to
+                         montage mode, and accepts the same options. It
+                         creates an index print of thumbails, printing user-
+                         defined information beneath each thumbnail. Index
+                         mode enables certain other options, see INDEX MODE
+                         OPTIONS
+	-f FONT          Use FONT to print the information under each
+                         thumbnail. FONT should be defined in the form
+                         fontname/size(points). eg -f myfont/12
+	Now all I need is a font which is legible in very small point :)
+	I also added a couple of new tests for these options.
+
+Fri Dec 17 03:09:46 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Made the test scripts more verbose. It appears that people who
+	run a test called test07_bork_non_image_files still expect it to
+	work ;) hehe.
+
+Fri Dec 17 02:09:20 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Right-clicking in multi-image mode now closes ALL windows. I'll
+	add a popup menu soon.
+
+Thu Dec 16 22:58:21 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Changed --help output to fit into 80 characters...
+
+Thu Dec 16 22:10:50 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Initial import. Feh is currently at 0.5.0 release level.
+

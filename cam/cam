@@ -1,0 +1,192 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Getopt::Long;
+
+#############################################
+############# CAM RUN-TIME OPTIONS ##########
+#############################################
+my $feh   = "feh";
+
+# additional feh cmdline options
+my $PRE  = " -q -G -Twebcam -1 0 -0 1 ";
+my $POST = ""; 
+#############################################
+#############################################
+
+# Options
+my $help        = '';
+my $fullscreen  = '';
+my $geometry    = '';
+my $list        = '';
+my $verbose     = '';
+my $add         = '';
+my $keep        = '';
+my $deftitle    = '%cCAM - %u';
+my $title       = '';
+my $bp          = $ENV{HOME}."/.cam_bookmarks";
+my $DEBUG       = 0;
+
+# check args
+&print_usage_and_exit unless (@ARGV);
+
+
+# Url, Refresh, and bookmarks
+my $url = "";
+my $ref = "";
+my %bms = ();
+
+GetOptions('help|?|h'                    => \$help,
+           'full-screen|f|giblets-mom' => \$fullscreen,
+           'list|l'                      => \$list,
+           'geometry|g=s'                => \$geometry,
+           'verbose|v'                   => \$verbose,
+           'add|a'                       => \$add,
+           'keep-images|k|save-pr0n'     => \$keep,
+           'title|t=s'                   => \$title,
+           'debug|d'                     => \$DEBUG,
+           'bookmarks|b=s'               => \$bp
+           );
+
+my $key = shift @ARGV;
+
+&print_usage_and_exit if ($help);
+
+if ($verbose)    {
+    $PRE .= " -V ";
+}
+
+if ($fullscreen) {
+      $PRE =~ s/-w//;
+      $PRE .= " --full-screen --auto-zoom ";
+}
+
+if ($geometry) {
+  $PRE .= " --geometry $geometry ";
+}
+
+# if requested, add a key/url pair to bookmarks file
+if ($add)    {
+    my $mytitle          = '';
+    ($url,$ref,$mytitle) = @ARGV;
+    die "Bad key syntax\n" unless ($key && $url && $ref);
+
+    $mytitle="" unless ($mytitle);
+
+    open(BMF, ">>$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
+    print BMF "$key=$ref,$url \"$mytitle\"\n";
+    close BMF;
+    print "Added URL key \"$key\" = $url, $ref.\n"; # its useful to have this even if you arent debugging --richlowe
+    exit 0;
+}
+
+if ($keep)    {
+    $PRE .= " -k ";
+}
+
+
+
+# load bookmarks
+open(BMF, "$bp") or die "Couldn't open bookmarks file \"$bp\": $!\n";
+foreach (<BMF>)    {
+    next unless /^(.*?)=(.*)$/;
+    $bms{$1} = $2;
+    print "key=$1, url=$2\n" if ($DEBUG);
+}
+close BMF;
+
+# if requested, dump a list of key/url pair values
+if ($list) {
+    foreach (sort keys %bms)    {
+        my $t = $bms{$_}; 
+
+           $t =~ s/^(.+?),(.+?)(^ "(.*)"|)?$/$2/;
+        chomp $t;
+        print "$_ = $t, $1, $3\n";
+    }
+    exit 0;
+}
+
+# main loop
+MAIN: {
+    do {
+        $title="";
+        $url = $bms{$key};
+        die "Couldn't find URL key \"$key.\"\n" unless($url);
+        
+        $url =~ s/^(.+?),(.+?)( "(.*)")?$/$2/;
+        $ref = $1;
+   
+         if ($4) {
+            $title = $4;
+         } else {
+           $title = $deftitle;
+         }
+
+        if ($title) {
+            $title =~ s/\%c/$key/g;
+            $title =~ s/\%u/$url/g;
+            $title =~ s/\%r/$ref/g;
+            $title =~ s/\%\%/\%/g;
+            $title = " --title \"$title\" ";
+        }
+    
+        my $cmd = "$feh $PRE $title -T".$key."cam -R $ref $url $POST";
+        print "$cmd\n" if ($DEBUG);
+        FORK: {
+           my $pid;
+            if ($pid = fork) {
+                # We're a daddy! :)
+            } elsif (defined $pid) {
+                # child
+                exec "$cmd" or die "Couldnt exec() $feh: $!\n";
+            } elsif ( $! =~ /No more process/) {
+                sleep 5;
+                redo FORK;
+            } else {
+                # wtf?
+                die "Unrecoverable fork() error: $!\n";
+            }
+        }
+    } while ($key = shift @ARGV);
+}
+
+   
+sub print_usage_and_exit()    {
+    print <<END_USAGE;
+$0 0.4
+by Paul Duncan <pabs\@pablotron.org>, and
+   Richard Lowe <richlowe\@btinternet.com>
+
+Description:
+  A convenient webcam wrapper for feh.
+
+Usage:
+  $0 <keys>
+    Load the urls specified by the given keys.
+    key : a url key stored in the bookmarks file (\"$bp\").
+  $0 <-a|--add> key url refresh
+    Add a key to the bookmarks file.
+    key : short key (ex \"jenni\"),
+    url : url (ex \"http://www.jennicam.org/webcam/cam.jpg\"),
+    refresh : refresh, in seconds (ex 120)
+  $0 <-l|--list>
+    List each url key in the bookmarks file (\"$bp\").
+  $0 [-f|--full-screen] keys
+    Start feh in full-screen mode (aka --giblets-mom \"viewing\" mode).
+  $0 [-k|--keep-images] keys
+    Save each image in the current directory (aka --save-pr0n).
+  $0 [-g|--geometry] xxx
+    Use window geometry xxx (e.g. 640x480).
+  $0 [-v|--verbose] options
+    Start feh in verbose mode (feh -V).
+  $0 <-h|-?|--help>
+    Display usage information (this screen).
+
+Notes:
+Thanks to giblet for feh, an awesome image and webcam viewing program,
+and raster for Imlib2.
+END_USAGE
+    exit(-1);
+}
+

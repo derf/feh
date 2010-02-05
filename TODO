@@ -1,0 +1,20 @@
+put full path in .fehbh
+
+caching of thumbnails doesn't seem to take thumbnail size into account.
+Change sizes and you get the old thumbs....
+
+specifying --action1 but not --action segv's feh.
+
+
+Feel free to add stuff to it. I am very happy to delete any lines other
+people add =P
+
+Option --autograb for feh to grab keyboard - so you can control feh without
+having to focus it. Have to be a bit careful with this but could be useful.
+
+Now we have 10 --action* options, would be nice to hit a key and get a text
+overlay reminder showing what each one does :p
+
+option to hide mouse cursor in full screen..
+
+key/option/signal/timeout to totally reload filelist (rescan directories etc)

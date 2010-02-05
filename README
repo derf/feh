@@ -1,0 +1,17 @@
+Compile:
+
+$ ./configure
+$ make
+$ su -c "make install"
+
+(Red hat users, use $ ./configure --prefix=/usr)
+
+Run the test scripts in the src directory to see it in action.
+
+
+What is feh?
+
+http://linuxbrit.co.uk/feh/
+
+
+feh contains code provided by the Independent JPEG Group

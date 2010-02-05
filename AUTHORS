@@ -1,0 +1,58 @@
+Principle author.
+Tom Gilbert (gilbrit, giblet, grubby) <gilbertt@linuxbrit.co.uk>
+
+Paul Duncan (pabs) <pabs@pablotron.org>
+    - cam, wget fixups, mouse-button swapping options, rotation,
+      xinerama support, menu backgrounds, and more.
+
+Richard Lowe (richlowe) <richlowe@btinternet.com>
+    - background setting code, thumbnail patches.
+
+Benjamin Elijah Griffin <bgriffin@cddb.com>
+    - made builtin http work.
+
+Mrinal Kalakrishnan <mrinal@india.com>
+    - auto-zoom mode.
+
+Phil Morris (marmot) <marmot@vennercs.com>
+    - about.png.
+
+Carlos Puchol <cpg@puchol.com>
+    - configure.in fix for nonstandard imlib2 locations.
+
+Eric Dorland <dorland@lords.com>
+    - the --title option.
+
+Omar Harriott <omar.harriott@csun.edu>
+    - fix filelist handling for filenames with spaces.
+
+Panagiotis Issaris <takis.issaris@skynet.be>
+    - keypad buttonpresses
+
+Jon Bernard <jbernard@roanoke.edu>
+    - xinerama bugfix
+
+Maciej Kalisiak <mac@dgp.toronto.edu>
+    - large image/zoom bugfix
+
+Claes Nasten <pekdon@pekdon.net>
+    - Thumbnail caching, fixes
+
+JC <jcm314@yahoo.com>
+    - multiple --action* options
+
+Ulrich Spoerlein <q@uni.de>
+    - fullscreen image count display
+
+Thanks to:
+Michael Jennings <mej@eterm.org>
+    - Makefile Fixes, moral support
+Alistair Sutton <metallica@freenet.co.uk>
+    - rpm spec file for redhat.
+Laurence J. Lane <ljlane@debian.org>
+    - debian assimilation.
+The Rasterman <raster@rasterman.com>
+    - Imlib2, initial zooming code example. Enlightenment.
+Stephen Levine
+    - Great help debugging under E17
+
