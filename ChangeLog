@@ -1,3 +1,7 @@
+Fri Aug 05 17:29:55 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Matthias Drochner to fix compilation on older systems.
+
 Sat Jul 23 00:30:09 BST 2005  Tom Gilbert <tom@linuxbrit.co.uk>
 
 	* Include the necessary jpegint header to get lossless rotation working in

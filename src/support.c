@@ -233,7 +233,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
           char *path;
           path = estrjoin("/", home, ".fehbg", NULL);
           if ((fp = fopen(path, "w")) == NULL) {
-	     wprintf("Can't open %s for write", path);
+	     weprintf("Can't open %s for write", path);
           } else {
              fprintf(fp, "%s\n", fehbg);
              fclose(fp);

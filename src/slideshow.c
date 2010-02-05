@@ -353,8 +353,8 @@ feh_action_run(feh_file * file, char *action)
   D_ENTER(4);
   if (action)
   {
-    D(3, ("Running action %s\n", action));
     char *sys;
+    D(3, ("Running action %s\n", action));
     sys = feh_printf(action, file);
 
     if (opt.verbose && !opt.list && !opt.customlist)
