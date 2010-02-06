@@ -293,7 +293,7 @@ slideshow_change_image(winwidget winwid, int change)
    {
       /* We didn't manage to load any files. Maybe the last one in the show 
          was deleted? */
-      eprintf("No more slides in show");
+      weprintf("No more slides in show?");
    }
    if (opt.slideshow_delay >= 0.0)
       feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay,
