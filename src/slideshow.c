@@ -291,8 +291,14 @@ slideshow_change_image(winwidget winwid, int change)
    }
    if (!success)
    {
-      /* We didn't manage to load any files. Maybe the last one in the show 
-         was deleted? */
+      /* We get here if three files in a row could not be loaded.
+	  * However, it seems that this piece of code is never reached when feh
+	  * would otherwise fail; it's only executed in the aforementioned case,
+	  * causing slideshows to exit although there still are lots of working slides.
+	  *
+	  * This warning will remain here for now, in case someone finds circumstances
+	  * in which we actually need to exit feh here.
+	  */
       weprintf("No more slides in show?");
    }
    if (opt.slideshow_delay >= 0.0)
