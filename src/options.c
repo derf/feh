@@ -55,6 +55,7 @@ init_parse_options(int argc, char **argv)
    opt.thumb_h = 60;
    opt.menu_font = estrdup(DEFAULT_MENU_FONT);
    opt.font = estrdup(DEFAULT_FONT);
+   opt.image_bg = estrdup("default");
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
    opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
    opt.menu_border = 4;
@@ -316,7 +317,7 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-      "a:A:b:BcC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:.@:^:~:):|:_:+:";
+      "a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:.@:^:~:):|:_:+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -378,6 +379,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"menu-bg", 1, 0, ')'},
+      {"image-bg", 1, 0, 'B'},
       {"next-button", 1, 0, '1'},
       {"zoom-button", 1, 0, '2'},
       {"menu-button", 1, 0, '4'},
@@ -605,6 +607,10 @@ feh_parse_option_array(int argc, char **argv)
         case ')':
            free(opt.menu_bg);
            opt.menu_bg = estrdup(optarg);
+           break;
+        case 'B':
+           free(opt.image_bg);
+           opt.image_bg = estrdup(optarg);
            break;
         case 'D':
            opt.slideshow_delay = atof(optarg);
@@ -1002,6 +1008,8 @@ show_usage(void)
 "     --menu-border INT     Specify number of pixels that define the menu\n"
 "                           background's border. Borders are not stretched\n"
 "                           when images are scaled.\n"
+" -B, --image-bg STYLE      Set background for transparent images and the like.\n"
+"                           Accepted values: white, black, default\n"
 " -N, --no-menus            Don't load or show any menus.\n"
 " -1, --next-button B       Use button B to advance to the next image in any\n"
 "                           mode (defaults to 1, usually the left button).\n"

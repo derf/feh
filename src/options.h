@@ -85,6 +85,7 @@ struct __fehoptions
    char *menu_font;
    char *customlist;
    char *menu_bg;
+   char *image_bg;
    char *rcfile;
    char *menu_style;
    char *caption_path;

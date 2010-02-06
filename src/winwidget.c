@@ -627,20 +627,27 @@ feh_create_checks(void)
       eprintf
         ("Unable to create a teeny weeny imlib image. I detect problems");
 
-    for (y = 0; y < 16; y += 8) {
-      onoff = (y / 8) & 0x1;
-      for (x = 0; x < 16; x += 8) {
-        if (onoff)
-          gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144, 144,
-                                         255);
-        else
-          gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100, 100,
-                                         255);
-        onoff++;
-        if (onoff == 2)
-          onoff = 0;
+    if (strncmp(opt.image_bg, "white", 5) == 0)
+      gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 255, 255, 255, 255);
+    else if (strncmp(opt.image_bg, "black", 5) == 0)
+      gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
+    else {
+      for (y = 0; y < 16; y += 8) {
+        onoff = (y / 8) & 0x1;
+        for (x = 0; x < 16; x += 8) {
+          if (onoff)
+            gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144, 144,
+                                           255);
+          else
+            gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100, 100,
+                                           255);
+          onoff++;
+          if (onoff == 2)
+            onoff = 0;
+        }
       }
     }
+
     checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
     gib_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
     gib_imlib_free_image_and_decache(checks);
