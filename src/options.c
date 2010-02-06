@@ -351,6 +351,7 @@ feh_parse_option_array(int argc, char **argv)
       {"scale-down", 0, 0, '.'},            /* okay */
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
+      {"no-xinerama", 0, 0, 206},
       {"no-jump-on-resort",0,0,220},
       {"hide-pointer",0,0,221},
       /* options with values */
@@ -393,7 +394,6 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-seamless", 1, 0, 203},
       {"menu-style", 1, 0, 204},
       {"zoom", 1, 0, 205},
-      {"xinerama", 1, 0, 206},
       {"screen-clip", 1, 0, 207},
       {"menu-border", 1, 0, 208},
       {"caption-path", 1, 0, 209},
@@ -681,7 +681,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.default_zoom = atoi(optarg);
            break;
         case 206:
-           opt.xinerama = atoi(optarg);
+           opt.xinerama = 0;
            break;
         case 207:
            opt.screen_clip = atoi(optarg);
@@ -1016,8 +1016,8 @@ show_usage(void)
 "                           any mode (default=1).\n"
 " -9, --no-blur-ctrl-mask   Don't require CTRL+Button for blurring in\n"
 "                           any mode -- just use the button (default=off).\n"
-"     --xinerama [0|1]      Enable/disable Xinerama support.  Has no effect\n"
-"                           unless you have an Xinerama compiled in.\n"
+"     --no-xinerama         Disable Xinerama support.  Only useful if\n"
+"                           you have Xinerama compiled in.\n"
 "     --screen-clip [0|1]   Enable/disable window clipping based on screen\n"
 "                           size.  WARNING: with this option disabled,\n"
 "                           image windows could become very large, making\n"
