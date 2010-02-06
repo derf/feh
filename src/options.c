@@ -351,7 +351,7 @@ feh_parse_option_array(int argc, char **argv)
       {"scale-down", 0, 0, '.'},            /* okay */
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
-      {"no-xinerama", 0, 0, 206},
+      {"no-xinerama", 0, 0, 225},
       {"no-jump-on-resort",0,0,220},
       {"hide-pointer",0,0,221},
       /* options with values */
@@ -394,6 +394,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-seamless", 1, 0, 203},
       {"menu-style", 1, 0, 204},
       {"zoom", 1, 0, 205},
+      {"xinerama", 1, 0, 206},
       {"screen-clip", 1, 0, 207},
       {"menu-border", 1, 0, 208},
       {"caption-path", 1, 0, 209},
@@ -681,7 +682,8 @@ feh_parse_option_array(int argc, char **argv)
            opt.default_zoom = atoi(optarg);
            break;
         case 206:
-           opt.xinerama = 0;
+           opt.xinerama = atoi(optarg);
+           weprintf("Option --xinerama is deprecated, use --no-xinerama (or nothing) instead");
            break;
         case 207:
            opt.screen_clip = atoi(optarg);
@@ -737,6 +739,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 224:
            opt.cycle_once = 1;
+           break;
+        case 225:
+           opt.xinerama = 0;
            break;
         default:
            break;
