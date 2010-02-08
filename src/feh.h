@@ -106,6 +106,7 @@ void show_usage(void);
 void show_version(void);
 int feh_main_iteration(int block);
 void feh_handle_event(XEvent * ev);
+void init_imlib_fonts(void);
 void init_x_and_imlib(void);
 #ifdef HAVE_LIBXINERAMA
 void init_xinerama(void);

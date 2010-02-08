@@ -44,7 +44,9 @@ main(int argc, char **argv)
 
    init_parse_options(argc, argv);
 
-   if (!opt.list)
+   init_imlib_fonts();
+
+   if (opt.display)
       init_x_and_imlib();
 
    feh_event_init();

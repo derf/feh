@@ -67,6 +67,19 @@ init_xinerama(void)
 #endif /* HAVE_LIBXINERAMA */
 
 void
+init_imlib_fonts(void)
+{
+   D_ENTER(4);
+
+   /* Set up the font stuff */
+   imlib_add_path_to_font_path(".");
+   imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
+   imlib_add_path_to_font_path("./ttfonts");
+
+   D_RETURN_(4);
+}
+
+void
 init_x_and_imlib(void)
 {
    D_ENTER(4);
@@ -95,11 +108,6 @@ init_x_and_imlib(void)
 
    /* Initialise random numbers */
    srand(getpid() * time(NULL) % ((unsigned int) -1));
-
-   /* Set up the font stuff */
-   imlib_add_path_to_font_path(".");
-   imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
-   imlib_add_path_to_font_path("./ttfonts");
 
    D_RETURN_(4);
 }
