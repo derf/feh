@@ -157,6 +157,9 @@ Draw the filename at the top-left of the image
 For slideshow mode, specifies time delay (seconds, can be a decimal) between automatically
 changing slides. Great for presentations.
 .TP 5
+.B --cycle-once
+Exit feh after one loop through the slideshow
+.TP 5
 .B -R, --reload NUM
 Use this option to tell
 .B feh
@@ -168,9 +171,15 @@ When viewing files using HTTP, feh normally deletes the local copies after
 viewing, or, if caching, on exit. This option prevents this so that you
 get to keep the local copies. They will be in /tmp with "feh" in the name.
 .TP 5
+.B -j, --output-dir DIR
+Save files to DIR (only useful with \-k)
+.TP 5
 .B -Q, --builtin
 Use builtin http client to grab remote files instead of wget, useful if you
 don't have wget installed.
+.TP 5
+.B -G, --wget-timestamp
+Don't add a timestamp ("?1234") to URLs when (re)loading them
 .TP 5
 .B --caption-path PATH
 Path to directory containing image captions. This turns on caption viewing, and
@@ -283,6 +292,9 @@ Don't load or show any menus.
 .B -B, --image-bg STYLE
 Use STYLE as background for transparent image parts and the like.
 Accepted values: white, black, default.
+.TP 5
+.B --title TITLE
+Use TITLE as window title in slideshow mode.
 .TP 5
 .B -1, --next-button B
 Use button B to advance to the next image in slideshow
