@@ -1460,7 +1460,7 @@ fi
 
 PACKAGE=feh
 
-VERSION=1.3.4
+VERSION=1.3.5
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
