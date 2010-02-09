@@ -100,6 +100,9 @@ instead of the default ~/.fehrc, /etc/fehrc files.
 Recursively expand any directories in FILE to the content of those
 directories, all the way down to the bottom level. (Take it easy)
 .TP 5
+.B --no-jump-on-resort
+Don't jump to the first image after resorting the filelist.
+.TP 5
 .B -z, --randomize
 When viewing multiple files in a slideshow, randomise the file list before
 displaying.
@@ -275,6 +278,11 @@ managers.
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
 .TP 5
+.B --fontpath PATH
+Specify PATH as an extra directory in which to search for fonts, can use
+multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
+/path/b.
+.TP 5
 .B --menu-style FILE
 Use FILE as the style descriptor for menu text.
 .TP 5
@@ -434,11 +442,6 @@ truetype font, resident in the current directory, or in feh's font
 directory, and should be defined in the form fontname/size(points). (No
 extension). eg. \-\-font myfont/12
 .TP 5
-.B --fontpath PATH
-Specify PATH as an extra directory in which to search for fonts, can use
-multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
-/path/b.
-.TP 5
 .B --title-font FONT
 Use FONT to print a title on the index, if no font is specified, a title
 will not be printed
@@ -548,10 +551,10 @@ Remove the currently viewed file from the filelist
 Delete the currently viewed file and remove it from the filelist
 .TP 5
 .B x, X
-Close current window.
+Close current window
 .TP 5
 .B q, Q
-Quit the slideshow
+Quit feh
 .B <KEYPAD LEFT>
 Move the image to the left
 .B <KEYPAD RIGHT>
