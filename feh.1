@@ -92,7 +92,7 @@ the second only errors.
 .B -T, --theme THEME
 Load options from config file with name THEME - see CONFIG FILE SYNTAX for more info.
 .TP 5
-.B --rcfile FILE
+.B -_, --rcfile FILE
 Use FILE to parse themes and options from,
 instead of the default ~/.fehrc, /etc/fehrc files.
 .TP 5
@@ -281,7 +281,7 @@ managers.
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
 .TP 5
-.B --fontpath PATH
+.B -C, --fontpath PATH
 Specify PATH as an extra directory in which to search for fonts, can use
 multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
 /path/b.
@@ -304,7 +304,7 @@ Don't load or show any menus.
 Use STYLE as background for transparent image parts and the like.
 Accepted values: white, black, default.
 .TP 5
-.B --title TITLE
+.B -^, --title TITLE
 Use TITLE as window title in slideshow mode.
 .TP 5
 .B -1, --next-button B
@@ -445,7 +445,7 @@ truetype font, resident in the current directory, or in feh's font
 directory, and should be defined in the form fontname/size(points). (No
 extension). eg. \-\-font myfont/12
 .TP 5
-.B --title-font FONT
+.B -@, --title-font FONT
 Use FONT to print a title on the index, if no font is specified, a title
 will not be printed
 .SH CONFIG FILE SYNTAX
