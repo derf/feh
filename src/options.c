@@ -336,8 +336,8 @@ feh_parse_option_array(int argc, char **argv)
       {"randomize", 0, 0, 'z'},             /* okay */
       {"list", 0, 0, 'l'},                  /* okay */
       {"quiet", 0, 0, 'q'},                 /* okay */
-      {"loadables", 0, 0, 'U'},             /* okay */
-      {"unloadables", 0, 0, 'u'},           /* okay */
+      {"loadable", 0, 0, 'U'},              /* okay */
+      {"unloadable", 0, 0, 'u'},            /* okay */
       {"no-menus", 0, 0, 'N'},
       {"full-screen", 0, 0, 'F'},
       {"auto-zoom", 0, 0, 'Z'},
