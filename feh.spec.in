@@ -4,8 +4,8 @@ Version:    @VERSION@
 Release:    1
 Copyright:  BSD
 Group:      Amusements/Graphics
-Source:     %{name}-%{version}.tar.gz
-Url:        http://www.linuxbrit.co.uk
+Source:     %{name}-%{version}.tar.bz2
+Url:        https://derf.homelinux.org/~derf/projects/feh
 BuildRoot:  /var/tmp/%{name}-%{version}-root
 
 %description
