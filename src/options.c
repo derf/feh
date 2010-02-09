@@ -891,7 +891,7 @@ show_usage(void)
 "                           RAM, it means run through and eliminate unloadable\n"
 "                           images first. Otherwise they will be removed as you\n"
 "                           flick through.\n"
-"     --scale-down          Automatically scale down images too big for the\n"
+" -., --scale-down          Automatically scale down images too big for the\n"
 "                           screen. Currently only works with -P\n"
 " -F, --full-screen         Make the window fullscreen\n"
 " -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
