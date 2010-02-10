@@ -292,7 +292,7 @@ multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
 .B --menu-style FILE
 Use FILE as the style descriptor for menu text.
 .TP 5
-.B --menu-bg BG
+.B -), --menu-bg BG
 Use BG for the background image in menus.
 .TP 5
 .B --menu-border INT
@@ -322,6 +322,9 @@ mode (defaults to 2, usually the middle button).
 Use CTRL+Button B to activate the menu in any mode.  Set to 0 to use any
 button.  This option is disabled if the \-N or \-\-no\-menus option is set
 (defaults to 3, usually the right button).
+.TP 5
+.B -5, --menu-ctrl-mask
+Require CTRL+Button for menu activation in any mode (default=off).
 .TP 5
 .B -6, --rotate-button B
 Use CTRL+Button B to rotate the current image in any mode (default=2).
