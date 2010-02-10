@@ -8,3 +8,14 @@ Now we have 10 --action* options, would be nice to hit a key and get a text
 overlay reminder showing what each one does :p
 
 key/option/signal/timeout to totally reload filelist (rescan directories etc)
+
+--draw-actions doesn't work. It will miss some actions, and even if not it
+can't display anything anyway because it causes a nice abort at startup if
+--action is defined.
+
+The "No more slides left in show" bug was fixed, but now there's a rare
+condition (viewing a few images, removing them externally while viewing,
+then resizing the window) causing imlib2 warnings.
+
+--fmmode is neither documented nor implemented. Either implement or
+remove it.
