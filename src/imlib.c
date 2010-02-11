@@ -1204,6 +1204,7 @@ feh_draw_actions(winwidget w)
 {
    static Imlib_Font fn = NULL;
    int tw = 0, th = 0;
+   int th_offset = 0;
    int max_tw = 0;
    int line_th = 0;
    Imlib_Image im = NULL;
@@ -1256,6 +1257,14 @@ feh_draw_actions(winwidget w)
    line_th = th;
    th = (th*num_actions)+line_th;
 
+   /* This depends on feh_draw_filename internals...
+    * should be fixed some time
+    */
+   if (opt.draw_filename && w->full_screen)
+      th_offset = line_th * 2;
+   else if (opt.draw_filename)
+      th_offset = line_th;
+
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
@@ -1265,9 +1274,9 @@ feh_draw_actions(winwidget w)
                                                NULL, NULL, NULL, atab);
    gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
    
-   gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:",
-                       IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
    gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:",
+                       IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+   gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:",
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
    for(i = 0; i < num_actions; i++)
@@ -1286,7 +1295,7 @@ feh_draw_actions(winwidget w)
       free(line);
    }
 
-   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0 + th_offset, 1, 1, 0);
 
    gib_imlib_free_image_and_decache(im);
    D_RETURN_(4);
