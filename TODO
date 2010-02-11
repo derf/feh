@@ -15,3 +15,6 @@ then resizing the window) causing imlib2 warnings.
 
 --fmmode is neither documented nor implemented. Either implement or
 remove it.
+
+<keypad begin> antialieses the image, but doing that automatically upon
+key release would be better.

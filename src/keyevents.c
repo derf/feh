@@ -304,15 +304,18 @@ feh_event_handle_keypress(XEvent * ev)
      case XK_KP_Subtract:
         winwid->zoom = winwid->zoom * 0.75;
         winwidget_render_image(winwid, 0, 0);
-	break;
+        break;
      case XK_KP_Multiply:
         winwid->zoom = 1;
         winwidget_render_image(winwid, 0, 0);
-	break;
+        break;
      case XK_KP_Divide:
         feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
         winwidget_render_image(winwid, 0, 0);
-	break;
+        break;
+     case XK_KP_Begin:
+        winwidget_render_image(winwid, 0, 1);
+        break;
      default:
         break;
    }
