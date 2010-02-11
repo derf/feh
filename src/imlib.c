@@ -1210,15 +1210,15 @@ feh_draw_actions(winwidget w)
    static DATA8 atab[256];
    int i = 0;
    int num_actions = 0;
-   
+
    D_ENTER(4);
 
-// count the number of defined actions
+// count the number of defined actions (this method sucks)
    for (num_actions=0;opt.actions[num_actions];num_actions++)
-   	;
+      ;
    if (num_actions == 0)
       return;
-   
+
    if ((!w->file) || (!FEH_FILE(w->file->data))
        || (!FEH_FILE(w->file->data)->filename))
       D_RETURN_(4);
@@ -1238,17 +1238,16 @@ feh_draw_actions(winwidget w)
       D_RETURN_(4);
    }
 
-
    gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 // Check for the widest line
-   max_tw = tw; 
-   for (i=0;opt.actions[i];i++) {
-   gib_imlib_get_text_size(fn, opt.actions[i], NULL, &tw, &th,
-                           IMLIB_TEXT_TO_RIGHT);
-   	if (tw>max_tw) {
-	   max_tw = tw;
-	}
+   max_tw = tw;
+
+   for (i = 0; opt.actions[i]; i++) {
+      gib_imlib_get_text_size(fn, opt.actions[i], NULL, &tw, &th,
+                              IMLIB_TEXT_TO_RIGHT);
+      if (tw > max_tw)
+         max_tw = tw;
    }
 
    tw = max_tw;
@@ -1271,12 +1270,10 @@ feh_draw_actions(winwidget w)
    gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:",
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-   for(i=0;i<num_actions;i++)
+   for(i = 0; i < num_actions; i++)
    {
-//    compose a line containing an index, a colon followed by the
-//    action.
       char index[1];
-      char line[strlen(opt.actions[i])+5];
+       char *line = emalloc(strlen(opt.actions[i])+5);
       sprintf(index, "%d", i);
       strcpy(line, index);
       strcat(line, ": ");
