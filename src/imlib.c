@@ -1211,12 +1211,21 @@ feh_draw_actions(winwidget w)
    static DATA8 atab[256];
    int i = 0;
    int num_actions = 0;
+   int cur_action = 0;
+   char index[1];
+   char *line;
 
    D_ENTER(4);
 
-// count the number of defined actions (this method sucks)
-   for (num_actions=0;opt.actions[num_actions];num_actions++)
-      ;
+   /* Count number of defined actions. This method sucks a bit since it needs
+    * to be changed if the number of actions changes, but at least it doesn't
+    * miss actions 2 to 9 if action1 isn't defined
+    */
+   for (i = 0; i < 10; i++) {
+      if (opt.actions[i])
+         num_actions++;
+   }
+
    if (num_actions == 0)
       return;
 
@@ -1244,11 +1253,13 @@ feh_draw_actions(winwidget w)
 // Check for the widest line
    max_tw = tw;
 
-   for (i = 0; opt.actions[i]; i++) {
-      gib_imlib_get_text_size(fn, opt.actions[i], NULL, &tw, &th,
-                              IMLIB_TEXT_TO_RIGHT);
-      if (tw > max_tw)
-         max_tw = tw;
+   for (i = 0; i < 10; i++) {
+      if (opt.actions[i]) {
+         gib_imlib_get_text_size(fn, opt.actions[i], NULL, &tw, &th,
+                                 IMLIB_TEXT_TO_RIGHT);
+         if (tw > max_tw)
+            max_tw = tw;
+      }
    }
 
    tw = max_tw;
@@ -1279,20 +1290,21 @@ feh_draw_actions(winwidget w)
    gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:",
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-   for(i = 0; i < num_actions; i++)
-   {
-      char index[1];
-       char *line = emalloc(strlen(opt.actions[i])+5);
-      sprintf(index, "%d", i);
-      strcpy(line, index);
-      strcat(line, ": ");
-      strcat(line, opt.actions[i]);
+   for (i = 0; i < 10; i++) {
+      if (opt.actions[i]) {
+         cur_action++;
+         line = emalloc(strlen(opt.actions[i])+5);
+         sprintf(index, "%d", i);
+         strcpy(line, index);
+         strcat(line, ": ");
+         strcat(line, opt.actions[i]);
 
-      gib_imlib_text_draw(im, fn, NULL, 2, ((i+1)*line_th)+2, line,
-                          IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-      gib_imlib_text_draw(im, fn, NULL, 1, ((i+1)*line_th)+1, line,
-                          IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-      free(line);
+         gib_imlib_text_draw(im, fn, NULL, 2, (cur_action*line_th)+2, line,
+                             IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+         gib_imlib_text_draw(im, fn, NULL, 1, (cur_action*line_th)+1, line,
+                             IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+         free(line);
+      }
    }
 
    gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0 + th_offset, 1, 1, 0);

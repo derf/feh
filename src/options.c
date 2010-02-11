@@ -969,6 +969,7 @@ show_usage(void)
 "     --action2 ACTION      multiple additional actions which can be invoked\n"
 "     ...                   using the appropriate number key 1-9\n"
 "     --action9 ACTION\n"
+"     --draw-actions        Show the defined actions and what they do\n"
 " -m, --montage             Enable montage mode. Montage mode creates a new\n"
 "                           image consisting of a grid of thumbnails of the\n"
 "                           images specified using FILE... When montage mode\n"

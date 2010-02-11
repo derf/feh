@@ -9,9 +9,6 @@ overlay reminder showing what each one does :p
 
 key/option/signal/timeout to totally reload filelist (rescan directories etc)
 
---draw-actions doesn't work too fine. It conflicts with --draw-filename and
-misses some actions if there are non-defined actions in between
-
 The "No more slides left in show" bug was fixed, but now there's a rare
 condition (viewing a few images, removing them externally while viewing,
 then resizing the window) causing imlib2 warnings.
