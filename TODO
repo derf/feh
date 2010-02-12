@@ -17,4 +17,6 @@ then resizing the window) causing imlib2 warnings.
 remove it.
 
 <keypad begin> antialieses the image, but doing that automatically upon
-key release would be better.
+key release would be better. However, I couldn't find a way to do that so far.
+Even when holding down a key, everytime the eventloop runs I get a
+KeyRelease event.
