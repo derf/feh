@@ -346,7 +346,7 @@ feh_event_handle_keypress(XEvent * ev)
      case 'C':
         if (opt.caption_path)
           winwid->caption_entry = 1;
-          winwidget_render_image(winwid, 0, 0);
+        winwidget_render_image(winwid, 0, 0);
         break;
      case 'r':
      case 'R':
@@ -423,7 +423,7 @@ feh_event_handle_keypress(XEvent * ev)
                          xinerama_screens[curr_screen].y_org);
         }
 #endif /* HAVE_LIBXINERAMA */
-	   case '=':
+     case '=':
      case '+':
         if (opt.reload < SLIDESHOW_RELOAD_MAX)
            opt.reload++;

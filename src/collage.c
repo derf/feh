@@ -113,12 +113,12 @@ init_collage_mode(void)
    }
 
    /* Create the title string */
-   
+
    if (!opt.title)
-	  s = estrdup(PACKAGE " [collage mode]");
+      s = estrdup(PACKAGE " [collage mode]");
    else
-	  s = estrdup(feh_printf(opt.title, NULL));
-   
+      s = estrdup(feh_printf(opt.title, NULL));
+
    if (opt.display)
    {
       winwid =
@@ -217,7 +217,7 @@ init_collage_mode(void)
       char output_buf[1024];
       if (opt.output_dir)
         snprintf(output_buf,1024,"%s/%s", opt.output_dir, opt.output_file);
-      else 
+      else
         strncpy(output_buf,opt.output_file, 1024);
       gib_imlib_save_image(im_main, output_buf);
       if (opt.verbose)
