@@ -298,18 +298,23 @@ feh_event_handle_keypress(XEvent * ev)
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Add:
+        /* erroneously recognized as '+' in the *kbuf switch. Work around this. */
+        len = 0;
         winwid->zoom = winwid->zoom * 1.25;
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Subtract:
+        len = 0;
         winwid->zoom = winwid->zoom * 0.75;
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Multiply:
+        len = 0;
         winwid->zoom = 1;
         winwidget_render_image(winwid, 0, 0);
         break;
      case XK_KP_Divide:
+        len = 0;
         feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
         winwidget_render_image(winwid, 0, 0);
         break;
