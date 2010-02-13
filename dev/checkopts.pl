@@ -33,7 +33,7 @@ foreach my $option (keys %{$options}) {
 	my $last;
 	my $count = 0;
 
-	if ($option =~ /^action\d/) {
+	if ($option =~ / ^ action\d | help /x) {
 		next;
 	}
 
