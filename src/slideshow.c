@@ -467,6 +467,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 void slideshow_save_image(winwidget win)
 {
 	char *tmpname;
+	Imlib_Load_Error err;
 
 	D_ENTER(4);
 	if (win->file) {
@@ -483,7 +484,10 @@ void slideshow_save_image(winwidget win)
 	if (!opt.quiet)
 		printf("saving image to filename '%s'\n", tmpname);
 
-	gib_imlib_save_image(win->im, tmpname);
+	gib_imlib_save_image_with_error_return(win->im, tmpname, &err);
+	if (err)
+		weprintf("Can't save image %s:", tmpname);
+
 	free(tmpname);
 	D_RETURN_(4);
 }
