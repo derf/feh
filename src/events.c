@@ -117,9 +117,9 @@ feh_event_handle_ButtonPress(XEvent * ev)
          D(3, ("blur starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
       }
    }
-   else if (ev->xbutton.button == opt.next_button)
+   else if (ev->xbutton.button == opt.pan_button)
    {
-      D(3, ("Next Button Press event\n"));
+      D(3, ("Pan Button Press event\n"));
       if (winwid != NULL)
       {
          D(3, ("Next button, but could be pan mode\n"));
@@ -189,15 +189,15 @@ feh_event_handle_ButtonPress(XEvent * ev)
       if (winwid != NULL)
          feh_reload_image(winwid, 0, 0);
    }
-   else if (ev->xbutton.button == 4 /* this is bad */ )
+   else if (ev->xbutton.button == opt.prev_button )
    {
-      D(3, ("Button 4 Press event\n"));
+      D(3, ("Prev Button Press event\n"));
       if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
          slideshow_change_image(winwid, SLIDE_PREV);
    }
-   else if (ev->xbutton.button == 5 /* this is bad */ )
+   else if (ev->xbutton.button == opt.next_button )
    {
-      D(3, ("Button 5 Press event\n"));
+      D(3, ("Next Button 5 Press event\n"));
       if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
          slideshow_change_image(winwid, SLIDE_NEXT);
    }
@@ -246,7 +246,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
              || ((ev->xbutton.state & ControlMask) && (opt.menu_ctrl_mask)))))
        && (opt.no_menus))
       winwidget_destroy_all();
-   else if (ev->xbutton.button == opt.next_button)
+   else if (ev->xbutton.button == opt.pan_button)
    {
       if (opt.mode == MODE_PAN)
       {

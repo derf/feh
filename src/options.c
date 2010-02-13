@@ -60,11 +60,13 @@ init_parse_options(int argc, char **argv)
    opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
    opt.menu_border = 4;
 
-   opt.next_button = 1;
+   opt.reload_button = 0;
+   opt.pan_button = 1;
    opt.zoom_button = 2;
    opt.menu_button = 3;
    opt.menu_ctrl_mask = 0;
-   opt.reload_button = 0;
+   opt.prev_button = 4;
+   opt.next_button = 5;
 
    opt.rotate_button = 2;
    opt.no_rotate_ctrl_mask = 0;
@@ -317,7 +319,7 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-      "a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:.@:^:~:):|:_:+:";
+      "a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -348,10 +350,10 @@ feh_parse_option_array(int argc, char **argv)
       {"thumbnails", 0, 0, 't'},
       {"wget-timestamp", 0, 0, 'G'},
       {"builtin", 0, 0, 'Q'},
-      {"menu-ctrl-mask", 0, 0, '5'},        /* okay */
+      {"menu-ctrl-mask", 0, 0, 228},        /* okay */
       {"scale-down", 0, 0, '.'},            /* okay */
-      {"no-rotate-ctrl-mask", 0, 0, '7'},
-      {"no-blur-ctrl-mask", 0, 0, '9'},
+      {"no-rotate-ctrl-mask", 0, 0, 226},
+      {"no-blur-ctrl-mask", 0, 0, 227},
       {"no-xinerama", 0, 0, 225},
       {"no-jump-on-resort",0,0,220},
       {"hide-pointer",0,0,221},
@@ -381,11 +383,13 @@ feh_parse_option_array(int argc, char **argv)
       {"menu-bg", 1, 0, ')'},
       {"image-bg", 1, 0, 'B'},
       {"reload-button", 1, 0, '0'},
-      {"next-button", 1, 0, '1'},
+      {"pan-button", 1, 0, '1'},
       {"zoom-button", 1, 0, '2'},
-      {"menu-button", 1, 0, '4'},
-      {"rotate-button", 1, 0, '6'},
-      {"blur-button", 1, 0, '8'},
+      {"menu-button", 1, 0, '3'},
+      {"prev-button", 1, 0, '4'},
+      {"next-button", 1, 0, '5'},
+      {"rotate-button", 1, 0, '8'},
+      {"blur-button", 1, 0, '9'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
@@ -630,27 +634,33 @@ feh_parse_option_array(int argc, char **argv)
            opt.reload_button = atoi(optarg);
            break;
         case '1':
-           opt.next_button = atoi(optarg);
+           opt.pan_button = atoi(optarg);
            break;
         case '2':
            opt.zoom_button = atoi(optarg);
            break;
-        case '4':
+        case '3':
            opt.menu_button = atoi(optarg);
            break;
+        case '4':
+           opt.prev_button = atoi(optarg);
+           break;
         case '5':
+           opt.next_button = atoi(optarg);
+           break;
+        case 228:
            opt.menu_ctrl_mask = 1;
            break;
-        case '6':
+        case '8':
            opt.rotate_button = atoi(optarg);
            break;
-        case '7':
+        case 226:
            opt.no_rotate_ctrl_mask = 1;
            break;
-        case '8':
+        case '9':
            opt.blur_button = atoi(optarg);
            break;
-        case '9':
+        case 227:
            opt.no_blur_ctrl_mask = 1;
            break;
         case '|':
@@ -1017,23 +1027,29 @@ show_usage(void)
 "                           Accepted values: white, black, default\n"
 " -N, --no-menus            Don't load or show any menus.\n"
 " -0, --reload-button B     Use button B to reload the image (defaults to 0)\n"
-" -1, --next-button B       Use button B to advance to the next image in any\n"
-"                           mode (defaults to 1, usually the left button).\n"
+" -1, --pan-button B        Use button B pan the image (hold button down, move\n"
+"                           the mouse to move the image around. Advancesto the\n"
+"                           next image when the mouse is not moved (defaults to\n"
+"                           1, usually the left button).\n"
 " -2, --zoom-button B       Use button B to zoom the current image in any\n"
 "                           mode (defaults to 2, usually the middle button).\n"
-" -4, --menu-button B       Use CTRL+Button B to activate the menu in any\n"
+" -3, --menu-button B       Use CTRL+Button B to activate the menu in any\n"
 "                           mode.  Set to 0 for any button.  This option\n"
 "                           is disabled if the -N or --no-menus option is set\n"
 "                           (defaults to 3, usually the right button).\n"
-" -5, --menu-ctrl-mask      Require CTRL+Button for menu activation in\n"
+"     --menu-ctrl-mask      Require CTRL+Button for menu activation in\n"
 "                           any mode (default=off).\n"
-" -6, --rotate-button B     Use CTRL+Button B to rotate the current image in\n"
+" -4, --prev-button B       Use button B to switch to the previous image\n"
+"                           (defaults to 4, which usually is <mousewheel up>).\n"
+" -5, --next-button B       Use button B to switch to the next image\n"
+"                           (defaults to 5, which usually is <mousewheel down>).\n"
+" -8, --rotate-button B     Use CTRL+Button B to rotate the current image in\n"
 "                           any mode (default=2).\n"
-" -7, --no-rotate-ctrl-mask Don't require CTRL+Button for rotation in\n"
+"     --no-rotate-ctrl-mask Don't require CTRL+Button for rotation in\n"
 "                           any mode -- just use the button (default=off).\n"
-" -8, --blur-button B       Use CTRL+Button B to blur the current image in\n"
+" -9, --blur-button B       Use CTRL+Button B to blur the current image in\n"
 "                           any mode (default=1).\n"
-" -9, --no-blur-ctrl-mask   Don't require CTRL+Button for blurring in\n"
+"     --no-blur-ctrl-mask   Don't require CTRL+Button for blurring in\n"
 "                           any mode -- just use the button (default=off).\n"
 "     --no-xinerama         Disable Xinerama support.  Only useful if\n"
 "                           you have Xinerama compiled in.\n"

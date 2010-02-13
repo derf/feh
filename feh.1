@@ -322,32 +322,41 @@ Use TITLE as window title in slideshow mode.
 .B -0, --reload-button B
 Use button B to reload the current image (default: 0)
 .TP 5
-.B -1, --next-button B
-Use button B to advance to the next image in slideshow
-mode (defaults to 1, usually the left button).
+.B -1, --pan-button B
+Use button B to pan the image (hold button down and move mouse to move the image).
+When the mouse is not moved, advances to the next image in slideshow mode
+(defaults to 1, usually the left button).
 .TP 5
 .B -2, --zoom-button B
 Use button B to zoom the current image in any
 mode (defaults to 2, usually the middle button).
 .TP 5
-.B -4, --menu-button B
-Use CTRL+Button B to activate the menu in any mode.  Set to 0 to use any
-button.  This option is disabled if the \-N or \-\-no\-menus option is set
+.B -3, --menu-button B
+Use button B to activate the menu in any mode.
+This option is disabled if the \-N or \-\-no\-menus option is set
 (defaults to 3, usually the right button).
 .TP 5
-.B -5, --menu-ctrl-mask
+.B --menu-ctrl-mask
 Require CTRL+Button for menu activation in any mode (default=off).
 .TP 5
-.B -6, --rotate-button B
+.B -4, --prev-button B
+Use button B to switch to the previous image in slideshow mode
+(defaults to 4, usually <mousewheel up>).
+.TP 5
+.B -5, --next-button B
+Use button B to switch to the next image in slideshow mode
+(defaults to 5, usually <mousewheel down>).
+.TP 5
+.B -8, --rotate-button B
 Use CTRL+Button B to rotate the current image in any mode (default=2).
 .TP 5
-.B -7, --no-rotate-ctrl-mask
+.B --no-rotate-ctrl-mask
 Don't require CTRL+Button for rotation in any mode -- just use the button (default=off).
 .TP 5
-.B -8, --blur-button B
+.B -9, --blur-button B
 Use CTRL+Button B to blur the current image in any mode (default=1).
 .TP 5
-.B -9, --no-blur-ctrl-mask
+.B --no-blur-ctrl-mask
 Don't require CTRL+Button for blurring in any mode -- just use the button (default=off).
 .TP 5
 .B --no-xinerama

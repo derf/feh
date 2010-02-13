@@ -92,10 +92,12 @@ struct __fehoptions
 
    gib_style *menu_style_l;
 
-   unsigned char next_button;
+   unsigned char pan_button;
    unsigned char zoom_button;
    unsigned char menu_button;
    unsigned char menu_ctrl_mask;
+   unsigned char prev_button;
+   unsigned char next_button;
 
    unsigned char rotate_button;
    unsigned char blur_button;
