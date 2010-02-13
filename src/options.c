@@ -887,6 +887,7 @@ show_usage(void)
 "                           unloadable) will be saved to FILE when feh exits.\n"
 "                           You can add files to filelists by specifying them\n"
 "                           on the commandline when also specifying the list.\n"
+" -|, --start-at POSITION   Start at POSITION in the filelist\n"
 " -p, --preload             Preload images. This doesn't mean hold them in\n"
 "                           RAM, it means run through and eliminate unloadable\n"
 "                           images first. Otherwise they will be removed as you\n"
