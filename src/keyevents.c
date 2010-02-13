@@ -304,7 +304,7 @@ feh_event_handle_keypress(XEvent * ev)
      case XK_KP_Divide:
         len = 0;
         feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
-        winwidget_render_image(winwid, 0, 0);
+        winwidget_render_image(winwid, 0, 1);
         break;
      case XK_KP_Begin:
         winwidget_render_image(winwid, 0, 1);
@@ -349,7 +349,7 @@ feh_event_handle_keypress(XEvent * ev)
      case 'C':
         if (opt.caption_path)
           winwid->caption_entry = 1;
-        winwidget_render_image(winwid, 0, 0);
+        winwidget_render_image(winwid, 0, 1);
         break;
      case 'r':
      case 'R':
