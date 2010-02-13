@@ -1123,6 +1123,8 @@ show_usage(void)
 " w, W                       Size window to current image dimensions\n"
 " h, H                       Pause the slideshow (only useful when using\n"
 "                            timed reloading or image changes)\n"
+" a, A                       Toggle action display (--draw-actions)\n"
+" d, D                       Toggle filename display (--draw-filename)\n"
 " s, S                       Save current image to unique filename\n"
 " f, F                       Save current filelist to unique filename\n"
 " <, >                       In place editing, rotate 90 degrees right/left\n"

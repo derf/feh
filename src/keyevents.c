@@ -331,6 +331,16 @@ feh_event_handle_keypress(XEvent * ev)
 
    switch (*kbuf)
    {
+     case 'a':
+     case 'A':
+        opt.draw_actions = !opt.draw_actions;
+        winwidget_render_image(winwid, 0, 1);
+        break;
+     case 'd':
+     case 'D':
+        opt.draw_filename = !opt.draw_filename;
+        winwidget_render_image(winwid, 0, 1);
+        break;
      case 'n':
      case 'N':
      case ' ':

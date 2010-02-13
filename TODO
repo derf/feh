@@ -4,9 +4,6 @@ Change sizes and you get the old thumbs....
 Option --autograb for feh to grab keyboard - so you can control feh without
 having to focus it. Have to be a bit careful with this but could be useful.
 
-Now we have 10 --action* options, would be nice to hit a key and get a text
-overlay reminder showing what each one does :p
-
 key/option/signal/timeout to totally reload filelist (rescan directories etc)
 
 The "No more slides left in show" bug was fixed, but now there's a rare
