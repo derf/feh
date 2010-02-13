@@ -400,7 +400,6 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-seamless", 1, 0, 203},
       {"menu-style", 1, 0, 204},
       {"zoom", 1, 0, 205},
-      {"xinerama", 1, 0, 206},
       {"screen-clip", 1, 0, 207},
       {"menu-border", 1, 0, 208},
       {"caption-path", 1, 0, 209},
@@ -697,10 +696,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 205:
            opt.default_zoom = atoi(optarg);
-           break;
-        case 206:
-           opt.xinerama = atoi(optarg);
-           weprintf("Option --xinerama is deprecated, use --no-xinerama (or nothing) instead");
            break;
         case 207:
            opt.screen_clip = atoi(optarg);
