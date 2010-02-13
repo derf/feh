@@ -20,3 +20,6 @@ remove it.
 key release would be better. However, I couldn't find a way to do that so far.
 Even when holding down a key, everytime the eventloop runs I get a
 KeyRelease event.
+
+--thumb-title covers a very specific case, would be cool to make this more
+general (usable in index mode, as image info in thumbnail mode, etc.)

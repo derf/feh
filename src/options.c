@@ -987,6 +987,8 @@ show_usage(void)
 " -t, --thumbnails          As --index, but clicking an image will open it in\n"
 "                           a new viewing window\n"
 "     --cache-thumbnails    Enable thumbnail caching\n"
+" -~, --thumb-title STRING  Set window title for images opened from thumbnail mode.\n"
+"                           Supports format specifiers, see there.\n"
 " -I, --fullindex           Same as index mode, but below each thumbnail you\n"
 "                           get image name, size and dimensions\n"
 "     --bg-tile FILE\n"
