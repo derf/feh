@@ -26,35 +26,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FILELIST_H
 #define FILELIST_H
 
-struct __feh_file
-{
-   char *filename;
-   char *caption;
-   char *name;
+struct __feh_file {
+	char *filename;
+	char *caption;
+	char *name;
 
-   /* info stuff */
-   feh_file_info *info;  /* only set when needed */
+	/* info stuff */
+	feh_file_info *info;	/* only set when needed */
 };
 
-struct __feh_file_info
-{
-   int width;
-   int height;
-   int size;
-   int pixels;
-   unsigned char has_alpha;
-   char *format;
-   char *extension;
+struct __feh_file_info {
+	int width;
+	int height;
+	int size;
+	int pixels;
+	unsigned char has_alpha;
+	char *format;
+	char *extension;
 };
 
 #define FEH_FILE(l) ((feh_file *) l)
 
-enum filelist_recurse
-{ FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
+enum filelist_recurse { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
-enum sort_type
-{ SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH, SORT_HEIGHT, SORT_PIXELS,
-   SORT_SIZE, SORT_FORMAT
+enum sort_type { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH,
+	SORT_HEIGHT,
+	SORT_PIXELS,
+	SORT_SIZE, SORT_FORMAT
 };
 
 feh_file *feh_file_new(char *filename);
@@ -83,7 +81,7 @@ int feh_cmp_size(void *file1, void *file2);
 int feh_cmp_format(void *file1, void *file2);
 
 extern gib_list *filelist;
-extern int       filelist_len;
+extern int filelist_len;
 extern gib_list *current_file;
 
 #endif

@@ -26,45 +26,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef THIMBNAIL_H
 #define THIMBNAIL_H
 
-
 #include "feh.h"
 #include "filelist.h"
 #include "winwidget.h"
 
 #define FEH_THUMB(l) ((feh_thumbnail *) l)
 
-typedef struct thumbnail
-{
-   int x;
-   int y;
-   int w;
-   int h;
-   feh_file *file;
-   unsigned char exists;
-   struct feh_thumbnail *next;
-}
-feh_thumbnail;
+typedef struct thumbnail {
+	int x;
+	int y;
+	int w;
+	int h;
+	feh_file *file;
+	unsigned char exists;
+	struct feh_thumbnail *next;
+} feh_thumbnail;
 
-typedef struct thumbmode_data
-{
+typedef struct thumbmode_data {
 	/* FIXME: text_area_h not really needed, remove? */
 
-	Imlib_Image im_main; /* base image which all thumbnails are rendered on */
-	Imlib_Image im_bg; /* background for the thumbnails */
+	Imlib_Image im_main;	/* base image which all thumbnails are rendered on */
+	Imlib_Image im_bg;	/* background for the thumbnails */
 
-	Imlib_Font font_main; /* font used for file info */
-	Imlib_Font font_title; /* font used for title */
+	Imlib_Font font_main;	/* font used for file info */
+	Imlib_Font font_title;	/* font used for title */
 
-	int w, h, bg_w, bg_h; /* dimensions of the window and bg image */
+	int w, h, bg_w, bg_h;	/* dimensions of the window and bg image */
 
-	int thumb_tot_h; /* total space needed for a thumbnail including description */
-	int text_area_w, text_area_h; /* space needed for thumbnail description */
+	int thumb_tot_h;	/* total space needed for a thumbnail including description */
+	int text_area_w, text_area_h;	/* space needed for thumbnail description */
 
-	int max_column_w; /* FIXME: description */
-	int vertical; /* FIXME: vertical in what way? */
-	int cache_thumbnails; /* use cached thumbnails from ~/.thumbnails/normal */
-}
-thumbmode_data;
+	int max_column_w;	/* FIXME: description */
+	int vertical;		/* FIXME: vertical in what way? */
+	int cache_thumbnails;	/* use cached thumbnails from ~/.thumbnails/normal */
+} thumbmode_data;
 
 feh_thumbnail *feh_thumbnail_new(feh_file * fil, int x, int y, int w, int h);
 feh_file *feh_thumbnail_get_file_from_coords(int x, int y);
@@ -74,9 +69,9 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted);
 
 void feh_thumbnail_calculate_geometry(void);
 
-int feh_thumbnail_get_thumbnail(Imlib_Image *image, feh_file *file);
-int feh_thumbnail_generate(Imlib_Image *image, feh_file *file, char *thumb_file, char *uri);
-int feh_thumbnail_get_generated(Imlib_Image *image, feh_file *file, char *thumb_file, char *uri);
+int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file);
+int feh_thumbnail_generate(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri);
+int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri);
 char *feh_thumbnail_get_name(char *uri);
 char *feh_thumbnail_get_name_uri(char *name);
 char *feh_thumbnail_get_name_md5(char *uri);

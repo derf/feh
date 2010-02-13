@@ -31,10 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 
 #define FEH_PNG_COMPRESSION 3
-#define FEH_PNG_NUM_COMMENTS 2 /* only Thumb::URI and Thumb::MTime for now */
+#define FEH_PNG_NUM_COMMENTS 2	/* only Thumb::URI and Thumb::MTime for now */
 
-gib_hash*
-feh_png_read_comments(char *file)
+gib_hash *feh_png_read_comments(char *file)
 {
 	gib_hash *hash = NULL;
 
@@ -44,8 +43,8 @@ feh_png_read_comments(char *file)
 	png_structp png_ptr;
 	png_infop info_ptr;
 	png_textp text_ptr;
-		
- 	if (!(fp = fopen(file, "rb")))
+
+	if (!(fp = fopen(file, "rb")))
 		return hash;
 
 	if (!(sig_bytes = feh_png_file_is_png(fp))) {
@@ -55,8 +54,7 @@ feh_png_read_comments(char *file)
 
 	/* initialize data structures */
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr)
-	{
+	if (!png_ptr) {
 		fclose(fp);
 		return hash;
 	}
@@ -68,8 +66,7 @@ feh_png_read_comments(char *file)
 		return hash;
 	}
 
-	if (setjmp(png_ptr->jmpbuf))
-	{
+	if (setjmp(png_ptr->jmpbuf)) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
 		return hash;
@@ -88,7 +85,7 @@ feh_png_read_comments(char *file)
 		for (i = 0; i < comments; i++)
 			gib_hash_set(hash, text_ptr[i].key, estrdup(text_ptr[i].text));
 	}
-#endif /* PNG_TEXT_SUPPORTED */
+#endif				/* PNG_TEXT_SUPPORTED */
 
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	fclose(fp);
@@ -97,8 +94,7 @@ feh_png_read_comments(char *file)
 }
 
 /* grab image data from image and write info file with comments ... */
-int
-feh_png_write_png(Imlib_Image image, char *file, ...)
+int feh_png_write_png(Imlib_Image image, char *file, ...)
 {
 	FILE *fp;
 	int i, w, h;
@@ -113,7 +109,7 @@ feh_png_write_png(Imlib_Image image, char *file, ...)
 	va_list args;
 	png_text text[FEH_PNG_NUM_COMMENTS];
 	char *pair_key, *pair_text;
-#endif /* PNG_TEXT_SUPPORTED */
+#endif				/* PNG_TEXT_SUPPORTED */
 
 	if (!(fp = fopen(file, "wb")))
 		return 0;
@@ -123,14 +119,12 @@ feh_png_write_png(Imlib_Image image, char *file, ...)
 		return 0;
 
 	info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr)
-	{
+	if (!info_ptr) {
 		png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
 		return 0;
 	}
 
-	if (setjmp(png_ptr->jmpbuf))
-	{
+	if (setjmp(png_ptr->jmpbuf)) {
 		fclose(fp);
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 		png_destroy_info_struct(png_ptr, &info_ptr);
@@ -143,14 +137,13 @@ feh_png_write_png(Imlib_Image image, char *file, ...)
 	png_init_io(png_ptr, fp);
 
 	png_set_IHDR(png_ptr, info_ptr, w, h, 8, PNG_COLOR_TYPE_RGB_ALPHA,
-							 PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
-							 PNG_FILTER_TYPE_DEFAULT);
+		     PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 #ifdef WORDS_BIGENDIAN
 	png_set_swap_alpha(png_ptr);
-#else /* !WORDS_BIGENDIAN */
+#else				/* !WORDS_BIGENDIAN */
 	png_set_bgr(png_ptr);
-#endif /* WORDS_BIGENDIAN */
+#endif				/* WORDS_BIGENDIAN */
 
 	sig_bit.red = 8;
 	sig_bit.green = 8;
@@ -160,24 +153,21 @@ feh_png_write_png(Imlib_Image image, char *file, ...)
 
 #ifdef PNG_TEXT_SUPPORTED
 	va_start(args, file);
-	for (i = 0; i < FEH_PNG_NUM_COMMENTS; i++)
-	{
-		if ((pair_key = va_arg(args, char *)) &&
-				(pair_text = va_arg(args, char *)))
-		{
+	for (i = 0; i < FEH_PNG_NUM_COMMENTS; i++) {
+		if ((pair_key = va_arg(args, char *))
+		    && (pair_text = va_arg(args, char *))) {
 			/* got a complete pair, add to info structure */
 			text[i].key = pair_key;
 			text[i].text = pair_text;
 			text[i].compression = PNG_TEXT_COMPRESSION_NONE;
-		}
-		else
+		} else
 			break;
 	}
 	va_end(args);
 
 	if (i > 0)
 		png_set_text(png_ptr, info_ptr, text, i);
-#endif /* PNG_TEXT_SUPPORTED */
+#endif				/* PNG_TEXT_SUPPORTED */
 
 	png_set_compression_level(png_ptr, FEH_PNG_COMPRESSION);
 	png_write_info(png_ptr, info_ptr);
@@ -200,8 +190,7 @@ feh_png_write_png(Imlib_Image image, char *file, ...)
 }
 
 /* check PNG signature */
-int
-feh_png_file_is_png(FILE *fp)
+int feh_png_file_is_png(FILE * fp)
 {
 	unsigned char buf[8];
 

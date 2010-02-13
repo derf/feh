@@ -27,16 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SUPPORT_H
 
 #include <X11/Xfuncproto.h>
-#include <X11/Intrinsic.h>                  /* Xlib, Xutil, Xresource, Xfuncproto */
+#include <X11/Intrinsic.h>	/* Xlib, Xutil, Xresource, Xfuncproto */
 
 #define IPC_TIMEOUT    ((char *) 1)
-#define IPC_FAKE       ((char *) 2) /* Faked IPC */
+#define IPC_FAKE       ((char *) 2)	/* Faked IPC */
 
 #define enl_ipc_sync()  do {                                           \
        char *reply = enl_send_and_wait("nop");                         \
        if ((reply != IPC_FAKE) && (reply != IPC_TIMEOUT))              \
          free(reply);                                                  \
-   } while (0)                          
+   } while (0)
 
 extern Window ipc_win;
 extern Atom ipc_atom;
@@ -46,8 +46,7 @@ extern void enl_ipc_send(char *);
 extern char *enl_wait_for_reply(void);
 extern char *enl_ipc_get(const char *);
 extern char *enl_send_and_wait(char *);
-extern void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
-                          int desktop, int set);
+extern void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop, int set);
 extern int feh_wm_get_num_desks(void);
 extern signed char feh_wm_get_wm_is_e(void);
 void feh_wm_set_bg_file(char *file, unsigned char bgmode);

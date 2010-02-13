@@ -74,7 +74,7 @@ char *feh_get_user_name(void);
       (a) = ____newstr;\
     }\
   }
-    
+
 #define ESTRTRUNC(string,chars) \
   {\
     int ____len;\
@@ -85,6 +85,5 @@ char *feh_get_user_name(void);
       }\
     }\
   }
-
 
 #endif

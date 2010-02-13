@@ -31,14 +31,15 @@ static int session_id = 0;
 static char *socket_name;
 static int socket_fd = 0;
 
-int feh_ipc_create_socket(void) {
-  struct sockaddr_un saddr;
-  int i;
+int feh_ipc_create_socket(void)
+{
+	struct sockaddr_un saddr;
+	int i;
 
-  if ((socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1) {
-    for (i = 0; ; i++) {
-      saddr.sun_family = AF_UNIX;
-      snprintf(saddr.sun_path, 108, "%s/feh_%s.%d", feh_get_tmp_dir(), feh_get_user_name(), i);
+	if ((socket_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1) {
+		for (i = 0;; i++) {
+			saddr.sun_family = AF_UNIX;
+			snprintf(saddr.sun_path, 108, "%s/feh_%s.%d", feh_get_tmp_dir(), feh_get_user_name(), i);
 /*
       if (!feh_remote_is_running(i)) {
         if ((unlink(saddr.sun_path) == -1) && errno != ENOENT) {
@@ -49,46 +50,49 @@ int feh_ipc_create_socket(void) {
         continue;
         }
 */
-      if (bind(socket_fd, (struct sockaddr *) &saddr, sizeof(saddr)) != -1) {
-        session_id = i;
-        socket_name = estrdup(saddr.sun_path);
-        listen(socket_fd, 50);
-        break;
-      } else {
-        close(socket_fd);
-        eprintf("feh_ipc_create_socket: failed to bind %s to a socket:", saddr.sun_path);
-      }
-    }
-  } else {
-    eprintf("feh_ipc_create_socket: failed to open socket:");
-  }
+			if (bind(socket_fd, (struct sockaddr *) &saddr, sizeof(saddr)) != -1) {
+				session_id = i;
+				socket_name = estrdup(saddr.sun_path);
+				listen(socket_fd, 50);
+				break;
+			} else {
+				close(socket_fd);
+				eprintf("feh_ipc_create_socket: failed to bind %s to a socket:", saddr.sun_path);
+			}
+		}
+	} else {
+		eprintf("feh_ipc_create_socket: failed to open socket:");
+	}
 }
 
-int feh_ipc_get_session_id(void) {
-  return session_id;
+int feh_ipc_get_session_id(void)
+{
+	return session_id;
 }
 
-void feh_ipc_cleanup(void) {
-  close(socket_fd);
-  unlink(socket_name);
-  free(socket_name);
+void feh_ipc_cleanup(void)
+{
+	close(socket_fd);
+	unlink(socket_name);
+	free(socket_name);
 }
 
-static void feh_ipc_write_packet(int fd, void *data, int length) {
-  feh_ipc_server_header header;
-  header.version = FEH_IPC_VERSION;
-  header.data_length = length;
-  if (data && length > 0) {
-    write(fd, data, length);
-  }
+static void feh_ipc_write_packet(int fd, void *data, int length)
+{
+	feh_ipc_server_header header;
+	header.version = FEH_IPC_VERSION;
+	header.data_length = length;
+	if (data && length > 0) {
+		write(fd, data, length);
+	}
 }
 
-static void feh_ipc_write_int(int fd, int val) {
-  feh_ipc_write_packet(fd, &val, sizeof(int));
+static void feh_ipc_write_int(int fd, int val)
+{
+	feh_ipc_write_packet(fd, &val, sizeof(int));
 }
 
-static void feh_ipc_write_string(int fd, char *string) {
-  feh_ipc_write_packet(fd, &string, string ? strlen(string) + 1 : 0);
+static void feh_ipc_write_string(int fd, char *string)
+{
+	feh_ipc_write_packet(fd, &string, string ? strlen(string) + 1 : 0);
 }
-
-

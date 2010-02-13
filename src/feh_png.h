@@ -34,6 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 gib_hash *feh_png_read_comments(char *file);
 int feh_png_write_png(Imlib_Image image, char *file, ...);
 
-int feh_png_file_is_png(FILE *fp);
+int feh_png_file_is_png(FILE * fp);
 
-#endif /* FEH_PNG_H */
+#endif				/* FEH_PNG_H */

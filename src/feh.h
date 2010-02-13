@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef HAVE_LIBXINERAMA
 #include <X11/extensions/Xinerama.h>
 #include <X11/X.h>
-#endif /* HAVE_LIBXINERAMA */
+#endif				/* HAVE_LIBXINERAMA */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -67,7 +67,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "utils.h"
 #include "getopt.h"
 
-
 #include "debug.h"
 
 #define SLIDESHOW_RELOAD_MAX 4096
@@ -89,15 +88,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define DEFAULT_FONT_BIG "yudit/12"
 #define DEFAULT_FONT_TITLE "yudit/14"
 
-enum mode_type
-{ MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM, MODE_ROTATE, MODE_BLUR, MODE_NEXT };
+enum mode_type { MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM, MODE_ROTATE, MODE_BLUR, MODE_NEXT
+};
 
-enum bgmode_type
-{ BG_MODE_NONE = 0, BG_MODE_TILE, BG_MODE_CENTER, BG_MODE_SEAMLESS, BG_MODE_SCALE };
+enum bgmode_type { BG_MODE_NONE = 0, BG_MODE_TILE, BG_MODE_CENTER, BG_MODE_SEAMLESS,
+	BG_MODE_SCALE
+};
 
-enum slide_change
-{ SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
-   SLIDE_JUMP_BACK
+enum slide_change { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST,
+	SLIDE_JUMP_FWD,
+	SLIDE_JUMP_BACK
 };
 
 typedef void (*sighandler_t) (int);
@@ -110,7 +110,7 @@ void init_imlib_fonts(void);
 void init_x_and_imlib(void);
 #ifdef HAVE_LIBXINERAMA
 void init_xinerama(void);
-#endif /* HAVE_LIBXINERAMA */
+#endif				/* HAVE_LIBXINERAMA */
 void init_multiwindow_mode(void);
 void init_thumbnail_mode(void);
 void init_collage_mode(void);
@@ -146,10 +146,9 @@ struct hostent *feh_gethostbyname(const char *name);
 void slideshow_save_image(winwidget win);
 void feh_edit_inplace_orient(winwidget w, int orientation);
 void feh_edit_inplace_lossless_rotate(winwidget w, int orientation);
-gib_list * feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font fn, gib_style * style);
-char *build_caption_filename(feh_file *file);
-gib_list * feh_list_jump(gib_list * root, gib_list * l, int direction, int num);
-
+gib_list *feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font fn, gib_style * style);
+char *build_caption_filename(feh_file * file);
+gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num);
 
 /* Imlib stuff */
 extern Display *disp;
@@ -162,7 +161,7 @@ extern Atom wmDeleteWindow;
 extern int num_xinerama_screens;
 extern XineramaScreenInfo *xinerama_screens;
 extern int xinerama_screen;
-#endif /* HAVE_LIBXINERAMA */
+#endif				/* HAVE_LIBXINERAMA */
 
 /* Thumbnail sizes */
 extern int cmdargc;
@@ -174,6 +173,6 @@ extern unsigned char reset_output;
 extern int call_level;
 extern feh_menu *menu_main;
 extern feh_menu *menu_close;
-extern char *mode; /* label for the current mode */
+extern char *mode;		/* label for the current mode */
 
 #endif

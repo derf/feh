@@ -26,22 +26,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef TIMERS_H
 #define TIMERS_H
 
-struct __fehtimer
-{
-   char *name;
-   void (*func) (void *data);
-   void *data;
-   double in;
-   char just_added;
-   fehtimer next;
+struct __fehtimer {
+	char *name;
+	void (*func) (void *data);
+	void *data;
+	double in;
+	char just_added;
+	fehtimer next;
 };
 
 void feh_handle_timer(void);
 double feh_get_time(void);
 void feh_remove_timer(char *name);
-void feh_add_timer(void (*func) (void *data), void *data, double in,
-
-                   char *name);
+void feh_add_timer(void (*func) (void *data), void *data, double in, char *name);
 void feh_add_unique_timer(void (*func) (void *data), void *data, double in);
 
 extern fehtimer first_timer;

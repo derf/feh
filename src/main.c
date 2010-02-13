@@ -36,40 +36,38 @@ int cmdargc = 0;
 int call_level = 0;
 char *mode = NULL;
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-   D_ENTER(4);
-   atexit(feh_clean_exit);
+	D_ENTER(4);
+	atexit(feh_clean_exit);
 
-   init_parse_options(argc, argv);
+	init_parse_options(argc, argv);
 
-   init_imlib_fonts();
+	init_imlib_fonts();
 
-   if (opt.display)
-      init_x_and_imlib();
+	if (opt.display)
+		init_x_and_imlib();
 
-   feh_event_init();
+	feh_event_init();
 
-   if (opt.index)
-      init_index_mode();
-   else if (opt.collage)
-      init_collage_mode();
-   else if (opt.multiwindow)
-      init_multiwindow_mode();
-   else if (opt.list || opt.customlist)
-      init_list_mode();
-   else if (opt.loadables)
-      init_loadables_mode();
-   else if (opt.unloadables)
-      init_unloadables_mode();
-   else if (opt.thumbs)
-      init_thumbnail_mode();
-   else if(opt.bgmode)
-   {
-      feh_wm_set_bg_file(opt.output_file, opt.bgmode);
-      exit(0);
-   }
+	if (opt.index)
+		init_index_mode();
+	else if (opt.collage)
+		init_collage_mode();
+	else if (opt.multiwindow)
+		init_multiwindow_mode();
+	else if (opt.list || opt.customlist)
+		init_list_mode();
+	else if (opt.loadables)
+		init_loadables_mode();
+	else if (opt.unloadables)
+		init_unloadables_mode();
+	else if (opt.thumbs)
+		init_thumbnail_mode();
+	else if (opt.bgmode) {
+		feh_wm_set_bg_file(opt.output_file, opt.bgmode);
+		exit(0);
+	}
 /*   else if (opt.fmmode)
    {
       fmmode();
@@ -77,146 +75,132 @@ main(int argc, char **argv)
       init_slideshow_mode(); 
    }
  */
-   else
-   {
-      /* Slideshow mode is the default. Because it's spiffy */
-      opt.slideshow = 1;
-      init_slideshow_mode();
-   }
+	else {
+		/* Slideshow mode is the default. Because it's spiffy */
+		opt.slideshow = 1;
+		init_slideshow_mode();
+	}
 
-   /* main event loop */
-   while (feh_main_iteration(1));
+	/* main event loop */
+	while (feh_main_iteration(1));
 
-   D_RETURN(4,0);
+	D_RETURN(4, 0);
 }
-
 
 /* Return 0 to stop iterating, 1 if ok to continue. */
-int
-feh_main_iteration(int block)
+int feh_main_iteration(int block)
 {
-   static int first = 1;
-   static int xfd = 0;
-   static int fdsize = 0;
-   static double pt = 0.0;
-   XEvent ev;
-   struct timeval tval;
-   fd_set fdset;
-   int count = 0;
-   double t1 = 0.0, t2 = 0.0;
-   fehtimer ft;
+	static int first = 1;
+	static int xfd = 0;
+	static int fdsize = 0;
+	static double pt = 0.0;
+	XEvent ev;
+	struct timeval tval;
+	fd_set fdset;
+	int count = 0;
+	double t1 = 0.0, t2 = 0.0;
+	fehtimer ft;
 
-   D_ENTER(5);
+	D_ENTER(5);
 
-   if (window_num == 0)
-      D_RETURN(5,0);
+	if (window_num == 0)
+		D_RETURN(5, 0);
 
-   if (first)
-   {
-      /* Only need to set these up the first time */
-      xfd = ConnectionNumber(disp);
-      fdsize = xfd + 1;
-      pt = feh_get_time();
-      first = 0;
-   }
+	if (first) {
+		/* Only need to set these up the first time */
+		xfd = ConnectionNumber(disp);
+		fdsize = xfd + 1;
+		pt = feh_get_time();
+		first = 0;
+	}
 
-   /* Timers */
-   t1 = feh_get_time();
-   t2 = t1 - pt;
-   pt = t1;
-   while (XPending(disp))
-   {
-      XNextEvent(disp, &ev);
-      if (ev_handler[ev.type])
-         (*(ev_handler[ev.type])) (&ev);
+	/* Timers */
+	t1 = feh_get_time();
+	t2 = t1 - pt;
+	pt = t1;
+	while (XPending(disp)) {
+		XNextEvent(disp, &ev);
+		if (ev_handler[ev.type])
+			(*(ev_handler[ev.type])) (&ev);
 
-      if (window_num == 0)
-         D_RETURN(5,0);
-   }
-   XFlush(disp);
+		if (window_num == 0)
+			D_RETURN(5, 0);
+	}
+	XFlush(disp);
 
-   feh_redraw_menus();
+	feh_redraw_menus();
 
-   FD_ZERO(&fdset);
-   FD_SET(xfd, &fdset);
+	FD_ZERO(&fdset);
+	FD_SET(xfd, &fdset);
 
-   /* Timers */
-   ft = first_timer;
-   /* Don't do timers if we're zooming/panning/etc or if we are paused*/
-   if (ft && (opt.mode == MODE_NORMAL) && !opt.paused)
-   {
-      D(5,("There are timers in the queue\n"));
-      if (ft->just_added)
-      {
-         D(5,("The first timer has just been added\n"));
-         D(5,("ft->in = %f\n", ft->in));
-         ft->just_added = 0;
-         t1 = ft->in;
-      }
-      else
-      {
-         D(5,("The first timer was not just added\n"));
-         t1 = ft->in - t2;
-         if (t1 < 0.0)
-            t1 = 0.0;
-         ft->in = t1;
-      }
-      
-      XSync(disp, False);
-      D(5,("I next need to action a timer in %f seconds\n", t1));
-      /* Only do a blocking select if there's a timer due, or no events
-         waiting */
-      if (t1 == 0.0 || (block && !XPending(disp)))
-      {
-         tval.tv_sec = (long) t1;
-         tval.tv_usec = (long) ((t1 - ((double) tval.tv_sec)) * 1000000);
-         if (tval.tv_sec < 0)
-            tval.tv_sec = 0;
-         if (tval.tv_usec <= 1000)
-            tval.tv_usec = 1000;
-         errno = 0;
-         D(5,("Performing blocking select - waiting for timer or event\n"));
-         count = select(fdsize, &fdset, NULL, NULL, &tval);
-         if ((count < 0)
-             && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
-            eprintf("Connection to X display lost");
-         if ((ft) && (count == 0))
-         {
-            /* This means the timer is due to be executed. If count was > 0,
-               that would mean an X event had woken us, we're not interested
-               in that */
-            feh_handle_timer();
-         }
-      }
-   }
-   else
-   {
-      /* Don't block if there are events in the queue. That's a bit rude ;-) */
-      if (block && !XPending(disp))
-      {
-         errno = 0;
-         D(5,("Performing blocking select - no timers, or zooming\n"));
-         count = select(fdsize, &fdset, NULL, NULL, NULL);
-         if ((count < 0)
-             && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
-            eprintf("Connection to X display lost");
-      }
-   }
-   if (window_num == 0)
-      D_RETURN(5,0);
-   D_RETURN(5,1);
+	/* Timers */
+	ft = first_timer;
+	/* Don't do timers if we're zooming/panning/etc or if we are paused */
+	if (ft && (opt.mode == MODE_NORMAL) && !opt.paused) {
+		D(5, ("There are timers in the queue\n"));
+		if (ft->just_added) {
+			D(5, ("The first timer has just been added\n"));
+			D(5, ("ft->in = %f\n", ft->in));
+			ft->just_added = 0;
+			t1 = ft->in;
+		} else {
+			D(5, ("The first timer was not just added\n"));
+			t1 = ft->in - t2;
+			if (t1 < 0.0)
+				t1 = 0.0;
+			ft->in = t1;
+		}
+
+		XSync(disp, False);
+		D(5, ("I next need to action a timer in %f seconds\n", t1));
+		/* Only do a blocking select if there's a timer due, or no events
+		   waiting */
+		if (t1 == 0.0 || (block && !XPending(disp))) {
+			tval.tv_sec = (long) t1;
+			tval.tv_usec = (long) ((t1 - ((double) tval.tv_sec)) * 1000000);
+			if (tval.tv_sec < 0)
+				tval.tv_sec = 0;
+			if (tval.tv_usec <= 1000)
+				tval.tv_usec = 1000;
+			errno = 0;
+			D(5, ("Performing blocking select - waiting for timer or event\n"));
+			count = select(fdsize, &fdset, NULL, NULL, &tval);
+			if ((count < 0)
+					&& ((errno == ENOMEM) || (errno == EINVAL)
+						|| (errno == EBADF)))
+				eprintf("Connection to X display lost");
+			if ((ft) && (count == 0)) {
+				/* This means the timer is due to be executed. If count was > 0,
+				   that would mean an X event had woken us, we're not interested
+				   in that */
+				feh_handle_timer();
+			}
+		}
+	} else {
+		/* Don't block if there are events in the queue. That's a bit rude ;-) */
+		if (block && !XPending(disp)) {
+			errno = 0;
+			D(5, ("Performing blocking select - no timers, or zooming\n"));
+			count = select(fdsize, &fdset, NULL, NULL, NULL);
+			if ((count < 0)
+					&& ((errno == ENOMEM) || (errno == EINVAL)
+						|| (errno == EBADF)))
+				eprintf("Connection to X display lost");
+		}
+	}
+	if (window_num == 0)
+		D_RETURN(5, 0);
+	D_RETURN(5, 1);
 }
 
-
-void
-feh_clean_exit(void)
+void feh_clean_exit(void)
 {
-   D_ENTER(4);
+	D_ENTER(4);
 
-   delete_rm_files();
+	delete_rm_files();
 
-   if (opt.filelistfile)
-      feh_write_filelist(filelist, opt.filelistfile);
+	if (opt.filelistfile)
+		feh_write_filelist(filelist, opt.filelistfile);
 
-   D_RETURN_(4);
+	D_RETURN_(4);
 }

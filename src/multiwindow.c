@@ -29,50 +29,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "options.h"
 
-void
-init_multiwindow_mode(void)
+void init_multiwindow_mode(void)
 {
-   winwidget w = NULL;
-   gib_list *l;
-   feh_file *file = NULL;
+	winwidget w = NULL;
+	gib_list *l;
+	feh_file *file = NULL;
 
-   D_ENTER(2);
+	D_ENTER(2);
 
-   mode = "multiwindow";
+	mode = "multiwindow";
 
-   for (l = filelist; l; l = l->next)
-   {
-      char *s = NULL;
-      int len = 0;
-      file = FEH_FILE(l->data);
-	  current_file = l;
+	for (l = filelist; l; l = l->next) {
+		char *s = NULL;
+		int len = 0;
+		file = FEH_FILE(l->data);
+		current_file = l;
 
-	  if (!opt.title)
-	  {
-	     len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
-         s = emalloc(len);
-         snprintf(s, len, PACKAGE " - %s", file->filename);
-	  }
-	  else
-	  {
-		 s = estrdup(feh_printf(opt.title, file));
-	  }
+		if (!opt.title) {
+			len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
+			s = emalloc(len);
+			snprintf(s, len, PACKAGE " - %s", file->filename);
+		} else {
+			s = estrdup(feh_printf(opt.title, file));
+		}
 
-      if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL)
-      {
-         winwidget_show(w);
-         if (opt.reload > 0)
-            feh_add_unique_timer(cb_reload_timer, w, opt.reload);
-         if (!feh_main_iteration(0))
-            exit(0);
-      }
-      else
-      {
-         D(3,
-           ("EEEK. Couldn't load image in multiwindow mode. "
-            "I 'm not sure if this is a problem\n"));
-      }
-      free(s);
-   }
-   D_RETURN_(2);
+		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL) {
+			winwidget_show(w);
+			if (opt.reload > 0)
+				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+			if (!feh_main_iteration(0))
+				exit(0);
+		} else {
+			D(3, ("EEEK. Couldn't load image in multiwindow mode. "
+						"I 'm not sure if this is a problem\n"));
+		}
+		free(s);
+	}
+	D_RETURN_(2);
 }

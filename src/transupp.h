@@ -19,7 +19,7 @@
 
 /* If you happen not to want the image transform support, disable it here */
 #ifndef TRANSFORMS_SUPPORTED
-#define TRANSFORMS_SUPPORTED 1		/* 0 disables transform code */
+#define TRANSFORMS_SUPPORTED 1	/* 0 disables transform code */
 #endif
 
 /* Short forms of external names for systems with brain-damaged linkers. */
@@ -30,8 +30,7 @@
 #define jtransform_execute_transformation	jTrExec
 #define jcopy_markers_setup			jCMrkSetup
 #define jcopy_markers_execute			jCMrkExec
-#endif /* NEED_SHORT_EXTERNAL_NAMES */
-
+#endif				/* NEED_SHORT_EXTERNAL_NAMES */
 
 /*
  * Codes for supported types of image transformations.
@@ -84,35 +83,28 @@ typedef enum {
  */
 
 typedef struct {
-  /* Options: set by caller */
-  JXFORM_CODE transform;	/* image transform operator */
-  boolean trim;			/* if TRUE, trim partial MCUs as needed */
-  boolean force_grayscale;	/* if TRUE, convert color image to grayscale */
+	/* Options: set by caller */
+	JXFORM_CODE transform;	/* image transform operator */
+	boolean trim;		/* if TRUE, trim partial MCUs as needed */
+	boolean force_grayscale;	/* if TRUE, convert color image to grayscale */
 
-  /* Internal workspace: caller should not touch these */
-  int num_components;		/* # of components in workspace */
-  jvirt_barray_ptr * workspace_coef_arrays; /* workspace for transformations */
+	/* Internal workspace: caller should not touch these */
+	int num_components;	/* # of components in workspace */
+	jvirt_barray_ptr *workspace_coef_arrays;	/* workspace for transformations */
 } jpeg_transform_info;
-
 
 #if TRANSFORMS_SUPPORTED
 
 /* Request any required workspace */
-EXTERN(void) jtransform_request_workspace
-	JPP((j_decompress_ptr srcinfo, jpeg_transform_info *info));
+EXTERN(void) jtransform_request_workspace JPP((j_decompress_ptr srcinfo, jpeg_transform_info * info));
 /* Adjust output image parameters */
 EXTERN(jvirt_barray_ptr *) jtransform_adjust_parameters
-	JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo,
-	     jvirt_barray_ptr *src_coef_arrays,
-	     jpeg_transform_info *info));
+JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo, jvirt_barray_ptr * src_coef_arrays, jpeg_transform_info * info));
 /* Execute the actual transformation, if any */
 EXTERN(void) jtransform_execute_transformation
-	JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo,
-	     jvirt_barray_ptr *src_coef_arrays,
-	     jpeg_transform_info *info));
+JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo, jvirt_barray_ptr * src_coef_arrays, jpeg_transform_info * info));
 
-#endif /* TRANSFORMS_SUPPORTED */
-
+#endif				/* TRANSFORMS_SUPPORTED */
 
 /*
  * Support for copying optional markers from source to destination file.
@@ -127,9 +119,7 @@ typedef enum {
 #define JCOPYOPT_DEFAULT  JCOPYOPT_COMMENTS	/* recommended default */
 
 /* Setup decompression object to save desired markers in memory */
-EXTERN(void) jcopy_markers_setup
-	JPP((j_decompress_ptr srcinfo, JCOPY_OPTION option));
+EXTERN(void)
+jcopy_markers_setup JPP((j_decompress_ptr srcinfo, JCOPY_OPTION option));
 /* Copy markers saved in the given source object to the destination object */
-EXTERN(void) jcopy_markers_execute
-	JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo,
-	     JCOPY_OPTION option));
+EXTERN(void) jcopy_markers_execute JPP((j_decompress_ptr srcinfo, j_compress_ptr dstinfo, JCOPY_OPTION option));

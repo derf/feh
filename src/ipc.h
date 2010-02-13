@@ -31,27 +31,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 int feh_ipc_create_socket(void);
 int feh_ipc_get_session_id(void);
 
-typedef struct
-{
-  unsigned int version;
-  unsigned int command;
-  unsigned int data_length;
-}
-feh_ipc_client_header;
+typedef struct {
+	unsigned int version;
+	unsigned int command;
+	unsigned int data_length;
+} feh_ipc_client_header;
 
-typedef struct
-{
-  unsigned int version;
-  unsigned int data_length;
-}
-feh_ipc_server_header;
+typedef struct {
+	unsigned int version;
+	unsigned int data_length;
+} feh_ipc_server_header;
 
 enum {
-  IPC_CMD_QUIT,
-  IPC_CMD_FILELIST_NEXT,
-  IPC_CMD_FILELIST_PREV,
+	IPC_CMD_QUIT,
+	IPC_CMD_FILELIST_NEXT,
+	IPC_CMD_FILELIST_PREV,
 };
 
 #endif
-
-

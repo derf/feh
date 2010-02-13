@@ -27,90 +27,78 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "options.h"
 
-void
-init_list_mode(void)
+void init_list_mode(void)
 {
-   gib_list *l;
-   feh_file *file = NULL;
-   int j = 0;
+	gib_list *l;
+	feh_file *file = NULL;
+	int j = 0;
 
-   D_ENTER(4);
+	D_ENTER(4);
 
-   mode = "list";
+	mode = "list";
 
-   if (!opt.customlist)
-      printf
-         ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
+	if (!opt.customlist)
+		printf("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
 
-   for (l = filelist; l; l = l->next)
-   {
-      file = FEH_FILE(l->data);
-      if (opt.customlist)
-         printf("%s\n", feh_printf(opt.customlist, file));
-      else
-         printf("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
-                file->info->width, file->info->height, file->info->pixels,
-                file->info->size, file->info->has_alpha ? 'X' : '-',
-                file->filename);
+	for (l = filelist; l; l = l->next) {
+		file = FEH_FILE(l->data);
+		if (opt.customlist)
+			printf("%s\n", feh_printf(opt.customlist, file));
+		else
+			printf("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j,
+					file->info->format, file->info->width,
+					file->info->height, file->info->pixels,
+					file->info->size,
+					file->info->has_alpha ? 'X' : '-', file->filename);
 
-      feh_action_run(file,opt.actions[0]);
-   }
-   exit(0);
+		feh_action_run(file, opt.actions[0]);
+	}
+	exit(0);
 }
 
-void
-init_loadables_mode(void)
+void init_loadables_mode(void)
 {
-   D_ENTER(4);
-   mode = "loadables";
-   real_loadables_mode(1);
-   D_RETURN_(4);
+	D_ENTER(4);
+	mode = "loadables";
+	real_loadables_mode(1);
+	D_RETURN_(4);
 }
 
-void
-init_unloadables_mode(void)
+void init_unloadables_mode(void)
 {
-   D_ENTER(4);
-   mode = "unloadables";
-   real_loadables_mode(0);
-   D_RETURN_(4);
+	D_ENTER(4);
+	mode = "unloadables";
+	real_loadables_mode(0);
+	D_RETURN_(4);
 }
 
-
-void
-real_loadables_mode(int loadable)
+void real_loadables_mode(int loadable)
 {
-   feh_file *file;
-   gib_list *l;
+	feh_file *file;
+	gib_list *l;
 
-   D_ENTER(4);
-   opt.quiet = 1;
+	D_ENTER(4);
+	opt.quiet = 1;
 
-   for (l = filelist; l; l = l->next)
-   {
-      Imlib_Image im = NULL;
+	for (l = filelist; l; l = l->next) {
+		Imlib_Image im = NULL;
 
-      file = FEH_FILE(l->data);
+		file = FEH_FILE(l->data);
 
-      if (feh_load_image(&im, file))
-      {
-         /* loaded ok */
-         if (loadable)
-         {
-            fprintf(stdout, "%s\n", file->filename);
-            feh_action_run(file,opt.actions[0]);
-         }
-         gib_imlib_free_image_and_decache(im);
-      }
-      else
-      {
-         /* Oh dear. */
-         if (!loadable)
-         {
-            fprintf(stdout, "%s\n", file->filename);
-            feh_action_run(file,opt.actions[0]);
-         }
-      }
-   }
-   exit(0);
+		if (feh_load_image(&im, file)) {
+			/* loaded ok */
+			if (loadable) {
+				fprintf(stdout, "%s\n", file->filename);
+				feh_action_run(file, opt.actions[0]);
+			}
+			gib_imlib_free_image_and_decache(im);
+		} else {
+			/* Oh dear. */
+			if (!loadable) {
+				fprintf(stdout, "%s\n", file->filename);
+				feh_action_run(file, opt.actions[0]);
+			}
+		}
+	}
+	exit(0);
 }
