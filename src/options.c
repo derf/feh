@@ -380,12 +380,12 @@ feh_parse_option_array(int argc, char **argv)
       {"fontpath", 1, 0, 'C'},
       {"menu-bg", 1, 0, ')'},
       {"image-bg", 1, 0, 'B'},
+      {"reload-button", 1, 0, '0'},
       {"next-button", 1, 0, '1'},
       {"zoom-button", 1, 0, '2'},
       {"menu-button", 1, 0, '4'},
       {"rotate-button", 1, 0, '6'},
       {"blur-button", 1, 0, '8'},
-      {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
@@ -626,6 +626,9 @@ feh_parse_option_array(int argc, char **argv)
         case 'f':
            opt.filelistfile = estrdup(optarg);
            break;
+        case '0':
+           opt.reload_button = atoi(optarg);
+           break;
         case '1':
            opt.next_button = atoi(optarg);
            break;
@@ -652,9 +655,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '|':
            opt.start_list_at = atoi(optarg);
-           break;
-        case '0':
-           opt.reload_button = atoi(optarg);
            break;
         case 't':
            opt.thumbs = 1;
@@ -1016,6 +1016,7 @@ show_usage(void)
 " -B, --image-bg STYLE      Set background for transparent images and the like.\n"
 "                           Accepted values: white, black, default\n"
 " -N, --no-menus            Don't load or show any menus.\n"
+" -0, --reload-button B     Use button B to reload the image (defaults to 0)\n"
 " -1, --next-button B       Use button B to advance to the next image in any\n"
 "                           mode (defaults to 1, usually the left button).\n"
 " -2, --zoom-button B       Use button B to zoom the current image in any\n"

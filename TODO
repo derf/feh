@@ -23,3 +23,5 @@ KeyRelease event.
 
 --thumb-title covers a very specific case, would be cool to make this more
 general (usable in index mode, as image info in thumbnail mode, etc.)
+
+--reload-button might be useless (wtf is button 0)
