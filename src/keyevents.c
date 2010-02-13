@@ -236,18 +236,6 @@ feh_event_handle_keypress(XEvent * ev)
         if (opt.slideshow)
            slideshow_change_image(winwid, SLIDE_LAST);
         break;
-     case XK_Tab:
-	if (opt.draw_actions) 
-        {
-	   opt.draw_actions = 0;
-	   winwidget_rerender_all(0, 1);
-        }
-	else
-        {
-	   opt.draw_actions = 1;
-	   winwidget_rerender_all(0, 1);
-        }
-	break;
      case XK_Return:
          feh_event_invoke_action(winwid,opt.actions[0]);
          break;
@@ -334,12 +322,12 @@ feh_event_handle_keypress(XEvent * ev)
      case 'a':
      case 'A':
         opt.draw_actions = !opt.draw_actions;
-        winwidget_render_image(winwid, 0, 1);
+        winwidget_rerender_all(0, 1);
         break;
      case 'd':
      case 'D':
         opt.draw_filename = !opt.draw_filename;
-        winwidget_render_image(winwid, 0, 1);
+        winwidget_rerender_all(0, 1);
         break;
      case 'n':
      case 'N':
