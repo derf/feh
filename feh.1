@@ -252,6 +252,8 @@ certain other options become available. See MONTAGE MODE OPTIONS
 .B -c, --collage
 Enable collage mode. Collage mode is very similar to montage mode, except
 the images are distributed randomly.
+When using collage mode, you should also specify --limit-width and
+--limit-height.
 .TP 5
 .B -i, --index
 Enable Index mode. Index mode is similar to montage mode, and accepts the
@@ -614,11 +616,11 @@ Zoom to 100%
 Zoom to fit the window
 .SH MOUSE ACTIONS
 When viewing an image, mouse button 1 moves to the next image (slideshow
-mode only), button 2 zooms (click and drag left->right to zoom in, right->
-left to zoom out, click once to restore 1x zoom), and mouse button 3 pans.
-Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to
-sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+
-button 3 activates the context-sensitive menu.  Buttons can be redefined
+mode only), button 2 zooms (click and drag left->right to zoom in,
+right->left to zoom out, click once to restore 1x zoom), and mouse button 3
+pans.  Ctrl+button 1 blurs or sharpens the image (drag left to blur and right
+to sharpen).  Ctrl+button 2 rotates the image around the center point.
+Ctrl+button 3 activates the context-sensitive menu.  Buttons can be redefined
 with the \-1 through \-9 (or \-\-*\-button) cmdline flags.  All you people
 with million button mice can remove the ctrl mask with the \-\-no-*\-ctrl-mask
 options.
