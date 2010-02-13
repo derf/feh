@@ -22,3 +22,5 @@ KeyRelease event.
 general (usable in index mode, as image info in thumbnail mode, etc.)
 
 --reload-button might be useless (wtf is button 0)
+
+Control thumbnail mode (image selection, mainly) with keys.

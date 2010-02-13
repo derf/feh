@@ -666,8 +666,11 @@ view, automatically changing slides every 5 seconds.
 View all the images in /opt/images and below, sorted by width (smallest
 first) and move the image to ~/images/image_name when enter is pressed.
 .SH BUGS
-None known. However there are many, many options. It is possible that some
-do not work well in conjuncion with each other. Let me know :)
+When the files (or even the directory) feh is displaying is deleted by an
+external application while feh is running, trying to change or resize the
+current image may cause segmentation faults.
+.PP
+There are probably other bugs, too. If you find one, let me know :)
 .SH LICENSE
 Copyright Tom Gilbert (and various contributors), 1999, 2000
 .PP
