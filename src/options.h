@@ -66,7 +66,6 @@ struct __fehoptions {
 	unsigned char xinerama;
 	unsigned char screen_clip;
 	unsigned char hide_pointer;
-	unsigned char fmmode;
 	unsigned char draw_actions;
 	unsigned char cache_thumbnails;
 	unsigned char cycle_once;

@@ -83,8 +83,6 @@ void init_parse_options(int argc, char **argv)
 	opt.xinerama = 1;
 #endif				/* HAVE_LIBXINERAMA */
 
-	opt.fmmode = 0;
-
 	D(3, ("About to parse env options (if any)\n"));
 	/* Check for and parse any options in FEH_OPTIONS */
 	feh_parse_environment_options();
@@ -388,7 +386,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"action7", 1, 0, 216},
 		{"action8", 1, 0, 217},
 		{"action9", 1, 0, 218},
-		{"fmmode", 0, 0, 219},
 		{"draw-actions", 0, 0, 222},
 		{"cache-thumbnails", 0, 0, 223},
 		{"cycle-once", 0, 0, 224},
@@ -709,10 +706,6 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 221:
 			opt.hide_pointer = 1;
-			break;
-		case 219:
-			opt.fmmode = 1;
-			opt.sort = SORT_FILENAME;
 			break;
 		case 222:
 			opt.draw_actions = 1;

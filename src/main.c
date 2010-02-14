@@ -68,13 +68,6 @@ int main(int argc, char **argv)
 		feh_wm_set_bg_file(opt.output_file, opt.bgmode);
 		exit(0);
 	}
-/*   else if (opt.fmmode)
-   {
-      fmmode();
-      opt.slideshow = 1;
-      init_slideshow_mode(); 
-   }
- */
 	else {
 		/* Slideshow mode is the default. Because it's spiffy */
 		opt.slideshow = 1;
