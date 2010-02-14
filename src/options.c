@@ -324,13 +324,16 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"thumbnails", 0, 0, 't'},
 		{"wget-timestamp", 0, 0, 'G'},
 		{"builtin", 0, 0, 'Q'},
-		{"menu-ctrl-mask", 0, 0, 228},	/* okay */
 		{"scale-down", 0, 0, '.'},	/* okay */
-		{"no-rotate-ctrl-mask", 0, 0, 226},
-		{"no-blur-ctrl-mask", 0, 0, 227},
-		{"no-xinerama", 0, 0, 225},
 		{"no-jump-on-resort", 0, 0, 220},
 		{"hide-pointer", 0, 0, 221},
+		{"draw-actions", 0, 0, 222},
+		{"cache-thumbnails", 0, 0, 223},
+		{"cycle-once", 0, 0, 224},
+		{"no-xinerama", 0, 0, 225},
+		{"no-rotate-ctrl-mask", 0, 0, 226},
+		{"no-blur-ctrl-mask", 0, 0, 227},
+		{"menu-ctrl-mask", 0, 0, 228},	/* okay */
 		/* options with values */
 		{"output", 1, 0, 'o'},	/* okay */
 		{"output-only", 1, 0, 'O'},	/* okay */
@@ -374,21 +377,18 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"bg-seamless", 1, 0, 203},
 		{"menu-style", 1, 0, 204},
 		{"zoom", 1, 0, 205},
-		{"screen-clip", 1, 0, 207},
-		{"menu-border", 1, 0, 208},
-		{"caption-path", 1, 0, 209},
-		{"action1", 1, 0, 210},
-		{"action2", 1, 0, 211},
-		{"action3", 1, 0, 212},
-		{"action4", 1, 0, 213},
-		{"action5", 1, 0, 214},
-		{"action6", 1, 0, 215},
-		{"action7", 1, 0, 216},
-		{"action8", 1, 0, 217},
-		{"action9", 1, 0, 218},
-		{"draw-actions", 0, 0, 222},
-		{"cache-thumbnails", 0, 0, 223},
-		{"cycle-once", 0, 0, 224},
+		{"screen-clip", 1, 0, 206},
+		{"menu-border", 1, 0, 207},
+		{"caption-path", 1, 0, 208},
+		{"action1", 1, 0, 209},
+		{"action2", 1, 0, 210},
+		{"action3", 1, 0, 211},
+		{"action4", 1, 0, 212},
+		{"action5", 1, 0, 213},
+		{"action6", 1, 0, 214},
+		{"action7", 1, 0, 215},
+		{"action8", 1, 0, 216},
+		{"action9", 1, 0, 217},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0, i = 0;
@@ -615,20 +615,11 @@ static void feh_parse_option_array(int argc, char **argv)
 		case '5':
 			opt.next_button = atoi(optarg);
 			break;
-		case 228:
-			opt.menu_ctrl_mask = 1;
-			break;
 		case '8':
 			opt.rotate_button = atoi(optarg);
 			break;
-		case 226:
-			opt.no_rotate_ctrl_mask = 1;
-			break;
 		case '9':
 			opt.blur_button = atoi(optarg);
-			break;
-		case 227:
-			opt.no_blur_ctrl_mask = 1;
 			break;
 		case '|':
 			opt.start_list_at = atoi(optarg);
@@ -665,40 +656,40 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 205:
 			opt.default_zoom = atoi(optarg);
 			break;
-		case 207:
+		case 206:
 			opt.screen_clip = atoi(optarg);
 			break;
-		case 208:
+		case 207:
 			opt.menu_border = atoi(optarg);
 			break;
-		case 209:
+		case 208:
 			opt.caption_path = estrdup(optarg);
 			break;
-		case 210:
+		case 209:
 			opt.actions[1] = estrdup(optarg);
 			break;
-		case 211:
+		case 210:
 			opt.actions[2] = estrdup(optarg);
 			break;
-		case 212:
+		case 211:
 			opt.actions[3] = estrdup(optarg);
 			break;
-		case 213:
+		case 212:
 			opt.actions[4] = estrdup(optarg);
 			break;
-		case 214:
+		case 213:
 			opt.actions[5] = estrdup(optarg);
 			break;
-		case 215:
+		case 214:
 			opt.actions[6] = estrdup(optarg);
 			break;
-		case 216:
+		case 215:
 			opt.actions[7] = estrdup(optarg);
 			break;
-		case 217:
+		case 216:
 			opt.actions[8] = estrdup(optarg);
 			break;
-		case 218:
+		case 217:
 			opt.actions[9] = estrdup(optarg);
 			break;
 		case 220:
@@ -718,6 +709,15 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 225:
 			opt.xinerama = 0;
+			break;
+		case 226:
+			opt.no_rotate_ctrl_mask = 1;
+			break;
+		case 227:
+			opt.no_blur_ctrl_mask = 1;
+			break;
+		case 228:
+			opt.menu_ctrl_mask = 1;
 			break;
 		default:
 			break;
