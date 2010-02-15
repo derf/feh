@@ -1130,7 +1130,11 @@ void feh_draw_actions(winwidget w)
 
 	for (i = 0; i < 10; i++) {
 		if (opt.actions[i]) {
-			gib_imlib_get_text_size(fn, opt.actions[i], NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+			line = emalloc(strlen(opt.actions[i]) + 5);
+			strcpy(line, "0: ");
+			line = strcat(line, opt.actions[i]);
+			gib_imlib_get_text_size(fn, line, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+			free(line);
 			if (tw > max_tw)
 				max_tw = tw;
 		}
