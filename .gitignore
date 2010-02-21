@@ -5,3 +5,4 @@ Makefile
 /src/config.h
 /src/feh
 /src/stamp-h
+/configure.lineno
