@@ -27,3 +27,6 @@ Control thumbnail mode (image selection, mainly) with keys.
 
 Xinerama support is present, but far from perfect.
 Some day I will debug that, I guess.
+
+We have a lot of copypasta from libjpeg (jpegint.h, transupp.[ch]).
+I wonder if they can be #included from somewhere.
