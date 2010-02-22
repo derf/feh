@@ -27,3 +27,9 @@ Control thumbnail mode (image selection, mainly) with keys.
 
 Xinerama support is present, but far from perfect.
 Some day I will debug that, I guess.
+
+Lossless rotation is horribly broken. The code was copied from libjpeg6b
+and does not work with libjpeg8. However, it _has_ to be copied because
+the rotation functions are not available externally.
+Executing the jpegtran binary from inside feh is probably the best way
+to "fix" this...

@@ -6,15 +6,6 @@ $ su -c "make install"
 
 (Red hat users, use $ ./configure --prefix=/usr)
 
-Run the test scripts in the src directory to see it in action.
-
-### Note ###
-
-If your imlib2 / your system uses libjpeg 6.2, use this feh.
-If they are built against libjpeg8, use feh from the 'jpeg8' branch
-(which currently does not work, but will hopefully be fixed soonish)
-
-
 What is feh?
 
 http://linuxbrit.co.uk/feh/

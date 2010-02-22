@@ -672,6 +672,9 @@ When the files (or even the directory) feh is displaying is deleted by an
 external application while feh is running, trying to change or resize the
 current image may cause segmentation faults.
 .PP
+Lossless rotation is a horrible mess. With libjpeg6b it works, with
+libjpeg8 it doesn't. Bugfix in progress.
+.PP
 There are probably other bugs, too. If you find one, let me know :)
 .SH LICENSE
 Copyright Tom Gilbert (and various contributors), 1999, 2000
