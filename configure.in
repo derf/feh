@@ -40,11 +40,25 @@ AC_SUBST(GIBLIB_LIBS)
 AC_SUBST(GIBLIB_CFLAGS)
 
 dnl Check for Xinerama
-LIBS="-L/usr/X11R6/lib $LIBS -lm -ljpeg"
-AC_CHECK_LIB(Xext,XMissingExtension)
-AC_CHECK_LIB(Xinerama,XineramaQueryScreens)
-AC_SUBST(HAVE_XINERAMA)
-AC_SUBST(XINERAMA_LIBS)
+AC_ARG_ENABLE(xinerama,
+	AC_HELP_STRING([--disable-xinerama],[disable Xinerama multi screen support]),
+	[
+	if test x"$enableval" = xyes; then
+		with_xinerama="yes"
+	else
+		with_xinerama="no"
+	fi
+	],
+	[with_xinerama="detect"]
+)
+if test x"$with_xinerama" != xno; then
+	AC_CHECK_LIB(Xext,XMissingExtension,[
+		AC_CHECK_LIB(Xinerama,XineramaQueryScreens,[
+			AC_DEFINE(HAVE_LIBXINERAMA, [], [Enable Xinerama support])
+			LIBS="$LIBS -lXext -lXinerama"
+		])
+	])
+fi
 AC_CHECK_LIB(jpeg, jpeg_destroy_decompress)
 
 dnl AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
