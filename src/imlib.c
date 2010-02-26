@@ -968,114 +968,29 @@ gib_list *feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font
 
 void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 {
-	FILE *input_file;
-	FILE *output_file;
 	struct jpeg_decompress_struct srcinfo;
 	struct jpeg_compress_struct dstinfo;
 	struct jpeg_error_mgr jsrcerr, jdsterr;
-	jvirt_barray_ptr *src_coef_arrays;
-	jvirt_barray_ptr *dst_coef_arrays;
-	JCOPY_OPTION copyoption;
-	jpeg_transform_info transformoption;
-	int len;
-	char *outfilename;
-	char *infilename = FEH_FILE(w->file->data)->filename;
+	char *filename = FEH_FILE(w->file->data)->filename;
+	int len = 44 + (strlen(filename) * 2);
+	char *command = emalloc(len);
+	int rotatearg = 90 * orientation;
+	int status;
 
-	copyoption = JCOPYOPT_ALL;
-	transformoption.transform = JXFORM_NONE;
-	transformoption.trim = FALSE;
-	transformoption.force_grayscale = FALSE;
+	snprintf(command, len, "jpegtran -copy all -rotate %d -outfile %s %s",
+			rotatearg, filename, filename);
 
-	if (orientation == 1) {
-		transformoption.transform = JXFORM_ROT_90;
-	} else if (orientation == 2) {
-		transformoption.transform = JXFORM_ROT_180;
-	} else {
-		transformoption.transform = JXFORM_ROT_270;
+	D(3, ("lossless_rotate: executing: %s", command));
+
+	status = system(command);
+
+	if (status == -1)
+		weprintf("lossless rotate failed: system() failed\n");
+	else if (status > 0) {
+		weprintf("lossless rotate failed: Got return status %d from jpegtran\n",
+				WEXITSTATUS(status));
+		weprintf("Commandline was: %s", command);
 	}
-
-	if ((input_file = fopen(infilename, "rb")) == NULL) {
-		weprintf("couldn't open file for reading: %s\n", infilename);
-		D_RETURN_(4);
-	}
-	len = strlen(infilename) + sizeof(".tmp") + 1;
-	outfilename = emalloc(len);
-	snprintf(outfilename, len, "%s.tmp", infilename);
-
-	if ((output_file = fopen(outfilename, "wb")) == NULL) {
-		weprintf("couldn't open file for writing: %s\n", outfilename);
-		free(outfilename);
-		fclose(input_file);
-		D_RETURN_(4);
-	}
-
-	/* Initialize the JPEG decompression object with default error handling. */
-	srcinfo.err = jpeg_std_error(&jsrcerr);
-	jpeg_create_decompress(&srcinfo);
-
-	/* Initialize the JPEG compression object with default error handling. */
-	dstinfo.err = jpeg_std_error(&jdsterr);
-	jpeg_create_compress(&dstinfo);
-	jsrcerr.trace_level = jdsterr.trace_level;
-
-	/* Specify data source for decompression */
-	jpeg_stdio_src(&srcinfo, input_file);
-
-	/* Enable saving of extra markers that we want to copy */
-	jcopy_markers_setup(&srcinfo, copyoption);
-
-	/* Read file header */
-	(void) jpeg_read_header(&srcinfo, TRUE);
-
-	/* Any space needed by a transform option must be requested before
-	 * jpeg_read_coefficients so that memory allocation will be done right.
-	 */
-	jtransform_request_workspace(&srcinfo, &transformoption);
-
-	/* Read source file as DCT coefficients */
-	src_coef_arrays = jpeg_read_coefficients(&srcinfo);
-
-	/* Initialize destination compression parameters from source values */
-	jpeg_copy_critical_parameters(&srcinfo, &dstinfo);
-
-	/* Adjust destination parameters if required by transform options;
-	 * also find out which set of coefficient arrays will hold the output.
-	 */
-	dst_coef_arrays = jtransform_adjust_parameters(&srcinfo, &dstinfo, src_coef_arrays, &transformoption);
-
-	/* Specify data destination for compression */
-	jpeg_stdio_dest(&dstinfo, output_file);
-
-	/* Start compressor (note no image data is actually written here) */
-	jpeg_write_coefficients(&dstinfo, dst_coef_arrays);
-
-	/* Copy to the output file any extra markers that we want to preserve */
-	jcopy_markers_execute(&srcinfo, &dstinfo, copyoption);
-
-	/* Execute image transformation */
-	jtransform_execute_transformation(&srcinfo, &dstinfo, src_coef_arrays, &transformoption);
-
-	/* Finish compression and release memory */
-	jpeg_finish_compress(&dstinfo);
-	jpeg_destroy_compress(&dstinfo);
-
-	(void) jpeg_finish_decompress(&srcinfo);
-	jpeg_destroy_decompress(&srcinfo);
-
-	fclose(input_file);
-	fclose(output_file);
-
-	/* TODO fix EXIF tags (orientation, width, height) */
-
-	/* rename outfilename to infilename.. if it worked */
-	if (jsrcerr.num_warnings > 0) {
-		weprintf("got errors from libjpeg (%d), not replacing file\n", jsrcerr.num_warnings);
-	} else {
-		if (rename(outfilename, infilename)) {
-			weprintf("failed to replace file %s with %s\n", infilename, outfilename);
-		}
-	}
-	free(outfilename);
 }
 
 void feh_draw_actions(winwidget w)
