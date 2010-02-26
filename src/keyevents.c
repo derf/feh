@@ -189,6 +189,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			slideshow_change_image(winwid, SLIDE_NEXT);
 		break;
 	case XK_Page_Up:
+	case XK_KP_Page_Up:
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_BACK);
 		break;
@@ -196,6 +197,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_destroy_all();
 		break;
 	case XK_Page_Down:
+	case XK_KP_Page_Down:
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_FWD);
 		break;
