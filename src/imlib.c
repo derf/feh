@@ -33,9 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <jpeglib.h>
-
-#include "transupp.h"
 
 Display *disp = NULL;
 Visual *vis = NULL;
@@ -968,9 +965,6 @@ gib_list *feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font
 
 void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 {
-	struct jpeg_decompress_struct srcinfo;
-	struct jpeg_compress_struct dstinfo;
-	struct jpeg_error_mgr jsrcerr, jdsterr;
 	char *filename = FEH_FILE(w->file->data)->filename;
 	int len = 44 + (strlen(filename) * 2);
 	char *command = emalloc(len);

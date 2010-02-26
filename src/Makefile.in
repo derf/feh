@@ -88,7 +88,7 @@ INCLUDES = -I/usr/X11R6/include $(X_CFLAGS)                     -I$(prefix)/incl
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS = feh
-feh_SOURCES = main.c getopt.c getopt1.c getopt.h feh.h options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h events.c events.h support.c support.h transupp.c transupp.h thumbnail.c thumbnail.h ipc.c ipc.h md5.c md5.h feh_png.c feh_png.h jpegint.h
+feh_SOURCES = main.c getopt.c getopt1.c getopt.h feh.h options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h events.c events.h support.c support.h thumbnail.c thumbnail.h ipc.c ipc.h md5.c md5.h feh_png.c feh_png.h
 
 
 feh_LDADD = -lX11 -lz -lpng @IMLIB_LIBS@ @GIBLIB_LIBS@
@@ -111,7 +111,7 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 feh_OBJECTS =  main.o getopt.o getopt1.o options.o winwidget.o menu.o \
 filelist.o multiwindow.o imlib.o index.o slideshow.o utils.o \
-keyevents.o timers.o list.o collage.o events.o support.o transupp.o \
+keyevents.o timers.o list.o collage.o events.o support.o \
 thumbnail.o ipc.o md5.o feh_png.o
 feh_DEPENDENCIES = 
 feh_LDFLAGS = 
@@ -363,7 +363,7 @@ filelist.o: filelist.c feh.h config.h getopt.h structs.h menu.h ipc.h \
 getopt.o: getopt.c config.h
 getopt1.o: getopt1.c config.h getopt.h
 imlib.o: imlib.c feh.h config.h getopt.h structs.h menu.h ipc.h utils.h \
-	debug.h filelist.h winwidget.h options.h transupp.h
+	debug.h filelist.h winwidget.h options.h
 index.o: index.c feh.h config.h getopt.h structs.h menu.h ipc.h utils.h \
 	debug.h filelist.h winwidget.h options.h
 ipc.o: ipc.c feh.h config.h getopt.h structs.h menu.h ipc.h utils.h \
@@ -391,7 +391,6 @@ thumbnail.o: thumbnail.c feh.h config.h getopt.h structs.h menu.h ipc.h \
 	md5.h feh_png.h
 timers.o: timers.c feh.h config.h getopt.h structs.h menu.h ipc.h \
 	utils.h debug.h options.h timers.h
-transupp.o: transupp.c transupp.h
 utils.o: utils.c feh.h config.h getopt.h structs.h menu.h ipc.h utils.h \
 	debug.h options.h
 winwidget.o: winwidget.c feh.h config.h getopt.h structs.h menu.h ipc.h \

@@ -14,9 +14,8 @@ feh_SOURCES       = main.c getopt.c getopt1.c getopt.h feh.h \
 options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h \
 filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c \
 utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h \
-events.c events.h support.c support.h transupp.c transupp.h \
-thumbnail.c thumbnail.h ipc.c ipc.h md5.c md5.h feh_png.c feh_png.h \
-jpegint.h
+events.c events.h support.c support.h \
+thumbnail.c thumbnail.h ipc.c ipc.h md5.c md5.h feh_png.c feh_png.h
 
 feh_LDADD         = -lX11 -lz -lpng @IMLIB_LIBS@ @GIBLIB_LIBS@
 
