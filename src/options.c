@@ -389,6 +389,9 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"action7", 1, 0, 215},
 		{"action8", 1, 0, 216},
 		{"action9", 1, 0, 217},
+		{"index-name", 1, 0, 230},
+		{"index-size", 1, 0, 231},
+		{"index-dim", 1, 0, 232},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0, i = 0;
@@ -719,6 +722,15 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 228:
 			opt.menu_ctrl_mask = 1;
 			break;
+		case 230:
+			opt.index_show_name = atoi(optarg);
+			break;
+		case 231:
+			opt.index_show_size = atoi(optarg);
+			break;
+		case 232:
+			opt.index_show_dim = atoi(optarg);
+			break;
 		default:
 			break;
 		}
@@ -942,6 +954,9 @@ void show_usage(void)
 		"                           Supports format specifiers, see there.\n"
 		" -I, --fullindex           Same as index mode, but below each thumbnail you\n"
 		"                           get image name, size and dimensions\n"
+		"     --index-name BOOL     Show/Don't show filename in index/thumbnail mode\n"
+		"     --index-size BOOL     Show/Don't show filesize in index/thumbnail mode\n"
+		"     --index-dim BOOL      Show/Don't show dimensions in index/thumbnail mode\n"
 		"     --bg-tile FILE\n"
 		"     --bg-center FILE\n"
 		"     --bg-scale FILE\n"
