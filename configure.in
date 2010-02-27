@@ -59,7 +59,6 @@ if test x"$with_xinerama" != xno; then
 		])
 	])
 fi
-AC_CHECK_LIB(jpeg, jpeg_destroy_decompress)
 
 dnl AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
 dnl AC_SUBST(LIBOBJS)
