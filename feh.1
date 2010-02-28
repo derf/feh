@@ -561,6 +561,9 @@ Save the current filelist to a unique filename.
 .TP 5
 .B <, >
 In place editing, rotate the image 90 degrees left/right.
+The rotation is lossless, but may create artifacts in some corners of
+the image. Rotating in the reverse direction will make them go away.
+See jpegtran(1) for more about lossless rotation.
 .TP 5
 .B <HOME>
 Goto first slide
@@ -681,9 +684,6 @@ first) and move the image to ~/images/image_name when enter is pressed.
 When the files (or even the directory) feh is displaying is deleted by an
 external application while feh is running, trying to change or resize the
 current image may cause segmentation faults.
-.PP
-Lossless rotation is a horrible mess. With libjpeg6b it works, with
-libjpeg8 it doesn't. Bugfix in progress.
 .PP
 There are probably other bugs, too. If you find one, let me know :)
 .SH LICENSE
