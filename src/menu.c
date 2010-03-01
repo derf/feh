@@ -55,9 +55,11 @@ static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, vo
 static void feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_seamless(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_background_set_filled(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_tiled_no_file(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_scaled_no_file(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_background_set_centered_no_file(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_background_set_filled_no_file(feh_menu * m, feh_menu_item * i, void *data);
 
 static void feh_menu_cb_sort_filename(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_sort_imagename(feh_menu * m, feh_menu_item * i, void *data);
@@ -1109,6 +1111,7 @@ void feh_menu_init_common()
 		feh_menu_add_entry(menu_bg, "Set Seamless", NULL, "SEAMLESS", NULL, NULL, NULL);
 		feh_menu_add_entry(menu_bg, "Set Scaled", NULL, "SCALED", NULL, NULL, NULL);
 		feh_menu_add_entry(menu_bg, "Set Centered", NULL, "CENTERED", NULL, NULL, NULL);
+		feh_menu_add_entry(menu_bg, "Set Filled", NULL, "FILLED", NULL, NULL, NULL);
 
 		m = feh_menu_new();
 		m->name = estrdup("TILED");
@@ -1151,27 +1154,46 @@ void feh_menu_init_common()
 						   feh_menu_cb_background_set_centered, (void *) i, NULL);
 			else
 				feh_menu_add_entry(m, buf, NULL, NULL,
-						   feh_menu_cb_background_set_centered_no_file, (void *) i, NULL);
+						feh_menu_cb_background_set_centered_no_file,
+						(void *) i, NULL);
+		}
+
+		m = feh_menu_new();
+		m->name = estrdup("FILLED");
+		for (i = 0; i < num_desks; i++) {
+			snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
+			if (opt.slideshow || opt.multiwindow)
+				feh_menu_add_entry(m, buf, NULL, NULL,
+						feh_menu_cb_background_set_filled,
+						(void *) i, NULL);
+			else
+				feh_menu_add_entry(m, buf, NULL, NULL,
+						feh_menu_cb_background_set_filled_no_file,
+						(void *) i, NULL);
 		}
 	} else {
 		if (opt.slideshow || opt.multiwindow) {
 			feh_menu_add_entry(menu_bg, "Set Tiled", NULL,
-					   NULL, feh_menu_cb_background_set_tiled, NULL, NULL);
+					NULL, feh_menu_cb_background_set_tiled, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Seamless", NULL,
-					   NULL, feh_menu_cb_background_set_seamless, NULL, NULL);
+					NULL, feh_menu_cb_background_set_seamless, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Scaled", NULL,
-					   NULL, feh_menu_cb_background_set_scaled, NULL, NULL);
+					NULL, feh_menu_cb_background_set_scaled, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Centered", NULL,
-					   NULL, feh_menu_cb_background_set_centered, NULL, NULL);
+					NULL, feh_menu_cb_background_set_centered, NULL, NULL);
+			feh_menu_add_entry(menu_bg, "Set Filled", NULL,
+					NULL, feh_menu_cb_background_set_filled, NULL, NULL);
 		} else {
 			feh_menu_add_entry(menu_bg, "Set Tiled", NULL,
-					   NULL, feh_menu_cb_background_set_tiled_no_file, NULL, NULL);
+					NULL, feh_menu_cb_background_set_tiled_no_file, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Seamless", NULL,
-					   NULL, feh_menu_cb_background_set_seamless, NULL, NULL);
+					NULL, feh_menu_cb_background_set_seamless, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Scaled", NULL,
-					   NULL, feh_menu_cb_background_set_scaled_no_file, NULL, NULL);
+					NULL, feh_menu_cb_background_set_scaled_no_file, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Centered", NULL,
-					   NULL, feh_menu_cb_background_set_centered_no_file, NULL, NULL);
+					NULL, feh_menu_cb_background_set_centered_no_file, NULL, NULL);
+			feh_menu_add_entry(menu_bg, "Set Filled", NULL,
+					NULL, feh_menu_cb_background_set_filled_no_file, NULL, NULL);
 		}
 	}
 	common_menus = 1;
@@ -1306,7 +1328,7 @@ static void feh_menu_cb_background_set_tiled(feh_menu * m, feh_menu_item * i, vo
 
 	D_ENTER(4);
 	path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
-	feh_wm_set_bg(path, m->fehwin->im, 0, 0, (int) data, 1);
+	feh_wm_set_bg(path, m->fehwin->im, 0, 0, 0, (int) data, 1);
 	free(path);
 	D_RETURN_(4);
 	i = NULL;
@@ -1319,7 +1341,7 @@ static void feh_menu_cb_background_set_seamless(feh_menu * m, feh_menu_item * i,
 	D_ENTER(4);
 	im = gib_imlib_clone_image(m->fehwin->im);
 	gib_imlib_image_tile(im);
-	feh_wm_set_bg(NULL, im, 0, 0, (int) data, 1);
+	feh_wm_set_bg(NULL, im, 0, 0, 0, (int) data, 1);
 	gib_imlib_free_image_and_decache(im);
 	D_RETURN_(4);
 	i = NULL;
@@ -1331,7 +1353,7 @@ static void feh_menu_cb_background_set_scaled(feh_menu * m, feh_menu_item * i, v
 
 	D_ENTER(4);
 	path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
-	feh_wm_set_bg(path, m->fehwin->im, 0, 1, (int) data, 1);
+	feh_wm_set_bg(path, m->fehwin->im, 0, 1, 0, (int) data, 1);
 	free(path);
 	D_RETURN_(4);
 	i = NULL;
@@ -1343,7 +1365,19 @@ static void feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i,
 
 	D_ENTER(4);
 	path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
-	feh_wm_set_bg(path, m->fehwin->im, 1, 0, (int) data, 1);
+	feh_wm_set_bg(path, m->fehwin->im, 1, 0, 0, (int) data, 1);
+	free(path);
+	D_RETURN_(4);
+	i = NULL;
+}
+
+static void feh_menu_cb_background_set_filled(feh_menu * m, feh_menu_item * i, void *data)
+{
+	char *path;
+
+	D_ENTER(4);
+	path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
+	feh_wm_set_bg(path, m->fehwin->im, 0, 0, 1, (int) data, 1);
 	free(path);
 	D_RETURN_(4);
 	i = NULL;
@@ -1352,7 +1386,7 @@ static void feh_menu_cb_background_set_centered(feh_menu * m, feh_menu_item * i,
 static void feh_menu_cb_background_set_tiled_no_file(feh_menu * m, feh_menu_item * i, void *data)
 {
 	D_ENTER(4);
-	feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, (int) data, 1);
+	feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, 0, (int) data, 1);
 	D_RETURN_(4);
 	i = NULL;
 }
@@ -1360,7 +1394,7 @@ static void feh_menu_cb_background_set_tiled_no_file(feh_menu * m, feh_menu_item
 static void feh_menu_cb_background_set_scaled_no_file(feh_menu * m, feh_menu_item * i, void *data)
 {
 	D_ENTER(4);
-	feh_wm_set_bg(NULL, m->fehwin->im, 0, 1, (int) data, 1);
+	feh_wm_set_bg(NULL, m->fehwin->im, 0, 1, 0, (int) data, 1);
 	D_RETURN_(4);
 	i = NULL;
 }
@@ -1368,7 +1402,15 @@ static void feh_menu_cb_background_set_scaled_no_file(feh_menu * m, feh_menu_ite
 static void feh_menu_cb_background_set_centered_no_file(feh_menu * m, feh_menu_item * i, void *data)
 {
 	D_ENTER(4);
-	feh_wm_set_bg(NULL, m->fehwin->im, 1, 0, (int) data, 1);
+	feh_wm_set_bg(NULL, m->fehwin->im, 1, 0, 0, (int) data, 1);
+	D_RETURN_(4);
+	i = NULL;
+}
+
+static void feh_menu_cb_background_set_filled_no_file(feh_menu * m, feh_menu_item * i, void *data)
+{
+	D_ENTER(4);
+	feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, 1, (int) data, 1);
 	D_RETURN_(4);
 	i = NULL;
 }

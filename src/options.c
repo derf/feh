@@ -389,6 +389,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"action7", 1, 0, 215},
 		{"action8", 1, 0, 216},
 		{"action9", 1, 0, 217},
+		{"bg-fill", 1, 0, 218},
 		{"index-name", 1, 0, 230},
 		{"index-size", 1, 0, 231},
 		{"index-dim", 1, 0, 232},
@@ -650,6 +651,10 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 203:
 			opt.bgmode = BG_MODE_SEAMLESS;
+			opt.output_file = estrdup(optarg);
+			break;
+		case 218:
+			opt.bgmode = BG_MODE_FILL;
 			opt.output_file = estrdup(optarg);
 			break;
 		case 204:
@@ -960,6 +965,7 @@ void show_usage(void)
 		"     --bg-tile FILE\n"
 		"     --bg-center FILE\n"
 		"     --bg-scale FILE\n"
+		"     --bg-fill FILE\n"
 		"     --bg-seamless FILE    Set your desktop background to FILE. Feh can\n"
 		"                           use enlightenment IPC if you are running it,\n"
 		"                           or will fall back to X methods.\n"

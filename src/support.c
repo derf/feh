@@ -53,16 +53,19 @@ void feh_wm_set_bg_file(char *file, unsigned char bgmode)
 		switch (bgmode) {
 		case BG_MODE_SEAMLESS:
 			gib_imlib_image_tile(im);
-			feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
+			feh_wm_set_bg(NULL, im, 0, 0, 0, 0, 1);
 			break;
 		case BG_MODE_TILE:
-			feh_wm_set_bg(file, im, 0, 0, 0, 1);
+			feh_wm_set_bg(file, im, 0, 0, 0, 0, 1);
 			break;
 		case BG_MODE_SCALE:
-			feh_wm_set_bg(file, im, 0, 1, 0, 1);
+			feh_wm_set_bg(file, im, 0, 1, 0, 0, 1);
+			break;
+		case BG_MODE_FILL:
+			feh_wm_set_bg(file, im, 0, 0, 1, 0, 1);
 			break;
 		default:
-			feh_wm_set_bg(file, im, 1, 0, 0, 1);
+			feh_wm_set_bg(file, im, 1, 0, 0, 0, 1);
 			break;
 		}
 		gib_imlib_free_image_and_decache(im);
@@ -70,7 +73,8 @@ void feh_wm_set_bg_file(char *file, unsigned char bgmode)
 	}
 }
 
-void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop, int set)
+void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
+		int filled, int desktop, int set)
 {
 	char bgname[20];
 	int num = (int) rand();
@@ -203,6 +207,27 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desk
 			gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
+		} else if (filled) {
+			int x = scr->width;
+			int y = scr->height;
+			int u = gib_imlib_image_get_width(im);
+			int v = gib_imlib_image_get_height(im);
+			int s = 0;
+			int t = 0;
+
+			if ((u * y) > (x * v)) {
+				h = y;
+				w = (y * u) / v;
+				s = (x - w) / 2;
+			} else {
+				h = (x * v) / u;
+				w = x;
+				t = (y - h) / 2;
+			}
+			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
+			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, s, t,
+					w, h, 1, 0, 1);
+			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
 		} else {
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
