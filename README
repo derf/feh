@@ -9,3 +9,7 @@ $ su -c "make install"
 What is feh?
 
 http://linuxbrit.co.uk/feh/
+
+Note:
+For lossless rotation you will need the "jpegtran" binary supplied by the
+jpeg library. In Debian, it's shipped by libjpeg-progs.

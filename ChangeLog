@@ -1,13 +1,27 @@
+Thu Mar  4 14:55:02 CET 2010  Daniel Friesel <derf@chaosdorf.de>
+
+  * Release v1.4
+     * Lots of documentation fixes/improvements
+       (including previously undocumented options)
+     * Fix --(un)loadable option
+     * Add --draw-actions (show defined actions and their number)
+     * Use <keypad begin> to antialias the image
+     * Fix some keypad keys (+,-,/,*)
+     * The button-related options have changed (NOT backwards-compatible)
+     * Remove --xinerama option
+     * Use jpegtran binary instead of libjpeg for lossless rotation
+     * Add --bg-fill option (patch by Anonymous)
+
 Mon Feb  8 21:47:56 CET 2010  Daniel Friesel <derf@chaosdorf.de>
 
   * Release v1.3.5
      * Import various Debian patches
-	* Update feh(1) manpage
-	* Make feh -l / feh -O work without a running X
-	* Don't die after encountering three or more unloadable images
-	  (former "No more slides in show" error)
-	* Depracate --xinerama <0|1>, use --no-xinerama or nothing instead
-	* Fix transparency in thumbnail mode
+     * Update feh(1) manpage
+     * Make feh -l / feh -O work without a running X
+     * Don't die after encountering three or more unloadable images
+       (former "No more slides in show" error)
+     * Depracate --xinerama <0|1>, use --no-xinerama or nothing instead
+     * Fix transparency in thumbnail mode
 
 Sat Oct  1 08:05:06 EDT 2005  Richard Lowe <richlowe@richlowe.net>
   * (imlib.c): Fix double free in feh_http_load_image
