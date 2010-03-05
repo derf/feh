@@ -2,7 +2,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT
 AC_CONFIG_SRCDIR([src/main.c])
-AM_INIT_AUTOMAKE(feh, 1.3.5)
+AM_INIT_AUTOMAKE(feh, 1.4)
 AM_CONFIG_HEADER(src/config.h)
 
 AC_PROG_CC

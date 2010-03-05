@@ -1,6 +1,6 @@
 Summary:    Image viewer using Imlib 2
 Name:       feh
-Version:    1.3.5
+Version:    1.4
 Release:    1
 Copyright:  BSD
 Group:      Amusements/Graphics
