@@ -1184,8 +1184,9 @@ void feh_create_default_config(char *rcfile)
 		"screensave --full-screen --randomize --slideshow-delay 5\n"
 		"\n" "# Add <img> tags to your html with ease :-)\n"
 		"newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"%%n\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
-		"\n" "# Different menus\n" "chrome --menu-bg " PREFIX
-		" /share/feh/images/menubg_chrome.png\n"
+		"\n" "# Different menus\n"
+		"chrome --menu-bg " PREFIX
+		"/share/feh/images/menubg_chrome.png\n"
 		"brushed --menu-bg " PREFIX
 		"/share/feh/images/menubg_brushed.png\n"
 		"pastel --menu-bg " PREFIX
@@ -1193,14 +1194,18 @@ void feh_create_default_config(char *rcfile)
 		"aluminium --menu-bg " PREFIX
 		"/share/feh/images/menubg_aluminium.png\n"
 		"wood --menu-bg " PREFIX
-		"/share/feh/images/menubg_wood.png\n" "aqua --menu-bg "
-		PREFIX "/share/feh/images/menubg_aqua.png\n"
+		"/share/feh/images/menubg_wood.png\n"
+		"aqua --menu-bg " PREFIX
+		"/share/feh/images/menubg_aqua.png\n"
 		"sky --menu-bg " PREFIX
-		"/share/feh/images/menubg_sky.png\n" "orange --menu-bg "
-		PREFIX "/share/feh/images/menubg_orange.png\n"
+		"/share/feh/images/menubg_sky.png\n"
+		"orange --menu-bg " PREFIX
+		"/share/feh/images/menubg_orange.png\n"
 		"light --menu-bg " PREFIX
-		"/share/feh/images/menubg_light.png\n" "black --menu-bg "
-		PREFIX "/share/feh/images/menubg_black.png --menu-style " PREFIX "/share/feh/fonts/black.style\n");
+		"/share/feh/images/menubg_light.png\n"
+		"black --menu-bg " PREFIX
+		"/share/feh/images/menubg_black.png --menu-style "
+		PREFIX "/share/feh/fonts/black.style\n");
 	fclose(fp);
 
 	D_RETURN_(4);
