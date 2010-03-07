@@ -5,8 +5,8 @@ Please see the file COPYING for licensing information.
 
 Description
 ===========
-Cam is a Perl wrapper for feh that simlifies viewing webcams. Cam uses
-keyed bookmarks.  Type "cam --help" at the command line for usage
+feh-cam is a Perl wrapper for feh that simlifies viewing webcams. It uses
+keyed bookmarks.  Type "feh-cam --help" at the command line for usage
 information.
 
 Webcam Information
@@ -21,17 +21,17 @@ have come online since cam's original release (0.1).
 
 Installation
 ============
-- Copy the "cam" script to a location in your PATH (ex /usr/bin,
+- Copy the "feh-cam" script to a location in your PATH (ex /usr/bin,
   /usr/local/bin, or $HOME/bin), and make sure hte execute bit on the
   script is set (type "chmod a+x $HOME/.cam_bookmarks").
 - Copy the "cam_bookmarks" file to $HOME/.cam_bookmarks and make sure
-  cam can see it by typing "cam --list".
-- Optionally, modify the options inside the cam script.  You can pass
+  cam can see it by typing "feh-cam --list".
+- Optionally, modify the options inside the feh-cam script.  You can pass
   feh any options before the image by adjusting the $PRE variable, 
   and any options after the image by adjustin the $POST variable.
   For example, I like to keep all cam images by default; you can enable
   this behavior with the -k command line option, or enable it permanently
-  by adding it to the $PRE flags in cam.
+  by adding it to the $PRE flags in feh-cam.
 
 About the Authors
 =================
