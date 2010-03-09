@@ -87,7 +87,7 @@ LDFLAGS = -L/usr/X11R6/lib -L/usr/lib -L/usr/local/lib
 INCLUDES = -I/usr/X11R6/include $(X_CFLAGS) -I$(prefix)/include -I$(includedir) -I.
 
 
-man_MANS = feh.1
+man_MANS = feh.1 feh-cam.1 gen-cam-menu.1
 
 docs_DATA = README AUTHORS ChangeLog TODO
 docsdir = $(prefix)/doc/feh
