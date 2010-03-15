@@ -966,24 +966,34 @@ gib_list *feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font
 void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 {
 	char *filename = FEH_FILE(w->file->data)->filename;
-	int len = 44 + (strlen(filename) * 2);
-	char *command = emalloc(len);
+	char rotate_str[4];
+	int len = strlen(filename) + 1;
+	char *file_str = emalloc(len);
 	int rotatearg = 90 * orientation;
-	int status;
+	int pid, status;
 
-	snprintf(command, len, "jpegtran -copy all -rotate %d -outfile %s %s",
-			rotatearg, filename, filename);
+	snprintf(rotate_str, 4, "%d", rotatearg);
+	snprintf(file_str, len, "%s", filename);
 
-	D(3, ("lossless_rotate: executing: %s", command));
+	if ((pid = fork()) < 0) {
+		weprintf("lossless rotate: fork failed:");
+		D_RETURN_(4);
+	} else if (pid == 0) {
 
-	status = system(command);
+		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
+				rotate_str, "-outfile", file_str, file_str, NULL);
 
-	if (status == -1)
-		weprintf("lossless rotate failed: system() failed\n");
-	else if (status > 0) {
-		weprintf("lossless rotate failed: Got return status %d from jpegtran\n",
-				WEXITSTATUS(status));
-		weprintf("Commandline was: %s", command);
+		eprintf("lossless rotate: exec failed: jpegtran:");
+	} else {
+		waitpid(pid, &status, 0);
+
+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+			weprintf("lossless rotate: Got exitcode %d from jpegtran."
+					" Commandline was:\n"
+					"jpegtran -copy all -rotate %d -outfile %s %s\n",
+					status >> 8, rotate_str, file_str, file_str);
+			D_RETURN_(4);
+		}
 	}
 }
 
