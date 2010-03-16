@@ -1,9 +1,10 @@
-Git head
+Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
 
+  * Release v1.4.1
      * Fix chrome theme in the default .fehrc
      * Rename cam to feh-cam and gen_cam_menu.sh to gen-cam-menu
-     * Add manual for feh-cam und gen-cam-menu (from Debian)
-     * Fix lossless rotate for filenames with weird characters
+     * Add manual for feh-cam and gen-cam-menu (from Debian)
+     * Fix lossless rotate for filenames with spaces etc.
 
 Thu Mar  4 14:55:02 CET 2010  Daniel Friesel <derf@chaosdorf.de>
 
