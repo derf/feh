@@ -1131,7 +1131,7 @@ void show_usage(void)
 		"See 'man feh' for more detailed information\n" "\n"
 		"This program is free software see the file COPYING for licensing info.\n"
 		"Copyright Tom Gilbert (and various contributors) 1999-2003\n"
-		"Email bugs to <feh_sucks@linuxbrit.co.uk>\n");
+		"Email bugs to <derf@chaosdorf.de>\n");
 	exit(0);
 }
 
