@@ -99,7 +99,8 @@ void init_thumbnail_mode(void)
 		int fh, fw;
 
 		td.font_title = gib_imlib_load_font(opt.title_font);
-		gib_imlib_get_text_size(td.font_title, "W", NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(td.font_title, "W", NULL, &fw, &fh,
+				IMLIB_TEXT_TO_RIGHT);
 		title_area_h = fh + 4;
 	} else
 		td.font_title = imlib_load_font(DEFAULT_FONT_TITLE);
@@ -108,9 +109,11 @@ void init_thumbnail_mode(void)
 		eprintf("Error loading fonts");
 
 	/* Work out how tall the font is */
-	gib_imlib_get_text_size(td.font_main, "W", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size(td.font_main, "W", NULL, &tw, &th,
+			IMLIB_TEXT_TO_RIGHT);
 	/* For now, allow room for the right number of lines with small gaps */
-	td.text_area_h = ((th + 2) * (opt.index_show_name + opt.index_show_size + opt.index_show_dim)) + 5;
+	td.text_area_h = ((th + 2) * (opt.index_show_name + opt.index_show_size +
+				opt.index_show_dim)) + 5;
 
 	/* This includes the text area for index data */
 	td.thumb_tot_h = opt.thumb_h + td.text_area_h;
@@ -143,13 +146,16 @@ void init_thumbnail_mode(void)
 	if (td.im_bg)
 		gib_imlib_blend_image_onto_image(td.im_main, td.im_bg,
 						 gib_imlib_image_has_alpha
-						 (td.im_bg), 0, 0, td.bg_w, td.bg_h, 0, 0, td.w, td.h, 1, 0, 0);
+						 (td.im_bg), 0, 0, td.bg_w, td.bg_h, 0, 0,
+						 td.w, td.h, 1, 0, 0);
 	else if (trans_bg) {
-		gib_imlib_image_fill_rectangle(td.im_main, 0, 0, td.w, td.h + title_area_h, 0, 0, 0, 0);
+		gib_imlib_image_fill_rectangle(td.im_main, 0, 0, td.w,
+				td.h + title_area_h, 0, 0, 0, 0);
 		gib_imlib_image_set_has_alpha(td.im_main, 1);
 	} else {
 		/* Colour the background */
-		gib_imlib_image_fill_rectangle(td.im_main, 0, 0, td.w, td.h + title_area_h, 0, 0, 0, 255);
+		gib_imlib_image_fill_rectangle(td.im_main, 0, 0, td.w,
+				td.h + title_area_h, 0, 0, 0, 255);
 	}
 
 	/* Create title now */
@@ -210,7 +216,8 @@ void init_thumbnail_mode(void)
 				hhh = hh;
 			}
 
-			im_thumb = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www, hhh, 1);
+			im_thumb = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0,
+					ww, hh, www, hhh, 1);
 			gib_imlib_free_image_and_decache(im_temp);
 
 			if (opt.alpha) {
@@ -226,22 +233,22 @@ void init_thumbnail_mode(void)
 			td.text_area_w = opt.thumb_w;
 			/* Now draw on the info text */
 			if (opt.index_show_name) {
-				gib_imlib_get_text_size(td.font_main,
-							file->name, NULL, &fw_name, &fh, IMLIB_TEXT_TO_RIGHT);
+				gib_imlib_get_text_size(td.font_main, file->name, NULL,
+						&fw_name, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw_name > td.text_area_w)
 					td.text_area_w = fw_name;
 			}
 			if (opt.index_show_dim) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_dimension_string
-							(ww, hh), NULL, &fw_dim, &fh, IMLIB_TEXT_TO_RIGHT);
+							create_index_dimension_string(ww, hh),
+							NULL, &fw_dim, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw_dim > td.text_area_w)
 					td.text_area_w = fw_dim;
 			}
 			if (opt.index_show_size) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_size_string
-							(file->filename), NULL, &fw_size, &fh, IMLIB_TEXT_TO_RIGHT);
+							create_index_size_string(file->filename),
+							NULL, &fw_size, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw_size > td.text_area_w)
 					td.text_area_w = fw_size;
 			}
@@ -287,38 +294,36 @@ void init_thumbnail_mode(void)
 							 gib_imlib_image_has_alpha
 							 (im_thumb), 0, 0,
 							 www, hhh, xxx,
-							 yyy, www, hhh, 1, gib_imlib_image_has_alpha(im_thumb), 0);
+							 yyy, www, hhh, 1,
+							 gib_imlib_image_has_alpha(im_thumb), 0);
 
-			thumbnails = gib_list_add_front(thumbnails, feh_thumbnail_new(file, xxx, yyy, www, hhh));
+			thumbnails = gib_list_add_front(thumbnails,
+					feh_thumbnail_new(file, xxx, yyy, www, hhh));
 
 			gib_imlib_free_image_and_decache(im_thumb);
 
 			lines = 0;
 			if (opt.index_show_name)
 				gib_imlib_text_draw(td.im_main,
-						    td.font_main, NULL,
-						    x + x_offset_name,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2, file->name, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+						td.font_main, NULL,
+						x + x_offset_name,
+						y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+						file->name, IMLIB_TEXT_TO_RIGHT,
+						255, 255, 255, 255);
 			if (opt.index_show_dim)
 				gib_imlib_text_draw(td.im_main,
-						    td.font_main, NULL,
-						    x + x_offset_dim,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2,
-						    create_index_dimension_string
-						    (ww, hh), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+						td.font_main, NULL,
+						x + x_offset_dim,
+						y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+						create_index_dimension_string(ww, hh),
+						IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 			if (opt.index_show_size)
 				gib_imlib_text_draw(td.im_main,
-						    td.font_main, NULL,
-						    x + x_offset_size,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2,
-						    create_index_size_string
-						    (file->filename), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+						td.font_main, NULL,
+						x + x_offset_size,
+						y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+						create_index_size_string(file->filename),
+						IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 			if (td.vertical)
 				y += td.thumb_tot_h;
@@ -343,11 +348,12 @@ void init_thumbnail_mode(void)
 		char *s;
 
 		s = create_index_title_string(thumbnailcount, td.w, td.h);
-		gib_imlib_get_text_size(td.font_title, s, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(td.font_title, s, NULL, &fw, &fh,
+				IMLIB_TEXT_TO_RIGHT);
 		fx = (index_image_width - fw) >> 1;
 		fy = index_image_height - fh - 2;
 		gib_imlib_text_draw(td.im_main, td.font_title, NULL, fx,
-				    fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+				fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 	}
 
 	if (opt.output && opt.output_file) {
@@ -365,7 +371,8 @@ void init_thumbnail_mode(void)
 			th = gib_imlib_image_get_height(td.im_main);
 			fprintf(stdout, PACKAGE " - File saved as %s\n", output_buf);
 			fprintf(stdout,
-				"    - Image is %dx%d pixels and contains %d thumbnails\n", tw, th, thumbnailcount);
+					"    - Image is %dx%d pixels and contains %d thumbnails\n",
+					tw, th, thumbnailcount);
 		}
 	}
 
@@ -500,21 +507,20 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 		if (w) {
 			td.font_main = imlib_load_font(DEFAULT_FONT_TITLE);
 			if (deleted)
-				gib_imlib_image_fill_rectangle(w->im,
-							       thumb->x, thumb->y, thumb->w, thumb->h, 255, 0, 0, 150);
+				gib_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
+						thumb->w, thumb->h, 255, 0, 0, 150);
 			else
-				gib_imlib_image_fill_rectangle(w->im,
-							       thumb->x, thumb->y, thumb->w, thumb->h, 0, 0, 255, 150);
+				gib_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
+						thumb->w, thumb->h, 0, 0, 255, 150);
 			if (td.font_main) {
 				int tw, th;
 
-				gib_imlib_get_text_size(td.font_main, "X", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-				gib_imlib_text_draw(w->im, td.font_main,
-						    NULL,
-						    thumb->x +
-						    ((thumb->w - tw) / 2),
-						    thumb->y +
-						    ((thumb->h - th) / 2), "X", IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
+				gib_imlib_get_text_size(td.font_main, "X", NULL, &tw, &th,
+						IMLIB_TEXT_TO_RIGHT);
+				gib_imlib_text_draw(w->im, td.font_main, NULL,
+						thumb->x + ((thumb->w - tw) / 2),
+						thumb->y + ((thumb->h - th) / 2), "X",
+						IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
 			} else
 				weprintf(DEFAULT_FONT_TITLE);
 			winwidget_render_image(w, 0, 1);
@@ -573,21 +579,22 @@ void feh_thumbnail_calculate_geometry(void)
 			file = FEH_FILE(l->data);
 			td.text_area_w = opt.thumb_w;
 			if (opt.index_show_name) {
-				gib_imlib_get_text_size(td.font_main, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+				gib_imlib_get_text_size(td.font_main, file->name, NULL,
+						&fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_dim) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_dimension_string
-							(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+						create_index_dimension_string(1000, 1000),
+						NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_size) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_size_string
-							(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+						create_index_size_string(file->filename),
+						NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
@@ -620,21 +627,22 @@ void feh_thumbnail_calculate_geometry(void)
 			td.text_area_w = opt.thumb_w;
 			/* Calc width of text */
 			if (opt.index_show_name) {
-				gib_imlib_get_text_size(td.font_main, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+				gib_imlib_get_text_size(td.font_main, file->name, NULL,
+						&fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_dim) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_dimension_string
-							(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+							create_index_dimension_string(1000, 1000),
+							NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_size) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_size_string
-							(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+							create_index_size_string(file->filename),
+							NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
@@ -662,21 +670,22 @@ void feh_thumbnail_calculate_geometry(void)
 			file = FEH_FILE(l->data);
 			td.text_area_w = opt.thumb_w;
 			if (opt.index_show_name) {
-				gib_imlib_get_text_size(td.font_main, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+				gib_imlib_get_text_size(td.font_main, file->name, NULL,
+						&fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_dim) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_dimension_string
-							(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+						create_index_dimension_string(1000, 1000),
+						NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
 			if (opt.index_show_size) {
 				gib_imlib_get_text_size(td.font_main,
-							create_index_size_string
-							(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+						create_index_size_string(file->filename),
+						NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
 			}
@@ -785,7 +794,8 @@ char *feh_thumbnail_get_name_md5(char *uri)
 	return md5_name;
 }
 
-int feh_thumbnail_generate(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri)
+int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
+		char *thumb_file, char *uri)
 {
 	int w, h, thumb_w, thumb_h;
 	char *c_mtime;
@@ -806,12 +816,14 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file, char *thumb_fil
 				thumb_w = 128 * ratio;
 		}
 
-		*image = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, w, h, thumb_w, thumb_h, 1);
+		*image = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, w, h,
+				thumb_w, thumb_h, 1);
 
 		if (!stat(file->filename, &sb)) {
 			char c_mtime[256];
 			sprintf(c_mtime, "%d", sb.st_mtime);
-			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri, "Thumb::MTime", c_mtime);
+			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri,
+					"Thumb::MTime", c_mtime);
 		}
 
 		gib_imlib_free_image_and_decache(im_temp);
