@@ -1,3 +1,6 @@
+  * git HEAD
+     * Replace autoconf by config.mk
+
 Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
 
   * Release v1.4.1
