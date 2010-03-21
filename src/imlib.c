@@ -1044,7 +1044,7 @@ void feh_draw_actions(winwidget w)
 	}
 
 	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-// Check for the widest line
+/* Check for the widest line */
 	max_tw = tw;
 
 	for (i = 0; i < 10; i++) {

@@ -13,7 +13,7 @@ image_dir = $(prefix)/share/feh/images
 font_dir = $(prefix)/share/feh/fonts
 
 # default CFLAGS
-CFLAGS = -g -Wall -Wextra -O2
+CFLAGS = -g -Wall -Wextra -pedantic -O2
 
 # Comment these out if you don't have libxinerama
 xinerama = -DHAVE_LIBXINERAMA

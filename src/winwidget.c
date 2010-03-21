@@ -896,9 +896,9 @@ void feh_debug_print_winwid(winwidget w)
 	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n"
 	       "click_offset_x = %d\n" "click_offset_y = %d\n"
 	       "im_click_offset_x = %d\n" "im_click_offset_y = %d\n"
-	       "has_rotated = %d\n", w, w->win, w->w, w->h, w->im_w,
-	       w->im_h, w->im_angle, w->type, w->had_resize, w->im, w->gc,
-	       w->bg_pmap, w->name, w->file, w->mode, w->im_x, w->im_y,
+	       "has_rotated = %d\n", (void *)w, w->win, w->w, w->h, w->im_w,
+	       w->im_h, w->im_angle, w->type, w->had_resize, w->im, (void *)w->gc,
+	       w->bg_pmap, w->name, (void *)w->file, w->mode, w->im_x, w->im_y,
 	       w->zoom, w->click_offset_x, w->click_offset_y,
 	       w->im_click_offset_x, w->im_click_offset_y, w->has_rotated);
 }

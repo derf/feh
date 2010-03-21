@@ -45,7 +45,7 @@ typedef struct {
 enum {
 	IPC_CMD_QUIT,
 	IPC_CMD_FILELIST_NEXT,
-	IPC_CMD_FILELIST_PREV,
+	IPC_CMD_FILELIST_PREV
 };
 
 #endif
