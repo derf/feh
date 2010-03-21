@@ -12,9 +12,6 @@ doc_dir = $(prefix)/share/doc
 image_dir = $(prefix)/share/feh/images
 font_dir = $(prefix)/share/feh/fonts
 
-# debug = 1 if you want debug mode
-debug =
-
 # default CFLAGS
 CFLAGS = -g -Wall -Wextra -O2
 
@@ -28,6 +25,10 @@ extra_headers =
 # Put extra include (-Lfoo) directories here
 extra_libs =
 
+debug = -DDEBUG
+# Enable this for debug mode
+#CFLAGS += $(debug)
+
 dmalloc = -DWITH_DMALLOC
 # Enable this to use dmalloc
 #CFLAGS += $(dmalloc)
@@ -36,7 +37,7 @@ dmalloc = -DWITH_DMALLOC
 # You should not need to change anything below this line.
 
 CFLAGS += $(extra_headers) $(xinerama) -DPREFIX=\"$(prefix)\" \
-	-DPACKAGE=\"$(package)\" -DVERSION=\"$(version)\" $(debug)
+	-DPACKAGE=\"$(package)\" -DVERSION=\"$(version)\"
 
 LDFLAGS = -lz -lpng -lX11 -lImlib2 -lfreetype -lXext -ldl -lm -lgiblib \
 	$(xinerama_ld) $(extra_includes)
