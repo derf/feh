@@ -76,23 +76,3 @@ void feh_ipc_cleanup(void)
 	unlink(socket_name);
 	free(socket_name);
 }
-
-static void feh_ipc_write_packet(int fd, void *data, int length)
-{
-	feh_ipc_server_header header;
-	header.version = FEH_IPC_VERSION;
-	header.data_length = length;
-	if (data && length > 0) {
-		write(fd, data, length);
-	}
-}
-
-static void feh_ipc_write_int(int fd, int val)
-{
-	feh_ipc_write_packet(fd, &val, sizeof(int));
-}
-
-static void feh_ipc_write_string(int fd, char *string)
-{
-	feh_ipc_write_packet(fd, &string, string ? strlen(string) + 1 : 0);
-}

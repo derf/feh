@@ -65,8 +65,6 @@ static void feh_menu_cb_sort_filename(feh_menu * m, feh_menu_item * i, void *dat
 static void feh_menu_cb_sort_imagename(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_sort_filesize(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_sort_randomize(feh_menu * m, feh_menu_item * i, void *data);
-static void feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data);
-static feh_menu *feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data);
 static feh_menu *feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_func_free_info(feh_menu * m, void *data);
 static void feh_menu_cb_save_image(feh_menu * m, feh_menu_item * i, void *data);
@@ -1022,13 +1020,6 @@ void feh_menu_init_main(void)
 
 	feh_menu_add_entry(menu_main, "File", NULL, "FILE", NULL, NULL, NULL);
 	if (opt.slideshow || opt.multiwindow) {
-#if 0
-		feh_menu_item *mi;
-
-		mi = feh_menu_add_entry(menu_main, "Jump to", NULL, "JUMP", NULL, NULL, NULL);
-		mi->func_gen_sub = feh_menu_func_gen_jump;
-#endif
-
 		feh_menu_add_entry(menu_main, "Sort List", NULL, "SORT", NULL, NULL, NULL);
 		mi = feh_menu_add_entry(menu_main, "Image Info", NULL, "INFO", NULL, NULL, NULL);
 		mi->func_gen_sub = feh_menu_func_gen_info;
@@ -1562,23 +1553,6 @@ static void feh_menu_cb_sort_randomize(feh_menu * m, feh_menu_item * i, void *da
 	data = NULL;
 }
 
-static feh_menu *feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
-{
-	feh_menu *mm;
-	gib_list *l;
-
-	D_ENTER(4);
-	mm = feh_menu_new();
-	mm->name = estrdup("JUMP");
-	for (l = filelist; l; l = l->next) {
-		feh_menu_add_entry(mm, FEH_FILE(l->data)->name, NULL, NULL, feh_menu_cb_jump_to, l, NULL);
-	}
-	D_RETURN(4, mm);
-	m = NULL;
-	i = NULL;
-	data = NULL;
-}
-
 static feh_menu *feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 {
 	Imlib_Image im;
@@ -1655,25 +1629,6 @@ static void feh_menu_func_free_options(feh_menu * m, void *data)
 	feh_menu_free(m);
 	D_RETURN_(4);
 	data = NULL;
-}
-
-static void feh_menu_cb_jump_to(feh_menu * m, feh_menu_item * i, void *data)
-{
-	gib_list *l;
-
-	D_ENTER(4);
-	l = (gib_list *) data;
-	if (l->prev) {
-		current_file = l->prev;
-		slideshow_change_image(m->fehwin, SLIDE_NEXT);
-	} else if (l->next) {
-		current_file = l->next;
-		slideshow_change_image(m->fehwin, SLIDE_PREV);
-	}
-
-	D_RETURN_(4);
-	i = NULL;
-	m = NULL;
 }
 
 static void feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data)
