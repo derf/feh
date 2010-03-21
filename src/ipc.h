@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define FEH_IPC_VERSION 0x100;
 
-int feh_ipc_create_socket(void);
+void feh_ipc_create_socket(void);
 int feh_ipc_get_session_id(void);
 
 typedef struct {

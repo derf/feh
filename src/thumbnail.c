@@ -781,7 +781,7 @@ char *feh_thumbnail_get_name_md5(char *uri)
 
 	/* generate the md5 sum */
 	md5_init(&pms);
-	md5_append(&pms, uri, strlen(uri));
+	md5_append(&pms, (unsigned char *)uri, strlen(uri));
 	md5_finish(&pms, digest);
 
 	/* print the md5 as hex to a string */
@@ -798,7 +798,6 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 		char *thumb_file, char *uri)
 {
 	int w, h, thumb_w, thumb_h;
-	char *c_mtime;
 	Imlib_Image im_temp;
 	struct stat sb;
 
@@ -820,8 +819,8 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 				thumb_w, thumb_h, 1);
 
 		if (!stat(file->filename, &sb)) {
-			char c_mtime[256];
-			sprintf(c_mtime, "%d", sb.st_mtime);
+			char c_mtime[128];
+			sprintf(c_mtime, "%d", (int)sb.st_mtime);
 			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri,
 					"Thumb::MTime", c_mtime);
 		}

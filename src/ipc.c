@@ -31,7 +31,7 @@ static int session_id = 0;
 static char *socket_name;
 static int socket_fd = 0;
 
-int feh_ipc_create_socket(void)
+void feh_ipc_create_socket(void)
 {
 	struct sockaddr_un saddr;
 	int i;

@@ -396,8 +396,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-dim", 1, 0, 232},
 		{0, 0, 0, 0}
 	};
-	int optch = 0, cmdx = 0, i = 0;
-	int geomret;
+	int optch = 0, cmdx = 0;
 
 	D_ENTER(4);
 

@@ -114,8 +114,8 @@ struct __fehoptions {
 	int geom_flags;
 	int geom_x;
 	int geom_y;
-	int geom_w;
-	int geom_h;
+	unsigned int geom_w;
+	unsigned int geom_h;
 	int default_zoom;
 	int menu_border;
 	unsigned char adjust_reload;

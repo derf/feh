@@ -259,7 +259,8 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		ev.xclient.data.l[0] = (ret->full_screen ? 1 : 0);
 		ev.xclient.data.l[1] = prop_fs;
 
-		XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32, PropModeReplace, &prop_fs, 1);
+		XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32,
+				PropModeReplace, (unsigned char *) &prop_fs, 1);
 	}
 
 	XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
@@ -976,7 +977,7 @@ int winwidget_get_height(winwidget winwid)
 
 void winwidget_get_geometry(winwidget winwid, int *rect)
 {
-	int bw, bp;
+	unsigned int bw, bp;
 	Window child;
 	D_ENTER(4);
 	if (!rect)
