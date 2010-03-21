@@ -1,10 +1,10 @@
 Compile:
 
-$ ./configure
 $ make
-$ su -c "make install"
+$ sudo make install
 
-(Red hat users, use $ ./configure --prefix=/usr)
+If compilation does not work or you want to customize stuff (like disable
+Xinerama support), edit config.mk first.
 
 What is feh?
 
