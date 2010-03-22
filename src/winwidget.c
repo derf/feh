@@ -382,7 +382,7 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 
 	if (resize && (winwid->full_screen || opt.geom_flags)) {
 		int smaller;	/* Is the image smaller than screen? */
-		int max_w, max_h;
+		int max_w = 0, max_h = 0;
 
 		if (winwid->full_screen) {
 			max_w = scr->width;
