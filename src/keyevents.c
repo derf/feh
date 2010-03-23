@@ -328,6 +328,11 @@ void feh_event_handle_keypress(XEvent * ev)
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_PREV);
 		break;
+	case 'z':
+	case 'Z':
+		if (opt.slideshow)
+			slideshow_change_image(winwid, SLIDE_RAND);
+		break;
 	case 'q':
 	case 'Q':
 		winwidget_destroy_all();

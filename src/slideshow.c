@@ -205,6 +205,9 @@ void slideshow_change_image(winwidget winwid, int change)
 		case SLIDE_PREV:
 			current_file = feh_list_jump(filelist, current_file, BACK, 1);
 			break;
+		case SLIDE_RAND:
+			current_file = feh_list_jump(filelist, current_file, FORWARD, rand() % filelist_len);
+			break;
 		case SLIDE_JUMP_FWD:
 			if (filelist_len < 5)
 				jmp = 1;
