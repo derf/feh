@@ -19,7 +19,7 @@ while (my $line = <$c_fh>) {
 }
 close($c_fh);
 
-open(my $man_fh, '<', 'feh.1') or die("Can't read feh.1: $!");
+open(my $man_fh, '<', 'man/feh.1') or die("Can't read feh.1: $!");
 while (my $line = <$man_fh>) {
 
 	if ($line =~ /^\.B (?:-(?<short>.), )?--(?<long>[\w-]+)/) {
