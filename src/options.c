@@ -1094,6 +1094,7 @@ void show_usage(void)
 " w, W                       Size window to current image dimensions\n"
 " h, H                       Pause the slideshow (only useful when using\n"
 "                            timed reloading or image changes)\n"
+" z, Z                       Jump to a random position in the current filelist\n"
 " a, A                       Toggle action display (--draw-actions)\n"
 " d, D                       Toggle filename display (--draw-filename)\n"
 " s, S                       Save current image to unique filename\n"
