@@ -207,6 +207,7 @@ void slideshow_change_image(winwidget winwid, int change)
 			break;
 		case SLIDE_RAND:
 			current_file = feh_list_jump(filelist, current_file, FORWARD, rand() % filelist_len);
+			change = SLIDE_NEXT;
 			break;
 		case SLIDE_JUMP_FWD:
 			if (filelist_len < 5)
@@ -308,11 +309,12 @@ char *slideshow_create_name(feh_file * file)
 	int len = 0;
 
 	D_ENTER(4);
+
 	if (!opt.title) {
 		len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
 		s = emalloc(len);
 		snprintf(s, len, PACKAGE " [%d of %d] - %s",
-			 gib_list_num(filelist, current_file) + 1, gib_list_length(filelist), file->filename);
+			gib_list_num(filelist, current_file) + 1, gib_list_length(filelist), file->filename);
 	} else {
 		s = estrdup(feh_printf(opt.title, file));
 	}
