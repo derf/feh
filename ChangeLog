@@ -1,5 +1,7 @@
   * git HEAD
      * Replace autoconf by config.mk
+     * patch: Use z key to randomly jump in the filelist
+     * Fix problems with unexpectedly empty filelists
 
 Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
 
