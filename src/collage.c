@@ -119,7 +119,6 @@ void init_collage_mode(void)
 		file = FEH_FILE(l->data);
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
-			filelist_len--;
 			last = NULL;
 		}
 		D(3, ("About to load image %s\n", file->filename));

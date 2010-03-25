@@ -113,6 +113,8 @@ gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l)
 {
 	D_ENTER(4);
 	feh_file_free(FEH_FILE(l->data));
+	D(4, ("filelist_len %d -> %d\n", filelist_len, filelist_len - 1));
+	filelist_len--;
 	D_RETURN(4, gib_list_remove(list, l));
 }
 

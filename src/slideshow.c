@@ -50,7 +50,6 @@ void init_slideshow_mode(void)
 		file = FEH_FILE(l->data);
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
-			filelist_len--;
 			last = NULL;
 		}
 		current_file = l;
@@ -128,6 +127,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		winwidget_rename(w, title);
 		free(title);
 		free(new_title);
+		filelist = feh_file_remove_from_list(filelist, w->file);
 		D_RETURN_(4);
 	}
 	if (force_new) {
@@ -244,7 +244,6 @@ void slideshow_change_image(winwidget winwid, int change)
 
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
-			filelist_len--;
 			last = NULL;
 		}
 		s = slideshow_create_name(FEH_FILE(current_file->data));
@@ -268,18 +267,12 @@ void slideshow_change_image(winwidget winwid, int change)
 		} else
 			last = current_file;
 	}
-	if (!success) {
-		/* We get here if three files in a row could not be loaded.
-		 * However, it seems that this piece of code is never reached when feh
-		 * would otherwise fail; it's only executed in the aforementioned case,
-		 * causing slideshows to exit although there still are lots of working slides.
-		 *
-		 * So far, there is one known case were we should exit here:
-		 * When viewing a set of files, externally removing all of them and then resizing
-		 * the window in feh, feh will print lots of imlib errors and eventually segfault.
-		 */
-		weprintf("No more slides in show?");
-	}
+	if (last)
+		filelist = feh_file_remove_from_list(filelist, last);
+
+	if (filelist_len == 0)
+		eprintf("No more slides in show");
+
 	if (opt.slideshow_delay >= 0.0)
 		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
 	D_RETURN_(4);
@@ -445,7 +438,6 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 
 		doomed = current_file;
 		slideshow_change_image(winwid, SLIDE_NEXT);
-		filelist_len--;
 		if (do_delete)
 			filelist = feh_file_rm_and_free(filelist, doomed);
 		else
@@ -460,7 +452,6 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 		free(s);
 	} else if ((winwid->type == WIN_TYPE_SINGLE)
 		   || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
-		filelist_len--;
 		if (do_delete)
 			filelist = feh_file_rm_and_free(filelist, winwid->file);
 		else

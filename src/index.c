@@ -306,7 +306,6 @@ void init_index_mode(void)
 		file = FEH_FILE(l->data);
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
-			filelist_len--;
 			last = NULL;
 		}
 		D(4, ("About to load image %s\n", file->filename));
