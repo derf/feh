@@ -41,5 +41,5 @@ dmalloc = -DWITH_DMALLOC
 CFLAGS += $(extra_headers) $(xinerama) -DPREFIX=\"$(prefix)\" \
 	-DPACKAGE=\"$(package)\" -DVERSION=\"$(version)\"
 
-LDFLAGS = -lz -lpng -lX11 -lImlib2 -lfreetype -lXext -ldl -lm -lgiblib \
+LDFLAGS = -lpng -lX11 -lImlib2 -lfreetype -lXext -lgiblib \
 	$(xinerama_ld) $(extra_includes)
