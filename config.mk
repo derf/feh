@@ -1,6 +1,7 @@
-# Package name and version
 package = feh
 version = 1.4.1
+
+# Customize below:
 
 # Prefix for all installed files
 prefix = /usr/local
@@ -19,18 +20,19 @@ CFLAGS = -g -Wall -Wextra -pedantic -O2
 xinerama = -DHAVE_LIBXINERAMA
 xinerama_ld = -lXinerama
 
-# Put extra header directories here
+# Put extra header (-I/some/directory) directories here
 extra_headers =
 
-# Put extra include (-Lfoo) directories here
+# Put extra include (-L/some/directory) directories here
 extra_libs =
 
 debug = -DDEBUG
-# Enable this for debug mode
+# Uncomment this for debug mode
+# (Use feh -+ <level> to see debug output)
 #CFLAGS += $(debug)
 
 dmalloc = -DWITH_DMALLOC
-# Enable this to use dmalloc
+# Uncomment this to use dmalloc
 #CFLAGS += $(dmalloc)
 
 
