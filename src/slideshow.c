@@ -280,20 +280,13 @@ void slideshow_change_image(winwidget winwid, int change)
 
 void slideshow_pause_toggle(winwidget w)
 {
-	char *title, *new_title;
-	int len;
-
 	if (!opt.paused) {
 		opt.paused = 1;
-
-		len = strlen(w->name) + sizeof(" [Paused]") + 1;
-		new_title = emalloc(len);
-		snprintf(new_title, len, "%s [Paused]", w->name);
-		title = estrdup(w->name);
-		winwidget_rename(w, new_title);
 	} else {
 		opt.paused = 0;
 	}
+
+	winwidget_rename(w, NULL);
 }
 
 char *slideshow_create_name(feh_file * file)

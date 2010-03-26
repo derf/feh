@@ -868,10 +868,28 @@ winwidget winwidget_get_from_window(Window win)
 
 void winwidget_rename(winwidget winwid, char *newname)
 {
+	/* newname == NULL -> update current title */
+	char *p_str;
+
 	D_ENTER(4);
+	if (newname == NULL)
+		newname = estrdup(winwid->name ? winwid->name : "");
 	if (winwid->name)
 		free(winwid->name);
-	winwid->name = estrdup(newname);
+
+	winwid->name = emalloc(strlen(newname) + 10);
+	strcpy(winwid->name, newname);
+
+	if (strlen(winwid->name) > 9)
+		p_str = winwid->name + strlen(winwid->name) - 9;
+	else
+		p_str = winwid->name;
+
+	if (opt.paused && strcmp(p_str, " [Paused]") != 0)
+		strcat(winwid->name, " [Paused]");
+	else if (!opt.paused && strcmp(p_str, " [Paused]") == 0)
+		*p_str = '\0';
+
 	winwidget_update_title(winwid);
 	D_RETURN_(4);
 }
