@@ -6,6 +6,11 @@ $ sudo make install
 If compilation does not work or you want to customize stuff (like disable
 Xinerama support), edit config.mk first.
 
+Note: config.mk is designed so that in most cases, you can set environment
+variables instead of editing it. E.g.:
+CFLAGS='-g -Os' make
+export DESTDIR=/tmp/feh PREFIX=/usr; make && make install
+
 What is feh?
 
 http://linuxbrit.co.uk/feh/

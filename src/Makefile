@@ -1,13 +1,13 @@
 include ../config.mk
 
-TARGETS = $(shell echo *.c)
-OBJECTS = $(TARGETS:.c=.o)
+TARGETS = ${shell echo *.c}
+OBJECTS = ${TARGETS:.c=.o}
 
-feh: deps.mk $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
+feh: deps.mk ${OBJECTS}
+	${CC} ${CFLAGS} -o $@ ${OBJECTS} ${LDFLAGS}
 
-deps.mk: $(TARGETS)
-	$(CC) -MM $(TARGETS) > $@
+deps.mk: ${TARGETS}
+	${CC} -MM ${TARGETS} > $@
 
 include deps.mk
 

@@ -1,45 +1,36 @@
-package = feh
-version = 1.4.1-git
-
-# Customize below:
+PACKAGE ?= feh
+VERSION ?= 1.4.1-git
 
 # Prefix for all installed files
-prefix = /usr/local
+PREFIX ?= /usr/local
 
 # Directories for manuals, executables, docs, data, etc.
-man_dir = $(prefix)/share/man
-bin_dir = $(prefix)/bin
-doc_dir = $(prefix)/share/doc
-image_dir = $(prefix)/share/feh/images
-font_dir = $(prefix)/share/feh/fonts
+main_dir = ${DESTDIR}${PREFIX}
+man_dir = ${main_dir}/share/man
+bin_dir = ${main_dir}/bin
+doc_dir = ${main_dir}/share/doc
+image_dir = ${main_dir}/share/feh/images
+font_dir = ${main_dir}/share/feh/fonts
 
 # default CFLAGS
-CFLAGS = -g -Wall -Wextra -pedantic -O2
+CFLAGS ?= -g -O2
+CFLAGS += -Wall -Wextra -pedantic
 
 # Comment these out if you don't have libxinerama
 xinerama = -DHAVE_LIBXINERAMA
 xinerama_ld = -lXinerama
 
-# Put extra header (-I/some/directory) directories here
-extra_headers =
-
-# Put extra include (-L/some/directory) directories here
-extra_libs =
-
 debug = -DDEBUG
 # Uncomment this for debug mode
 # (Use feh -+ <level> to see debug output)
-#CFLAGS += $(debug)
+#CFLAGS += ${debug}
 
 dmalloc = -DWITH_DMALLOC
 # Uncomment this to use dmalloc
-#CFLAGS += $(dmalloc)
+#CFLAGS += ${dmalloc}
 
+CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
+	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
-# You should not need to change anything below this line.
-
-CFLAGS += $(extra_headers) $(xinerama) -DPREFIX=\"$(prefix)\" \
-	-DPACKAGE=\"$(package)\" -DVERSION=\"$(version)\"
-
-LDFLAGS = -lpng -lX11 -lImlib2 -lfreetype -lXext -lgiblib \
-	$(xinerama_ld) $(extra_includes)
+LDFLAGS += -lpng -lX11 -lImlib2 -lfreetype -lXext -lgiblib \
+	${xinerama_ld} ${extra_includes}
