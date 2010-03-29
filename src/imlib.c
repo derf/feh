@@ -310,6 +310,8 @@ char *feh_http_load_image(char *url)
 		hostname = feh_strip_hostname(newurl);
 		if (!hostname) {
 			weprintf("couldn't work out hostname from %s:", newurl);
+			fclose(fp);
+			unlink(tmpname);
 			free(tmpname);
 			free(newurl);
 			D_RETURN(4, NULL);
@@ -319,6 +321,8 @@ char *feh_http_load_image(char *url)
 
 		if (!(hptr = feh_gethostbyname(hostname))) {
 			weprintf("error resolving host %s:", hostname);
+			fclose(fp);
+			unlink(tmpname);
 			free(hostname);
 			free(tmpname);
 			free(newurl);
@@ -334,6 +338,8 @@ char *feh_http_load_image(char *url)
 
 		if ((sockno = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
 			weprintf("error opening socket:");
+			fclose(fp);
+			unlink(tmpname);
 			free(tmpname);
 			free(hostname);
 			free(newurl);
@@ -341,6 +347,8 @@ char *feh_http_load_image(char *url)
 		}
 		if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
 			weprintf("error connecting socket:");
+			fclose(fp);
+			unlink(tmpname);
 			free(tmpname);
 			free(hostname);
 			free(newurl);
@@ -486,6 +494,7 @@ char *feh_http_load_image(char *url)
 
 			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 				weprintf("url: wget failed to load URL %s\n", url);
+				unlink(opt.wget_timestamp ? tmpname_timestamper : tmpname);
 				free(newurl);
 				free(tmpname);
 				D_RETURN(4, NULL);

@@ -2,6 +2,7 @@
      * Replace autoconf by config.mk
      * patch by decklin: Use z key to randomly jump in the filelist
      * patch by muennich: Correctly set [Paused] window title in slideshow mode
+     * patch by dylan: Remove temporary files if url opening fails
      * Fix problems with unexpectedly empty filelists
 
 Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
