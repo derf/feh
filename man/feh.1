@@ -285,24 +285,29 @@ Show/Don't show filesize in thumbnail/index mode.
 Show/Don't show image dimensions in thumbnail/index mode.
 .TP 5
 .B --bg-tile FILE
+Set FILE as your desktop background, tiled if neccessary.
+Feh can use enlightenment IPC if you are running it,
+or will fall back to X methods.
+Feh stores the commandline necessary to restore the background you chose
+in ~/.fehbg.  So to have feh-set backgrounds restored when you restart X,
+add the line "`cat $HOME/.fehbg`" to your X startup script (e.g. ~/.xsession).
+Note that you only need to do this for non E window managers.
 .TP 5
 .B --bg-center FILE
+Set FILE as centered desktop background
 .TP 5
 .B --bg-scale FILE
+Set FILE as scaled desktop background.
+This will fill the whole background with FILE, but its aspect ratio will not
+be preserved.
 .TP 5
 .B --bg-fill FILE
+Like --bg-scale, but preserves aspect ratio by zooming the image until it
+fits.  Either a horizontal or a vertical part of the image will be cut off.
 .TP 5
 .B --bg-seamless FILE
-Set your desktop background to FILE. Feh
-can use enlightenment IPC if you are running
-it, or will fall back to X methods.
-Feh stores the commandline necessary to restore
-the background you chose in ~/.fehbg. So to have
-feh-set backgrounds restored when you restart X,
-add the line "`cat $HOME/.fehbg`" to your
-X startup script (e.g. ~/.xsession). Note that
-you only need to do this for non E window
-managers.
+Like --bg-tile, but with blurry corners so that it is (in some cases ;-))
+less obvious that the image is too small for the screen.
 .TP 5
 .B -M, --menu-font FONT
 Use FONT for the font in menus.
