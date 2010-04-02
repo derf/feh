@@ -33,4 +33,4 @@ CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
 LDFLAGS += -lpng -lX11 -lImlib2 -lfreetype -lXext -lgiblib \
-	${xinerama_ld} ${extra_includes}
+	${xinerama_ld}
