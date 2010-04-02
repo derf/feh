@@ -22,7 +22,7 @@ xinerama_ld = -lXinerama
 
 debug = -DDEBUG
 # Uncomment this for debug mode
-# (Use feh -+ <level> to see debug output)
+# (Use feh -+ <level> or feh --debug-level <level> to see debug output)
 #CFLAGS += ${debug}
 
 dmalloc = -DWITH_DMALLOC
