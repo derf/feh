@@ -1,4 +1,6 @@
-  * git HEAD
+Fri Apr  2 16:20:55 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+
+* Release v1.4.2
      * Replace autoconf by config.mk
      * patch by decklin: Use z key to randomly jump in the filelist
      * patch by muennich: Correctly set [Paused] window title in slideshow mode
