@@ -23,3 +23,5 @@ On screen 1, it will work if fullscreen is turned off, the window is rendered
 and moved so that its top corner is only on screen 1, and then fullscreen is
 turned on (after that, it'll work for all images in the slideshow).
 Maybe I'll someday find out how to fix that :>
+
+In zoom / pan mode: Warp the mouse when reaching a screen corner.
