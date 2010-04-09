@@ -465,27 +465,34 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			D(4, ("im_x %d, im_w %d, off %d, mx %d\n", winwid->im_x,
 				winwid->im_w, winwid->click_offset_x, ev->xmotion.x));
 
-			if (winwid->w - ev->xmotion.x <= 1) {
+			if ((winwid->w - ev->xmotion.x <= 1)
+					&& (winwid->click_offset_x >= winwid->w - 4))
+			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0, 3,
 					ev->xmotion.y);
 				winwid->click_offset_x -= winwid->w - 4;
 			}
-			else if (ev->xmotion.x <= 0) {
+			else if ((ev->xmotion.x <= 0) && (winwid->click_offset_x
+					<= winwid->im_w - winwid->w - 3))
+			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					winwid->im_w - 4, ev->xmotion.y);
 				winwid->click_offset_x += winwid->w - 3;
 			}
-			else if (winwid->h - ev->xmotion.y <= 1) {
+			else if ((winwid->h - ev->xmotion.y <= 1)
+					&& (winwid->click_offset_y >= winwid->h - 4))
+			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					ev->xmotion.x, 3);
 				winwid->click_offset_y -= winwid->h - 4;
 			}
-			else if (ev->xmotion.y <= 0) {
+			else if ((ev->xmotion.y <= 0) && (winwid->click_offset_y
+					<= winwid->im_h - winwid->h - 3))
+			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					ev->xmotion.x, winwid->im_h - 4);
 				winwid->click_offset_y += winwid->h - 3;
 			}
-
 
 			if ((winwid->im_x != orig_x)
 					|| (winwid->im_y != orig_y))
