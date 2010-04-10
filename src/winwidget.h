@@ -100,7 +100,7 @@ struct __winwidget {
 	/* New stuff */
 	int im_x;		/* image offset from window top left */
 	int im_y;		/* image offset from window top left */
-	double zoom;		/* From 0 (not visible) to 100 (actual size)
+	double zoom;		/* From 0 (not visible) to 1.00 (actual size)
 				   all the way up to INT_MAX (ouch) */
 	int click_offset_x;
 	int click_offset_y;

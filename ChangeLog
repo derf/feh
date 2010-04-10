@@ -1,3 +1,6 @@
+* git HEAD
+     * Warp the pointer when reaching a window border in pan mode
+
 Fri Apr  2 16:20:55 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.4.2
