@@ -8,11 +8,10 @@ feh [options] file(s)
 is an image viewer using the
 .B imlib2
 library to open and manipulate images.
-.B feh
-has a large number of operational modes. The default mode is an image
+It has a large number of operational modes.  The default mode is an image
 slideshow, showing one image at a time from those specified on the
-commandline. Keys and mouse control may be used to move through them. Other
-modes can be specified on the commandline, and are described below.
+commandline.  Keys and mouse control may be used to move through them.
+Other modes can be specified on the commandline, and are described below.
 .PP
 .B feh
 can also recurse through a directory structure to form a filelist for
@@ -29,29 +28,29 @@ or you can sort by filename, image name, width, height, pixels, etc.
 Filelists can also be saved to or loaded from files.
 .SH MODES
 .B Montage mode
-forms a montage from the filelist. The resultant image can be viewed or
-saved, and it's size can be limited by height, width or both.
+forms a montage from the filelist. The resulting image can be viewed or
+saved, and its size can be limited by height, width or both.
 .PP
 .B Collage mode
 is very similar to montage mode, except the images are distributed randomly
-and may overlap eachother
+and may overlap each other.
 .PP
 .B Index mode
-forms an index print from the filelist. Image thumbnails are shown along
+forms an index print from the filelist.  Image thumbnails are shown along
 with the filename, filesize and pixel size, printed using a truetype font of
-your choice. The resultant image can be viewed or saved, and it's size can
+your choice.  The resulting image can be viewed or saved, and its size can
 be limited by height, width or both.
 .PP
 .B Thumbnail mode
-is like index mode, but the mini-images are clickable, and launch the
-clicked image in a browser window.
+is like index mode, but the mini-images are clickable, and open the selected
+image in a new window.
 .PP
 .B Multiwindow mode
 shows images in multiple windows, instead of as a slideshow in one window.
 Don't use with a large filelist ;)
 .PP
 .B Fullscreen mode
-shows image in fullscreen view, can be combined with a slide-change delay to
+shows image in fullscreen view. Can be combined with a slide-change delay to
 show an automated presentation.
 .PP
 .B List mode
@@ -313,7 +312,7 @@ less obvious that the image is too small for the screen.
 Use FONT for the font in menus.
 .TP 5
 .B -C, --fontpath PATH
-Specify PATH as an extra directory in which to search for fonts, can use
+Specify PATH as an extra directory in which to search for fonts, can be used
 multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
 /path/b.
 .TP 5
@@ -692,9 +691,7 @@ view, automatically changing slides every 5 seconds.
 View all the images in /opt/images and below, sorted by width (smallest
 first) and move the image to ~/images/image_name when enter is pressed.
 .SH BUGS
-When the files (or even the directory) feh is displaying is deleted by an
-external application while feh is running, trying to change or resize the
-current image may cause segmentation faults.
+Xinerama support has a few problems, especially when not on Xinerama screen 0.
 .PP
 There are probably other bugs, too. If you find one, let me know :)
 .SH LICENSE
