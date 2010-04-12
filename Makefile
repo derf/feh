@@ -8,9 +8,9 @@ install: install-man install-doc install-bin install-font install-img
 install-man:
 	@echo installing manuals to ${man_dir}
 	@mkdir -p ${man_dir}/man1
-	@cp man/feh.1 man/feh-cam.1 ${man_dir}/man1
-	@chmod 644 $(man_dir)/man1/feh.1 $(man_dir)/man1/feh-cam.1
-	@ln -fs feh-cam.1 $(man_dir)/man1/gen-cam-menu.1
+	@cp man/feh.1 man/feh-cam.1 man/gen-cam-menu.1 ${man_dir}/man1
+	@chmod 644 ${man_dir}/man1/feh.1 ${man_dir}/man1/feh-cam.1 \
+		${man_dir}/man1/gen-cam-menu.1
 
 install-doc:
 	@echo installing docs to ${doc_dir}
