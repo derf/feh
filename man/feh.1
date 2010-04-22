@@ -14,7 +14,7 @@
 .Sh DESCRIPTION
 .Nm
 is an image viewer using the imlib2 library to open and manipulate
-images. It has a large number of operational modes.  The default mode is an
+images.  It has a large number of operational modes.  The default mode is an
 image slideshow, showing one image at a time from those specified on the
 command line.  Keys and mouse control may be used to move through them.
 Other modes can be specified on the commandline, and are described below.
@@ -67,7 +67,7 @@ the commandline.
 .Pp
 .Nm
 can read options from the commandline, or from a config file.  The syntax is
-the same in each case. See
+the same in each case.  See
 .Sx CONFIG FILE SYNTAX
 for details about using themes defined in a config file.
 These methods may be used in conjunction.
@@ -107,11 +107,11 @@ Don't jump to the first image after resorting the filelist.
 When viewing multiple files in a slideshow, randomise the file list before
 displaying.
 .It Cm -f , --filelist Ar file
-This option is similar to the playlists used by music software. If
+This option is similar to the playlists used by music software.  If
 .Ar file
 exists, it will be read for a list of files to load, in the order they appear.
 The format is a list of image filenames, absolute or relative to the current
-directory, one filename per line. If
+directory, one filename per line.  If
 .Ar file
 doesn't exist, it will be created from the internal filelist at the end of a
 viewing session.  This is best used to store the results of complex sorts
@@ -129,10 +129,10 @@ Start at
 .Ar position
 in the filelist.
 .It Cm -p , --preload
-Preload images. This doesn't mean hold them in RAM, it means run through
-them and eliminate unloadable images first. Otherwise they will be removed
-as you flick through. This also analyses the images to get data for use in
-sorting, such as pixel size, type etc. A preload run will be automatically
+Preload images.  This doesn't mean hold them in RAM, it means run through
+them and eliminate unloadable images first.  Otherwise they will be removed
+as you flick through.  This also analyses the images to get data for use in
+sorting, such as pixel size, type etc.  A preload run will be automatically
 performed if you specify one of these sort modes.
 .It Cm -F , --full-screen
 Make the window fullscreen.
@@ -150,12 +150,12 @@ Zoom pictures to screen size in fullscreen
 .It Cm --zoom Ar percent
 Zoom images by
 .Ar percent
-when in full screen mode or when window geometry is fixed. If combined with
+when in full screen mode or when window geometry is fixed.  If combined with
 .Cm --auto-zoom ,
 zooming will be limited to the specified
 .Ar percent .
 .It Cm -w , --multiwindow
-Disable slideshow mode. With this setting, instead of opening multiple files
+Disable slideshow mode.  With this setting, instead of opening multiple files
 in slideshow mode, multiple windows will be opened; one per file.
 .It Cm -x , --borderless
 Create borderless windows.
@@ -164,13 +164,13 @@ Draw the filename at the top-left of the image.
 .It Cm -D , --slideshow-delay Ar float
 For slideshow mode, wait
 .Ar float
-seconds between automatically changing slides. Useful for presentations.
+seconds between automatically changing slides.  Useful for presentations.
 .It Cm --cycle-once
 Exit feh after one loop through the slideshow.
 .It Cm -R , --reload Ar int
 Reload images after
 .Ar int
-seconds. Mainly useful when viewing webcams via http.
+seconds.  Mainly useful when viewing webcams via http.
 .It Cm -k , --keep-http
 When viewing files using HTTP,
 .Nm
@@ -193,7 +193,7 @@ Don't add a timestamp
 .Pq Qq ?1234
 to URLs when (re)loading them.
 .It Cm --caption-path Ar path
-Path to directory containing image captions. This turns on caption viewing,
+Path to directory containing image captions.  This turns on caption viewing,
 and if captions are found in
 .Ar path ,
 which is relative to the directory of each image, they are overlayed on the
@@ -204,7 +204,7 @@ and viewing image
 the caption will be looked for in
 .Qq images/captions/foo.jpg.txt .
 .It Cm -l , --list
-Don't display images. Analyse them and display an
+Don't display images.  Analyse them and display an
 .Xr ls 1 - No style
 listing.  Useful in scripts to hunt out images of a certain
 size/resolution/type etc.
@@ -212,7 +212,7 @@ size/resolution/type etc.
 Use
 .Ar format
 .Pq printf-like string containing image info specifiers
-for list output. See
+for list output.  See
 .Sx FORMAT SPECIFIERS .
 .It Cm -U , --loadable
 Don't display images.  Just print out their names if imlib2 can successfully
@@ -221,8 +221,8 @@ load them.
 Don't display images.  Just print out their name if imlib2 can NOT
 successfully load them.
 .It Cm -S , --sort Ar sort_type
-The file list may be sorted according to image parameters. Allowed sort
-types are: name, filename, width, height, pixels, size, format. For sort
+The file list may be sorted according to image parameters.  Allowed sort
+types are: name, filename, width, height, pixels, size, format.  For sort
 modes other than name or filename, a preload run will be necessary,
 causing a delay proportional to the number of images in the list.
 .It Cm -n , --reverse
@@ -230,10 +230,10 @@ Reverse the sort order.  Use this to invert the order of the filelist.
 E.g. to sort in reverse width order, use
 .Cm -nSwidth .
 .It Cm -A , --action Ar action
-Specify a string as an action to perform on the image. In slideshow or
+Specify a string as an action to perform on the image.  In slideshow or
 multiwindow modes, the action will be run when the enter key is pressed, in
 list mode, the action will be run for each file listed.  The action will be
-executed by /bin/sh. Use format specifiers to refer to image info.  See
+executed by /bin/sh.  Use format specifiers to refer to image info.  See
 .Sx FORMAT SPECIFIERS
 for examples.  E.g.
 .Qq feh -A "mv ~/images/%n" * .
@@ -256,9 +256,9 @@ When using collage mode, you should also specify
 and
 .Cm --limit-height .
 .It Cm -i , --index
-Enable Index mode. Index mode is similar to montage mode, and accepts the
-same options. It creates an index print of thumbails, printing the image
-name beneath each thumbnail. Index mode enables certain other options, see
+Enable Index mode.  Index mode is similar to montage mode, and accepts the
+same options.  It creates an index print of thumbails, printing the image
+name beneath each thumbnail.  Index mode enables certain other options, see
 .Sx INDEX MODE OPTIONS .
 .It Cm -I , --fullindex
 Same as Index mode, but you also get image size and dimensions printed
@@ -272,7 +272,7 @@ Enable thumbnail caching in
 .It Cm -~ , --thumb-title Ar string
 Set
 .Ar title
-for windows opened from thumbnail mode. See also
+for windows opened from thumbnail mode.  See also
 .Sx FORMAT SPECIFIERS .
 .It Cm --index-name Ar bool
 Toggle showing the filename in thumbnail/index mode.
@@ -398,7 +398,7 @@ by
 This will prevent any empty space in the final montage.
 .It Cm -s , --stretch
 Normally, if an image is smaller than the specified thumbnail size, it will
-not be enlarged. If this option is set, the image will be scaled up to fit
+not be enlarged.  If this option is set, the image will be scaled up to fit
 the thumnail size.
 .Qq Aspact ratio will be maintained unles Cm --ignore-aspect is specified .
 .It Cm -y , --thumb-width Ar pixels
@@ -692,7 +692,7 @@ used.
 .Pp
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
 THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
