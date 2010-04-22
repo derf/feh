@@ -1,725 +1,705 @@
-.TH feh 1 "August 14, 2001"
-.SH NAME
-feh - image viewer and cataloguer
-.SH SYNOPSIS
-feh [options] file(s)
-.SH DESCRIPTION
-.B feh
-is an image viewer using the
-.B imlib2
-library to open and manipulate images.
-It has a large number of operational modes.  The default mode is an image
-slideshow, showing one image at a time from those specified on the
-commandline.  Keys and mouse control may be used to move through them.
+.Dd April 13, 2010
+.Dt FEH 1
+.Os
+.
+.Sh NAME
+.Nm feh
+.Nd image viewer and cataloguer
+.
+.Sh SYNOPSIS
+.Nm
+.Op Ar options
+.Ar
+.
+.Sh DESCRIPTION
+.Nm
+is an image viewer using the imlib2 library to open and manipulate
+images. It has a large number of operational modes.  The default mode is an
+image slideshow, showing one image at a time from those specified on the
+command line.  Keys and mouse control may be used to move through them.
 Other modes can be specified on the commandline, and are described below.
-.PP
-.B feh
+.Pp
+.Nm
 can also recurse through a directory structure to form a filelist for
 processing, and will convert directory names on the commandline into a list
 of their contents automatically.
-.PP
-.B Filelists
-can be sorted in a number of ways. The default is the order the files were
-specified on the commandline, or the order they were read from the disk. You
-can specify sorting modes such as
-.B
-randomize
+.Pp
+Filelists can be sorted in a number of ways.  The default is the order in
+which the files were specified on the commandline, or the order in which they
+were read from the disk.  You can specify sorting modes such as randomize
 or you can sort by filename, image name, width, height, pixels, etc.
 Filelists can also be saved to or loaded from files.
-.SH MODES
-.B Montage mode
-forms a montage from the filelist. The resulting image can be viewed or
-saved, and its size can be limited by height, width or both.
-.PP
-.B Collage mode
-is very similar to montage mode, except the images are distributed randomly
-and may overlap each other.
-.PP
-.B Index mode
-forms an index print from the filelist.  Image thumbnails are shown along
-with the filename, filesize and pixel size, printed using a truetype font of
-your choice.  The resulting image can be viewed or saved, and its size can
-be limited by height, width or both.
-.PP
-.B Thumbnail mode
-is like index mode, but the mini-images are clickable, and open the selected
-image in a new window.
-.PP
-.B Multiwindow mode
-shows images in multiple windows, instead of as a slideshow in one window.
-Don't use with a large filelist ;)
-.PP
-.B Fullscreen mode
-shows image in fullscreen view. Can be combined with a slide-change delay to
-show an automated presentation.
-.PP
-.B List mode
-doesn't display images. Outputs an 'ls'-style listing of the files in the
-filelist, including image info such as size, pixels, type, etc. Customlist
-mode will display whatever image info you want, in the format you choose.
-.PP
-.B feh
+.
+.Sh MODES
+Montage mode forms a montage from the filelist.  The resulting image can be
+viewed or saved, and its size can be limited by height, width or both.
+.Pp
+Collage mode is very similar to montage mode, except the images are distributed
+randomly and may overlap each other.
+.Pp
+Index mode forms an index print from the filelist.  Image thumbnails are shown
+along with the filename, filesize and pixel size, printed using a truetype
+font of your choice.  The resulting image can be viewed or saved, and its size
+can be limited by height, width or both.
+.Pp
+Thumbnail mode is like index mode, but the mini-images are clickable and open
+the selected image in a new window.
+.Pp
+Multiwindow mode shows images in multiple windows, instead of as a slideshow
+in one window.  Don't use with a large filelist ;)
+.Pp
+Fullscreen mode shows images in fullscreen view.  Can be combined with a
+slide-change delay to show an automated presentation.
+.Pp
+List mode doesn't display images.  Outputs an
+.Cm ls - No style
+listing of the files in the filelist, including image info such as size,
+pixels, type, etc.  Customlist mode will display whatever image info you want,
+in the format you choose.
+.Pp
+.Nm
 can also list either all the loadable files in a filelist or all the
-unloadable files. Useful for preening a directory.
-.PP
-.B feh
-also has the ability to load files over http or ftp, simply specify the url
-on the commandline.
-.PP
-.B feh
-can read options from the commandline, or from a config file. The syntax
-is the same in each case. See
-.B CONFIG FILE SYNTAX
+unloadable files.  Useful for preening a directory.
+.Pp
+.Nm
+also has the ability to load files via http or ftp, simply specify the url on
+the commandline.
+.Pp
+.Nm
+can read options from the commandline, or from a config file.  The syntax is
+the same in each case. See
+.Sx CONFIG FILE SYNTAX
 for details about using themes defined in a config file.
 These methods may be used in conjunction.
-.SH OPTIONS
-.TP 5
-.B -h, --help
-display help output and exit
-.TP 5
-.B -v, --version
-output version information and exit
-.TP 5
-.B -V, --verbose
-output useful information, progress bars, etc
-.TP 5
-.B -q, --quiet
-Don't report non-fatal errors for failed loads. Verbose and quiet modes
-are not mutually exclusive, the first controls informational messages,
-the second only errors.
-.TP 5
-.B -T, --theme THEME
-Load options from config file with name THEME - see CONFIG FILE SYNTAX for more info.
-Note that options from the theme file always override commandline options.
-.TP 5
-.B -_, --rcfile FILE
-Use FILE to parse themes and options from,
-instead of the default ~/.fehrc, /etc/fehrc files.
-.TP 5
-.B -r, --recursive
-Recursively expand any directories in FILE to the content of those
-directories, all the way down to the bottom level. (Take it easy)
-.TP 5
-.B --no-jump-on-resort
+.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Cm -h , --help
+display help output and exit.
+.It Cm -v , --version
+output version information and exit.
+.It Cm -V , --verbose
+output useful information, progress bars, etc.
+.It Cm -q , --quiet
+Don't report non-fatal errors for failed loads.  Verbose and quiet modes are
+not mutually exclusive, the first controls informational messages, the second
+only errors.
+.It Cm -T , --theme Ar theme
+Load options from config file with name
+.Ar theme -
+see
+.Sx CONFIG FILE SYNTAX
+for more info.  Note that options from the theme file always override
+commandline options.
+.It Cm -_ , --rcfile Ar file
+Use
+.Ar file
+to parse themes and options from, instead of the default
+.Pa ~/.fehrc , /etc/fehrc
+files.
+.It Cm -r , --recursive
+Recursively expand any directories in
+.Ar
+to the content of those directories, all the way down to the bottom level.
+.It Cm --no-jump-on-resort
 Don't jump to the first image after resorting the filelist.
-.TP 5
-.B -z, --randomize
+.It Cm -z , --randomize
 When viewing multiple files in a slideshow, randomise the file list before
 displaying.
-.TP 5
-.B -f, --filelist FILE
-This option is similar to the playlists used by music software. If FILE
-exists, it will be read for a list of files to load, in the order they
-appear. The format is a list of image filenames, absolute or relative to the
-current directory, one filename per line.
-.br
-If FILE doesn't exist, it will be created from the internal filelist at the
-end of a viewing session.  This is best used to store the results of complex
-sorts (\-Spixels for example) for later viewing.  Any changes to the internal
-filelist (such as deleting a file or it being pruned for being unloadable)
-will be saved to FILE when feh exits. You can add files to filelists by
-specifying them on the commandline when also specifying the list.
-.TP 5
-.B -|, --start-at POSITION
-Start at POSITION in the filelist
-.TP 5
-.B -p, --preload
+.It Cm -f , --filelist Ar file
+This option is similar to the playlists used by music software. If
+.Ar file
+exists, it will be read for a list of files to load, in the order they appear.
+The format is a list of image filenames, absolute or relative to the current
+directory, one filename per line. If
+.Ar file
+doesn't exist, it will be created from the internal filelist at the end of a
+viewing session.  This is best used to store the results of complex sorts
+.Pq Cm -Spixels No for example
+for later viewing.  Any changes to the internal filelist
+.Pq such as deleting a file or it being pruned for being unloadable
+will be saved to
+.Ar file
+when
+.Nm
+exits.  You can add files to filelists by specifying them on the commandline
+when also specifying the list.
+.It Cm -| , --start-at Ar position
+Start at
+.Ar position
+in the filelist.
+.It Cm -p , --preload
 Preload images. This doesn't mean hold them in RAM, it means run through
 them and eliminate unloadable images first. Otherwise they will be removed
 as you flick through. This also analyses the images to get data for use in
 sorting, such as pixel size, type etc. A preload run will be automatically
 performed if you specify one of these sort modes.
-.TP 5
-.B -F, --full-screen
-Make the window fullscreen
-.TP 5
-.B -g, --geometry STRING
-Limit (and don't change) the window size. Takes
-an X-style geometry string like 640x480.
-Note that larger images will be zoomed out to fit
-but you can see them at 1:1 by clicking the zoom
-button.
-.TP 5
-.B -., --scale-down
-When not in fullscreen: Scale images to screen size if they are too big
-.TP 5
-.B -Z, --auto-zoom
-Zoom picture to screen size in fullscreen (affected by --stretch and
---ignore-aspect).
-.TP 5
-.B --zoom PERCENT
-Zooms images by a PERCENT, when in full screen mode or when window geometry
-is fixed. If combined with \-\-auto-zoom, zooming will be limited to the the
-size.
-.TP 5
-.B -w, --multiwindow
-Disable slideshow mode. With this setting, instead of opening multiple
-files in slideshow mode, multiple windows will be opened, one per file.
-.TP 5
-.B -x, --borderless
-Create borderless windows
-.TP 5
-.B -d, --draw-filename
-Draw the filename at the top\-left of the image
-.TP 5
-.B -D, --slideshow-delay NUM
-For slideshow mode, specifies time delay (seconds, can be a decimal) between automatically
-changing slides. Great for presentations.
-.TP 5
-.B --cycle-once
-Exit feh after one loop through the slideshow
-.TP 5
-.B -R, --reload NUM
-Use this option to tell
-.B feh
-to reload an image after NUM seconds. Useful for viewing webcams via http,
-or even on your local machine.
-.TP 5
-.B -k, --keep-http
-When viewing files using HTTP, feh normally deletes the local copies after
-viewing, or, if caching, on exit. This option prevents this so that you
-get to keep the local copies. They will be in /tmp with "feh" in the name.
-.TP 5
-.B -j, --output-dir DIR
-Save files to DIR (only useful with \-k)
-.TP 5
-.B -Q, --builtin
-Use builtin http client to grab remote files instead of wget, useful if you
-don't have wget installed.
-.TP 5
-.B -G, --wget-timestamp
-Don't add a timestamp ("?1234") to URLs when (re)loading them
-.TP 5
-.B --caption-path PATH
-Path to directory containing image captions. This turns on caption viewing, and
-if captions are found in PATH, which is relative to the directory of each
-image, they are overlayed on the displayed image. e.g with caption path
-"captions", and viewing image images/foo.jpg, caption will be looked for as
-"images/captions/foo.jpg.txt"
-.TP 5
-.B -l, --list
-Don't display images. Analyse them and display an 'ls'\-style listing.
-Useful in scripts hunt out images of a certain size/resolution/type etc.
-.TP 5
-.B -L, --customlist FORMAT
-Use FORMAT as the format specifier for list
-output. FORMAT is a printf-like string containing
-image info specifiers. See FORMAT SPECIFIERS.
-.TP 5
-.B -U, --loadable
-Don't display images. Just print out their names if imlib2 can successfully
+.It Cm -F , --full-screen
+Make the window fullscreen.
+.It Cm -g , --geometry Ar width No x Ar height
+Limit (and don't change) the window size.  Takes an X-style geometry
+.Ar string
+like 640x480.
+Note that larger images will be zoomed out to fit but you can see them at 1:1
+by clicking the zoom button.
+.It Cm -. , --scale-down
+When not in fullscreen: Scale images to screen size if they are too big.
+.It Cm -Z , --auto-zoom
+Zoom pictures to screen size in fullscreen
+.Pq affected by Cm --stretch No and Cm --ignore-aspect .
+.It Cm --zoom Ar percent
+Zoom images by
+.Ar percent
+when in full screen mode or when window geometry is fixed. If combined with
+.Cm --auto-zoom ,
+zooming will be limited to the specified
+.Ar percent .
+.It Cm -w , --multiwindow
+Disable slideshow mode. With this setting, instead of opening multiple files
+in slideshow mode, multiple windows will be opened; one per file.
+.It Cm -x , --borderless
+Create borderless windows.
+.It Cm -d , --draw-filename
+Draw the filename at the top-left of the image.
+.It Cm -D , --slideshow-delay Ar float
+For slideshow mode, wait
+.Ar float
+seconds between automatically changing slides. Useful for presentations.
+.It Cm --cycle-once
+Exit feh after one loop through the slideshow.
+.It Cm -R , --reload Ar int
+Reload images after
+.Ar int
+seconds. Mainly useful when viewing webcams via http.
+.It Cm -k , --keep-http
+When viewing files using HTTP,
+.Nm
+normally deletes the local copies after viewing, or, if caching, on exit.
+This option prevents this so that you get to keep the local copies.
+They will be in
+.Pa /tmp
+with
+.Qq Nm
+in the name.
+.It Cm -j , --output-dir Ar directory
+Save files to
+.Ar directory
+.Pq only useful with -k
+.It Cm -Q , --builtin
+Use builtin HTTP client to grab remote files instead of
+.Xr wget 1 .
+.It Cm -G , --wget-timestamp
+Don't add a timestamp
+.Pq Qq ?1234
+to URLs when (re)loading them.
+.It Cm --caption-path Ar path
+Path to directory containing image captions. This turns on caption viewing,
+and if captions are found in
+.Ar path ,
+which is relative to the directory of each image, they are overlayed on the
+displayed image.  E.g. with caption path
+.Qq captions/ ,
+and viewing image
+.Qq images/foo.jpg ,
+the caption will be looked for in
+.Qq images/captions/foo.jpg.txt .
+.It Cm -l , --list
+Don't display images. Analyse them and display an
+.Xr ls 1 - No style
+listing.  Useful in scripts to hunt out images of a certain
+size/resolution/type etc.
+.It Cm -L , --customlist Ar format
+Use
+.Ar format
+.Pq printf-like string containing image info specifiers
+for list output. See
+.Sx FORMAT SPECIFIERS .
+.It Cm -U , --loadable
+Don't display images.  Just print out their names if imlib2 can successfully
 load them.
-.TP 5
-.B -u, --unloadable
-Don't display images. Just print out their name if imlib2 can NOT
+.It Cm -u , --unloadable
+Don't display images.  Just print out their name if imlib2 can NOT
 successfully load them.
-.TP 5
-.B -S, --sort SORT_TYPE
+.It Cm -S , --sort Ar sort_type
 The file list may be sorted according to image parameters. Allowed sort
 types are: name, filename, width, height, pixels, size, format. For sort
 modes other than name or filename, a preload run will be necessary,
-causing a delay proportional to the number of images in the list
-.TP 5
-.B -n, --reverse
-Reverse the sort order. Use this to invert the order of the filelist. Eg
-to sort in reverse width order, use
-.B -nSwidth
-.TP 5
-.B -A, --action ACTION
+causing a delay proportional to the number of images in the list.
+.It Cm -n , --reverse
+Reverse the sort order.  Use this to invert the order of the filelist.
+E.g. to sort in reverse width order, use
+.Cm -nSwidth .
+.It Cm -A , --action Ar action
 Specify a string as an action to perform on the image. In slideshow or
 multiwindow modes, the action will be run when the enter key is pressed, in
-list mode, the action will be run for each file listed. The action will be
-executed by /bin/sh. Use format specifiers to refer to image info. See
-FORMAT SPECIFIERS for examples
-.br
-Eg. feh \-A "mv %f ~/images/%n" *
-.br
-In slideshow mode, the next image will be shown after running the action,
-in multiwindow mode, the window will be closed.
-.TP 5
-.B --action1...9
-Extra actions which can be set and triggered using the appropriate number
-key.
-.TP 5
-.B --draw-actions
-Draw the defined actions and what they do at the top\-left of the image.
-.TP 5
-.B -m, --montage
-Enable montage mode. Montage mode creates a new image consisting of a grid
-of thumbnails of the images in the filelist. When montage mode is selected,
-certain other options become available. See MONTAGE MODE OPTIONS
-.TP 5
-.B -c, --collage
-Enable collage mode. Collage mode is very similar to montage mode, except
+list mode, the action will be run for each file listed.  The action will be
+executed by /bin/sh. Use format specifiers to refer to image info.  See
+.Sx FORMAT SPECIFIERS
+for examples.  E.g.
+.Qq feh -A "mv ~/images/%n" * .
+In slideshow mode, the next image will be shown after running the action, in
+multiwindow mode, the window will be closed.
+.It Cm --action1 No .. Cm --action9
+Extra actions which can be set and triggered using the appropiate number key.
+.It Cm --draw-actions
+Draw the defined actions and what they do at the top-left of the image.
+.It Cm -m , --montage
+Enable montage mode.  Montage mode creates a new image consisting of a grid of
+thumbnails of the images in the filelist.  When montage mode is selected,
+certain other options become available.  See
+.Sx MONTAGE MODE OPTIONS .
+.It Cm -c , --collage
+Enable collage mode.  Collage mode is very similar to montage mode, except
 the images are distributed randomly.
-When using collage mode, you should also specify --limit-width and
---limit-height.
-.TP 5
-.B -i, --index
+When using collage mode, you should also specify
+.Cm --limit-width
+and
+.Cm --limit-height .
+.It Cm -i , --index
 Enable Index mode. Index mode is similar to montage mode, and accepts the
 same options. It creates an index print of thumbails, printing the image
 name beneath each thumbnail. Index mode enables certain other options, see
-INDEX MODE OPTIONS
-.TP 5
-.B -I, --fullindex
+.Sx INDEX MODE OPTIONS .
+.It Cm -I , --fullindex
 Same as Index mode, but you also get image size and dimensions printed
 below each thumbnail.
-.TP 5
-.B -t, --thumbnails
+.It Cm -t , --thumbnails
 Same as Index mode, but the thumbnails are clickable image launchers.
-.TP 5
-.B --cache-thumbnails
-Enable thumbnail caching (in ~/.thumbnails)
-.TP 5
-.B -~, --thumb-title STRING
-Set title for windows opened from thumbnail mode. See also FORMAT SPECIFIERS.
-.TP 5
-.B --index-name BOOL
-Show/Don't show filename in thumbnail/index mode.
-.TP 5
-.B --index-size BOOL
-Show/Don't show filesize in thumbnail/index mode.
-.TP 5
-.B --index-dim BOOL
-Show/Don't show image dimensions in thumbnail/index mode.
-.TP 5
-.B --bg-tile FILE
-Set FILE as your desktop background, tiled if neccessary.
-Feh can use enlightenment IPC if you are running it,
-or will fall back to X methods.
-Feh stores the commandline necessary to restore the background you chose
-in ~/.fehbg.  So to have feh-set backgrounds restored when you restart X,
-add the line "`cat $HOME/.fehbg`" to your X startup script (e.g. ~/.xsession).
+.It Cm --cache-thumbnails
+Enable thumbnail caching in
+.Pa ~/.thumbnails
+(rather experimental).
+.It Cm -~ , --thumb-title Ar string
+Set
+.Ar title
+for windows opened from thumbnail mode. See also
+.Sx FORMAT SPECIFIERS .
+.It Cm --index-name Ar bool
+Toggle showing the filename in thumbnail/index mode.
+.It Cm --index-size Ar bool
+Toggle showing the filesize in thumbnail/index mode.
+.It Cm --index-dim Ar bool
+Toggle showing image dimensions in thumbnail/index mode.
+.It Cm --bg-tile Ar file
+Set
+.Ar file
+as desktop background, tiled if necessary.
+.Nm
+can use enlightenment IPC if you are running it, or it will fall back to X
+methods.
+.Nm
+stores the commandline necessary to restore the background in
+.Pa ~/.fehbg
+So to have your background restored when you restart X, add the line
+.Qq `cat ~/.fehbg`
+to your X startup script
+.Pq e.g. Pa ~/.xinitrc .
 Note that you only need to do this for non E window managers.
-.TP 5
-.B --bg-center FILE
-Set FILE as centered desktop background
-.TP 5
-.B --bg-scale FILE
-Set FILE as scaled desktop background.
-This will fill the whole background with FILE, but its aspect ratio will not
-be preserved.
-.TP 5
-.B --bg-fill FILE
-Like --bg-scale, but preserves aspect ratio by zooming the image until it
-fits.  Either a horizontal or a vertical part of the image will be cut off.
-.TP 5
-.B --bg-seamless FILE
-Like --bg-tile, but with blurry corners so that it is (in some cases ;-))
+.It Cm --bg-center Ar file
+Set
+.Ar file
+as centered desktop background
+.It Cm --bg-scale Ar file
+Set
+.Ar file
+as scaled desktop background.  This will fill the whole background with
+.Ar file ,
+but its aspect ratio will not be preserved.
+.It Cm --bg-fill Ar file
+Like
+.Cm --bg-scale ,
+but preserves aspect ratio by zooming the image until it fits.  Either a
+horizontal or a vertical part of the image will be cut off.
+.It Cm --bg-seamless Ar file
+Like
+.Cm --bg-tile ,
+but with blurry corners so that it is
+.Pq in some cases ;-)
 less obvious that the image is too small for the screen.
-.TP 5
-.B -M, --menu-font FONT
-Use FONT for the font in menus.
-.TP 5
-.B -C, --fontpath PATH
-Specify PATH as an extra directory in which to search for fonts, can be used
-multiple times to add multiple paths, e.g \-\-fontpath /path/a \-\-fontpath
-/path/b.
-.TP 5
-.B --menu-style FILE
-Use FILE as the style descriptor for menu text.
-.TP 5
-.B -), --menu-bg BG
-Use BG for the background image in menus.
-.TP 5
-.B --menu-border INT
-Specify number of pixels that define the menu
-background's border. Borders are not stretched
-when images are scaled.
-.TP 5
-.B -N, --no-menus
+.It Cm -M , --menu-font Ar font
+Use
+.Ar font
+.Pq truetype, with size, like Qq yudit/12
+as menu font.
+.It Cm -C , --fontpath Ar path
+Specify
+.Ar path
+as extra directory in which to search for fonts; can be used multiple times to
+add multiple paths.
+.It Cm --menu-style Ar file
+Read
+.Ar file
+to determine menu style.
+.It Cm -) , --menu-bg Ar file
+Use
+.Ar file
+as background image in menus.
+.It Cm --menu-border Ar int
+Specify number of pixels that define the menu background's border.  Borders
+are not stretched when images are scaled.
+.It Cm -N , --no-menus
 Don't load or show any menus.
-.TP 5
-.B -B, --image-bg STYLE
-Use STYLE as background for transparent image parts and the like.
+.It Cm -B , --image-bg Ar style
+Use style as background for transparent image parts and the like.
 Accepted values: white, black, default.
-.TP 5
-.B -^, --title TITLE
-Use TITLE as window title in slideshow mode.
-.TP 5
-.B -0, --reload-button B
-Use button B to reload the current image (default: 0)
-.TP 5
-.B -1, --pan-button B
-Use button B to pan the image (hold button down and move mouse to move the image).
-When the mouse is not moved, advances to the next image in slideshow mode
-(defaults to 1, usually the left button).
-.TP 5
-.B -2, --zoom-button B
-Use button B to zoom the current image in any
-mode (defaults to 2, usually the middle button).
-.TP 5
-.B -3, --menu-button B
-Use button B to activate the menu in any mode.
-This option is disabled if the \-N or \-\-no\-menus option is set
-(defaults to 3, usually the right button).
-.TP 5
-.B --menu-ctrl-mask
-Require CTRL+Button for menu activation in any mode (default=off).
-.TP 5
-.B -4, --prev-button B
-Use button B to switch to the previous image in slideshow mode
-(defaults to 4, usually <mousewheel up>).
-.TP 5
-.B -5, --next-button B
-Use button B to switch to the next image in slideshow mode
-(defaults to 5, usually <mousewheel down>).
-.TP 5
-.B -8, --rotate-button B
-Use CTRL+Button B to rotate the current image in any mode (default=2).
-.TP 5
-.B --no-rotate-ctrl-mask
-Don't require CTRL+Button for rotation in any mode -- just use the button (default=off).
-.TP 5
-.B -9, --blur-button B
-Use CTRL+Button B to blur the current image in any mode (default=1).
-.TP 5
-.B --no-blur-ctrl-mask
-Don't require CTRL+Button for blurring in any mode -- just use the button (default=off).
-.TP 5
-.B --no-xinerama
-Disable Xinerama support.  Only makes sense when you have Xinerama support compiled in.
-.TP 5
-.B --screen-clip
-Enable/disable window clipping based on screen size.  WARNING: With this disabled, windows could become very large, making them unmanageable in certain window managers.
-.TP 5
-.B --hide-pointer
-Hide the mouse pointer in full screen mode (useful for slideshows etc).
-.SH FORMAT SPECIFIERS
-.B %f
-image path/filename
-.br
-.B %n
-image name
-.br
-.B %s
-image size (bytes)
-.br
-.B %p
-image pixel size
-.br
-.B %w
-image width
-.br
-.B %h
-image height
-.br
-.B %t
-image format
-.br
-.B %P
-prints feh
-.br
-.B %v
-prints the version
-.br
-.B %m
-prints the mode (slideshow, multiwindow...)
-.br
-.B %l
-prints the total number of files in the filelist
-.br
-.B %u
-prints the current file number
-.br
-.nf
-\\n newline
-.fi
-.br
-Eg. feh \-A "mv %f ~/images/%n" *
-.SH MONTAGE MODE OPTIONS
-.TP 5
-.B -X, --ignore-aspect
+.It Cm -^ , --title Ar title
+Set window title for slideshow mode.
+.It Cm -0 , --reload-button Ar int
+Set button to reload the image
+.Pq default: 0 .
+.It Cm -1 , --pan-button Ar int
+Set button to pan the image
+.Pq hold button down and move mouse to move the image .
+When the mouse is not moved, advances to the next image in slideshow mode.
+.Pq default: 1 , usually the left button .
+.It Cm -2 , --zoom-button Ar int
+Set button to enable zoom mode
+.Pq default: 2 , usually the middle button .
+.It Cm -3 , --menu-button Ar int
+Set button to activate the menu.
+.Pq default: 3 , usually the right button .
+.It Cm --menu-ctrl-mask
+Require CTRL+Button for menu activation.
+.It Cm -4 , --prev-button Ar int
+Set button to switch to the previous image in slideshow mode
+.Pq default: 4 , usually Aq mousewheel up .
+.It Cm -5 , --next-button Ar int
+Set button to switch to the next image in slideshow mode
+.Pq default: 5 , usually Aq mousewheel down .
+.It Cm -8 , --rotate-button Ar int
+Use CTRL+Button to rotate the current image
+.Pq default : 2 .
+.It Cm --no-rotate-ctrl-mask
+Don't require CTRL+Button for rotation - just use the button.
+.It Cm -9 , --blur-button Ar int
+Use CTRL+Button for blurring
+.Pq default : 1 .
+.It Cm --no-blur-ctrl-mask
+Don't require CTRL+Button for blurring - just use the button.
+.It Cm --no-xinerama
+Disable Xinerama support.  Only makes sense when you have Xinerama support
+compiled in.
+.It Cm --screen-clip Ar bool
+Disable/Enable screen clipping based on window size.  With this disabled,
+windows may become very large, making them unmanageable in certain window
+managers.
+.It Cm --hide-pointer
+Hide the pointer in full screen mode
+.Pq useful for slideshows etc .
+.El
+.
+.Sh MONTAGE MODE OPTIONS
+.Bl -tag -width indent
+.It Cm -X , --ignore-aspect
 By default, the montage thumbnails will retain their aspect ratios, while
-fitting in \-\-thumb\-width and \-\-thumb\-height. This option will force them to
-be the size set by \-\-thumb-width and \-\-thumb-height This will prevent any
-whitespace in the final montage
-.TP 5
-.B -s, --stretch
+fitting into thumb-width/-height.  This options forces them to be the size set
+by
+.Cm --thumb-width No and Cm --thumb-height .
+This will prevent any empty space in the final montage.
+.It Cm -s , --stretch
 Normally, if an image is smaller than the specified thumbnail size, it will
 not be enlarged. If this option is set, the image will be scaled up to fit
-the thumnail size. (Aspect ratio will be maintained unless \-\-ignore\-aspect is
-specified)
-.TP 5
-.B -y, --thumb-width NUM
-Set thumbnail width in pixels
-.TP 5
-.B -E, --thumb-height NUM
-Set thumbnail height in pixels
-Thumbnails default to 20x20 pixels
-.TP 5
-.B -W, --limit-width NUM
-Limit the width of the montage in pixels
-.TP 5
-.B -H, --limit-height NUM
-Limit the height of the montage in pixels These options can be used together
-(to define the image size exactly), or separately. If only one is specified,
-theother is calculated from the number of files specified and the size of
-the thumbnails.  The default is to limit width to 800 pixels and calculate
-the height as necessary
-.TP 5
-.B -b, --bg FILE|trans
-Use FILE as a background for your montage. With this option specified, the
-size of the montage will default to the size of FILE if no size restrictions
-are specified. Alternatively, if FILE is 'trans', the background will be
-made transparent.
-.TP 5
-.B -a, --alpha NUM
-When drawing thumbnails onto the background, apply them with a transparency
-level of NUM (0-255).
-.TP 5
-.B -o, --output FILE
-Save the created montage to FILE
-.TP 5
-.B -O, --output-only FILE
-Just save the created montage to FILE without displaying it (use in scripts)
-.SH INDEX MODE OPTIONS
-.TP 5
-.B -e, --font FONT
-Use FONT to print the information under each thumbnail. FONT should be a
-truetype font, resident in the current directory, or in feh's font
-directory, and should be defined in the form fontname/size(points). (No
-extension). eg. \-\-font myfont/12
-.TP 5
-.B -@, --title-font FONT
-Use FONT to print a title on the index, if no font is specified, a title
-will not be printed
-.SH CONFIG FILE SYNTAX
-The feh config file allows the naming of option groups, or themes.
+the thumnail size.
+.Qq Aspact ratio will be maintained unles Cm --ignore-aspect is specified .
+.It Cm -y , --thumb-width Ar pixels
+Set thumbnail width.
+.It Cm -E , --thumb-height Ar pixels
+Set thumbnail height.
+.It Cm -W , --limit-width Ar pixels
+Limit the width of the montage.
+.It Cm -H , --limit-height Ar pixels
+Limit the height of the montage.  These options can be used together to define
+the image size exactly, or separately.  If only one is specified, the other is
+calculated from the number of files specified and the size of the thumbnails.
+The default is to limit width to 800 pixels and calculate the height as
+necessary.
+.It Cm -b , --bg Ar file No | Cm trans
+Use
+.Ar file
+as background for your montage.  With this option specified, the montage size
+will default to the size of
+.Ar file
+if no size restrictions were specified.  Alternatively, if
+.Ar file
+is
+.Qq trans ,
+the background will be made transparent.
+.It Cm -a , --alpha Ar int
+When drawing thumbnails onto the background, set their transparency level to
+.Ar int
+.Pq 0 - 255 .
+.It Cm -o , --output Ar file
+Save the created montage to
+.Ar file .
+.It Cm -O , --output-only Ar file
+Just save the created montage to
+.Ar file
+without displaying it.
+.El
+.
+.Sh INDEX MODE OPTIONS
+.Bl -tag -width indent
+.It Cm -e , --font Ar font
+Set font for printing the information under each thumbnail.  Should be a
+truetype font, resident in the current directory or the font directory, and
+should be defined in the form fontname/points, like
+.Qq myfont/12 .
+.It Cm -@ , --title-font Ar font
+Set font to print a title on the index, if no font is specified, no title will
+be printed.
+.El
+.
+.Sh FORMAT SPECIFIERS
+.Bl -tag -width indent
+.It %f
+Image path/filename
+.It %h
+Image height
+.It %l
+Total number of files in filelist
+.It %m
+Current mode
+.It %n
+Image name
+.It %p
+Number of image pixels
+.It %P
+.Nm
+.It %s
+Image size in bytes
+.It %t
+Image format
+.It %u
+Number of current file
+.It %w
+Image width
+.It %v
+.Nm
+version
+.El
+.
+.Sh CONFIG FILE SYNTAX
+The config file allows the naming of option groups, called themes.
 If
-.B $HOME/.fehrc
-exists, or if not, but
-.B /etc/fehrc
-exists, feh will look in it for theme name/options pairs. If neither
-$HOME/.fehrc or /etc/fehrc exist, feh will create a default one in ~/.fehrc.
-An example entry would be:
-.br
-.B imagemap -rVq --thumb-width 40 --thumb-height 30
-.br
-You can then use this theme in two ways. Either
-.br
-.B feh --theme imagemap *.jpg
-.br
-or you can create a symbolic link to feh with the name of the options you
-want it to use. So from the example above:
-.br
-.B ln -s `which feh` ~/bin/imagemap
-.br
-Now I just run
-.B imagemap *.jpg
-to use those options. A cooler example is
-.br
-.B mkindex -iVO index.jpg --title-font 20thcent/24 .
-.br
-Notice the '.' at the end. Now with a symlink I can create a mkindex
-command which will create an index.jpg in the current directory. I just
-run
-.B mkindex
-to do it.
-.br
-You can combine these themes with commandline options, they will be
-combined. So in the example above, typing
-.B mkindex -q
-will create and index, suppressing error messages.
-An example.fehrc is provided with a couple of cool examples.
-.SH SLIDESHOW KEYS
-The default mode for viewing mulitple images is Slideshow mode
-When viewing a slideshow, the following keys may be used:
-.TP 5
-.B p, P, <BACKSPACE>, <LEFT>
-Goto previous slide
-.TP 5
-.B n, N, <SPACE>, <RIGHT>
-Goto next slide
-.TP 5
-.B r, R
-Reload current image. Useful for webcams.
-.TP 5
-.B v, V
-Toggle fullscreen.
-.TP 5
-.B m, M
-Show popup menu.
-.TP 5
-.B c, C
-Caption entry mode. If \-\-caption\-path has been specified, then this enables
-caption editing. The caption will turn yellow and be editable, hit enter to
-confirm and save the caption, or hit escape to cancel and revert the caption.
-.TP 5
-.B w, W
-Size window to current image size.
-.TP 5
-.B h, H
-Pause the slideshow (only useful when using
-timed reloading or image changes)
-.TP 5
-.B z, Z
+.Pa ~/.fehrc No or Pa /etc/fehrc
+exist,
+.Nm
+will look in them for name/options pairs.
+If neither of them exist,
+.Nm
+will create a default one in
+.Pa ~/.fehrc .
+.Pp
+It takes entries of the form
+.Qq Ar theme options ... ,
+where
+.Ar theme
+is the name of the entry and
+.Ar options
+are the options which will be applied when the theme is used.
+.Pp
+An example entry would be
+.Qq imagemap -rVq --thumb-width 40 --thumb-height 30 .
+.Pp
+You cane use this theme in two ways.  Either call
+.Qo
+.Nm
+-Timagemap *.jpg
+.Qc
+or create a symbolic link to
+.Nm
+with the name of the theme you want it to use.  So from the example above:
+.Qo
+ln -s `which
+.Nm
+` ~/bin/imagemap
+.Qc .
+Now just run
+.Qq imagemap *.jpg
+to use these options.
+.Pp
+You can combine these themes with commandline options.  An example .fehrc is
+provided with a couple of cool example themes.
+.
+.Sh SLIDESHOW KEYS
+The default mode is slideshow mode.  When viewing a slideshow, the following
+keys may be used:
+.Bl -tag -width indent
+.It p , P , Ao backspace Ac , Aq left
+Show previous image
+.It n , N , Ao space Ac , Aq right
+Show next image
+.It r , R
+Reload current image.  Useful for webcams
+.It v , V
+Toggle fullscreen
+.It m , M
+Show menu
+.It c , C
+Caption entry mode.  If
+.Cm --caption-path
+has been specified, then this enables caption editing.  The caption at the
+bottom of the screen will turn yellow and can be edited.  Hit enter to confirm
+and save the caption, or escape to cancel editing
+.It w , W
+Change window size to fit current image size
+.It h , H
+Pause the slideshow
+.It z , Z
 Jump to a random position in the current filelist
-.TP 5
-.B a, A
-Toggle actions display (see --draw-actions)
-.TP 5
-.B d, D
-Toggle filename display (see --draw-filename)
-.TP 5
-.B s, S
-Save the current image to a unique filename.
-.TP 5
-.B f, F
-Save the current filelist to a unique filename.
-.TP 5
-.B <, >
-In place editing, rotate the image 90 degrees left/right.
-The rotation is lossless, but may create artifacts in some image corners
-when used with JPEG images.
-Rotating in the reverse direction will make them go away.
-See jpegtran(1) for more about lossless JPEG rotation.
-.TP 5
-.B <HOME>
-Goto first slide
-.TP 5
-.B <END>
-Goto last slide
-.TP 5
-.B <PAGE UP>
-Go forward around 5% of the way through the slideshow
-.TP 5
-.B <PAGE DOWN>
-Go backward around 5% of the way through the slideshow
-.TP 5
-.B <ESCAPE>
+.It a , A
+Toggle actions display
+.Pq see Cm --draw-actions
+.It d , D
+Toggle filename display
+.Pq see Cm --draw-filename
+.It s , S
+Save the current image to a unique filename
+.It f , F
+Save the current filelist to a unique filename
+.It < , >
+In place editing - rotate the images 90 degrees left/right.
+The rotation is lossless, but may create artifacts in some image corners when
+used with JPEG images.  Rotating in the reverse direction will make them go
+away.  See
+.Xr jpegtran 1
+for more about lossless JPEG rotation
+.It Aq home
+Show first image
+.It Aq end
+Show last image
+.It Aq page up
+Go forward ~5% through the filelist
+.It Aq page down
+Go backward ~5% through the filelist
+.It Aq escape
 Quit the slideshow
-.TP 5
-.B +, =
-Increase reload delay
-.TP 5
-.B -, _
-Decrease reload delay
-.TP 5
-.B <DELETE>
-Remove the currently viewed file from the filelist
-.TP 5
-.B <CTRL+DELETE>
-Delete the currently viewed file and remove it from the filelist
-.TP 5
-.B x, X
+.It + , =
+Increase reload delau
+.It - , _
+Decrease reload delau
+.It Aq delete
+Remove current file from filelist
+.It Aq CTRL+delete
+Remove current file from filelist and delete it
+.It x , X
 Close current window
-.TP 5
-.B q, Q
+.It q , Q
 Quit feh
-.TP 5
-.B <KEYPAD LEFT>
-Move the image to the left
-.TP 5
-.B <KEYPAD RIGHT>
+.It Aq keypad left
+Move the image to the lift
+.It Aq keypad right
 Move the image to the right
-.TP 5
-.B <KEYPAD UP>
+.It Aq keypad up
 Move the image up
-.TP 5
-.B <KEYPAD DOWN>
+.It Aq keypad down
 Move the image down
-.TP 5
-.B <KEYPAD BEGIN>
+.It Aq keypad begin
 Antialias the image.
-When controlling feh with the mouse, this is done by default as soon as the
-respective mouse button is released; in keypad mode, you need to press this
-button.
-.TP 5
-.B <KEYPAD +>
+.It Aq keypad +
 Zoom in
-.TP 5
-.B <KEYPAD ->
+.It Aq keypad -
 Zoom out
-.TP 5
-.B <KEYPAD *>
+.It Aq keypad *
 Zoom to 100%
-.TP 5
-.B <KEYPAD />
-Zoom to fit the window
-.SH MOUSE ACTIONS
-When viewing an image, mouse button 1 moves to the next image (slideshow
-mode only), button 2 zooms (click and drag left->right to zoom in,
-right->left to zoom out, click once to restore 1x zoom), and mouse button 3
-pans.  Ctrl+button 1 blurs or sharpens the image (drag left to blur and right
-to sharpen).  Ctrl+button 2 rotates the image around the center point.
-Ctrl+button 3 activates the context-sensitive menu.  Buttons can be redefined
-with the \-1 through \-9 (or \-\-*\-button) cmdline flags.  All you people
-with million button mice can remove the ctrl mask with the \-\-no-*\-ctrl-mask
-options.
-.SH SUGGESTED USAGE EXAMPLES
-Here are some examples of nice option combinations to achieve cool results:
-.TP 5
-.B feh -r /opt/images
-Recursively scan /opt/images and show all the images in a slideshow.
-.TP 5
-.B feh -rSname /opt/image
-Same again, but sort by name before showing.
-.TP 5
-.B feh -m /opt/images/landscapes
+.It Aq keypad /
+Zoom to fit the window size
+.El
+.
+.Sh MOUSE ACTIONS
+When viewing an image, by default mouse button 1 pans
+.Pq moves the image around
+or, when only clicked, moves to the next image
+.Pq slideshow mode only ;
+button 2 zooms
+.Po click and drag left->right to zoom in, right->left to zoom out, click once
+to restore zoom to 100%
+.Pc ;
+and mouse button 3 opens the menu.
+.Pp
+CTRL+Button 1 blurs or sharpens the image
+.Pq drag left to blur, right to sharpen ;
+CTRL+Button 2 rotates the image around the center point.
+.Pp
+A note about pan and zoom modes:
+In pan mode, if you reach a window border but haven't yet panned to the end of
+the image,
+.Nm
+will warp your cursor to the opposite border so you can continue panning.
+.Pp
+When clicking the zoom button and immediately releasing it, the image will be
+back at 100% zoom.  When clicking it and moving the mouse while holding the
+button down, the zoom will be continued at the previous zoom level.  Do not let
+the short snapback to 100% confuse you, it'll be removed as soon as you move
+the mouse.  The zoom will always happen so that the pixel on which you entered
+the zoom mode remains stationary.  So, to enlarge a specific part of an image,
+click the zoom button on that part.
+.
+.Sh USAGE EXAMPLES
+Here are some examples of useful option combinations
+.Bl -tag -width indent
+.It feh -r /opt/images
+Recursively scan /opt/images and show all the images in a slideshow
+.It feh -rSname /opt/images
+Same, but sort by filename
+.It feh -m /opt/images/landscapes
 Create a montage from the images in /opt/images/landscapes
-.TP 5
-.B feh -Xrm -W 400 --thumb-width 30 --thumb-height 20 ./landscapes
-Create a montage from the images in /opt/images/landscapes and all
-directories below it. Limit the width of the image to 400 and make the
-thumbnails 30x20, ignoring aspect ratio.
-.TP 5
-.B feh -irFarial/14 -O index.jpg /opt/images
-Make an index print of /opt/images and all directories below it, using 14
-point arial to write the image info under each thumbnail. Save the image as
-index.jpg and don't display it, just exit.
-.TP 5
-.B feh -LrSpixels /opt/images
-List the images in /opt/images and all directories within, sorted by pixel
-size, giving as much info as possible.
-.TP 5
-.B feh -kR30 http://url.of.a.webcam.jpg
-Use feh to view a webcam, reloading every 30 seconds, and saving the images
-in /tmp.
-.TP 5
-.B feh --unloadable -r /opt/images
-Weed out (list) all the unloadable images in /opt/images and below.
-.TP 5
-.B feh -w /opt/images/holidays
-Open each image in /opt/images/holidays in it's own window
-.TP 5
-.B feh -FD5 -Sname /opt/images/presentation
-Show the images in /opt/images/presentation, sorted by name, in fullscreen
-view, automatically changing slides every 5 seconds.
-.TP 5
-.B feh -rSwidth -A 'mv %f ~/images/%n\' /opt/images
-View all the images in /opt/images and below, sorted by width (smallest
-first) and move the image to ~/images/image_name when enter is pressed.
-.SH BUGS
-Xinerama support has a few problems, especially when not on Xinerama screen 0.
-.PP
-There are probably other bugs, too. If you find one, let me know :)
-.SH LICENSE
+.It feh -Xrm -W 400 --thumb-width 30 --thumb-height 20 landscapes
+Create a montage from the images in ./landscapes and all directories below it.
+Limit the width of the image to 400 and make the thumbnails 30x20, ignoring
+aspect ratio
+.It feh -irFarial/14 -O index.jpg /opt/images
+Make an index print of /opt/images and alldirectories below it, using 14 point
+Arial to write the image info under each thumbnail.  Save the image as
+index.jpg and don't display it, just exit.  Note that this even works without
+a running X server
+.It feh -LrSpixels /opt/images
+List the images in /opt/images and all directories below, sorted by pixel
+size, giving as much info as possible
+.It feh -kR30 http://example.org/webcam.jpg
+View a webcam, reloading every 30 seconds, saving the images in /tmp
+.It feh --unloadable -r /opt/images
+Print all unloadable images in /opt/images, recursively
+.It feh -w /opt/images/holidays
+Open each image in /opt/images/holidays in its own window
+.It feh -FD5 -Sname /opt/images/presentation
+Show the images in .../presentation, sorted by name, in fullscreen,
+automatically change to the next image after 5 seconds
+.It feh -rSwidth -A Qo mv '%f' ~/images/'%n' Qc /opt/images
+View all images in /opt/images and below, sorted by width, move an image to
+~/image/image_name when enter is pressed.
+.El
+.
+.Sh BUGS
+Xenarama support has a few problems, especially when not on Xinerama screen 0.
+.Pp
+There are probably other bugs, too.  If you find one, let me know :)
+.
+.Sh LICENSE
 Copyright Tom Gilbert (and various contributors), 1999, 2000
-.PP
+.Pp
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
 deal in the Software without restriction, including without limitation the
 rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
 sell copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-.PP
+.Pp
 The above copyright notice and this permission notice shall be included in
 all copies of the Software and its documentation and acknowledgment shall be
 given in the documentation and software packages that this Software was
 used.
-.PP
+.Pp
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-.PP
+.Pp
 Email bugs and feature requests to
-.br
-.B <derf@chaosdorf.de>
-.PP
-Original author (no longer developing):
-.br
-.B <feh_sucks@linuxbrit.co.uk>
+.Aq derf@chaosdorf.de
+.Pp
+Original author
+.Pq no longer developing :
+.Aq feh_sucks@linuxbrit.co.uk
