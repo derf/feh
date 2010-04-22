@@ -1,9 +1,12 @@
-* git HEAD
+Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+
+* Release v1.4.3
      * Warp the pointer when reaching a window border in pan mode
      * Various zoom mode improvements, should be more intuitive now
        + When entering zoom mode, always continue from previous zoom level
        + The image part you clicked on to start zoom mode will remain where it
          is. The zoom happen around at that pixel.
+     * Manpage review
 
 Fri Apr  2 16:20:55 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
