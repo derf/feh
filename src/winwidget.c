@@ -69,11 +69,10 @@ static winwidget winwidget_allocate(void)
 	ret->im_x = 0;
 	ret->im_y = 0;
 	ret->zoom = 1.0;
+	ret->old_zoom = 1.0;
 
 	ret->click_offset_x = 0;
 	ret->click_offset_y = 0;
-	ret->im_click_offset_x = 0;
-	ret->im_click_offset_y = 0;
 	ret->has_rotated = 0;
 
 	D_RETURN(4, ret);
@@ -911,14 +910,13 @@ void feh_debug_print_winwid(winwidget w)
 	       "h = %d\n" "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n"
 	       "type = %d\n" "had_resize = %d\n" "im = %p\n" "GC = %p\n"
 	       "pixmap = %ld\n" "name = %s\n" "file = %p\n" "mode = %d\n"
-	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n"
+	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n" "old_zoom = %f\n"
 	       "click_offset_x = %d\n" "click_offset_y = %d\n"
-	       "im_click_offset_x = %d\n" "im_click_offset_y = %d\n"
 	       "has_rotated = %d\n", (void *)w, w->win, w->w, w->h, w->im_w,
 	       w->im_h, w->im_angle, w->type, w->had_resize, w->im, (void *)w->gc,
 	       w->bg_pmap, w->name, (void *)w->file, w->mode, w->im_x, w->im_y,
-	       w->zoom, w->click_offset_x, w->click_offset_y,
-	       w->im_click_offset_x, w->im_click_offset_y, w->has_rotated);
+	       w->zoom, w->old_zoom, w->click_offset_x, w->click_offset_y,
+	       w->has_rotated);
 }
 
 void winwidget_reset_image(winwidget winwid)

@@ -92,20 +92,27 @@ struct __winwidget {
 	gib_list *file;
 	unsigned char visible;
 
-	/* Stuff for zooming */
+	/* panning, zooming, etc. */
 	unsigned char mode;
 
-	unsigned char caption_entry;	/* are we in caption entry mode? */
+	unsigned char caption_entry;
 
-	/* New stuff */
-	int im_x;		/* image offset from window top left */
-	int im_y;		/* image offset from window top left */
-	double zoom;		/* From 0 (not visible) to 1.00 (actual size)
-				   all the way up to INT_MAX (ouch) */
+	/* image offset from window top left */
+	int im_x;
+	int im_y;
+
+	/* same, as cache for zoom mode */
+	int orig_im_x;
+	int orig_im_y;
+
+	/* From 0 (not visible) to 1.00 (actual size)
+	 * all the way up to INT_MAX (eww)
+	 */
+	double zoom;
+	double old_zoom;
+
 	int click_offset_x;
 	int click_offset_y;
-	int im_click_offset_x;
-	int im_click_offset_y;
 
 	unsigned char has_rotated;
 };

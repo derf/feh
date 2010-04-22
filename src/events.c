@@ -126,11 +126,16 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 			opt.mode = MODE_ZOOM;
 			winwid->mode = MODE_ZOOM;
 			D(3, ("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-			winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
-			winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
-			winwid->im_click_offset_x = winwid->click_offset_x / winwid->zoom;
-			winwid->im_click_offset_y = winwid->click_offset_y / winwid->zoom;
+			winwid->click_offset_x = ev->xbutton.x;
+			winwid->click_offset_y = ev->xbutton.y;
+			winwid->old_zoom = winwid->zoom;
 			winwid->zoom = 1.0;
+
+			/* required to adjust the image position in zoom mode */
+			winwid->orig_im_x = winwid->im_x;
+			winwid->orig_im_y = winwid->im_y;
+
+			/* center the image */
 			if (winwid->full_screen) {
 				winwid->im_x = (scr_width - winwid->im_w) >> 1;
 				winwid->im_y = (scr_height - winwid->im_h) >> 1;
@@ -146,17 +151,9 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 					winwid->im_y = 0;
 				}
 			}
-			if (winwid->im_click_offset_x < 30)
-				winwid->im_click_offset_x = 30;
-			if (winwid->im_click_offset_y < 0)
-				winwid->im_click_offset_y = 0;
-			if (winwid->im_click_offset_x > winwid->im_w)
-				winwid->im_click_offset_x = winwid->im_w;
-			if (winwid->im_click_offset_y > winwid->im_h)
-				winwid->im_click_offset_y = winwid->im_h;
 
-			if (winwid->click_offset_x < 30)
-				winwid->click_offset_x = 30;
+			if (winwid->click_offset_x < 0)
+				winwid->click_offset_x = 0;
 			if (winwid->click_offset_y < 0)
 				winwid->click_offset_y = 0;
 			if (winwid->click_offset_x > winwid->w)
@@ -425,21 +422,27 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
-			winwid->zoom = ((double) ev->xmotion.x - (double) winwid->click_offset_x) / 64.0;
-			if (winwid->zoom < 0)
-				winwid->zoom = 1.0 + ((winwid->zoom * 64.0) / ((double)
-									       (winwid->click_offset_x + 1)));
+			if (ev->xmotion.x > winwid->click_offset_x)
+				winwid->zoom = winwid->old_zoom + (
+						((double) ev->xmotion.x - (double) winwid->click_offset_x)
+						/ 128.0);
+						/*/ ((double) (winwid->click_offset_x + 1)));*/
 			else
-				winwid->zoom += 1.0;
+				winwid->zoom = winwid->old_zoom - (
+						((double) winwid->click_offset_x - (double) ev->xmotion.x)
+						/ 128.0);
+						/*/ ((double) (winwid->click_offset_x + 1)));*/
 
 			if (winwid->zoom < 0.01)
 				winwid->zoom = 0.01;
 
-			/* calculate change in zoom and move im_x and im_y respectively to
-			   enable zooming to the clicked spot... */
-			/* for now, center around im_click_offset_x and im_click_offset_y */
-			winwid->im_x = (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
-			winwid->im_y = (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
+			/* center around click_offset */
+			winwid->im_x = winwid->click_offset_x
+					- (winwid->click_offset_x * winwid->zoom);
+					/*+ (winwid->orig_im_x * winwid->zoom);*/
+			winwid->im_y = winwid->click_offset_y
+					- (winwid->click_offset_y * winwid->zoom);
+					/*+ (winwid->orig_im_y * winwid->zoom);*/
 
 			winwidget_render_image(winwid, 0, 0);
 		}
