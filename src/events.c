@@ -132,8 +132,10 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 			winwid->zoom = 1.0;
 
 			/* required to adjust the image position in zoom mode */
-			winwid->orig_im_x = winwid->im_x;
-			winwid->orig_im_y = winwid->im_y;
+			winwid->im_click_offset_x = (winwid->click_offset_x
+					- winwid->im_x) / winwid->old_zoom;
+			winwid->im_click_offset_y = (winwid->click_offset_y
+					- winwid->im_y) / winwid->old_zoom;
 
 			/* center the image */
 			if (winwid->full_screen) {
@@ -151,15 +153,6 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 					winwid->im_y = 0;
 				}
 			}
-
-			if (winwid->click_offset_x < 0)
-				winwid->click_offset_x = 0;
-			if (winwid->click_offset_y < 0)
-				winwid->click_offset_y = 0;
-			if (winwid->click_offset_x > winwid->w)
-				winwid->click_offset_x = winwid->w;
-			if (winwid->click_offset_y > winwid->h)
-				winwid->click_offset_y = winwid->h;
 
 			winwidget_render_image(winwid, 0, 0);
 		}
@@ -438,11 +431,9 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 			/* center around click_offset */
 			winwid->im_x = winwid->click_offset_x
-					- (winwid->click_offset_x * winwid->zoom);
-					/*+ (winwid->orig_im_x * winwid->zoom);*/
+					- (winwid->im_click_offset_x * winwid->zoom);
 			winwid->im_y = winwid->click_offset_y
-					- (winwid->click_offset_y * winwid->zoom);
-					/*+ (winwid->orig_im_y * winwid->zoom);*/
+					- (winwid->im_click_offset_y * winwid->zoom);
 
 			winwidget_render_image(winwid, 0, 0);
 		}
