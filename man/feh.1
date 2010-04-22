@@ -86,8 +86,8 @@ not mutually exclusive, the first controls informational messages, the second
 only errors.
 .It Cm -T , --theme Ar theme
 Load options from config file with name
-.Ar theme -
-see
+.Ar theme
+- see
 .Sx CONFIG FILE SYNTAX
 for more info.  Note that options from the theme file always override
 commandline options.
@@ -98,13 +98,12 @@ to parse themes and options from, instead of the default
 .Pa ~/.fehrc , /etc/fehrc
 files.
 .It Cm -r , --recursive
-Recursively expand any directories in
-.Ar
+Recursively expand any directories in the commandline arguments
 to the content of those directories, all the way down to the bottom level.
 .It Cm --no-jump-on-resort
 Don't jump to the first image after resorting the filelist.
 .It Cm -z , --randomize
-When viewing multiple files in a slideshow, randomise the file list before
+When viewing multiple files in a slideshow, randomize the file list before
 displaying.
 .It Cm -f , --filelist Ar file
 This option is similar to the playlists used by music software.  If
@@ -150,7 +149,7 @@ Zoom pictures to screen size in fullscreen
 .It Cm --zoom Ar percent
 Zoom images by
 .Ar percent
-when in full screen mode or when window geometry is fixed.  If combined with
+when in full screen mode or when window geometry is fixed.  When combined with
 .Cm --auto-zoom ,
 zooming will be limited to the specified
 .Ar percent .
@@ -218,7 +217,7 @@ for list output.  See
 Don't display images.  Just print out their names if imlib2 can successfully
 load them.
 .It Cm -u , --unloadable
-Don't display images.  Just print out their name if imlib2 can NOT
+Don't display images.  Just print out their names if imlib2 can NOT
 successfully load them.
 .It Cm -S , --sort Ar sort_type
 The file list may be sorted according to image parameters.  Allowed sort
@@ -289,7 +288,7 @@ can use enlightenment IPC if you are running it, or it will fall back to X
 methods.
 .Nm
 stores the commandline necessary to restore the background in
-.Pa ~/.fehbg
+.Pa ~/.fehbg .
 So to have your background restored when you restart X, add the line
 .Qq `cat ~/.fehbg`
 to your X startup script
@@ -399,8 +398,9 @@ This will prevent any empty space in the final montage.
 .It Cm -s , --stretch
 Normally, if an image is smaller than the specified thumbnail size, it will
 not be enlarged.  If this option is set, the image will be scaled up to fit
-the thumnail size.
-.Qq Aspact ratio will be maintained unles Cm --ignore-aspect is specified .
+the thumnail size.  Aspect ratio will be maintained unles
+.Cm --ignore-aspect
+is specified.
 .It Cm -y , --thumb-width Ar pixels
 Set thumbnail width.
 .It Cm -E , --thumb-height Ar pixels
@@ -558,7 +558,7 @@ Save the current image to a unique filename
 .It f , F
 Save the current filelist to a unique filename
 .It < , >
-In place editing - rotate the images 90 degrees left/right.
+In place editing - rotate the images 90 degrees (counter)clockwise.
 The rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.  Rotating in the reverse direction will make them go
 away.  See
@@ -569,15 +569,15 @@ Show first image
 .It Aq end
 Show last image
 .It Aq page up
-Go forward ~5% through the filelist
+Go forward ~5% of the filelist
 .It Aq page down
-Go backward ~5% through the filelist
+Go backward ~5% of the filelist
 .It Aq escape
 Quit the slideshow
 .It + , =
-Increase reload delau
+Increase reload delay
 .It - , _
-Decrease reload delau
+Decrease reload delay
 .It Aq delete
 Remove current file from filelist
 .It Aq CTRL+delete
@@ -595,7 +595,7 @@ Move the image up
 .It Aq keypad down
 Move the image down
 .It Aq keypad begin
-Antialias the image.
+Antialias the image
 .It Aq keypad +
 Zoom in
 .It Aq keypad -
@@ -649,7 +649,7 @@ Create a montage from the images in ./landscapes and all directories below it.
 Limit the width of the image to 400 and make the thumbnails 30x20, ignoring
 aspect ratio
 .It feh -irFarial/14 -O index.jpg /opt/images
-Make an index print of /opt/images and alldirectories below it, using 14 point
+Make an index print of /opt/images and all directories below it, using 14 point
 Arial to write the image info under each thumbnail.  Save the image as
 index.jpg and don't display it, just exit.  Note that this even works without
 a running X server
