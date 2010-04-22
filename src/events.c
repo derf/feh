@@ -468,6 +468,10 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			D(4, ("im_x %d, im_w %d, off %d, mx %d\n", winwid->im_x,
 				winwid->im_w, winwid->click_offset_x, ev->xmotion.x));
 
+			/* XWarpPointer generates a MotionNotify event which we will
+			 * parse. Since that event would undo the effect of the pointer
+			 * warp, we need to change the click_offset to compensate this.
+			 */
 			if ((winwid->w - ev->xmotion.x <= 1)
 					&& (winwid->click_offset_x >= winwid->w - 4))
 			{
