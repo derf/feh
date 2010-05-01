@@ -231,8 +231,11 @@ E.g. to sort in reverse width order, use
 .It Cm -A , --action Ar action
 Specify a string as an action to perform on the image.  In slideshow or
 multiwindow modes, the action will be run when the enter key is pressed, in
-list mode, the action will be run for each file listed.  The action will be
-executed by /bin/sh.  Use format specifiers to refer to image info.  See
+list mode, the action will be run for each file listed.  In
+loadables/unloadables mode, the action will be run for each
+loadable/unloadable file, respectively.
+The action will be executed by /bin/sh.  Use format specifiers to refer to
+image info.  See
 .Sx FORMAT SPECIFIERS
 for examples.  E.g.
 .Qq feh -A "mv ~/images/%n" * .
