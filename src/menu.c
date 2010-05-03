@@ -55,8 +55,8 @@ enum {
 	CB_BG_SCALED_NOFILE, CB_BG_CENTERED_NOFILE, CB_BG_FILLED_NOFILE,
 	CB_SORT_FILENAME, CB_SORT_IMAGENAME, CB_SORT_FILESIZE, CB_SORT_RANDOMIZE,
 	CB_SAVE_IMAGE, CB_SAVE_FILELIST, CB_FIT, CB_OPT_DRAW_FILENAME,
-	CB_OPT_KEEP_HTTP, CB_OPT_FREEZE_WINDOW, CB_OPT_FULLSCREEN,
-	CB_EDIT_ROTATE, CB_OPT_AUTO_ZOOM, CB_OPT_XINERAMA
+	CB_OPT_DRAW_ACTIONS, CB_OPT_KEEP_HTTP, CB_OPT_FREEZE_WINDOW,
+	CB_OPT_FULLSCREEN, CB_EDIT_ROTATE, CB_OPT_AUTO_ZOOM
 };
 
 feh_menu *feh_menu_new(void)
@@ -1483,6 +1483,14 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 				opt.draw_filename = FALSE;
 			winwidget_rerender_all(0, 1);
 			break;
+		case CB_OPT_DRAW_ACTIONS:
+			MENU_ITEM_TOGGLE(i);
+			if (MENU_ITEM_IS_ON(i))
+				opt.draw_actions = TRUE;
+			else
+				opt.draw_actions = FALSE;
+			winwidget_rerender_all(0, 1);
+			break;
 		case CB_OPT_KEEP_HTTP:
 			MENU_ITEM_TOGGLE(i);
 			if (MENU_ITEM_IS_ON(i))
@@ -1507,20 +1515,6 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 			MENU_ITEM_TOGGLE(i);
 			opt.auto_zoom = MENU_ITEM_IS_ON(i) ? 1 : 0;
 			winwidget_rerender_all(1, 1);
-			break;
-		case CB_OPT_XINERAMA:
-#ifdef HAVE_LIBXINERAMA
-			MENU_ITEM_TOGGLE(i);
-			opt.xinerama = MENU_ITEM_IS_ON(i) ? 1 : 0;
-
-			if (opt.xinerama) {
-				init_xinerama();
-			} else {
-				XFree(xinerama_screens);
-				xinerama_screens = NULL;
-			}
-			winwidget_rerender_all(1, 1);
-#endif				/* HAVE_LIBXINERAMA */
 			break;
 	}
 	D_RETURN_(4);
@@ -1576,17 +1570,18 @@ static feh_menu *feh_menu_func_gen_options(feh_menu * m)
 	mm->fehwin = m->fehwin;
 	feh_menu_add_toggle_entry(mm, "Auto-Zoom", NULL, NULL, CB_OPT_AUTO_ZOOM, NULL, NULL, opt.auto_zoom);
 	feh_menu_add_toggle_entry(mm, "Freeze Window Size", NULL, NULL,
-				  CB_OPT_FREEZE_WINDOW, NULL, NULL, opt.geom_flags);
+				CB_OPT_FREEZE_WINDOW, NULL, NULL, opt.geom_flags);
 	feh_menu_add_toggle_entry(mm, "Fullscreen", NULL, NULL,
-				  CB_OPT_FULLSCREEN, NULL, NULL, m->fehwin->full_screen);
-#ifdef HAVE_LIBXINERAMA
-	feh_menu_add_toggle_entry(mm, "Use Xinerama", NULL, NULL, CB_OPT_XINERAMA, NULL, NULL, opt.xinerama);
-#endif				/* HAVE_LIBXINERAMA */
+				CB_OPT_FULLSCREEN, NULL, NULL, m->fehwin->full_screen);
+
 	feh_menu_add_entry(mm, NULL, NULL, NULL, 0, NULL, NULL);
+
 	feh_menu_add_toggle_entry(mm, "Draw Filename", NULL, NULL,
-				  CB_OPT_DRAW_FILENAME, NULL, NULL, opt.draw_filename);
+				CB_OPT_DRAW_FILENAME, NULL, NULL, opt.draw_filename);
+	feh_menu_add_toggle_entry(mm, "Draw Actions", NULL, NULL,
+				CB_OPT_DRAW_ACTIONS, NULL, NULL, opt.draw_actions);
 	feh_menu_add_toggle_entry(mm, "Keep HTTP Files", NULL, NULL,
-				  CB_OPT_KEEP_HTTP, NULL, NULL, opt.keep_http);
+				CB_OPT_KEEP_HTTP, NULL, NULL, opt.keep_http);
 	mm->func_free = feh_menu_func_free_options;
 	D_RETURN(4, mm);
 }
