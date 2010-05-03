@@ -81,7 +81,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			feh_menu_hide(menu_root, True);
 			break;
 		case XK_Left:
-			feh_menu_select_parent(selected_menu, selected_item);
+			feh_menu_select_parent(selected_menu);
 			break;
 		case XK_Down:
 			feh_menu_select_next(selected_menu, selected_item);
@@ -90,7 +90,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			feh_menu_select_prev(selected_menu, selected_item);
 			break;
 		case XK_Right:
-			feh_menu_select_submenu(selected_menu, selected_item);
+			feh_menu_select_submenu(selected_menu);
 			break;
 		case XK_Return:
 			feh_menu_item_activate(selected_menu, selected_item);
@@ -104,7 +104,7 @@ void feh_event_handle_keypress(XEvent * ev)
 
 		switch (*kbuf) {
 		case 'h':
-			feh_menu_select_parent(selected_menu, selected_item);
+			feh_menu_select_parent(selected_menu);
 			break;
 		case 'j':
 			feh_menu_select_next(selected_menu, selected_item);
@@ -113,7 +113,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			feh_menu_select_prev(selected_menu, selected_item);
 			break;
 		case 'l':
-			feh_menu_select_submenu(selected_menu, selected_item);
+			feh_menu_select_submenu(selected_menu);
 			break;
 		case ' ':
 			feh_menu_item_activate(selected_menu, selected_item);

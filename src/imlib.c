@@ -825,13 +825,11 @@ void feh_display_status(char stat)
 		}
 
 		if (!(i % 50)) {
-			int len;
-			char buf[50];
+			int len = gib_list_length(filelist);
 
-			len = gib_list_length(filelist);
-			snprintf(buf, sizeof(buf),
-					" %5d/%d (%d)\n[%3d%%] ", i, init_len, len, ((int) ((float) i / init_len * 100)));
-			fprintf(stdout, buf);
+			fprintf(stdout, " %5d/%d (%d)\n[%3d%%] ",
+					i, init_len, len, ((int) ((float) i / init_len * 100)));
+
 		} else if ((!(i % 10)) && (!reset_output))
 			fprintf(stdout, " ");
 

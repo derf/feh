@@ -76,8 +76,7 @@ typedef struct _feh_menu_list feh_menu_list;
 #define FEH_MENU_TOGGLE_W 7
 #define FEH_MENU_TOGGLE_PAD 3
 
-typedef void (*menu_func) (feh_menu * m, feh_menu_item * i, void *data);
-typedef feh_menu *(*menuitem_func_gen) (feh_menu * m, feh_menu_item * i, void *data);
+typedef feh_menu *(*menuitem_func_gen) (feh_menu * m);
 
 struct _feh_menu_list {
 	feh_menu *menu;
@@ -89,7 +88,7 @@ struct _feh_menu_item {
 	Imlib_Image icon;
 	char *text;
 	char *submenu;
-	menu_func func;
+	int action;
 	void (*func_free) (void *data);
 	void *data;
 	feh_menu_item *next;
@@ -116,7 +115,7 @@ struct _feh_menu {
 	int needs_redraw;
 	void *data;
 	int calc;
-	void (*func_free) (feh_menu * m, void *data);
+	void (*func_free) (feh_menu * m);
 };
 
 feh_menu *feh_menu_new(void);
@@ -132,10 +131,10 @@ void feh_menu_hide(feh_menu * m, int func_free);
 void feh_menu_show(feh_menu * m);
 feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text,
 				  Imlib_Image icon, char *submenu,
-				  menu_func func, void *data, void (*func_free) (void *data));
+				  int action, void *data, void (*func_free) (void *data));
 feh_menu_item *feh_menu_add_toggle_entry(feh_menu * m, char *text,
 					 Imlib_Image icon, char *submenu,
-					 menu_func func, void *data, void (*func_free) (void *data), int setting);
+					 int action, void *data, void (*func_free) (void *data), int setting);
 void feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h);
 void feh_menu_calc_size(feh_menu * m);
 void feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox, int oy);
@@ -150,7 +149,7 @@ void feh_menu_init_thumbnail_viewer(void);
 void feh_menu_init_thumbnail_win(void);
 void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy);
 void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy);
-void feh_menu_draw_submenu_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, int selected);
+void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy, int selected);
 void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy);
 void feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, int selected);
 void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, int on);
@@ -164,8 +163,8 @@ feh_menu_item *feh_menu_find_selected_r(feh_menu * m, feh_menu ** parent);
 void feh_menu_select_prev(feh_menu * selected_menu, feh_menu_item * selected_item);
 void feh_menu_select_next(feh_menu * selected_menu, feh_menu_item * selected_item);
 void feh_menu_item_activate(feh_menu * selected_menu, feh_menu_item * selected_item);
-void feh_menu_select_parent(feh_menu * selected_menu, feh_menu_item * selected_item);
-void feh_menu_select_submenu(feh_menu * selected_menu, feh_menu_item * selected_item);
+void feh_menu_select_parent(feh_menu * selected_menu);
+void feh_menu_select_submenu(feh_menu * selected_menu);
 
 extern feh_menu *menu_root;
 extern feh_menu *menu_single_win;
