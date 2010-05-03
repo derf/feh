@@ -167,6 +167,9 @@ void feh_menu_free(feh_menu * m)
 		}
 		pl = l;
 	}
+	if (m->bg)
+		gib_imlib_free_image_and_decache(m->bg);
+
 	free(m);
 
 	D_RETURN_(4);

@@ -25,8 +25,3 @@ turned on (after that, it'll work for all images in the slideshow).
 Maybe I'll someday find out how to fix that :>
 
 Make --start-at work with paths as well
-
-Fix Memory leaks in the menu.
-Sub-menus generated using the callbacks (feh_menu_func_gen_*) don't get
-properly freed. Looks like their background image somehow remains in memory or
-something.
