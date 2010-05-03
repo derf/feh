@@ -2,6 +2,7 @@ git HEAD
 
     * Fix memory leak related to the menu
     * Make --start-at work with filenames instead of list positions
+    * Add keybinding to toggle pointer visibility (see --hide-pointer)
 
 Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 

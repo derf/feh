@@ -131,6 +131,8 @@ void winwidget_rerender_all(int resize, int alias);
 void winwidget_destroy_xwin(winwidget winwid);
 int winwidget_count(void);
 
+void winwidget_set_pointer(winwidget winwid, int visible);
+
 void winwidget_get_geometry(winwidget winwid, int *rect);
 int winwidget_get_width(winwidget winwid);
 int winwidget_get_height(winwidget winwid);

@@ -32,7 +32,6 @@ static void winwidget_unregister(winwidget win);
 static void winwidget_register(winwidget win);
 static winwidget winwidget_allocate(void);
 
-static char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 int window_num = 0;		/* For window list */
 winwidget *windows = NULL;	/* List of windows to loop though */
@@ -280,16 +279,8 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		XSetWMNormalHints(disp, ret->win, &xsz);
 		XMoveWindow(disp, ret->win, x, y);
 	}
-	if (ret->full_screen && opt.hide_pointer) {
-		Cursor no_ptr;
-		XColor black, dummy;
-		Pixmap bm_no;
-		bm_no = XCreateBitmapFromData(disp, ret->win, bm_no_data, 8, 8);
-		XAllocNamedColor(disp, DefaultColormapOfScreen(DefaultScreenOfDisplay(disp)), "black", &black, &dummy);
-
-		no_ptr = XCreatePixmapCursor(disp, bm_no, bm_no, &black, &black, 0, 0);
-		XDefineCursor(disp, ret->win, no_ptr);
-	}
+	if (ret->full_screen && opt.hide_pointer)
+		winwidget_set_pointer(ret, 0);
 
 	/* set the icon name property */
 	XSetIconName(disp, ret->win, "feh");
@@ -973,6 +964,24 @@ void winwidget_size_to_image(winwidget winwid)
 	winwid->im_x = winwid->im_y = 0;
 	winwidget_render_image(winwid, 0, 1);
 	D_RETURN_(4);
+}
+
+void winwidget_set_pointer(winwidget winwid, int visible)
+{
+	Cursor no_ptr;
+	XColor black, dummy;
+	Pixmap bm_no;
+	static char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+	if (visible)
+		XUndefineCursor(disp, winwid->win);
+	else {
+		bm_no = XCreateBitmapFromData(disp, winwid->win, bm_no_data, 8, 8);
+		XAllocNamedColor(disp, DefaultColormapOfScreen(DefaultScreenOfDisplay(disp)), "black", &black, &dummy);
+
+		no_ptr = XCreatePixmapCursor(disp, bm_no, bm_no, &black, &black, 0, 0);
+		XDefineCursor(disp, winwid->win, no_ptr);
+	}
 }
 
 int winwidget_get_width(winwidget winwid)

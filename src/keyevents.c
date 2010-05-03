@@ -322,6 +322,11 @@ void feh_event_handle_keypress(XEvent * ev)
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT);
 		break;
+	case 'o':
+	case 'O':
+		winwidget_set_pointer(winwid, opt.hide_pointer);
+		opt.hide_pointer = !opt.hide_pointer;
+		break;
 	case 'p':
 	case 'P':
 	case '\b':
