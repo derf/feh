@@ -72,6 +72,7 @@ void init_parse_options(int argc, char **argv)
 	opt.blur_button = 1;
 	opt.no_blur_ctrl_mask = 0;
 
+	opt.start_list_at = NULL;
 	opt.no_jump_on_resort = 0;
 
 	opt.builtin_http = 0;
@@ -627,7 +628,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.blur_button = atoi(optarg);
 			break;
 		case '|':
-			opt.start_list_at = atoi(optarg);
+			opt.start_list_at = estrdup(optarg);
 			break;
 		case 't':
 			opt.thumbs = 1;

@@ -87,6 +87,7 @@ struct __fehoptions {
 	char *rcfile;
 	char *menu_style;
 	char *caption_path;
+	char *start_list_at;
 
 	gib_style *menu_style_l;
 
@@ -119,7 +120,6 @@ struct __fehoptions {
 	int default_zoom;
 	int menu_border;
 	unsigned char adjust_reload;
-	unsigned int start_list_at;
 
 	unsigned char mode;
 	unsigned char paused;

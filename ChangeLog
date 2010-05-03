@@ -1,3 +1,8 @@
+git HEAD
+
+    * Fix memory leak related to the menu
+    * Make --start-at work with filenames instead of list positions
+
 Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.4.3

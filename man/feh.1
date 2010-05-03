@@ -123,10 +123,11 @@ when
 .Nm
 exits.  You can add files to filelists by specifying them on the commandline
 when also specifying the list.
-.It Cm -| , --start-at Ar position
-Start at
-.Ar position
-in the filelist.
+.It Cm -| , --start-at Ar filename
+Start the filelist at
+.Ar filename .
+See
+.Sx USAGE EXAMPLES .
 .It Cm -p , --preload
 Preload images.  This doesn't mean hold them in RAM, it means run through
 them and eliminate unloadable images first.  Otherwise they will be removed
@@ -670,7 +671,12 @@ Show the images in .../presentation, sorted by name, in fullscreen,
 automatically change to the next image after 5 seconds
 .It feh -rSwidth -A Qo mv '%f' ~/images/'%n' Qc /opt/images
 View all images in /opt/images and below, sorted by width, move an image to
-~/image/image_name when enter is pressed.
+~/image/image_name when enter is pressed
+.It feh --start-at ./foo.jpg \&.
+View all images in the current directory, starting with foo.jpg.  All other
+images are still in the slideshow and can be viewed normally
+.It feh --start-at foo.jpg *
+Same as above
 .El
 .
 .Sh BUGS

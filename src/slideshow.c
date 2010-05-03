@@ -34,18 +34,23 @@ void init_slideshow_mode(void)
 	winwidget w = NULL;
 	int success = 0;
 	char *s = NULL;
-	gib_list *l = NULL, *last = NULL;
+	gib_list *l = filelist, *last = NULL;
 	feh_file *file = NULL;
 
 	D_ENTER(3);
 
-	mode = "slideshow";
-	if (opt.start_list_at) {
-		l = gib_list_nth(filelist, opt.start_list_at);
-		opt.start_list_at = 0;	/* for next time */
-	} else {
-		l = filelist;
+	for (l = filelist; l && opt.start_list_at; l = l->next) {
+		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
+			opt.start_list_at = NULL;
+			break;
+		}
 	}
+
+	if (opt.start_list_at)
+		eprintf("--start-at %s: File not found in filelist",
+				opt.start_list_at);
+
+	mode = "slideshow";
 	for (; l; l = l->next) {
 		file = FEH_FILE(l->data);
 		if (last) {
