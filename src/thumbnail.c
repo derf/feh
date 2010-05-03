@@ -714,7 +714,7 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file)
 	if (td.cache_thumbnails) {
 		uri = feh_thumbnail_get_name_uri(file->filename);
 		thumb_file = feh_thumbnail_get_name(uri);
-		status = feh_thumbnail_get_generated(image, file, thumb_file, uri);
+		status = feh_thumbnail_get_generated(image, file, thumb_file);
 
 		if (!status)
 			status = feh_thumbnail_generate(image, file, thumb_file, uri);
@@ -832,7 +832,7 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 	return (0);
 }
 
-int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri)
+int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char *thumb_file)
 {
 	struct stat sb;
 	char *c_mtime;

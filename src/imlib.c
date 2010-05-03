@@ -748,7 +748,7 @@ void feh_draw_caption(winwidget w)
 		D_RETURN_(4);
 	}
 
-	lines = feh_wrap_string(file->caption, w->w, w->h, fn, NULL);
+	lines = feh_wrap_string(file->caption, w->w, fn, NULL);
 	if (!lines)
 		D_RETURN_(4);
 
@@ -870,9 +870,7 @@ void feh_edit_inplace_orient(winwidget w, int orientation)
 	D_RETURN_(4);
 }
 
-/* TODO max_height is ignored... Could use a function which generates a
- * transparent text overlay image, with wrapping and all. Would be useful */
-gib_list *feh_wrap_string(char *text, int wrap_width, int max_height, Imlib_Font fn, gib_style * style)
+gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style * style)
 {
 	gib_list *ll, *lines = NULL, *list = NULL, *words;
 	gib_list *l = NULL;
