@@ -279,7 +279,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		XSetWMNormalHints(disp, ret->win, &xsz);
 		XMoveWindow(disp, ret->win, x, y);
 	}
-	if (ret->full_screen && opt.hide_pointer)
+	if (opt.hide_pointer)
 		winwidget_set_pointer(ret, 0);
 
 	/* set the icon name property */
