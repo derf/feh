@@ -74,37 +74,99 @@ These methods may be used in conjunction.
 .
 .Sh OPTIONS
 .Bl -tag -width indent
-.It Cm -h , --help
-display help output and exit.
-.It Cm -v , --version
-output version information and exit.
-.It Cm -V , --verbose
-output useful information, progress bars, etc.
-.It Cm -q , --quiet
-Don't report non-fatal errors for failed loads.  Verbose and quiet modes are
-not mutually exclusive, the first controls informational messages, the second
-only errors.
-.It Cm -T , --theme Ar theme
-Load options from config file with name
-.Ar theme
-- see
-.Sx CONFIG FILE SYNTAX
-for more info.  Note that options from the theme file always override
-commandline options.
-.It Cm -_ , --rcfile Ar file
-Use
+.It Cm -A , --action Ar action
+Specify a string as an action to perform on the image.  In slideshow or
+multiwindow modes, the action will be run when the enter key is pressed, in
+list mode, the action will be run for each file listed.  In
+loadables/unloadables mode, the action will be run for each
+loadable/unloadable file, respectively.
+The action will be executed by /bin/sh.  Use format specifiers to refer to
+image info.  See
+.Sx FORMAT SPECIFIERS
+for examples.  E.g.
+.Qq feh -A "mv ~/images/%n" * .
+In slideshow mode, the next image will be shown after running the action, in
+multiwindow mode, the window will be closed.
+.It Cm --action1 No .. Cm --action9
+Extra actions which can be set and triggered using the appropiate number key.
+.It Cm -Z , --auto-zoom
+Zoom pictures to screen size in fullscreen
+.Pq affected by Cm --stretch No and Cm --ignore-aspect .
+.It Cm --bg-center Ar file
+Set
 .Ar file
-to parse themes and options from, instead of the default
-.Pa ~/.fehrc , /etc/fehrc
-files.
-.It Cm -r , --recursive
-Recursively expand any directories in the commandline arguments
-to the content of those directories, all the way down to the bottom level.
-.It Cm --no-jump-on-resort
-Don't jump to the first image after resorting the filelist.
-.It Cm -z , --randomize
-When viewing multiple files in a slideshow, randomize the file list before
-displaying.
+as centered desktop background
+.It Cm --bg-fill Ar file
+Like
+.Cm --bg-scale ,
+but preserves aspect ratio by zooming the image until it fits.  Either a
+horizontal or a vertical part of the image will be cut off.
+.It Cm --bg-scale Ar file
+Set
+.Ar file
+as scaled desktop background.  This will fill the whole background with
+.Ar file ,
+but its aspect ratio will not be preserved.
+.It Cm --bg-seamless Ar file
+Like
+.Cm --bg-tile ,
+but with blurry corners so that it is
+.Pq in some cases ;-)
+less obvious that the image is too small for the screen.
+.It Cm --bg-tile Ar file
+Set
+.Ar file
+as desktop background, tiled if necessary.
+.Nm
+can use enlightenment IPC if you are running it, or it will fall back to X
+methods.
+.Nm
+stores the commandline necessary to restore the background in
+.Pa ~/.fehbg .
+So to have your background restored when you restart X, add the line
+.Qq `cat ~/.fehbg`
+to your X startup script
+.Pq e.g. Pa ~/.xinitrc .
+Note that you only need to do this for non E window managers.
+.It Cm -x , --borderless
+Create borderless windows.
+.It Cm -Q , --builtin
+Use builtin HTTP client to grab remote files instead of
+.Xr wget 1 .
+.It Cm --cache-thumbnails
+Enable thumbnail caching in
+.Pa ~/.thumbnails
+(rather experimental).
+.It Cm --caption-path Ar path
+Path to directory containing image captions.  This turns on caption viewing,
+and if captions are found in
+.Ar path ,
+which is relative to the directory of each image, they are overlayed on the
+displayed image.  E.g. with caption path
+.Qq captions/ ,
+and viewing image
+.Qq images/foo.jpg ,
+the caption will be looked for in
+.Qq images/captions/foo.jpg.txt .
+.It Cm -c , --collage
+Enable collage mode.  Collage mode is very similar to montage mode, except
+the images are distributed randomly.
+When using collage mode, you should also specify
+.Cm --limit-width
+and
+.Cm --limit-height .
+.It Cm -L , --customlist Ar format
+Use
+.Ar format
+.Pq printf-like string containing image info specifiers
+for list output.  See
+.Sx FORMAT SPECIFIERS .
+.It Cm --cycle-once
+Exit feh after one loop through the slideshow.
+.It Cm --draw-actions
+Draw the defined actions and what they do at the top-left of the image.
+.It Cm -d , --draw-filename
+Draw the filename at the top-left of the image.
 .It Cm -f , --filelist Ar file
 This option is similar to the playlists used by music software.  If
 .Ar file
@@ -123,17 +185,14 @@ when
 .Nm
 exits.  You can add files to filelists by specifying them on the commandline
 when also specifying the list.
-.It Cm -| , --start-at Ar filename
-Start the filelist at
-.Ar filename .
-See
-.Sx USAGE EXAMPLES .
-.It Cm -p , --preload
-Preload images.  This doesn't mean hold them in RAM, it means run through
-them and eliminate unloadable images first.  Otherwise they will be removed
-as you flick through.  This also analyses the images to get data for use in
-sorting, such as pixel size, type etc.  A preload run will be automatically
-performed if you specify one of these sort modes.
+.It Cm -C , --fontpath Ar path
+Specify
+.Ar path
+as extra directory in which to search for fonts; can be used multiple times to
+add multiple paths.
+.It Cm -I , --fullindex
+Same as Index mode, but you also get image size and dimensions printed
+below each thumbnail.
 .It Cm -F , --full-screen
 Make the window fullscreen.
 .It Cm -g , --geometry Ar width No x Ar height
@@ -142,35 +201,25 @@ Limit (and don't change) the window size.  Takes an X-style geometry
 like 640x480.
 Note that larger images will be zoomed out to fit but you can see them at 1:1
 by clicking the zoom button.
-.It Cm -. , --scale-down
-When not in fullscreen: Scale images to screen size if they are too big.
-.It Cm -Z , --auto-zoom
-Zoom pictures to screen size in fullscreen
-.Pq affected by Cm --stretch No and Cm --ignore-aspect .
-.It Cm --zoom Ar percent
-Zoom images by
-.Ar percent
-when in full screen mode or when window geometry is fixed.  When combined with
-.Cm --auto-zoom ,
-zooming will be limited to the specified
-.Ar percent .
-.It Cm -w , --multiwindow
-Disable slideshow mode.  With this setting, instead of opening multiple files
-in slideshow mode, multiple windows will be opened; one per file.
-.It Cm -x , --borderless
-Create borderless windows.
-.It Cm -d , --draw-filename
-Draw the filename at the top-left of the image.
-.It Cm -D , --slideshow-delay Ar float
-For slideshow mode, wait
-.Ar float
-seconds between automatically changing slides.  Useful for presentations.
-.It Cm --cycle-once
-Exit feh after one loop through the slideshow.
-.It Cm -R , --reload Ar int
-Reload images after
-.Ar int
-seconds.  Mainly useful when viewing webcams via http.
+.It Cm -h , --help
+display help output and exit.
+.It Cm --hide-pointer
+Hide the pointer
+.Pq useful for slideshows etc .
+.It Cm -B , --image-bg Ar style
+Use style as background for transparent image parts and the like.
+Accepted values: white, black, default.
+.It Cm -i , --index
+Enable Index mode.  Index mode is similar to montage mode, and accepts the
+same options.  It creates an index print of thumbails, printing the image
+name beneath each thumbnail.  Index mode enables certain other options, see
+.Sx INDEX MODE OPTIONS .
+.It Cm --index-dim Ar bool
+Toggle showing image dimensions in thumbnail/index mode.
+.It Cm --index-name Ar bool
+Toggle showing the filename in thumbnail/index mode.
+.It Cm --index-size Ar bool
+Toggle showing the filesize in thumbnail/index mode.
 .It Cm -k , --keep-http
 When viewing files using HTTP,
 .Nm
@@ -181,158 +230,14 @@ They will be in
 with
 .Qq Nm
 in the name.
-.It Cm -j , --output-dir Ar directory
-Save files to
-.Ar directory
-.Pq only useful with -k
-.It Cm -Q , --builtin
-Use builtin HTTP client to grab remote files instead of
-.Xr wget 1 .
-.It Cm -G , --wget-timestamp
-Don't add a timestamp
-.Pq Qq ?1234
-to URLs when (re)loading them.
-.It Cm --caption-path Ar path
-Path to directory containing image captions.  This turns on caption viewing,
-and if captions are found in
-.Ar path ,
-which is relative to the directory of each image, they are overlayed on the
-displayed image.  E.g. with caption path
-.Qq captions/ ,
-and viewing image
-.Qq images/foo.jpg ,
-the caption will be looked for in
-.Qq images/captions/foo.jpg.txt .
 .It Cm -l , --list
 Don't display images.  Analyse them and display an
 .Xr ls 1 - No style
 listing.  Useful in scripts to hunt out images of a certain
 size/resolution/type etc.
-.It Cm -L , --customlist Ar format
-Use
-.Ar format
-.Pq printf-like string containing image info specifiers
-for list output.  See
-.Sx FORMAT SPECIFIERS .
 .It Cm -U , --loadable
 Don't display images.  Just print out their names if imlib2 can successfully
 load them.
-.It Cm -u , --unloadable
-Don't display images.  Just print out their names if imlib2 can NOT
-successfully load them.
-.It Cm -S , --sort Ar sort_type
-The file list may be sorted according to image parameters.  Allowed sort
-types are: name, filename, width, height, pixels, size, format.  For sort
-modes other than name or filename, a preload run will be necessary,
-causing a delay proportional to the number of images in the list.
-.It Cm -n , --reverse
-Reverse the sort order.  Use this to invert the order of the filelist.
-E.g. to sort in reverse width order, use
-.Cm -nSwidth .
-.It Cm -A , --action Ar action
-Specify a string as an action to perform on the image.  In slideshow or
-multiwindow modes, the action will be run when the enter key is pressed, in
-list mode, the action will be run for each file listed.  In
-loadables/unloadables mode, the action will be run for each
-loadable/unloadable file, respectively.
-The action will be executed by /bin/sh.  Use format specifiers to refer to
-image info.  See
-.Sx FORMAT SPECIFIERS
-for examples.  E.g.
-.Qq feh -A "mv ~/images/%n" * .
-In slideshow mode, the next image will be shown after running the action, in
-multiwindow mode, the window will be closed.
-.It Cm --action1 No .. Cm --action9
-Extra actions which can be set and triggered using the appropiate number key.
-.It Cm --draw-actions
-Draw the defined actions and what they do at the top-left of the image.
-.It Cm -m , --montage
-Enable montage mode.  Montage mode creates a new image consisting of a grid of
-thumbnails of the images in the filelist.  When montage mode is selected,
-certain other options become available.  See
-.Sx MONTAGE MODE OPTIONS .
-.It Cm -c , --collage
-Enable collage mode.  Collage mode is very similar to montage mode, except
-the images are distributed randomly.
-When using collage mode, you should also specify
-.Cm --limit-width
-and
-.Cm --limit-height .
-.It Cm -i , --index
-Enable Index mode.  Index mode is similar to montage mode, and accepts the
-same options.  It creates an index print of thumbails, printing the image
-name beneath each thumbnail.  Index mode enables certain other options, see
-.Sx INDEX MODE OPTIONS .
-.It Cm -I , --fullindex
-Same as Index mode, but you also get image size and dimensions printed
-below each thumbnail.
-.It Cm -t , --thumbnails
-Same as Index mode, but the thumbnails are clickable image launchers.
-.It Cm --cache-thumbnails
-Enable thumbnail caching in
-.Pa ~/.thumbnails
-(rather experimental).
-.It Cm -~ , --thumb-title Ar string
-Set
-.Ar title
-for windows opened from thumbnail mode.  See also
-.Sx FORMAT SPECIFIERS .
-.It Cm --index-name Ar bool
-Toggle showing the filename in thumbnail/index mode.
-.It Cm --index-size Ar bool
-Toggle showing the filesize in thumbnail/index mode.
-.It Cm --index-dim Ar bool
-Toggle showing image dimensions in thumbnail/index mode.
-.It Cm --bg-tile Ar file
-Set
-.Ar file
-as desktop background, tiled if necessary.
-.Nm
-can use enlightenment IPC if you are running it, or it will fall back to X
-methods.
-.Nm
-stores the commandline necessary to restore the background in
-.Pa ~/.fehbg .
-So to have your background restored when you restart X, add the line
-.Qq `cat ~/.fehbg`
-to your X startup script
-.Pq e.g. Pa ~/.xinitrc .
-Note that you only need to do this for non E window managers.
-.It Cm --bg-center Ar file
-Set
-.Ar file
-as centered desktop background
-.It Cm --bg-scale Ar file
-Set
-.Ar file
-as scaled desktop background.  This will fill the whole background with
-.Ar file ,
-but its aspect ratio will not be preserved.
-.It Cm --bg-fill Ar file
-Like
-.Cm --bg-scale ,
-but preserves aspect ratio by zooming the image until it fits.  Either a
-horizontal or a vertical part of the image will be cut off.
-.It Cm --bg-seamless Ar file
-Like
-.Cm --bg-tile ,
-but with blurry corners so that it is
-.Pq in some cases ;-)
-less obvious that the image is too small for the screen.
-.It Cm -M , --menu-font Ar font
-Use
-.Ar font
-.Pq truetype, with size, like Qq yudit/12
-as menu font.
-.It Cm -C , --fontpath Ar path
-Specify
-.Ar path
-as extra directory in which to search for fonts; can be used multiple times to
-add multiple paths.
-.It Cm --menu-style Ar file
-Read
-.Ar file
-to determine menu style.
 .It Cm -) , --menu-bg Ar file
 Use
 .Ar file
@@ -340,13 +245,122 @@ as background image in menus.
 .It Cm --menu-border Ar int
 Specify number of pixels that define the menu background's border.  Borders
 are not stretched when images are scaled.
+.It Cm -M , --menu-font Ar font
+Use
+.Ar font
+.Pq truetype, with size, like Qq yudit/12
+as menu font.
+.It Cm --menu-style Ar file
+Read
+.Ar file
+to determine menu style.
+.It Cm -m , --montage
+Enable montage mode.  Montage mode creates a new image consisting of a grid of
+thumbnails of the images in the filelist.  When montage mode is selected,
+certain other options become available.  See
+.Sx MONTAGE MODE OPTIONS .
+.It Cm -w , --multiwindow
+Disable slideshow mode.  With this setting, instead of opening multiple files
+in slideshow mode, multiple windows will be opened; one per file.
+.It Cm --no-jump-on-resort
+Don't jump to the first image after resorting the filelist.
 .It Cm -N , --no-menus
 Don't load or show any menus.
-.It Cm -B , --image-bg Ar style
-Use style as background for transparent image parts and the like.
-Accepted values: white, black, default.
+.It Cm --no-xinerama
+Disable Xinerama support.  Only makes sense when you have Xinerama support
+compiled in.
+.It Cm -j , --output-dir Ar directory
+Save files to
+.Ar directory
+.Pq only useful with -k
+.It Cm -p , --preload
+Preload images.  This doesn't mean hold them in RAM, it means run through
+them and eliminate unloadable images first.  Otherwise they will be removed
+as you flick through.  This also analyses the images to get data for use in
+sorting, such as pixel size, type etc.  A preload run will be automatically
+performed if you specify one of these sort modes.
+.It Cm -q , --quiet
+Don't report non-fatal errors for failed loads.  Verbose and quiet modes are
+not mutually exclusive, the first controls informational messages, the second
+only errors.
+.It Cm -z , --randomize
+When viewing multiple files in a slideshow, randomize the file list before
+displaying.
+.It Cm -_ , --rcfile Ar file
+Use
+.Ar file
+to parse themes and options from, instead of the default
+.Pa ~/.fehrc , /etc/fehrc
+files.
+.It Cm -r , --recursive
+Recursively expand any directories in the commandline arguments
+to the content of those directories, all the way down to the bottom level.
+.It Cm -R , --reload Ar int
+Reload images after
+.Ar int
+seconds.  Mainly useful when viewing webcams via http.
+.It Cm -n , --reverse
+Reverse the sort order.  Use this to invert the order of the filelist.
+E.g. to sort in reverse width order, use
+.Cm -nSwidth .
+.It Cm -. , --scale-down
+When not in fullscreen: Scale images to screen size if they are too big.
+.It Cm --screen-clip Ar bool
+Disable/Enable screen clipping based on window size.  With this disabled,
+windows may become very large, making them unmanageable in certain window
+managers.
+.It Cm -D , --slideshow-delay Ar float
+For slideshow mode, wait
+.Ar float
+seconds between automatically changing slides.  Useful for presentations.
+.It Cm -S , --sort Ar sort_type
+The file list may be sorted according to image parameters.  Allowed sort
+types are: name, filename, width, height, pixels, size, format.  For sort
+modes other than name or filename, a preload run will be necessary,
+causing a delay proportional to the number of images in the list.
+.It Cm -| , --start-at Ar filename
+Start the filelist at
+.Ar filename .
+See
+.Sx USAGE EXAMPLES .
+.It Cm -T , --theme Ar theme
+Load options from config file with name
+.Ar theme
+- see
+.Sx CONFIG FILE SYNTAX
+for more info.  Note that options from the theme file always override
+commandline options.
+.It Cm -t , --thumbnails
+Same as Index mode, but the thumbnails are clickable image launchers.
+.It Cm -~ , --thumb-title Ar string
+Set
+.Ar title
+for windows opened from thumbnail mode.  See also
+.Sx FORMAT SPECIFIERS .
 .It Cm -^ , --title Ar title
 Set window title for slideshow mode.
+.It Cm -u , --unloadable
+Don't display images.  Just print out their names if imlib2 can NOT
+successfully load them.
+.It Cm -V , --verbose
+output useful information, progress bars, etc.
+.It Cm -v , --version
+output version information and exit.
+.It Cm -G , --wget-timestamp
+Don't add a timestamp
+.Pq Qq ?1234
+to URLs when (re)loading them.
+.It Cm --zoom Ar percent
+Zoom images by
+.Ar percent
+when in full screen mode or when window geometry is fixed.  When combined with
+.Cm --auto-zoom ,
+zooming will be limited to the specified
+.Ar percent .
+.El
+.
+.Sh BUTTON OPTIONS
+.Bl -tag -width indent
 .It Cm -0 , --reload-button Ar int
 Set button to reload the image
 .Pq default: 0 .
@@ -379,44 +393,14 @@ Use CTRL+Button for blurring
 .Pq default : 1 .
 .It Cm --no-blur-ctrl-mask
 Don't require CTRL+Button for blurring - just use the button.
-.It Cm --no-xinerama
-Disable Xinerama support.  Only makes sense when you have Xinerama support
-compiled in.
-.It Cm --screen-clip Ar bool
-Disable/Enable screen clipping based on window size.  With this disabled,
-windows may become very large, making them unmanageable in certain window
-managers.
-.It Cm --hide-pointer
-Hide the pointer
-.Pq useful for slideshows etc .
 .El
 .
 .Sh MONTAGE MODE OPTIONS
 .Bl -tag -width indent
-.It Cm -X , --ignore-aspect
-By default, the montage thumbnails will retain their aspect ratios, while
-fitting into thumb-width/-height.  This options forces them to be the size set
-by
-.Cm --thumb-width No and Cm --thumb-height .
-This will prevent any empty space in the final montage.
-.It Cm -s , --stretch
-Normally, if an image is smaller than the specified thumbnail size, it will
-not be enlarged.  If this option is set, the image will be scaled up to fit
-the thumnail size.  Aspect ratio will be maintained unles
-.Cm --ignore-aspect
-is specified.
-.It Cm -y , --thumb-width Ar pixels
-Set thumbnail width.
-.It Cm -E , --thumb-height Ar pixels
-Set thumbnail height.
-.It Cm -W , --limit-width Ar pixels
-Limit the width of the montage.
-.It Cm -H , --limit-height Ar pixels
-Limit the height of the montage.  These options can be used together to define
-the image size exactly, or separately.  If only one is specified, the other is
-calculated from the number of files specified and the size of the thumbnails.
-The default is to limit width to 800 pixels and calculate the height as
-necessary.
+.It Cm -a , --alpha Ar int
+When drawing thumbnails onto the background, set their transparency level to
+.Ar int
+.Pq 0 - 255 .
 .It Cm -b , --bg Ar file No | Cm trans
 Use
 .Ar file
@@ -428,10 +412,20 @@ if no size restrictions were specified.  Alternatively, if
 is
 .Qq trans ,
 the background will be made transparent.
-.It Cm -a , --alpha Ar int
-When drawing thumbnails onto the background, set their transparency level to
-.Ar int
-.Pq 0 - 255 .
+.It Cm -X , --ignore-aspect
+By default, the montage thumbnails will retain their aspect ratios, while
+fitting into thumb-width/-height.  This options forces them to be the size set
+by
+.Cm --thumb-width No and Cm --thumb-height .
+This will prevent any empty space in the final montage.
+.It Cm -H , --limit-height Ar pixels
+Limit the height of the montage.  These options can be used together to define
+the image size exactly, or separately.  If only one is specified, the other is
+calculated from the number of files specified and the size of the thumbnails.
+The default is to limit width to 800 pixels and calculate the height as
+necessary.
+.It Cm -W , --limit-width Ar pixels
+Limit the width of the montage.
 .It Cm -o , --output Ar file
 Save the created montage to
 .Ar file .
@@ -439,6 +433,16 @@ Save the created montage to
 Just save the created montage to
 .Ar file
 without displaying it.
+.It Cm -s , --stretch
+Normally, if an image is smaller than the specified thumbnail size, it will
+not be enlarged.  If this option is set, the image will be scaled up to fit
+the thumnail size.  Aspect ratio will be maintained unles
+.Cm --ignore-aspect
+is specified.
+.It Cm -E , --thumb-height Ar pixels
+Set thumbnail height.
+.It Cm -y , --thumb-width Ar pixels
+Set thumbnail width.
 .El
 .
 .Sh INDEX MODE OPTIONS
@@ -529,40 +533,44 @@ provided with a couple of cool example themes.
 The default mode is slideshow mode.  When viewing a slideshow, the following
 keys may be used:
 .Bl -tag -width indent
-.It p , P , Ao backspace Ac , Aq left
-Show previous image
-.It n , N , Ao space Ac , Aq right
-Show next image
-.It r , R
-Reload current image.  Useful for webcams
-.It v , V
-Toggle fullscreen
-.It o, O
-Toggle pointer visibility
-.It m , M
-Show menu
+.It a , A
+Toggle actions display
+.Pq see Cm --draw-actions
 .It c , C
 Caption entry mode.  If
 .Cm --caption-path
 has been specified, then this enables caption editing.  The caption at the
 bottom of the screen will turn yellow and can be edited.  Hit enter to confirm
 and save the caption, or escape to cancel editing
-.It w , W
-Change window size to fit current image size
-.It h , H
-Pause the slideshow
-.It z , Z
-Jump to a random position in the current filelist
-.It a , A
-Toggle actions display
-.Pq see Cm --draw-actions
 .It d , D
 Toggle filename display
 .Pq see Cm --draw-filename
-.It s , S
-Save the current image to a unique filename
 .It f , F
 Save the current filelist to a unique filename
+.It h , H
+Pause the slideshow
+.It m , M
+Show menu
+.It n , N , Ao space Ac , Aq right
+Show next image
+.It o , O
+Toggle pointer visibility
+.It p , P , Ao backspace Ac , Aq left
+Show previous image
+.It q , Q
+Quit feh
+.It r , R
+Reload current image.  Useful for webcams
+.It s , S
+Save the current image to a unique filename
+.It v , V
+Toggle fullscreen
+.It w , W
+Change window size to fit current image size
+.It x , X
+Close current window
+.It z , Z
+Jump to a random position in the current filelist
 .It < , >
 In place editing - rotate the images 90 degrees (counter)clockwise.
 The rotation is lossless, but may create artifacts in some image corners when
@@ -588,10 +596,6 @@ Decrease reload delay
 Remove current file from filelist
 .It Aq CTRL+delete
 Remove current file from filelist and delete it
-.It x , X
-Close current window
-.It q , Q
-Quit feh
 .It Aq keypad left
 Move the image to the lift
 .It Aq keypad right
