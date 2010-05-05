@@ -808,7 +808,7 @@ void show_version(void)
 
 void show_mini_usage(void)
 {
-	fprintf(stdout, PACKAGE " - No loadable images specified.\n"
+	fprintf(stderr, PACKAGE " - No loadable images specified.\n"
 			"Use " PACKAGE " --help for detailed usage information\n");
 	exit(1);
 }
