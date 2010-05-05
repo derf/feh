@@ -810,7 +810,7 @@ void show_mini_usage(void)
 {
 	fprintf(stdout, PACKAGE " - No loadable images specified.\n"
 			"Use " PACKAGE " --help for detailed usage information\n");
-	exit(0);
+	exit(1);
 }
 
 void show_usage(void)
