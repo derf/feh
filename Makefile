@@ -4,8 +4,8 @@ all:
 	@${MAKE} -C src
 
 test: all
-	mandoc -Tlint man/*
-	perl test/test.pl ${PACKAGE} ${VERSION}
+	@mandoc -Tlint man/*
+	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
 
 install: install-man install-doc install-bin install-font install-img
 

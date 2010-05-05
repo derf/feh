@@ -7,7 +7,7 @@ use Test::Command tests => 48;
 my $feh = 'src/feh';
 my $images = 'test/ok.* test/fail.*';
 
-my ($feh_name, $feh_version) = @ARGV;
+my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
 
 my $re_warning =
 	qr{${feh_name} WARNING: test/fail\.... \- No Imlib2 loader for that file format\n};
