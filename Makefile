@@ -1,7 +1,11 @@
 include config.mk
 
-default:
+all:
 	@${MAKE} -C src
+
+test: all
+	mandoc -Tlint man/*
+	perl test/test.pl ${PACKAGE} ${VERSION}
 
 install: install-man install-doc install-bin install-font install-img
 
@@ -59,5 +63,5 @@ uninstall:
 clean:
 	@${MAKE} -C src clean
 
-.PHONY: default install uninstall clean install-man install-doc install-bin \
+.PHONY: all test install uninstall clean install-man install-doc install-bin \
 	install-font install-img

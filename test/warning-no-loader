@@ -1,0 +1,4 @@
+feh WARNING: test/fail.pnm - No Imlib2 loader for that file format
+feh WARNING: test/fail.png - No Imlib2 loader for that file format
+feh WARNING: test/fail.jpg - No Imlib2 loader for that file format
+feh WARNING: test/fail.gif - No Imlib2 loader for that file format
