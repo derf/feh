@@ -1,8 +1,10 @@
-git HEAD
+Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
-    * Fix memory leak related to the menu
+* Release v1.5
+    * Rewrite parts of the menu code & fix a memory leak while there
     * Make --start-at work with filenames instead of list positions
     * Add keybinding to toggle pointer visibility (see --hide-pointer)
+    * Sort manual a bit
 
 Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
