@@ -11,6 +11,9 @@ variables instead of editing it. E.g.:
 CFLAGS='-g -Os' make
 export DESTDIR=/tmp/feh PREFIX=/usr; make && make install
 
+If you are using the git version, you can run a few non-interactive tests with
+"make test". This will require mdocml and perl with Test::Command.
+
 What is feh?
 
 https://derf.homelinux.org/p/feh/
