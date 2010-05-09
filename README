@@ -11,8 +11,10 @@ variables instead of editing it. E.g.:
 CFLAGS='-g -Os' make
 export DESTDIR=/tmp/feh PREFIX=/usr; make && make install
 
-If you are using the git version, you can run a few non-interactive tests with
-"make test". This will require mdocml and perl with Test::Command.
+If you want to run a few non-interactive tests, use "make test". This will
+require a standard perl distribution (especially the "prove" script) and the
+Test::Command module. If mdocml is installed, it will be used to check the
+manual syntax, otherwise that test will be skipped.
 
 What is feh?
 
