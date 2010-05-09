@@ -9,6 +9,23 @@ my $images = 'test/ok.* test/fail.*';
 
 my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
 
+my $err_no_env = <<'EOF';
+
+Unable to determine feh PACKAGE or VERSION.
+This is most likely because you ran 'prove test' or 'perl test/feh.t'.
+Sinc this test uses make variables and is therefore designed to be run from
+the Makefile only, use 'make test' instead.
+
+If you absolutely need to run it the other way, use
+    PACKAGE=feh VERSION=1.5 ${your_command}
+(with the appropiate values, of course).
+
+EOF
+
+if (length($feh_name) == 0 or length($feh_version) == 0) {
+	die($err_no_env);
+}
+
 my $re_warning =
 	qr{${feh_name} WARNING: test/fail\.... \- No Imlib2 loader for that file format\n};
 my $re_loadable = qr{test/ok\....};
