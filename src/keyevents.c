@@ -225,8 +225,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			slideshow_change_image(winwid, SLIDE_LAST);
 		break;
 	case XK_Return:
-		feh_event_invoke_action(winwid, opt.actions[0]);
-		break;
+	case XK_KP_Enter:
 	case XK_0:
 	case XK_KP_0:
 		feh_event_invoke_action(winwid, opt.actions[0]);
