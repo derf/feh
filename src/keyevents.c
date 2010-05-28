@@ -228,33 +228,43 @@ void feh_event_handle_keypress(XEvent * ev)
 		feh_event_invoke_action(winwid, opt.actions[0]);
 		break;
 	case XK_0:
+	case XK_KP_0:
 		feh_event_invoke_action(winwid, opt.actions[0]);
 		break;
 	case XK_1:
+	case XK_KP_1:
 		feh_event_invoke_action(winwid, opt.actions[1]);
 		break;
 	case XK_2:
+	case XK_KP_2:
 		feh_event_invoke_action(winwid, opt.actions[2]);
 		break;
 	case XK_3:
+	case XK_KP_3:
 		feh_event_invoke_action(winwid, opt.actions[3]);
 		break;
 	case XK_4:
+	case XK_KP_4:
 		feh_event_invoke_action(winwid, opt.actions[4]);
 		break;
 	case XK_5:
+	case XK_KP_5:
 		feh_event_invoke_action(winwid, opt.actions[5]);
 		break;
 	case XK_6:
+	case XK_KP_6:
 		feh_event_invoke_action(winwid, opt.actions[6]);
 		break;
 	case XK_7:
+	case XK_KP_7:
 		feh_event_invoke_action(winwid, opt.actions[7]);
 		break;
 	case XK_8:
+	case XK_KP_8:
 		feh_event_invoke_action(winwid, opt.actions[8]);
 		break;
 	case XK_9:
+	case XK_KP_9:
 		feh_event_invoke_action(winwid, opt.actions[9]);
 		break;
 	case XK_KP_Left:
