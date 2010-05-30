@@ -1,6 +1,7 @@
 git HEAD
 
     * Patch by aaptel: Support numpad keys for actions
+    * Fix blur mode (Ctrl + left mouse key)
 
 Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
