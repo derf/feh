@@ -717,7 +717,7 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file)
 		if (!status)
 			status = feh_thumbnail_generate(image, file, thumb_file, uri);
 
-		printf("uri is %s, thumb_file is %s\n", uri, thumb_file);
+		D(1, ("uri is %s, thumb_file is %s\n", uri, thumb_file));
 		free(uri);
 		free(thumb_file);
 	} else

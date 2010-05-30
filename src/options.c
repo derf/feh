@@ -797,6 +797,7 @@ static void check_options(void)
 		free(opt.thumb_title);
 		opt.thumb_title = NULL;
 	}
+
 	D_RETURN_(4);
 }
 
@@ -960,7 +961,8 @@ void show_usage(void)
 "                           OPTIONS\n"
 " -t, --thumbnails          As --index, but clicking an image will open it in\n"
 "                           a new viewing window\n"
-"     --cache-thumbnails    Enable thumbnail caching\n"
+"     --cache-thumbnails    Enable thumbnail caching for thumbnail mode.\n"
+"                           Only works with thumbnails <= 128x128 pixels\n"
 " -~, --thumb-title STRING  Set window title for images opened from thumbnail mode.\n"
 "                           Supports format specifiers, see there.\n"
 " -I, --fullindex           Same as index mode, but below each thumbnail you\n"
