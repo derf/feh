@@ -798,6 +798,14 @@ static void check_options(void)
 		opt.thumb_title = NULL;
 	}
 
+	if (opt.cache_thumbnails && ((opt.thumb_w > 128) || (opt.thumb_h > 128))) {
+		/* No warning needed, the documentation should be clear enough.
+		 * Plus, we don't want to annoy users who use --cache-thumbnails by
+		 * default but frequently change their thumbnail size.
+		 */
+		opt.cache_thumbnails = 0;
+	}
+
 	D_RETURN_(4);
 }
 
