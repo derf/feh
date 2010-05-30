@@ -398,14 +398,12 @@ void init_index_mode(void)
 					break;
 			}
 
-			if (opt.aspect) {
-				xxx = x + ((opt.thumb_w - www) / 2);
-				yyy = y + ((opt.thumb_h - hhh) / 2);
-			} else {
-				/* Ignore the aspect ratio and squash the image in */
-				xxx = x;
-				yyy = y;
-			}
+			/* center image relative to the text below it (if any) */
+			xxx = x + ((text_area_w - www) / 2);
+			yyy = y;
+
+			if (opt.aspect)
+				yyy += (opt.thumb_h - hhh) / 2;
 
 			/* Draw now */
 			gib_imlib_blend_image_onto_image(im_main, im_thumb,
