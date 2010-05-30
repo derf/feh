@@ -3,7 +3,7 @@ git HEAD
     * Patch by aaptel: Support numpad keys for actions
     * Fix blur mode (Ctrl + left mouse key)
     * Center images in index/thumbnail mode relative to the text below them
-    * Various thumbnail caching improvements, better standard implementation
+    * Support caching of "large" (up to 256x256 pixels) thumbnails
 
 Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 

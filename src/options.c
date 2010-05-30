@@ -798,14 +798,6 @@ static void check_options(void)
 		opt.thumb_title = NULL;
 	}
 
-	if (opt.cache_thumbnails && ((opt.thumb_w > 128) || (opt.thumb_h > 128))) {
-		/* No warning needed, the documentation should be clear enough.
-		 * Plus, we don't want to annoy users who use --cache-thumbnails by
-		 * default but frequently change their thumbnail size.
-		 */
-		opt.cache_thumbnails = 0;
-	}
-
 	D_RETURN_(4);
 }
 
@@ -970,7 +962,7 @@ void show_usage(void)
 " -t, --thumbnails          As --index, but clicking an image will open it in\n"
 "                           a new viewing window\n"
 "     --cache-thumbnails    Enable thumbnail caching for thumbnail mode.\n"
-"                           Only works with thumbnails <= 128x128 pixels\n"
+"                           Only works with thumbnails <= 256x256 pixels\n"
 " -~, --thumb-title STRING  Set window title for images opened from thumbnail mode.\n"
 "                           Supports format specifiers, see there.\n"
 " -I, --fullindex           Same as index mode, but below each thumbnail you\n"

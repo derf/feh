@@ -172,8 +172,26 @@ void init_thumbnail_mode(void)
 
 	/* make sure we have an ~/.thumbnails/normal directory for storing
 	   permanent thumbnails */
-	td.cache_thumbnails = feh_thumbnail_setup_thumbnail_dir();
 	td.cache_thumbnails = opt.cache_thumbnails;
+
+	if (td.cache_thumbnails) {
+		if (opt.thumb_w > opt.thumb_h)
+			td.cache_dim = opt.thumb_w;
+		else
+			td.cache_dim = opt.thumb_h;
+
+		if (td.cache_dim > 256) {
+			/* No caching as specified by standard. Sort of. */
+			td.cache_thumbnails = 0;
+		} else if (td.cache_dim > 128) {
+			td.cache_dim = 256;
+			td.cache_dir = estrdup("large");
+		} else {
+			td.cache_dim = 128;
+			td.cache_dir = estrdup("normal");
+		}
+		feh_thumbnail_setup_thumbnail_dir();
+	}
 
 	for (l = filelist; l; l = l->next) {
 		file = FEH_FILE(l->data);
@@ -736,7 +754,7 @@ char *feh_thumbnail_get_name(char *uri)
 
 	home = getenv("HOME");
 	if (home) {
-		thumb_file = estrjoin("/", home, ".thumbnails/normal", md5_name, NULL);
+		thumb_file = estrjoin("/", home, ".thumbnails", td.cache_dir, md5_name, NULL);
 	}
 
 	free(md5_name);
@@ -748,7 +766,7 @@ char *feh_thumbnail_get_name_uri(char *name)
 {
 	char *cwd, *uri = NULL;
 
-	/* FIXME: what happends with http, https, and ftp? MTime etc */
+	/* FIXME: what happens with http, https, and ftp? MTime etc */
 	if ((strncmp(name, "http://", 7) != 0) &&
 	    (strncmp(name, "https://", 8) != 0) && (strncmp(name, "ftp://", 6) != 0)
 	    && (strncmp(name, "file://", 7) != 0)) {
@@ -801,15 +819,15 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 	if (feh_load_image(&im_temp, file) != 0) {
 		w = gib_imlib_image_get_width(im_temp);
 		h = gib_imlib_image_get_height(im_temp);
-		thumb_w = 128;
-		thumb_h = 128;
+		thumb_w = td.cache_dim;
+		thumb_h = td.cache_dim;
 
-		if ((w > 128) || (h > 128)) {
+		if ((w > td.cache_dim) || (h > td.cache_dim)) {
 			double ratio = (double) w / h;
 			if (ratio > 1.0)
-				thumb_h = 128 / ratio;
+				thumb_h = td.cache_dim / ratio;
 			else if (ratio != 1.0)
-				thumb_w = 128 * ratio;
+				thumb_w = td.cache_dim * ratio;
 		}
 
 		*image = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, w, h,
@@ -865,7 +883,7 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 
 	home = getenv("HOME");
 	if (home != NULL) {
-		dir = estrjoin("/", home, ".thumbnails/normal", NULL);
+		dir = estrjoin("/", home, ".thumbnails", td.cache_dir, NULL);
 
 		if (!stat(dir, &sb)) {
 			if (S_ISDIR(sb.st_mode))
