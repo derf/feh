@@ -52,6 +52,7 @@ void init_parse_options(int argc, char **argv)
 	opt.slideshow_delay = -1.0;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
+	opt.thumb_redraw = 10;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = estrdup(DEFAULT_FONT);
 	opt.image_bg = estrdup("default");
@@ -395,6 +396,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-name", 1, 0, 230},
 		{"index-size", 1, 0, 231},
 		{"index-dim", 1, 0, 232},
+		{"thumb-redraw", 1, 0, 233},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -738,6 +740,9 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 232:
 			opt.index_show_dim = atoi(optarg);
 			break;
+		case 233:
+			opt.thumb_redraw = atoi(optarg);
+			break;
 		default:
 			break;
 		}
@@ -963,6 +968,7 @@ void show_usage(void)
 "                           a new viewing window\n"
 "     --cache-thumbnails    Enable thumbnail caching for thumbnail mode.\n"
 "                           Only works with thumbnails <= 256x256 pixels\n"
+"     --thumb-redraw N      Redraw thumbnail window every N images\n"
 " -~, --thumb-title STRING  Set window title for images opened from thumbnail mode.\n"
 "                           Supports format specifiers, see there.\n"
 " -I, --fullindex           Same as index mode, but below each thumbnail you\n"

@@ -71,6 +71,7 @@ void init_thumbnail_mode(void)
 	int index_image_width, index_image_height;
 	int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 	char *s;
+	unsigned int thumb_counter = 0;
 
 	/* initialize thumbnail mode data */
 	td.im_main = NULL;
@@ -350,11 +351,19 @@ void init_thumbnail_mode(void)
 			last = l;
 		}
 		if (opt.display) {
-			winwidget_render_image(winwid, 0, 0);
+			/* thumb_counter is unsigned, so no need to catch overflows */
+			if (++thumb_counter == opt.thumb_redraw) {
+				winwidget_render_image(winwid, 0, 0);
+				thumb_counter = 0;
+			}
 			if (!feh_main_iteration(0))
 				exit(0);
 		}
 	}
+
+	if (thumb_counter != 0)
+		winwidget_render_image(winwid, 0, 0);
+
 	if (opt.verbose)
 		fprintf(stdout, "\n");
 

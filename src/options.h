@@ -109,6 +109,7 @@ struct __fehoptions {
 	int thumb_h;
 	int limit_w;
 	int limit_h;
+	unsigned int thumb_redraw;
 	int reload;
 	int sort;
 	int debug_level;

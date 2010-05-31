@@ -4,6 +4,11 @@ git HEAD
     * Fix blur mode (Ctrl + left mouse key)
     * Center images in index/thumbnail mode relative to the text below them
     * Support caching of "large" (up to 256x256 pixels) thumbnails
+    * New --thumb-redraw option as workaround to speed up thumbnail mode
+      (thumbnail mode redrawing is quite slow, so now a redraw only happens
+      every 10 thumbnails by default - can be changed with this option)
+    * Because of that: Major speed improvements for --thumbnails, especially
+      with cached thumbnails
 
 Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 

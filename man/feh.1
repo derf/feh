@@ -443,6 +443,24 @@ is specified.
 Set thumbnail height.
 .It Cm -y , --thumb-width Ar pixels
 Set thumbnail width.
+.It Cm --thumb-redraw Ar n
+Only relevant for
+.Cm --thumbnails :
+Redraw thumbnail window every
+.Ar n
+images.  In
+.Nm
+<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
+.Pq so, it updated immediately .
+However, since the redrawing takes quite long
+.Pq especially for thumbnail mode on a large filelist ,
+this turned out to be a major performance penalty.
+As a workaround, the thumbnail image is redrawn every 10th image now by
+default. Set
+.Ar n No = 1
+to get the old behaviour,
+.Ar n No = 0
+will only redraw once all thumbnails are loaded.
 .El
 .
 .Sh INDEX MODE OPTIONS
