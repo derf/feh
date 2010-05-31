@@ -8,7 +8,7 @@ PREFIX ?= /usr/local
 main_dir = ${DESTDIR}${PREFIX}
 man_dir = ${main_dir}/share/man
 bin_dir = ${main_dir}/bin
-doc_dir = ${main_dir}/share/doc
+doc_dir = ${main_dir}/share/doc/feh
 image_dir = ${main_dir}/share/feh/images
 font_dir = ${main_dir}/share/feh/fonts
 

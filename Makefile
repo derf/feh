@@ -17,10 +17,10 @@ install-man:
 
 install-doc:
 	@echo installing docs to ${doc_dir}
-	@mkdir -p ${doc_dir}/feh
-	@cp AUTHORS ChangeLog README TODO ${doc_dir}/feh
-	@chmod 644 ${doc_dir}/feh/AUTHORS ${doc_dir}/feh/ChangeLog \
-		${doc_dir}/feh/README ${doc_dir}/feh/TODO
+	@mkdir -p ${doc_dir}
+	@cp AUTHORS ChangeLog README TODO ${doc_dir}
+	@chmod 644 ${doc_dir}/AUTHORS ${doc_dir}/ChangeLog \
+		${doc_dir}/README ${doc_dir}/TODO
 
 install-bin:
 	@echo installing executables to ${bin_dir}
