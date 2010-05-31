@@ -9,6 +9,7 @@ git HEAD
       every 10 thumbnails by default - can be changed with this option)
     * Because of that: Major speed improvements for --thumbnails, especially
       with cached thumbnails
+    * Do not link against Xext and freetype, they're only used by other libs
 
 Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
