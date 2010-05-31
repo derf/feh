@@ -21,6 +21,12 @@ What is feh?
 https://derf.homelinux.org/p/feh/
 http://linuxbrit.co.uk/feh/
 
-Note:
-For lossless rotation you will need the "jpegtran" binary supplied by the
-jpeg library. In Debian, it's shipped by libjpeg-progs.
+Dependencies:
+ * giblib
+ * Imlib2
+ * libpng
+ * libX11
+
+Recommends:
+ * jpegtran  (supplied by the jpeg library, for lossless image rotation)
+ * wget      (for http/ftp support)
