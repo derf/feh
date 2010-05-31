@@ -24,7 +24,8 @@ and moved so that its top corner is only on screen 1, and then fullscreen is
 turned on (after that, it'll work for all images in the slideshow).
 Maybe I'll someday find out how to fix that :>
 
-Since the thumbnail mode draws an image, it gets kinda slow once you have lots
-of files in the filelist (->big thumbnail index image). The ideal way would be
-to rewrite it to use some GUI-ish thing, alternatively a workaround (only
-rendering every n'th image?) would be nice.
+The thumbnail mode draws an image which has to be re-rendered as new
+thumbnails are created, becoming quite slow for large filelists.
+A workaround (--thumb-redraw) exists, but at some point a rewrite with a
+GUI-toolkit or similar (or maybe writing a completely new tool for that and
+removing the feature from feh) would be due.
