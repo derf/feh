@@ -1,5 +1,6 @@
-git HEAD
+Tue Jun  1 10:21:19 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
+* Release v1.6
     * Patch by aaptel: Support numpad keys for actions
     * Fix blur mode (Ctrl + left mouse key)
     * Center images in index/thumbnail mode relative to the text below them
