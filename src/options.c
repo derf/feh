@@ -451,6 +451,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 'L':
 			opt.customlist = estrdup(optarg);
+			opt.display = 0;
 			break;
 		case 'M':
 			free(opt.menu_font);
@@ -503,9 +504,11 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 'U':
 			opt.loadables = 1;
+			opt.display = 0;
 			break;
 		case 'u':
 			opt.unloadables = 1;
+			opt.display = 0;
 			break;
 		case 'p':
 			opt.preload = 1;
