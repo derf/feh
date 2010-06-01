@@ -9,6 +9,10 @@ my $images = 'test/ok.* test/fail.*';
 
 my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
 
+# These tests are meant to run non-interactively and without X.
+# make sure they are capable of doing so.
+delete $ENV{'DISPLAY'};
+
 my $err_no_env = <<'EOF';
 
 Unable to determine feh PACKAGE or VERSION.
