@@ -1,3 +1,7 @@
+git HEAD
+
+    * Fix omitted image borders at high zoom levels
+
 Tue Jun  1 10:21:19 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.6
