@@ -466,17 +466,17 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 		dy = 0;
 
 	if (winwid->im_x < 0)
-		sx = 0 - round(winwid->im_x / winwid->zoom);
+		sx = 0 - lround(winwid->im_x / winwid->zoom);
 	else
 		sx = 0;
 
 	if (winwid->im_y < 0)
-		sy = 0 - round(winwid->im_y / winwid->zoom);
+		sy = 0 - lround(winwid->im_y / winwid->zoom);
 	else
 		sy = 0;
 
-	calc_w = round(winwid->im_w * winwid->zoom);
-	calc_h = round(winwid->im_h * winwid->zoom);
+	calc_w = lround(winwid->im_w * winwid->zoom);
+	calc_h = lround(winwid->im_h * winwid->zoom);
 	dw = (winwid->w - winwid->im_x);
 	dh = (winwid->h - winwid->im_y);
 	if (calc_w < dw)
@@ -488,8 +488,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 	if (dh > winwid->h)
 		dh = winwid->h;
 
-	sw = round(dw / winwid->zoom);
-	sh = round(dh / winwid->zoom);
+	sw = lround(dw / winwid->zoom);
+	sh = lround(dh / winwid->zoom);
 
 	D(5,
 	  ("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
