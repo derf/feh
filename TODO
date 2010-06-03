@@ -30,4 +30,8 @@ A workaround (--thumb-redraw) exists, but at some point a rewrite with a
 GUI-toolkit or similar (or maybe writing a completely new tool for that and
 removing the feature from feh) would be due.
 
-Create captions directory if it doesn't exist
+Create captions directory if it doesn't exist.
+
+Fix occasionally missing right/bottom border pixels in zoomed images. Cause by
+floating inprecisions either in winwidget_sanitise_offsets or
+winwidget_render_image (probably the latter).
