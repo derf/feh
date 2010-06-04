@@ -1,9 +1,3 @@
-caching of thumbnails doesn't seem to take thumbnail size into account.
-Change sizes and you get the old thumbs....
-
-Option --autograb for feh to grab keyboard - so you can control feh without
-having to focus it. Have to be a bit careful with this but could be useful.
-
 key/option/signal/timeout to totally reload filelist (rescan directories etc)
 
 <keypad begin> antialieses the image, but doing that automatically upon
