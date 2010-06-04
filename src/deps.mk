@@ -6,6 +6,8 @@ feh_png.o: feh_png.c feh_png.h feh.h structs.h menu.h ipc.h utils.h \
   getopt.h debug.h
 filelist.o: filelist.c feh.h structs.h menu.h ipc.h utils.h getopt.h \
   debug.h filelist.h options.h
+getopt.o: getopt.c
+getopt1.o: getopt1.c getopt.h
 imlib.o: imlib.c feh.h structs.h menu.h ipc.h utils.h getopt.h debug.h \
   filelist.h winwidget.h options.h
 index.o: index.c feh.h structs.h menu.h ipc.h utils.h getopt.h debug.h \
