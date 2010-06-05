@@ -1,5 +1,6 @@
-git HEAD
+Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 
+* Release v1.6.1
     * Fix omitted image borders at high zoom levels
     * Re-add getopt_long files (possibly relevant for non-glibc systems)
     * Do not require a running X server for -L, -u, -U options

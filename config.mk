@@ -1,5 +1,5 @@
 PACKAGE ?= feh
-VERSION ?= 1.6-git
+VERSION ?= 1.6.1-git
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
