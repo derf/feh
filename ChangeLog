@@ -1,6 +1,8 @@
 git HEAD
 
     * Fix omitted image borders at high zoom levels
+    * Re-add getopt_long files (possibly relevant for non-glibc systems)
+    * Do not require a running X server for -L, -u, -U options
 
 Tue Jun  1 10:21:19 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
