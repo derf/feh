@@ -251,7 +251,8 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 						thumbwin = winwidget_create_from_file(
 								gib_list_add_front(NULL, thumbfile),
 								s, WIN_TYPE_THUMBNAIL_VIEWER);
-						winwidget_show(thumbwin);
+						if (thumbwin)
+							winwidget_show(thumbwin);
 					} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
 						free(thumbwin->file);
 						thumbwin->file = gib_list_add_front(NULL, thumbfile);

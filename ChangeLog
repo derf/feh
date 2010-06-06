@@ -1,3 +1,8 @@
+git HEAD
+
+    * Fix segfault in Thumbnail mode when trying to open a no longer
+      existing image (e.g. when the file was renamed by a previous action)
+
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 
 * Release v1.6.1
