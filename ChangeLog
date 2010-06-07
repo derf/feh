@@ -7,6 +7,9 @@ git HEAD
       anyways. Plus, I might want to bind Shift + <already used key> to other
       stuff in the future
     * Documentation improvements
+    * Remove undocumented hjkl menu keys. Most of the menu options can also be
+      accessed directly with keys, plus the number of non-qwerty users (which
+      have no use for these shortcuts) is growing.
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 

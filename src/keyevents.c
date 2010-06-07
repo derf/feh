@@ -93,29 +93,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			feh_menu_select_submenu(selected_menu);
 			break;
 		case XK_Return:
-			feh_menu_item_activate(selected_menu, selected_item);
-			break;
-		default:
-			break;
-		}
-		if (len <= 0 || len > (int) sizeof(kbuf))
-			D_RETURN_(4);
-		kbuf[len] = '\0';
-
-		switch (*kbuf) {
-		case 'h':
-			feh_menu_select_parent(selected_menu);
-			break;
-		case 'j':
-			feh_menu_select_next(selected_menu, selected_item);
-			break;
-		case 'k':
-			feh_menu_select_prev(selected_menu, selected_item);
-			break;
-		case 'l':
-			feh_menu_select_submenu(selected_menu);
-			break;
-		case ' ':
+		case XK_space:
 			feh_menu_item_activate(selected_menu, selected_item);
 			break;
 		default:
