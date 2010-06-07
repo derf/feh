@@ -6,6 +6,7 @@ git HEAD
     * Remove Shift+Key bindings, they were doing the same as Nothing+Key
       anyways. Plus, I might want to bind Shift + <already used key> to other
       stuff in the future
+    * Documentation improvements
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 

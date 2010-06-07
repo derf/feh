@@ -550,9 +550,8 @@ to use these options.
 You can combine these themes with commandline options.  An example .fehrc is
 provided with a couple of cool example themes.
 .
-.Sh SLIDESHOW KEYS
-The default mode is slideshow mode.  When viewing a slideshow, the following
-keys may be used:
+.Sh KEYS
+In an image window, the following keys may be used:
 .Bl -tag -width indent
 .It a
 Toggle actions display
@@ -561,8 +560,10 @@ Toggle actions display
 Caption entry mode.  If
 .Cm --caption-path
 has been specified, then this enables caption editing.  The caption at the
-bottom of the screen will turn yellow and can be edited.  Hit enter to confirm
-and save the caption, or escape to cancel editing
+bottom of the screen will turn yellow and can be edited.  Hit return to confirm
+and save the caption, or escape to cancel editing.  Note that you can insert
+an actual newline into the caption using
+.Aq CTRL+return .
 .It d
 Toggle filename display
 .Pq see Cm --draw-filename
@@ -571,9 +572,11 @@ Save the current filelist to a unique filename
 .It h
 Pause/Continue the slideshow.  When it is paused, it will not automatically
 change slides based on
-.Cm --slideshow-delay
+.Cm --slideshow-delay .
 .It m
-Show menu
+Show menu.  Use the arrow keys and return to select items,
+.Aq escape
+to close the menu.
 .It n , Ao space Ac , Aq right arrow
 Show next image
 .It o
@@ -600,7 +603,7 @@ The rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.  Rotating in the reverse direction will make them go
 away.  See
 .Xr jpegtran 1
-for more about lossless JPEG rotation
+for more about lossless JPEG rotation.
 .It 0 .. 9
 Execute the corresponding action
 .Pq 0 = Cm --action , No 1 = Cm --action1 No etc.
