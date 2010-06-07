@@ -722,18 +722,16 @@ void feh_draw_caption(winwidget w)
 		 * winwidget_render_image().
 		 */
 		file->caption = estrdup("");
-		D_RETURN_(4);
 	}
 
-	if (file->caption == '\0') {
+	if (*(file->caption) == '\0' && !w->caption_entry)
 		D_RETURN_(4);
-	}
 
-	if (!caption_style) {
-		caption_style = gib_style_new("caption");
-		caption_style->bits = gib_list_add_front(caption_style->bits, gib_style_bit_new(0, 0, 0, 0, 0, 0));
-		caption_style->bits = gib_list_add_front(caption_style->bits, gib_style_bit_new(1, 1, 0, 0, 0, 255));
-	}
+	caption_style = gib_style_new("caption");
+	caption_style->bits = gib_list_add_front(caption_style->bits,
+		gib_style_bit_new(0, 0, 0, 0, 0, 0));
+	caption_style->bits = gib_list_add_front(caption_style->bits,
+		gib_style_bit_new(1, 1, 0, 0, 0, 255));
 
 	if (!fn) {
 		memset(atab, 0, sizeof(atab));
@@ -748,7 +746,13 @@ void feh_draw_caption(winwidget w)
 		D_RETURN_(4);
 	}
 
-	lines = feh_wrap_string(file->caption, w->w, fn, NULL);
+	if (*(file->caption) == '\0') {
+		p = estrdup("Caption entry mode - Hit ESC to cancel");
+		lines = feh_wrap_string(p, w->w, fn, NULL);
+		free(p);
+	} else
+		lines = feh_wrap_string(file->caption, w->w, fn, NULL);
+
 	if (!lines)
 		D_RETURN_(4);
 
@@ -786,11 +790,15 @@ void feh_draw_caption(winwidget w)
 		p = (char *) l->data;
 		gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
 		x = (tw - ww) / 2;
-		if (w->caption_entry) {
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p, IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
-		} else {
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-		}
+		if (w->caption_entry && (*(file->caption) == '\0'))
+			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				IMLIB_TEXT_TO_RIGHT, 255, 255, 127, 255);
+		else if (w->caption_entry)
+			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
+		else
+			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 		y += hh + 1;	/* line spacing */
 		l = l->next;

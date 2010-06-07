@@ -10,6 +10,8 @@ git HEAD
     * Remove undocumented hjkl menu keys. Most of the menu options can also be
       accessed directly with keys, plus the number of non-qwerty users (which
       have no use for these shortcuts) is growing.
+    * Draw a nice little message when in caption editing mode with empty
+      caption (to indicate that caption editing is actually active)
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 
