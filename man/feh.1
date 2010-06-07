@@ -554,45 +554,45 @@ provided with a couple of cool example themes.
 The default mode is slideshow mode.  When viewing a slideshow, the following
 keys may be used:
 .Bl -tag -width indent
-.It a , A
+.It a
 Toggle actions display
 .Pq see Cm --draw-actions
-.It c , C
+.It c
 Caption entry mode.  If
 .Cm --caption-path
 has been specified, then this enables caption editing.  The caption at the
 bottom of the screen will turn yellow and can be edited.  Hit enter to confirm
 and save the caption, or escape to cancel editing
-.It d , D
+.It d
 Toggle filename display
 .Pq see Cm --draw-filename
-.It f , F
+.It f
 Save the current filelist to a unique filename
-.It h , H
+.It h
 Pause/Continue the slideshow.  When it is paused, it will not automatically
 change slides based on
 .Cm --slideshow-delay
-.It m , M
+.It m
 Show menu
-.It n , N , Ao space Ac , Aq right
+.It n , Ao space Ac , Aq right arrow
 Show next image
-.It o , O
+.It o
 Toggle pointer visibility
-.It p , P , Ao backspace Ac , Aq left
+.It p , Ao backspace Ac , Aq left arrow
 Show previous image
-.It q , Q
+.It q
 Quit feh
-.It r , R
+.It r
 Reload current image.  Useful for webcams
-.It s , S
+.It s
 Save the current image to a unique filename
-.It v , V
+.It v
 Toggle fullscreen
-.It w , W
+.It w
 Change window size to fit current image size
-.It x , X
+.It x
 Close current window
-.It z , Z
+.It z
 Jump to a random position in the current filelist
 .It < , >
 In place editing - rotate the images 90 degrees (counter)clockwise.
@@ -601,7 +601,7 @@ used with JPEG images.  Rotating in the reverse direction will make them go
 away.  See
 .Xr jpegtran 1
 for more about lossless JPEG rotation
-.It 0 , 1 , ... , 9
+.It 0 .. 9
 Execute the corresponding action
 .Pq 0 = Cm --action , No 1 = Cm --action1 No etc.
 .It Aq return
@@ -617,9 +617,9 @@ Go forward ~5% of the filelist
 Go backward ~5% of the filelist
 .It Aq escape
 Quit the slideshow
-.It + , =
+.It +
 Increase reload delay
-.It - , _
+.It -
 Decrease reload delay
 .It Aq delete
 Remove current file from filelist

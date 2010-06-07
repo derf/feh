@@ -3,6 +3,9 @@ git HEAD
     * Fix segfault in Thumbnail mode when trying to open a no longer
       existing image (e.g. when the file was renamed by a previous action)
     * Set a negative slideshow-delay to start the slideshow in paused mode
+    * Remove Shift+Key bindings, they were doing the same as Nothing+Key
+      anyways. Plus, I might want to bind Shift + <already used key> to other
+      stuff in the future
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 

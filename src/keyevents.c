@@ -316,73 +316,58 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	switch (*kbuf) {
 	case 'a':
-	case 'A':
 		opt.draw_actions = !opt.draw_actions;
 		winwidget_rerender_all(0, 1);
 		break;
 	case 'd':
-	case 'D':
 		opt.draw_filename = !opt.draw_filename;
 		winwidget_rerender_all(0, 1);
 		break;
 	case 'n':
-	case 'N':
 	case ' ':
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT);
 		break;
 	case 'o':
-	case 'O':
 		winwidget_set_pointer(winwid, opt.hide_pointer);
 		opt.hide_pointer = !opt.hide_pointer;
 		break;
 	case 'p':
-	case 'P':
 	case '\b':
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_PREV);
 		break;
 	case 'z':
-	case 'Z':
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_RAND);
 		break;
 	case 'q':
-	case 'Q':
 		winwidget_destroy_all();
 		break;
 	case 'c':
-	case 'C':
 		if (opt.caption_path)
 			winwid->caption_entry = 1;
 		winwidget_render_image(winwid, 0, 1);
 		break;
 	case 'r':
-	case 'R':
 		feh_reload_image(winwid, 0, 0);
 		break;
 	case 'h':
-	case 'H':
 		slideshow_pause_toggle(winwid);
 		break;
 	case 's':
-	case 'S':
 		slideshow_save_image(winwid);
 		break;
 	case 'f':
-	case 'F':
 		feh_save_filelist();
 		break;
 	case 'w':
-	case 'W':
 		winwidget_size_to_image(winwid);
 		break;
 	case 'm':
-	case 'M':
 		winwidget_show_menu(winwid);
 		break;
 	case 'x':
-	case 'X':
 		winwidget_destroy(winwid);
 		break;
 	case '>':
@@ -392,7 +377,6 @@ void feh_event_handle_keypress(XEvent * ev)
 		feh_edit_inplace_orient(winwid, 3);
 		break;
 	case 'v':
-	case 'V':
 #ifdef HAVE_LIBXINERAMA
 		if (opt.xinerama && xinerama_screens) {
 			int i, rect[4];
@@ -432,7 +416,6 @@ void feh_event_handle_keypress(XEvent * ev)
 					xinerama_screens[curr_screen].x_org, xinerama_screens[curr_screen].y_org);
 		}
 #endif				/* HAVE_LIBXINERAMA */
-	case '=':
 	case '+':
 		if (opt.reload < SLIDESHOW_RELOAD_MAX)
 			opt.reload++;
@@ -440,7 +423,6 @@ void feh_event_handle_keypress(XEvent * ev)
 			weprintf("Cannot set RELOAD higher than %d seconds.", opt.reload);
 		break;
 	case '-':
-	case '_':
 		if (opt.reload > 1)
 			opt.reload--;
 		else if (opt.verbose)
