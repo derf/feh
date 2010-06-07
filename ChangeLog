@@ -2,6 +2,7 @@ git HEAD
 
     * Fix segfault in Thumbnail mode when trying to open a no longer
       existing image (e.g. when the file was renamed by a previous action)
+    * Set a negative slideshow-delay to start the slideshow in paused mode
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 

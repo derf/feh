@@ -49,7 +49,7 @@ void init_parse_options(int argc, char **argv)
 	memset(&opt, 0, sizeof(fehoptions));
 	opt.display = 1;
 	opt.aspect = 1;
-	opt.slideshow_delay = -1.0;
+	opt.slideshow_delay = 0.0;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
@@ -597,6 +597,10 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 'D':
 			opt.slideshow_delay = atof(optarg);
+			if (opt.slideshow_delay < 0.0) {
+				opt.slideshow_delay *= (-1);
+				opt.paused = 1;
+			}
 			break;
 		case 'R':
 			opt.reload = atoi(optarg);

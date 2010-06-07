@@ -313,6 +313,9 @@ managers.
 For slideshow mode, wait
 .Ar float
 seconds between automatically changing slides.  Useful for presentations.
+Specify a negative number to set the delay
+.Pq which will then be Ar float No * (-1) ,
+but start feh in paused mode.
 .It Cm -S , --sort Ar sort_type
 The file list may be sorted according to image parameters.  Allowed sort
 types are: name, filename, width, height, pixels, size, format.  For sort
@@ -566,7 +569,9 @@ Toggle filename display
 .It f , F
 Save the current filelist to a unique filename
 .It h , H
-Pause the slideshow
+Pause/Continue the slideshow.  When it is paused, it will not automatically
+change slides based on
+.Cm --slideshow-delay
 .It m , M
 Show menu
 .It n , N , Ao space Ac , Aq right
