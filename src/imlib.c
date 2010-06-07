@@ -668,7 +668,8 @@ void feh_draw_filename(winwidget w)
 char *build_caption_filename(feh_file * file)
 {
 	char *caption_filename;
-	char *s, *dir;
+	char *s, *dir, *caption_dir;
+	struct stat cdir_stat;
 	s = strrchr(file->filename, '/');
 	if (s) {
 		dir = estrdup(file->filename);
@@ -677,6 +678,20 @@ char *build_caption_filename(feh_file * file)
 	} else {
 		dir = estrdup(".");
 	}
+
+	caption_dir = estrjoin("/", dir, opt.caption_path, NULL);
+
+	D(4, ("dir %s, cp %s, cdir %s\n", dir, opt.caption_path, caption_dir))
+
+	if (stat(caption_dir, &cdir_stat) == -1) {
+		if (mkdir(caption_dir, 0755) == -1)
+			eprintf("Failed to create caption directory %s:", caption_dir);
+	} else if (!S_ISDIR(cdir_stat.st_mode))
+		eprintf("Caption directory (%s) exists, but is not a directory.",
+			caption_dir);
+
+	free(caption_dir);
+
 	caption_filename = estrjoin("", dir, "/", opt.caption_path, "/", file->name, ".txt", NULL);
 	free(dir);
 	return caption_filename;
