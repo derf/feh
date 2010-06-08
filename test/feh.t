@@ -4,7 +4,8 @@ use warnings;
 use 5.010;
 use Test::Command tests => 48;
 
-my $feh = 'src/feh';
+my $fehrc = "/tmp/.fehrc-$$";
+my $feh = "src/feh --rcfile $fehrc";
 my $images = 'test/ok.* test/fail.*';
 
 my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
@@ -12,6 +13,11 @@ my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
 # These tests are meant to run non-interactively and without X.
 # make sure they are capable of doing so.
 delete $ENV{'DISPLAY'};
+
+# Create empty fehrc so that feh does not create one in $HOME
+# (mostly for build servers)
+open(my $fh, '>', $fehrc) or die("Can't create $fehrc: $!");
+close($fh) or die("Can't close $fehrc: $!");
 
 my $err_no_env = <<'EOF';
 
@@ -102,3 +108,5 @@ $cmd = Test::Command->new(cmd =>
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file('test/list');
 $cmd->stderr_like($re_list_action);
+
+unlink($fehrc);
