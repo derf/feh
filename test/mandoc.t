@@ -9,6 +9,7 @@ SKIP: {
 	qx{mandoc -V};
 
 	if ($? != 0) {
+		diag('mandoc not installed, test skipped. This is NOT fatal.');
 		skip('mandoc not installed', 3);
 	}
 
