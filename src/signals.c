@@ -34,15 +34,26 @@ void setup_signal_handlers()
 	sigset_t feh_ss;
 	D_ENTER(4);
 
-	sigemptyset(&feh_ss);
-	sigaddset(&feh_ss, SIGUSR1);
-	sigaddset(&feh_ss, SIGUSR2);
+	if (
+		(sigemptyset(&feh_ss) == -1) ||
+		(sigaddset(&feh_ss, SIGUSR1) == -1) ||
+		(sigaddset(&feh_ss, SIGUSR2) == -1))
+	{
+		weprintf("Failed to set up signal mask, SIGUSR1/2 won't work");
+		D_RETURN_(4);
+	}
 
 	feh_sh.sa_handler = feh_handle_signal;
 	feh_sh.sa_mask = feh_ss;
 
-	sigaction(SIGUSR1, &feh_sh, NULL);
-	sigaction(SIGUSR2, &feh_sh, NULL);
+	if (
+		(sigaction(SIGUSR1, &feh_sh, NULL) == -1) ||
+		(sigaction(SIGUSR2, &feh_sh, NULL) == -1))
+	{
+		weprintf("Failed to set up signal handler, SIGUSR1/2 won't work");
+		D_RETURN_(4);
+	}
+
 	D_RETURN_(4);
 }
 
