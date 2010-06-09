@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "timers.h"
 #include "winwidget.h"
 #include "options.h"
+#include "signals.h"
 
 void init_slideshow_mode(void)
 {
@@ -75,6 +76,9 @@ void init_slideshow_mode(void)
 	}
 	if (!success)
 		show_mini_usage();
+
+	setup_signal_handlers();
+
 	D_RETURN_(3);
 }
 

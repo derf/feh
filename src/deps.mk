@@ -27,8 +27,10 @@ multiwindow.o: multiwindow.c feh.h structs.h menu.h ipc.h utils.h \
   getopt.h debug.h winwidget.h timers.h filelist.h options.h
 options.o: options.c feh.h structs.h menu.h ipc.h utils.h getopt.h \
   debug.h filelist.h options.h
+signals.o: signals.c feh.h structs.h menu.h ipc.h utils.h getopt.h \
+  debug.h winwidget.h
 slideshow.o: slideshow.c feh.h structs.h menu.h ipc.h utils.h getopt.h \
-  debug.h filelist.h timers.h winwidget.h options.h
+  debug.h filelist.h timers.h winwidget.h options.h signals.h
 support.o: support.c feh.h structs.h menu.h ipc.h utils.h getopt.h \
   debug.h filelist.h options.h support.h
 thumbnail.o: thumbnail.c feh.h structs.h menu.h ipc.h utils.h getopt.h \

@@ -13,6 +13,7 @@ git HEAD
     * Draw a nice little message when in caption editing mode with empty
       caption (to indicate that caption editing is actually active)
     * caption mode: Automatically create caption directory if it doesn't exist
+    * Slideshow mode: SIGUSR1 = next image, SIGUSR2 = previous image
 
 Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
 
