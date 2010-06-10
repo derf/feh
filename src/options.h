@@ -132,7 +132,6 @@ struct __fehoptions {
 
 void init_parse_options(int argc, char **argv);
 char *feh_string_normalize(char *str);
-void feh_create_default_config(char *rcfile);
 
 extern fehoptions opt;
 

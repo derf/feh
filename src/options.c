@@ -28,11 +28,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 static void check_options(void);
+static void feh_create_default_config(char *rcfile);
 static void feh_parse_option_array(int argc, char **argv);
 static void feh_parse_environment_options(void);
 static void feh_check_theme_options(int arg, char **argv);
 static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
+static void show_usage(void);
+static void show_version(void);
 static char *theme;
 
 fehoptions opt;
@@ -813,7 +816,7 @@ static void check_options(void)
 	D_RETURN_(4);
 }
 
-void show_version(void)
+static void show_version(void)
 {
 	printf(PACKAGE " version " VERSION "\n");
 	exit(0);
@@ -826,7 +829,7 @@ void show_mini_usage(void)
 	exit(1);
 }
 
-void show_usage(void)
+static void show_usage(void)
 {
 	fprintf(stdout,
 "Usage : " PACKAGE " [OPTIONS]... FILES...\n"
@@ -1160,7 +1163,7 @@ void show_usage(void)
 	exit(0);
 }
 
-void feh_create_default_config(char *rcfile)
+static void feh_create_default_config(char *rcfile)
 {
 	FILE *fp;
 
