@@ -36,7 +36,6 @@ feh_event_handler *ev_handler[LASTEvent];
 static void feh_event_handle_ButtonPress(XEvent * ev);
 static void feh_event_handle_ButtonRelease(XEvent * ev);
 static void feh_event_handle_ConfigureNotify(XEvent * ev);
-static void feh_event_handle_EnterNotify(XEvent * ev);
 static void feh_event_handle_LeaveNotify(XEvent * ev);
 static void feh_event_handle_MotionNotify(XEvent * ev);
 static void feh_event_handle_ClientMessage(XEvent * ev);
@@ -52,7 +51,6 @@ void feh_event_init(void)
 	ev_handler[ButtonPress] = feh_event_handle_ButtonPress;
 	ev_handler[ButtonRelease] = feh_event_handle_ButtonRelease;
 	ev_handler[ConfigureNotify] = feh_event_handle_ConfigureNotify;
-	ev_handler[EnterNotify] = feh_event_handle_EnterNotify;
 	ev_handler[LeaveNotify] = feh_event_handle_LeaveNotify;
 	ev_handler[MotionNotify] = feh_event_handle_MotionNotify;
 	ev_handler[ClientMessage] = feh_event_handle_ClientMessage;
@@ -309,11 +307,6 @@ static void feh_event_handle_ConfigureNotify(XEvent * ev)
 		}
 	}
 
-	return;
-}
-
-static void feh_event_handle_EnterNotify(XEvent * ev)
-{
 	return;
 }
 

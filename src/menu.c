@@ -689,7 +689,7 @@ void feh_menu_calc_size(feh_menu * m)
 	return;
 }
 
-void feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox, int oy)
+void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 {
 	D(5, ("drawing item %p (text %s) on menu %p (name %s)\n", i, i->text, m, m->name));
 
@@ -752,7 +752,7 @@ void feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
 						   FEH_MENUITEM_PAD_BOTTOM
 						   -
 						   FEH_MENU_SUBMENU_H) /
-						  2), im, ox, oy, MENU_ITEM_IS_SELECTED(i));
+						  2), im, ox, oy);
 		}
 		if (i->is_toggle) {
 			D(5, ("toggleable item\n"));
@@ -830,7 +830,7 @@ void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy)
 
 	for (i = m->items; i; i = i->next) {
 		if (RECTS_INTERSECT(i->x, i->y, i->w, i->h, ox, oy, w, h))
-			feh_menu_draw_item(m, i, im, ox, oy);
+			feh_menu_draw_item(i, im, ox, oy);
 	}
 	return;
 }
@@ -861,7 +861,7 @@ void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox
 	return;
 }
 
-void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy, int selected)
+void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 {
 	ImlibPolygon poly;
 
