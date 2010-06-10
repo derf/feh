@@ -35,8 +35,6 @@ void init_multiwindow_mode(void)
 	gib_list *l;
 	feh_file *file = NULL;
 
-	D_ENTER(2);
-
 	mode = "multiwindow";
 
 	for (l = filelist; l; l = l->next) {
@@ -65,5 +63,5 @@ void init_multiwindow_mode(void)
 		}
 		free(s);
 	}
-	D_RETURN_(2);
+	return;
 }

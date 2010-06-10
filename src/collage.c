@@ -42,8 +42,6 @@ void init_collage_mode(void)
 	gib_list *l, *last = NULL;
 	char *s;
 
-	D_ENTER(4);
-
 	mode = "collage";
 
 	/* Use bg image dimensions for default size */
@@ -207,5 +205,6 @@ void init_collage_mode(void)
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
 	free(s);
-	D_RETURN_(4);
+
+	return;
 }

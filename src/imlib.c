@@ -64,20 +64,16 @@ void init_xinerama(void)
 
 void init_imlib_fonts(void)
 {
-	D_ENTER(4);
-
 	/* Set up the font stuff */
 	imlib_add_path_to_font_path(".");
 	imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
 	imlib_add_path_to_font_path("./ttfonts");
 
-	D_RETURN_(4);
+	return;
 }
 
 void init_x_and_imlib(void)
 {
-	D_ENTER(4);
-
 	disp = XOpenDisplay(NULL);
 	if (!disp)
 		eprintf("Can't open X display. It *is* running, yeah?");
@@ -103,7 +99,7 @@ void init_x_and_imlib(void)
 	/* Initialise random numbers */
 	srand(getpid() * time(NULL) % ((unsigned int) -1));
 
-	D_RETURN_(4);
+	return;
 }
 
 int feh_load_image_char(Imlib_Image * im, char *filename)
@@ -111,22 +107,20 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 	feh_file *file;
 	int i;
 
-	D_ENTER(4);
 	file = feh_file_new(filename);
 	i = feh_load_image(im, file);
 	feh_file_free(file);
-	D_RETURN(4, i);
+	return(i);
 }
 
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
 
-	D_ENTER(4);
 	D(3, ("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
-		D_RETURN(4, 0);
+		return(0);
 
 	/* Handle URLs */
 	if ((!strncmp(file->filename, "http://", 7)) || (!strncmp(file->filename, "https://", 8))
@@ -136,7 +130,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 		tmpname = feh_http_load_image(file->filename);
 		if (tmpname == NULL)
-			D_RETURN(4, 0);
+			return(0);
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (im) {
 			/* load the info now, in case it's needed after we delete the
@@ -228,11 +222,11 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			break;
 		}
 		D(3, ("Load *failed*\n"));
-		D_RETURN(4, 0);
+		return(0);
 	}
 
 	D(3, ("Loaded ok\n"));
-	D_RETURN(4, 1);
+	return(1);
 }
 
 char *feh_http_load_image(char *url)
@@ -244,8 +238,6 @@ char *feh_http_load_image(char *url)
 	char randnum[20];
 	int rnum;
 	char *path = NULL;
-
-	D_ENTER(4);
 
 	if (opt.keep_http) {
 		if (opt.output_dir)
@@ -304,7 +296,7 @@ char *feh_http_load_image(char *url)
 		if (!fp) {
 			weprintf("couldn't write to file %s:", tmpname);
 			free(tmpname);
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 
 		hostname = feh_strip_hostname(newurl);
@@ -314,7 +306,7 @@ char *feh_http_load_image(char *url)
 			unlink(tmpname);
 			free(tmpname);
 			free(newurl);
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 
 		D(4, ("trying hostname %s\n", hostname));
@@ -326,7 +318,7 @@ char *feh_http_load_image(char *url)
 			free(hostname);
 			free(tmpname);
 			free(newurl);
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 
 		/* Copy the address of the host to socket description. */
@@ -343,7 +335,7 @@ char *feh_http_load_image(char *url)
 			free(tmpname);
 			free(hostname);
 			free(newurl);
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 		if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
 			weprintf("error connecting socket:");
@@ -352,7 +344,7 @@ char *feh_http_load_image(char *url)
 			free(tmpname);
 			free(hostname);
 			free(newurl);
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 
 		get_url = strchr(newurl, '/') + 2;
@@ -382,7 +374,7 @@ char *feh_http_load_image(char *url)
 			free(hostname);
 			free(newurl);
 			weprintf("error sending over socket:");
-			D_RETURN(4, NULL);
+			return(NULL);
 		}
 		free(get_string);
 		free(host_string);
@@ -476,7 +468,7 @@ char *feh_http_load_image(char *url)
 			weprintf("open url: fork failed:");
 			free(tmpname);
 			free(newurl);
-			D_RETURN(4, NULL);
+			return(NULL);
 		} else if (pid == 0) {
 			char *quiet = NULL;
 
@@ -497,7 +489,7 @@ char *feh_http_load_image(char *url)
 				unlink(opt.wget_timestamp ? tmpname_timestamper : tmpname);
 				free(newurl);
 				free(tmpname);
-				D_RETURN(4, NULL);
+				return(NULL);
 			}
 			if (opt.wget_timestamp) {
 				char cmd[2048];
@@ -509,7 +501,7 @@ char *feh_http_load_image(char *url)
 		}
 	}
 
-	D_RETURN(4, tmpname);
+	return(tmpname);
 }
 
 struct hostent *feh_gethostbyname(const char *name)
@@ -517,13 +509,12 @@ struct hostent *feh_gethostbyname(const char *name)
 	struct hostent *hp;
 	unsigned long addr;
 
-	D_ENTER(3);
 	addr = (unsigned long) inet_addr(name);
 	if ((int) addr != -1)
 		hp = gethostbyaddr((char *) &addr, sizeof(addr), AF_INET);
 	else
 		hp = gethostbyname(name);
-	D_RETURN(3, hp);
+	return(hp);
 }
 
 char *feh_strip_hostname(char *url)
@@ -533,24 +524,22 @@ char *feh_strip_hostname(char *url)
 	char *finish;
 	int len;
 
-	D_ENTER(3);
-
 	start = strchr(url, '/');
 	if (!start)
-		D_RETURN(3, NULL);
+		return(NULL);
 
 	start += 2;
 
 	finish = strchr(start, '/');
 	if (!finish)
-		D_RETURN(3, NULL);
+		return(NULL);
 
 	len = finish - start;
 
 	ret = emalloc(len + 1);
 	strncpy(ret, start, len);
 	ret[len] = '\0';
-	D_RETURN(3, ret);
+	return(ret);
 }
 
 void feh_draw_zoom(winwidget w)
@@ -561,10 +550,8 @@ void feh_draw_zoom(winwidget w)
 	char buf[100];
 	static DATA8 atab[256];
 
-	D_ENTER(4);
-
 	if (!w->im)
-		D_RETURN_(4);
+		return;
 
 	if (!fn) {
 		fn = gib_imlib_load_font(DEFAULT_FONT);
@@ -573,7 +560,7 @@ void feh_draw_zoom(winwidget w)
 
 	if (!fn) {
 		weprintf("Couldn't load font for zoom printing");
-		D_RETURN_(4);
+		return;
 	}
 
 	snprintf(buf, sizeof(buf), "%.0f%%, %dx%d", w->zoom * 100,
@@ -596,7 +583,7 @@ void feh_draw_zoom(winwidget w)
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
-	D_RETURN_(4);
+	return;
 }
 
 void feh_draw_filename(winwidget w)
@@ -608,11 +595,9 @@ void feh_draw_filename(winwidget w)
 	char *s = NULL;
 	int len = 0;
 
-	D_ENTER(4);
-
 	if ((!w->file) || (!FEH_FILE(w->file->data))
 			|| (!FEH_FILE(w->file->data)->filename))
-		D_RETURN_(4);
+		return;
 
 	if (!fn) {
 		memset(atab, 0, sizeof(atab));
@@ -624,7 +609,7 @@ void feh_draw_filename(winwidget w)
 
 	if (!fn) {
 		weprintf("Couldn't load font for filename printing");
-		D_RETURN_(4);
+		return;
 	}
 
 	/* Work out how high the font is */
@@ -662,7 +647,7 @@ void feh_draw_filename(winwidget w)
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
-	D_RETURN_(4);
+	return;
 }
 
 char *build_caption_filename(feh_file * file)
@@ -709,14 +694,12 @@ void feh_draw_caption(winwidget w)
 	static gib_style *caption_style = NULL;
 	feh_file *file;
 
-	D_ENTER(4);
-
 	if (!w->file) {
-		D_RETURN_(4);
+		return;
 	}
 	file = FEH_FILE(w->file->data);
 	if (!file->filename) {
-		D_RETURN_(4);
+		return;
 	}
 
 	if (!file->caption) {
@@ -740,7 +723,7 @@ void feh_draw_caption(winwidget w)
 	}
 
 	if (*(file->caption) == '\0' && !w->caption_entry)
-		D_RETURN_(4);
+		return;
 
 	caption_style = gib_style_new("caption");
 	caption_style->bits = gib_list_add_front(caption_style->bits,
@@ -758,7 +741,7 @@ void feh_draw_caption(winwidget w)
 
 	if (!fn) {
 		weprintf("Couldn't load font for caption printing");
-		D_RETURN_(4);
+		return;
 	}
 
 	if (*(file->caption) == '\0') {
@@ -769,7 +752,7 @@ void feh_draw_caption(winwidget w)
 		lines = feh_wrap_string(file->caption, w->w, fn, NULL);
 
 	if (!lines)
-		D_RETURN_(4);
+		return;
 
 	/* Work out how high/wide the caption is */
 	l = lines;
@@ -822,7 +805,7 @@ void feh_draw_caption(winwidget w)
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 	gib_list_free_and_data(lines);
-	D_RETURN_(4);
+	return;
 }
 
 unsigned char reset_output = 0;
@@ -832,8 +815,6 @@ void feh_display_status(char stat)
 	static int i = 0;
 	static int init_len = 0;
 	int j = 0;
-
-	D_ENTER(5);
 
 	D(5, ("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
@@ -863,21 +844,20 @@ void feh_display_status(char stat)
 	fprintf(stdout, "%c", stat);
 	fflush(stdout);
 	i++;
-	D_RETURN_(5);
+	return;
 }
 
 void feh_edit_inplace_orient(winwidget w, int orientation)
 {
 	int ret;
 	Imlib_Image old;
-	D_ENTER(4);
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
-		D_RETURN_(4);
+		return;
 
 	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
 		feh_edit_inplace_lossless_rotate(w, orientation);
 		feh_reload_image(w, 1, 1);
-		D_RETURN_(4);
+		return;
 	}
 
 	ret = feh_load_image(&old, FEH_FILE(w->file->data));
@@ -890,7 +870,7 @@ void feh_edit_inplace_orient(winwidget w, int orientation)
 		weprintf("failed to load image from disk to edit it in place\n");
 	}
 
-	D_RETURN_(4);
+	return;
 }
 
 gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style * style)
@@ -1005,7 +985,7 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 
 	if ((pid = fork()) < 0) {
 		weprintf("lossless rotate: fork failed:");
-		D_RETURN_(4);
+		return;
 	} else if (pid == 0) {
 
 		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
@@ -1020,7 +1000,7 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 					" Commandline was:\n"
 					"jpegtran -copy all -rotate %d -outfile %s %s\n",
 					status >> 8, rotate_str, file_str, file_str);
-			D_RETURN_(4);
+			return;
 		}
 	}
 }
@@ -1040,8 +1020,6 @@ void feh_draw_actions(winwidget w)
 	char index[1];
 	char *line;
 
-	D_ENTER(4);
-
 	/* Count number of defined actions. This method sucks a bit since it needs
 	 * to be changed if the number of actions changes, but at least it doesn't
 	 * miss actions 2 to 9 if action1 isn't defined
@@ -1056,7 +1034,7 @@ void feh_draw_actions(winwidget w)
 
 	if ((!w->file) || (!FEH_FILE(w->file->data))
 			|| (!FEH_FILE(w->file->data)->filename))
-		D_RETURN_(4);
+		return;
 
 	if (!fn) {
 		memset(atab, 0, sizeof(atab));
@@ -1068,7 +1046,7 @@ void feh_draw_actions(winwidget w)
 
 	if (!fn) {
 		weprintf("Couldn't load font for actions printing");
-		D_RETURN_(4);
+		return;
 	}
 
 	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
@@ -1134,5 +1112,5 @@ void feh_draw_actions(winwidget w)
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0 + th_offset, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
-	D_RETURN_(4);
+	return;
 }

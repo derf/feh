@@ -33,10 +33,9 @@ void feh_handle_timer(void)
 {
 	fehtimer ft;
 
-	D_ENTER(4);
 	if (!first_timer) {
 		D(3, ("No timer to handle, returning\n"));
-		D_RETURN_(4);
+		return;
 	}
 	ft = first_timer;
 	first_timer = first_timer->next;
@@ -47,23 +46,21 @@ void feh_handle_timer(void)
 		free(ft->name);
 	if (ft)
 		free(ft);
-	D_RETURN_(4);
+	return;
 }
 
 double feh_get_time(void)
 {
 	struct timeval timev;
 
-	D_ENTER(4);
 	gettimeofday(&timev, NULL);
-	D_RETURN(4, (double) timev.tv_sec + (((double) timev.tv_usec) / 1000000));
+	return((double) timev.tv_sec + (((double) timev.tv_usec) / 1000000));
 }
 
 void feh_remove_timer(char *name)
 {
 	fehtimer ft, ptr, pptr;
 
-	D_ENTER(4);
 	D(3, ("removing %s\n", name));
 	pptr = NULL;
 	ptr = first_timer;
@@ -82,12 +79,12 @@ void feh_remove_timer(char *name)
 				free(ft->name);
 			if (ft)
 				free(ft);
-			D_RETURN_(4);
+			return;
 		}
 		pptr = ptr;
 		ptr = ptr->next;
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
@@ -95,7 +92,6 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 	fehtimer ft, ptr, pptr;
 	double tally;
 
-	D_ENTER(4);
 	D(3, ("adding timer %s for %f seconds time\n", name, in));
 	feh_remove_timer(name);
 	ft = malloc(sizeof(_fehtimer));
@@ -127,7 +123,7 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 				ft->in -= tally;
 				if (ft->next)
 					ft->next->in -= ft->in;
-				D_RETURN_(4);
+				return;
 			}
 			pptr = ptr;
 			ptr = ptr->next;
@@ -139,7 +135,7 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 		ft->in -= tally;
 	}
 	D(3, ("ft->in = %f\n", ft->in));
-	D_RETURN_(4);
+	return;
 }
 
 void feh_add_unique_timer(void (*func) (void *data), void *data, double in)
@@ -147,7 +143,6 @@ void feh_add_unique_timer(void (*func) (void *data), void *data, double in)
 	static long i = 0;
 	char evname[20];
 
-	D_ENTER(4);
 	snprintf(evname, sizeof(evname), "T_%ld", i);
 	D(4, ("adding timer with unique name %s\n", evname));
 	feh_add_timer(func, data, in, evname);
@@ -155,5 +150,5 @@ void feh_add_unique_timer(void (*func) (void *data), void *data, double in)
 	/* Mega paranoia ;) */
 	if (i > 1000000)
 		i = 0;
-	D_RETURN_(4);
+	return;
 }

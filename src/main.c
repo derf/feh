@@ -38,7 +38,6 @@ char *mode = NULL;
 
 int main(int argc, char **argv)
 {
-	D_ENTER(4);
 	atexit(feh_clean_exit);
 
 	init_parse_options(argc, argv);
@@ -77,7 +76,7 @@ int main(int argc, char **argv)
 	/* main event loop */
 	while (feh_main_iteration(1));
 
-	D_RETURN(4, 0);
+	return(0);
 }
 
 /* Return 0 to stop iterating, 1 if ok to continue. */
@@ -94,10 +93,8 @@ int feh_main_iteration(int block)
 	double t1 = 0.0, t2 = 0.0;
 	fehtimer ft;
 
-	D_ENTER(5);
-
 	if (window_num == 0)
-		D_RETURN(5, 0);
+		return(0);
 
 	if (first) {
 		/* Only need to set these up the first time */
@@ -117,7 +114,7 @@ int feh_main_iteration(int block)
 			(*(ev_handler[ev.type])) (&ev);
 
 		if (window_num == 0)
-			D_RETURN(5, 0);
+			return(0);
 	}
 	XFlush(disp);
 
@@ -182,18 +179,17 @@ int feh_main_iteration(int block)
 		}
 	}
 	if (window_num == 0)
-		D_RETURN(5, 0);
-	D_RETURN(5, 1);
+		return(0);
+	
+	return(1);
 }
 
 void feh_clean_exit(void)
 {
-	D_ENTER(4);
-
 	delete_rm_files();
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);
 
-	D_RETURN_(4);
+	return;
 }

@@ -81,8 +81,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	char bgfil[4096];
 	char sendbuf[4096];
 
-	D_ENTER(4);
-
 	snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
 
 	if (!fil) {
@@ -306,14 +304,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		XSetCloseDownMode(disp2, RetainPermanent);
 		XCloseDisplay(disp2);
 	}
-	D_RETURN_(4);
+	return;
 }
 
 signed char feh_wm_get_wm_is_e(void)
 {
 	static signed char e = -1;
-
-	D_ENTER(4);
 
 	/* check if E is actually running */
 	if (e == -1) {
@@ -327,7 +323,7 @@ signed char feh_wm_get_wm_is_e(void)
 			e = 0;
 		}
 	}
-	D_RETURN(4, e);
+	return(e);
 }
 
 int feh_wm_get_num_desks(void)
@@ -335,21 +331,20 @@ int feh_wm_get_num_desks(void)
 	char *buf, *ptr;
 	int desks;
 
-	D_ENTER(4);
-
 	if (!feh_wm_get_wm_is_e())
-		D_RETURN(4, -1);
+		return(-1);
 
 	buf = enl_send_and_wait("num_desks ?");
 	if (buf == IPC_FAKE)	/* Fake E17 IPC */
-		D_RETURN(4, -1);
+		return(-1);
 	D(3, ("Got from E IPC: %s\n", buf));
 	ptr = buf;
 	while (ptr && !isdigit(*ptr))
 		ptr++;
 	desks = atoi(ptr);
 
-D_RETURN(4, desks)}
+	return(desks);
+}
 
 Window enl_ipc_get_win(void)
 {
@@ -362,8 +357,6 @@ Window enl_ipc_get_win(void)
 	int dummy_int;
 	unsigned int dummy_uint;
 
-	D_ENTER(4);
-
 	D(3, ("Searching for IPC window.\n"));
 
 	/*
@@ -371,19 +364,19 @@ Window enl_ipc_get_win(void)
 	 * if we already know it's an e17 fake
 	 */
 	if (e17_fake_ipc)
-		D_RETURN(4, ipc_win)
+		return(ipc_win);
 
 		    prop = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
 	if (prop == None) {
 		D(3, ("Enlightenment is not running.\n"));
-		D_RETURN(4, None);
+		return(None);
 	} else {
 		/* XXX: This will only work with E17 prior to 6/22/2005 */
 		ever = XInternAtom(disp, "ENLIGHTENMENT_VERSION", True);
 		if (ever == None) {
 			/* This is an E without ENLIGHTENMENT_VERSION */
 			D(3, ("E16 IPC Protocol not supported"));
-			D_RETURN(4, None);
+			return(None);
 		}
 	}
 	XGetWindowProperty(disp, root, prop, 0, 14, False, AnyPropertyType, &prop2, &format, &num, &after, &str);
@@ -426,7 +419,7 @@ Window enl_ipc_get_win(void)
 			D(3, (" -> Found a fake E17 IPC window, ignoring"));
 			ipc_win = None;
 			e17_fake_ipc = 1;
-			D_RETURN(4, ipc_win);
+			return(ipc_win);
 		}
 
 		D(3,
@@ -441,7 +434,7 @@ Window enl_ipc_get_win(void)
 	if (my_ipc_win == None) {
 		my_ipc_win = XCreateSimpleWindow(disp, root, -2, -2, 1, 1, 0, 0, 0);
 	}
-	D_RETURN(4, ipc_win);
+	return(ipc_win);
 }
 
 void enl_ipc_send(char *str)
@@ -454,7 +447,6 @@ void enl_ipc_send(char *str)
 	unsigned short len;
 	XEvent ev;
 
-	D_ENTER(4);
 	if (str == NULL) {
 		if (last_msg == NULL)
 			eprintf("eeek");
@@ -470,14 +462,14 @@ void enl_ipc_send(char *str)
 	if (ipc_win == None) {
 		if ((ipc_win = enl_ipc_get_win()) == None) {
 			D(3, ("Hrm. Enlightenment doesn't seem to be running. No IPC window, no IPC.\n"));
-			D_RETURN_(4);
+			return;
 		}
 	}
 	len = strlen(str);
 	ipc_atom = XInternAtom(disp, "ENL_MSG", False);
 	if (ipc_atom == None) {
 		D(3, ("IPC error:  Unable to find/create ENL_MSG atom.\n"));
-		D_RETURN_(4);
+		return;
 	}
 	for (; XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev););	/* Discard any out-of-sync messages */
 	ev.xclient.type = ClientMessage;
@@ -501,13 +493,13 @@ void enl_ipc_send(char *str)
 		}
 		XSendEvent(disp, ipc_win, False, 0, (XEvent *) & ev);
 	}
-	D_RETURN_(4);
+	return;
 }
 
 static sighandler_t *enl_ipc_timeout(int sig)
 {
 	timeout = 1;
-	D_RETURN(4, (sighandler_t *) sig);
+	return((sighandler_t *) sig);
 	sig = 0;
 }
 
@@ -518,19 +510,17 @@ char *enl_wait_for_reply(void)
 	static char msg_buffer[20];
 	register unsigned char i;
 
-	D_ENTER(4);
-
 	alarm(2);
 	for (; !XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev)
 	     && !timeout;);
 	alarm(0);
 	if (ev.xany.type != ClientMessage) {
-		D_RETURN(4, IPC_TIMEOUT);
+		return(IPC_TIMEOUT);
 	}
 	for (i = 0; i < 20; i++) {
 		msg_buffer[i] = ev.xclient.data.b[i];
 	}
-	D_RETURN(4, msg_buffer + 8);
+	return(msg_buffer + 8);
 }
 
 char *enl_ipc_get(const char *msg_data)
@@ -542,10 +532,8 @@ char *enl_ipc_get(const char *msg_data)
 	register unsigned char i;
 	unsigned char blen;
 
-	D_ENTER(4);
-
 	if (msg_data == IPC_TIMEOUT) {
-		D_RETURN(4, IPC_TIMEOUT);
+		return(IPC_TIMEOUT);
 	}
 	for (i = 0; i < 12; i++) {
 		buff[i] = msg_data[i];
@@ -566,15 +554,13 @@ char *enl_ipc_get(const char *msg_data)
 		message = NULL;
 		D(4, ("Received complete reply:  \"%s\"\n", ret_msg));
 	}
-	D_RETURN(4, ret_msg);
+	return(ret_msg);
 }
 
 char *enl_send_and_wait(char *msg)
 {
 	char *reply = IPC_TIMEOUT;
 	sighandler_t old_alrm;
-
-	D_ENTER(4);
 
 	/*
 	 * Shortcut this func and return IPC_FAKE
@@ -606,5 +592,5 @@ char *enl_send_and_wait(char *msg)
 		}
 	}
 	signal(SIGALRM, old_alrm);
-	D_RETURN(4, reply);
+	return(reply);
 }

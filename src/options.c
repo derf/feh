@@ -42,8 +42,6 @@ fehoptions opt;
 
 void init_parse_options(int argc, char **argv)
 {
-	D_ENTER(4);
-
 	/* For setting the command hint on X windows */
 	cmdargc = argc;
 	cmdargv = argv;
@@ -111,7 +109,7 @@ void init_parse_options(int argc, char **argv)
 	D(4, ("Options parsed\n"));
 
 	if (opt.bgmode)
-		D_RETURN_(4);
+		return;
 
 	filelist_len = gib_list_length(filelist);
 	if (!filelist_len)
@@ -120,12 +118,11 @@ void init_parse_options(int argc, char **argv)
 	check_options();
 
 	feh_prepare_filelist();
-	D_RETURN_(4);
+	return;
 }
 
 static void feh_check_theme_options(int arg, char **argv)
 {
-	D_ENTER(4);
 	if (!theme) {
 		/* This prevents screw up when running src/feh or ./feh */
 		char *pos = strrchr(argv[0], '/');
@@ -140,7 +137,7 @@ static void feh_check_theme_options(int arg, char **argv)
 	feh_load_options_for_theme(theme);
 
 	free(theme);
-	D_RETURN_(4);
+	return;
 	arg = 0;
 }
 
@@ -151,12 +148,10 @@ static void feh_load_options_for_theme(char *theme)
 	char *rcpath = NULL;
 	char s[1024], s1[1024], s2[1024];
 
-	D_ENTER(4);
-
 	if (opt.rcfile) {
 		if ((fp = fopen(opt.rcfile, "r")) == NULL) {
 			weprintf("couldn't load the specified rcfile %s\n", opt.rcfile);
-			D_RETURN_(4);
+			return;
 		}
 	} else {
 		home = getenv("HOME");
@@ -171,7 +166,7 @@ static void feh_load_options_for_theme(char *theme)
 			feh_create_default_config(rcpath);
 
 			if ((fp = fopen(rcpath, "r")) == NULL)
-				D_RETURN_(4);
+				return;
 		}
 
 		free(rcpath);
@@ -192,17 +187,15 @@ static void feh_load_options_for_theme(char *theme)
 		}
 	}
 	fclose(fp);
-	D_RETURN_(4);
+	return;
 }
 
 static void feh_parse_environment_options(void)
 {
 	char *opts;
 
-	D_ENTER(4);
-
 	if ((opts = getenv("FEH_OPTIONS")) == NULL)
-		D_RETURN_(4);
+		return;
 
 	weprintf
 	    ("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
@@ -210,7 +203,7 @@ static void feh_parse_environment_options(void)
 
 	/* We definitely have some options to parse */
 	feh_parse_options_from_string(opts);
-	D_RETURN_(4);
+	return;
 }
 
 /* FIXME This function is a crufty bitch ;) */
@@ -223,8 +216,6 @@ static void feh_parse_options_from_string(char *opts)
 	char last = 0;
 	int inquote = 0;
 	int i = 0;
-
-	D_ENTER(4);
 
 	/* So we don't reinvent the wheel (not again, anyway), we use the
 	   getopt_long function to do this parsing as well. This means it has to
@@ -260,7 +251,7 @@ static void feh_parse_options_from_string(char *opts)
 			free(list[i]);
 	if (list)
 		free(list);
-	D_RETURN_(4);
+	return;
 }
 
 char *feh_string_normalize(char *str)
@@ -270,7 +261,6 @@ char *feh_string_normalize(char *str)
 	int i = 0;
 	char last = 0;
 
-	D_ENTER(4);
 	D(4, ("normalizing %s\n", str));
 	ret[0] = '\0';
 
@@ -293,7 +283,7 @@ char *feh_string_normalize(char *str)
 		ret[i] = '\0';
 	D(4, ("normalized to %s\n", ret));
 
-	D_RETURN(4, estrdup(ret));
+	return(estrdup(ret));
 }
 
 static void feh_parse_option_array(int argc, char **argv)
@@ -403,8 +393,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
-
-	D_ENTER(4);
 
 	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
@@ -769,12 +757,11 @@ static void feh_parse_option_array(int argc, char **argv)
 
 	/* So that we can safely be called again */
 	optind = 1;
-	D_RETURN_(4);
+	return;
 }
 
 static void check_options(void)
 {
-	D_ENTER(4);
 	if ((opt.index + opt.collage) > 1) {
 		weprintf("you can't use collage mode and index mode together.\n"
 				"   I'm going with index");
@@ -813,7 +800,7 @@ static void check_options(void)
 		opt.thumb_title = NULL;
 	}
 
-	D_RETURN_(4);
+	return;
 }
 
 static void show_version(void)
@@ -1167,11 +1154,9 @@ static void feh_create_default_config(char *rcfile)
 {
 	FILE *fp;
 
-	D_ENTER(4);
-
 	if ((fp = fopen(rcfile, "w")) == NULL) {
 		weprintf("Unable to create default config file %s\n", rcfile);
-		D_RETURN_(4);
+		return;
 	}
 
 	fprintf(fp,
@@ -1253,5 +1238,5 @@ PREFIX "/share/feh/images/menubg_black.png"
 PREFIX "/share/feh/fonts/black.style\n");
 	fclose(fp);
 
-	D_RETURN_(4);
+	return;
 }

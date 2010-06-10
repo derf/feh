@@ -31,7 +31,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void feh_event_invoke_action(winwidget winwid, char *action)
 {
-	D_ENTER(4);
 	D(4, ("action is '%s'\n", action));
 	D(4, ("winwid is '%p'\n", winwid));
 	if (action) {
@@ -47,7 +46,7 @@ void feh_event_invoke_action(winwidget winwid, char *action)
 			printf("For now, open the image to perform the action on it.\n");
 		}
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void feh_event_handle_keypress(XEvent * ev)
@@ -60,8 +59,6 @@ void feh_event_handle_keypress(XEvent * ev)
 	int curr_screen = 0;
 	feh_menu_item *selected_item;
 	feh_menu *selected_menu;
-
-	D_ENTER(4);
 
 	winwid = winwidget_get_from_window(ev->xkey.window);
 
@@ -100,11 +97,11 @@ void feh_event_handle_keypress(XEvent * ev)
 			break;
 		}
 
-		D_RETURN_(4);
+		return;
 	}
 
 	if (winwid == NULL)
-		D_RETURN_(4);
+		return;
 
 	if (winwid->caption_entry) {
 		switch (keysym) {
@@ -125,7 +122,7 @@ void feh_event_handle_keypress(XEvent * ev)
 				fp = fopen(caption_filename, "w");
 				if (!fp) {
 					weprintf("couldn't write to captions file %s:", caption_filename);
-					D_RETURN_(4);
+					return;
 				}
 				fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);
 				free(caption_filename);
@@ -154,7 +151,7 @@ void feh_event_handle_keypress(XEvent * ev)
 			}
 			break;
 		}
-		D_RETURN_(4);
+		return;
 	}
 
 	switch (keysym) {
@@ -289,7 +286,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 
 	if (len <= 0 || len > (int) sizeof(kbuf))
-		D_RETURN_(4);
+		return;
 	kbuf[len] = '\0';
 
 	switch (*kbuf) {
@@ -409,5 +406,5 @@ void feh_event_handle_keypress(XEvent * ev)
 	default:
 		break;
 	}
-	D_RETURN_(4);
+	return;
 }

@@ -168,7 +168,6 @@ char *feh_unique_filename(char *path, char *basename)
 	struct stat st;
 	pid_t ppid;
 
-	D_ENTER(4);
 	/* Massive paranoia ;) */
 	if (i > 999998)
 		i = 1;
@@ -182,7 +181,7 @@ char *feh_unique_filename(char *path, char *basename)
 		tmpname = estrjoin("", path, "feh_", cppid, "_", num, "_", basename, NULL);
 	}
 	while (stat(tmpname, &st) == 0);
-	D_RETURN(4, tmpname);
+	return(tmpname);
 }
 
 /* reads file into a string, but limits o 4095 chars and ensures a \0 */

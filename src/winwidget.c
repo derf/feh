@@ -40,7 +40,6 @@ static winwidget winwidget_allocate(void)
 {
 	winwidget ret = NULL;
 
-	D_ENTER(4);
 	ret = emalloc(sizeof(_winwidget));
 
 	ret->win = 0;
@@ -74,17 +73,15 @@ static winwidget winwidget_allocate(void)
 	ret->click_offset_y = 0;
 	ret->has_rotated = 0;
 
-	D_RETURN(4, ret);
+	return(ret);
 }
 
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 {
 	winwidget ret = NULL;
 
-	D_ENTER(4);
-
 	if (im == NULL)
-		D_RETURN(4, NULL);
+		return(NULL);
 
 	ret = winwidget_allocate();
 	ret->type = type;
@@ -103,7 +100,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	winwidget_create_window(ret, ret->w, ret->h);
 	winwidget_render_image(ret, 1, 1);
 
-	D_RETURN(4, ret);
+	return(ret);
 }
 
 winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
@@ -111,10 +108,8 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 	winwidget ret = NULL;
 	feh_file *file = FEH_FILE(list->data);
 
-	D_ENTER(4);
-
 	if (!file || !file->filename)
-		D_RETURN(4, NULL);
+		return(NULL);
 
 	ret = winwidget_allocate();
 	ret->file = list;
@@ -126,7 +121,7 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 
 	if (winwidget_loadimage(ret, file) == 0) {
 		winwidget_destroy(ret);
-		D_RETURN(4, NULL);
+		return(NULL);
 	}
 
 	if (!ret->win) {
@@ -139,7 +134,7 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 		winwidget_render_image(ret, 1, 1);
 	}
 
-	D_RETURN(4, ret);
+	return(ret);
 }
 
 void winwidget_create_window(winwidget ret, int w, int h)
@@ -151,8 +146,6 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	Atom prop = None;
 	int x = 0;
 	int y = 0;
-
-	D_ENTER(4);
 
 	if (ret->full_screen) {
 		w = scr->width;
@@ -288,26 +281,23 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	XSetCommand(disp, ret->win, cmdargv, cmdargc);
 
 	winwidget_register(ret);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_update_title(winwidget ret)
 {
 	char *name;
 
-	D_ENTER(4);
 	D(4, ("winwid->name = %s\n", ret->name));
 	name = ret->name ? ret->name : "feh";
 	XStoreName(disp, ret->win, name);
 	XSetIconName(disp, ret->win, name);
 	/* XFlush(disp); */
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_setup_pixmaps(winwidget winwid)
 {
-	D_ENTER(4);
-
 	if (winwid->full_screen) {
 		if (!(winwid->bg_pmap)) {
 			if (winwid->gc == None) {
@@ -333,15 +323,13 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			winwid->had_resize = 0;
 		}
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_render_image(winwidget winwid, int resize, int alias)
 {
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
-
-	D_ENTER(4);
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -530,7 +518,7 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 		feh_draw_zoom(winwid);
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_render_image_cached(winwidget winwid)
@@ -556,8 +544,6 @@ double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, in
 {
 	double ratio = 0.0;
 
-	D_ENTER(4);
-
 	ratio = ((double) orig_w / orig_h) / ((double) dest_w / dest_h);
 
 	if (ratio > 1.0)
@@ -565,7 +551,7 @@ double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, in
 	else
 		*zoom = ((double) dest_h / orig_h);
 
-	D_RETURN(4, ratio);
+	return(ratio);
 }
 
 Pixmap feh_create_checks(void)
@@ -573,7 +559,6 @@ Pixmap feh_create_checks(void)
 	static Pixmap checks_pmap = None;
 	Imlib_Image checks = NULL;
 
-	D_ENTER(4);
 	if (checks_pmap == None) {
 		int onoff, x, y;
 
@@ -605,15 +590,14 @@ Pixmap feh_create_checks(void)
 		gib_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
 		gib_imlib_free_image_and_decache(checks);
 	}
-	D_RETURN(4, checks_pmap);
+	return(checks_pmap);
 }
 
 void winwidget_clear_background(winwidget w)
 {
-	D_ENTER(4);
 	XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
 	/* XClearWindow(disp, w->win); */
-	D_RETURN_(4);
+	return;
 }
 
 void feh_draw_checks(winwidget win)
@@ -621,19 +605,17 @@ void feh_draw_checks(winwidget win)
 	static GC gc = None;
 	XGCValues gcval;
 
-	D_ENTER(4);
 	if (gc == None) {
 		gcval.tile = feh_create_checks();
 		gcval.fill_style = FillTiled;
 		gc = XCreateGC(disp, win->win, GCTile | GCFillStyle, &gcval);
 	}
 	XFillRectangle(disp, win->bg_pmap, gc, 0, 0, win->w, win->h);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_destroy_xwin(winwidget winwid)
 {
-	D_ENTER(4);
 	if (winwid->win) {
 		winwidget_unregister(winwid);
 		XDestroyWindow(disp, winwid->win);
@@ -642,12 +624,11 @@ void winwidget_destroy_xwin(winwidget winwid)
 		XFreePixmap(disp, winwid->bg_pmap);
 		winwid->bg_pmap = None;
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_destroy(winwidget winwid)
 {
-	D_ENTER(4);
 	winwidget_destroy_xwin(winwid);
 	if (winwid->name)
 		free(winwid->name);
@@ -660,54 +641,48 @@ void winwidget_destroy(winwidget winwid)
 	if (winwid->im)
 		gib_imlib_free_image_and_decache(winwid->im);
 	free(winwid);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_destroy_all(void)
 {
 	int i;
 
-	D_ENTER(4);
 	/* Have to DESCEND the list here, 'cos of the way _unregister works */
 	for (i = window_num - 1; i >= 0; i--)
 		winwidget_destroy(windows[i]);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_rerender_all(int resize, int alias)
 {
 	int i;
 
-	D_ENTER(4);
 	/* Have to DESCEND the list here, 'cos of the way _unregister works */
 	for (i = window_num - 1; i >= 0; i--)
 		winwidget_render_image(windows[i], resize, alias);
-	D_RETURN_(4);
+	return;
 }
 
 winwidget winwidget_get_first_window_of_type(unsigned int type)
 {
 	int i;
 
-	D_ENTER(4);
 	for (i = 0; i < window_num; i++)
 		if (windows[i]->type == type)
-			D_RETURN(4, windows[i]);
-	D_RETURN(4, NULL);
+			return(windows[i]);
+	return(NULL);
 }
 
 int winwidget_loadimage(winwidget winwid, feh_file * file)
 {
-	D_ENTER(4);
 	D(4, ("filename %s\n", file->filename));
-	D_RETURN(4, feh_load_image(&(winwid->im), file));
+	return(feh_load_image(&(winwid->im), file));
 }
 
 void winwidget_show(winwidget winwid)
 {
 	XEvent ev;
-
-	D_ENTER(4);
 
 	/* feh_debug_print_winwid(winwid); */
 	if (!winwid->visible) {
@@ -720,18 +695,16 @@ void winwidget_show(winwidget winwid)
 		D(4, ("Window mapped\n"));
 		winwid->visible = 1;
 	}
-	D_RETURN_(4);
+	return;
 }
 
 int winwidget_count(void)
 {
-	D_ENTER(4);
-	D_RETURN(4, window_num);
+	return(window_num);
 }
 
 void winwidget_move(winwidget winwid, int x, int y)
 {
-	D_ENTER(4);
 	if (winwid && ((winwid->x != x) || (winwid->y != y))) {
 		winwid->x = x;
 		winwid->y = y;
@@ -742,7 +715,7 @@ void winwidget_move(winwidget winwid, int x, int y)
 	} else {
 		D(4, ("No move actually needed\n"));
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_resize(winwidget winwid, int w, int h)
@@ -751,7 +724,6 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	XWindowAttributes attributes;
 	int tc_x, tc_y;
 
-	D_ENTER(4);
 	if (opt.geom_flags) {
 		winwid->had_resize = 1;
 		return;
@@ -798,20 +770,18 @@ void winwidget_resize(winwidget winwid, int w, int h)
 		D(4, ("No resize actually needed\n"));
 	}
 
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_hide(winwidget winwid)
 {
-	D_ENTER(4);
 	XUnmapWindow(disp, winwid->win);
 	winwid->visible = 0;
-	D_RETURN_(4);
+	return;
 }
 
 static void winwidget_register(winwidget win)
 {
-	D_ENTER(4);
 	D(5, ("window %p\n", win));
 	window_num++;
 	if (windows)
@@ -821,14 +791,13 @@ static void winwidget_register(winwidget win)
 	windows[window_num - 1] = win;
 
 	XSaveContext(disp, win->win, xid_context, (XPointer) win);
-	D_RETURN_(4);
+	return;
 }
 
 static void winwidget_unregister(winwidget win)
 {
 	int i, j;
 
-	D_ENTER(4);
 	for (i = 0; i < window_num; i++) {
 		if (windows[i] == win) {
 			for (j = i; j < window_num - 1; j++)
@@ -843,17 +812,16 @@ static void winwidget_unregister(winwidget win)
 		}
 	}
 	XDeleteContext(disp, win->win, xid_context);
-	D_RETURN_(4);
+	return;
 }
 
 winwidget winwidget_get_from_window(Window win)
 {
 	winwidget ret = NULL;
 
-	D_ENTER(4);
 	if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
-		D_RETURN(4, ret);
-	D_RETURN(4, NULL);
+		return(ret);
+	return(NULL);
 }
 
 void winwidget_rename(winwidget winwid, char *newname)
@@ -861,7 +829,6 @@ void winwidget_rename(winwidget winwid, char *newname)
 	/* newname == NULL -> update current title */
 	char *p_str;
 
-	D_ENTER(4);
 	if (newname == NULL)
 		newname = estrdup(winwid->name ? winwid->name : "");
 	if (winwid->name)
@@ -881,18 +848,17 @@ void winwidget_rename(winwidget winwid, char *newname)
 		*p_str = '\0';
 
 	winwidget_update_title(winwid);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_free_image(winwidget w)
 {
-	D_ENTER(4);
 	if (w->im)
 		gib_imlib_free_image_and_decache(w->im);
 	w->im = NULL;
 	w->im_w = 0;
 	w->im_h = 0;
-	D_RETURN_(4);
+	return;
 }
 
 void feh_debug_print_winwid(winwidget w)
@@ -912,21 +878,18 @@ void feh_debug_print_winwid(winwidget w)
 
 void winwidget_reset_image(winwidget winwid)
 {
-	D_ENTER(4);
 	winwid->zoom = 1.0;
 	winwid->im_x = 0;
 	winwid->im_y = 0;
 	winwid->im_angle = 0.0;
 	winwid->has_rotated = 0;
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_sanitise_offsets(winwidget winwid)
 {
 	int far_left, far_top;
 	int min_x, max_x, max_y, min_y;
-
-	D_ENTER(4);
 
 	far_left = winwid->w - (winwid->im_w * winwid->zoom);
 	far_top = winwid->h - (winwid->im_h * winwid->zoom);
@@ -954,16 +917,15 @@ void winwidget_sanitise_offsets(winwidget winwid)
 	if (winwid->im_y < min_y)
 		winwid->im_y = min_y;
 
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_size_to_image(winwidget winwid)
 {
-	D_ENTER(4);
 	winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
 	winwid->im_x = winwid->im_y = 0;
 	winwidget_render_image(winwid, 0, 1);
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_set_pointer(winwidget winwid, int visible)
@@ -987,24 +949,21 @@ void winwidget_set_pointer(winwidget winwid, int visible)
 int winwidget_get_width(winwidget winwid)
 {
 	int rect[4];
-	D_ENTER(4);
 	winwidget_get_geometry(winwid, rect);
-	D_RETURN(4, rect[2]);
+	return(rect[2]);
 }
 
 int winwidget_get_height(winwidget winwid)
 {
 	int rect[4];
-	D_ENTER(4);
 	winwidget_get_geometry(winwid, rect);
-	D_RETURN(4, rect[3]);
+	return(rect[3]);
 }
 
 void winwidget_get_geometry(winwidget winwid, int *rect)
 {
 	unsigned int bw, bp;
 	Window child;
-	D_ENTER(4);
 	if (!rect)
 		return;
 
@@ -1018,7 +977,7 @@ void winwidget_get_geometry(winwidget winwid, int *rect)
 	winwid->y = rect[1];
 	winwid->w = rect[2];
 	winwid->h = rect[3];
-	D_RETURN_(4);
+	return;
 }
 
 void winwidget_show_menu(winwidget winwid)

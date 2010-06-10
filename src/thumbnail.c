@@ -90,8 +90,6 @@ void init_thumbnail_mode(void)
 	td.vertical = 0;
 	td.max_column_w = 0;
 
-	D_ENTER(3);
-
 	mode = "thumbnail";
 
 	td.font_main = gib_imlib_load_font(opt.font);
@@ -404,7 +402,7 @@ void init_thumbnail_mode(void)
 		gib_imlib_free_image_and_decache(td.im_main);
 
 	free(s);
-	D_RETURN_(3);
+	return;
 }
 
 static char *create_index_size_string(char *file)
@@ -414,7 +412,6 @@ static char *create_index_size_string(char *file)
 	double kbs = 0.0;
 	struct stat st;
 
-	D_ENTER(4);
 	if (stat(file, &st))
 		kbs = 0.0;
 	else {
@@ -423,32 +420,28 @@ static char *create_index_size_string(char *file)
 	}
 
 	snprintf(str, sizeof(str), "%.2fKb", kbs);
-	D_RETURN(4, str);
+	return(str);
 }
 
 static char *create_index_dimension_string(int w, int h)
 {
 	static char str[50];
 
-	D_ENTER(4);
 	snprintf(str, sizeof(str), "%dx%d", w, h);
-	D_RETURN(4, str);
+	return(str);
 }
 
 static char *create_index_title_string(int num, int w, int h)
 {
 	static char str[50];
 
-	D_ENTER(4);
 	snprintf(str, sizeof(str), PACKAGE " index - %d thumbnails, %d by %d pixels", num, w, h);
-	D_RETURN(4, str);
+	return(str);
 }
 
 feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
 {
 	feh_thumbnail *thumb;
-
-	D_ENTER(4);
 
 	thumb = (feh_thumbnail *) emalloc(sizeof(feh_thumbnail));
 	thumb->x = x;
@@ -458,7 +451,7 @@ feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
 	thumb->file = file;
 	thumb->exists = 1;
 
-	D_RETURN(4, thumb);
+	return(thumb);
 }
 
 feh_file *feh_thumbnail_get_file_from_coords(int x, int y)
@@ -466,18 +459,16 @@ feh_file *feh_thumbnail_get_file_from_coords(int x, int y)
 	gib_list *l;
 	feh_thumbnail *thumb;
 
-	D_ENTER(4);
-
 	for (l = thumbnails; l; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h)) {
 			if (thumb->exists) {
-				D_RETURN(4, thumb->file);
+				return(thumb->file);
 			}
 		}
 	}
 	D(4, ("No matching %d %d\n", x, y));
-	D_RETURN(4, NULL);
+	return(NULL);
 }
 
 feh_thumbnail *feh_thumbnail_get_thumbnail_from_coords(int x, int y)
@@ -485,18 +476,16 @@ feh_thumbnail *feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 	gib_list *l;
 	feh_thumbnail *thumb;
 
-	D_ENTER(4);
-
 	for (l = thumbnails; l; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h)) {
 			if (thumb->exists) {
-				D_RETURN(4, thumb);
+				return(thumb);
 			}
 		}
 	}
 	D(4, ("No matching %d %d\n", x, y));
-	D_RETURN(4, NULL);
+	return(NULL);
 }
 
 feh_thumbnail *feh_thumbnail_get_from_file(feh_file * file)
@@ -504,26 +493,22 @@ feh_thumbnail *feh_thumbnail_get_from_file(feh_file * file)
 	gib_list *l;
 	feh_thumbnail *thumb;
 
-	D_ENTER(4);
-
 	for (l = thumbnails; l; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (thumb->file == file) {
 			if (thumb->exists) {
-				D_RETURN(4, thumb);
+				return(thumb);
 			}
 		}
 	}
 	D(4, ("No match\n"));
-	D_RETURN(4, NULL);
+	return(NULL);
 }
 
 void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 {
 	feh_thumbnail *thumb;
 	winwidget w;
-
-	D_ENTER(4);
 
 	thumb = feh_thumbnail_get_from_file(file);
 	if (thumb) {
@@ -551,7 +536,7 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 		}
 		thumb->exists = 0;
 	}
-	D_RETURN_(4);
+	return;
 }
 
 void feh_thumbnail_calculate_geometry(void)

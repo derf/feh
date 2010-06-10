@@ -38,8 +38,6 @@ void init_slideshow_mode(void)
 	gib_list *l = filelist, *last = NULL;
 	feh_file *file = NULL;
 
-	D_ENTER(3);
-
 	for (l = filelist; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
 			opt.start_list_at = NULL;
@@ -79,24 +77,22 @@ void init_slideshow_mode(void)
 
 	setup_signal_handlers();
 
-	D_RETURN_(3);
+	return;
 }
 
 void cb_slide_timer(void *data)
 {
-	D_ENTER(4);
 	slideshow_change_image((winwidget) data, SLIDE_NEXT);
-	D_RETURN_(4);
+	return;
 }
 
 void cb_reload_timer(void *data)
 {
 	winwidget w = (winwidget) data;
 
-	D_ENTER(4);
 	feh_reload_image(w, 0, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
-	D_RETURN_(4);
+	return;
 }
 
 void feh_reload_image(winwidget w, int resize, int force_new)
@@ -105,11 +101,9 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	int len;
 	Imlib_Image tmp;
 
-	D_ENTER(4);
-
 	if (!w->file) {
 		weprintf("couldn't reload, this image has no file associated with it.");
-		D_RETURN_(4);
+		return;
 	}
 
 	free(FEH_FILE(w->file->data)->caption);
@@ -137,7 +131,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		free(title);
 		free(new_title);
 		filelist = feh_file_remove_from_list(filelist, w->file);
-		D_RETURN_(4);
+		return;
 	}
 	if (force_new) {
 		w->im = tmp;
@@ -174,7 +168,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	free(title);
 	free(new_title);
 
-	D_RETURN_(4);
+	return;
 }
 
 void slideshow_change_image(winwidget winwid, int change)
@@ -185,12 +179,10 @@ void slideshow_change_image(winwidget winwid, int change)
 	int jmp = 1;
 	char *s;
 
-	D_ENTER(4);
-
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
 	if (filelist_len < 2 && opt.cycle_once == 0)
-		D_RETURN_(4);
+		return;
 
 	/* Ok. I do this in such an odd way to ensure that if the last or first *
 	   image is not loadable, it will go through in the right direction to *
@@ -284,7 +276,7 @@ void slideshow_change_image(winwidget winwid, int change)
 
 	if (opt.slideshow_delay > 0.0)
 		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
-	D_RETURN_(4);
+	return;
 }
 
 void slideshow_pause_toggle(winwidget w)
@@ -303,8 +295,6 @@ char *slideshow_create_name(feh_file * file)
 	char *s = NULL;
 	int len = 0;
 
-	D_ENTER(4);
-
 	if (!opt.title) {
 		len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
 		s = emalloc(len);
@@ -314,12 +304,11 @@ char *slideshow_create_name(feh_file * file)
 		s = estrdup(feh_printf(opt.title, file));
 	}
 
-	D_RETURN(4, s);
+	return(s);
 }
 
 void feh_action_run(feh_file * file, char *action)
 {
-	D_ENTER(4);
 	if (action) {
 		char *sys;
 		D(3, ("Running action %s\n", action));
@@ -329,7 +318,7 @@ void feh_action_run(feh_file * file, char *action)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
 		system(sys);
 	}
-	D_RETURN_(4);
+	return;
 }
 
 char *feh_printf(char *str, feh_file * file)
@@ -337,8 +326,6 @@ char *feh_printf(char *str, feh_file * file)
 	char *c;
 	char buf[20];
 	static char ret[4096];
-
-	D_ENTER(4);
 
 	ret[0] = '\0';
 
@@ -429,7 +416,7 @@ char *feh_printf(char *str, feh_file * file)
 		} else
 			strncat(ret, c, 1);
 	}
-	D_RETURN(4, ret);
+	return(ret);
 }
 
 void feh_filelist_image_remove(winwidget winwid, char do_delete)
@@ -467,7 +454,6 @@ void slideshow_save_image(winwidget win)
 	char *tmpname;
 	Imlib_Load_Error err;
 
-	D_ENTER(4);
 	if (win->file) {
 		tmpname = feh_unique_filename("", FEH_FILE(win->file->data)->name);
 	} else if (mode) {
@@ -487,7 +473,7 @@ void slideshow_save_image(winwidget win)
 		weprintf("Can't save image %s:", tmpname);
 
 	free(tmpname);
-	D_RETURN_(4);
+	return;
 }
 
 gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)

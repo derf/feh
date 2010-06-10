@@ -32,15 +32,13 @@ void setup_signal_handlers()
 {
 	struct sigaction feh_sh;
 	sigset_t feh_ss;
-	D_ENTER(4);
-
 	if (
 		(sigemptyset(&feh_ss) == -1) ||
 		(sigaddset(&feh_ss, SIGUSR1) == -1) ||
 		(sigaddset(&feh_ss, SIGUSR2) == -1))
 	{
 		weprintf("Failed to set up signal mask, SIGUSR1/2 won't work");
-		D_RETURN_(4);
+		return;
 	}
 
 	feh_sh.sa_handler = feh_handle_signal;
@@ -51,15 +49,14 @@ void setup_signal_handlers()
 		(sigaction(SIGUSR2, &feh_sh, NULL) == -1))
 	{
 		weprintf("Failed to set up signal handler, SIGUSR1/2 won't work");
-		D_RETURN_(4);
+		return;
 	}
 
-	D_RETURN_(4);
+	return;
 }
 
 void feh_handle_signal(int signo)
 {
-	D_ENTER(4);
 	winwidget winwid
 		= winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
 
@@ -70,5 +67,5 @@ void feh_handle_signal(int signo)
 			slideshow_change_image(winwid, SLIDE_PREV);
 	}
 
-	D_RETURN_(4);
+	return;
 }

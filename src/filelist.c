@@ -39,8 +39,6 @@ feh_file *feh_file_new(char *filename)
 	feh_file *newfile;
 	char *s;
 
-	D_ENTER(4);
-
 	newfile = (feh_file *) emalloc(sizeof(feh_file));
 	newfile->caption = NULL;
 	newfile->filename = estrdup(filename);
@@ -50,14 +48,13 @@ feh_file *feh_file_new(char *filename)
 	else
 		newfile->name = estrdup(filename);
 	newfile->info = NULL;
-	D_RETURN(4, newfile);
+	return(newfile);
 }
 
 void feh_file_free(feh_file * file)
 {
-	D_ENTER(4);
 	if (!file)
-		D_RETURN_(4);
+		return;
 	if (file->filename)
 		free(file->filename);
 	if (file->name)
@@ -67,14 +64,13 @@ void feh_file_free(feh_file * file)
 	if (file->info)
 		feh_file_info_free(file->info);
 	free(file);
-	D_RETURN_(4);
+	return;
 }
 
 feh_file_info *feh_file_info_new(void)
 {
 	feh_file_info *info;
 
-	D_ENTER(4);
 
 	info = (feh_file_info *) emalloc(sizeof(feh_file_info));
 
@@ -86,36 +82,33 @@ feh_file_info *feh_file_info_new(void)
 	info->format = NULL;
 	info->extension = NULL;
 
-	D_RETURN(4, info);
+	return(info);
 }
 
 void feh_file_info_free(feh_file_info * info)
 {
-	D_ENTER(4);
 	if (!info)
-		D_RETURN_(4);
+		return;
 	if (info->format)
 		free(info->format);
 	if (info->extension)
 		free(info->extension);
 	free(info);
-	D_RETURN_(4);
+	return;
 }
 
 gib_list *feh_file_rm_and_free(gib_list * list, gib_list * l)
 {
-	D_ENTER(4);
 	unlink(FEH_FILE(l->data)->filename);
-	D_RETURN(4, feh_file_remove_from_list(list, l));
+	return(feh_file_remove_from_list(list, l));
 }
 
 gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l)
 {
-	D_ENTER(4);
 	feh_file_free(FEH_FILE(l->data));
 	D(4, ("filelist_len %d -> %d\n", filelist_len, filelist_len - 1));
 	filelist_len--;
-	D_RETURN(4, gib_list_remove(list, l));
+	return(gib_list_remove(list, l));
 }
 
 /* Recursive */
@@ -124,9 +117,8 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 	struct stat st;
 	char *path;
 
-	D_ENTER(5);
 	if (!origpath)
-		D_RETURN_(5);
+		return;
 
 	path = estrdup(origpath);
 	D(4, ("file is %s\n", path));
@@ -147,7 +139,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			filelist = gib_list_add_front(filelist, feh_file_new(path));
 			/* We'll download it later... */
 			free(path);
-			D_RETURN_(5);
+			return;
 		} else if (opt.filelistfile) {
 			char *newpath = feh_absolute_path(path);
 
@@ -179,7 +171,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			break;
 		}
 		free(path);
-		D_RETURN_(5);
+		return;
 	}
 
 	if ((S_ISDIR(st.st_mode)) && (level != FILELIST_LAST)) {
@@ -192,7 +184,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			if (!opt.quiet)
 				weprintf("couldn't open directory %s:", path);
 			free(path);
-			D_RETURN_(5);
+			return;
 		}
 		de = readdir(dir);
 		while (de != NULL) {
@@ -219,24 +211,22 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		filelist = gib_list_add_front(filelist, feh_file_new(path));
 	}
 	free(path);
-	D_RETURN_(5);
+	return;
 }
 
 void add_file_to_rm_filelist(char *file)
 {
-	D_ENTER(4);
 	rm_filelist = gib_list_add_front(rm_filelist, feh_file_new(file));
-	D_RETURN_(4);
+	return;
 }
 
 void delete_rm_files(void)
 {
 	gib_list *l;
 
-	D_ENTER(4);
 	for (l = rm_filelist; l; l = l->next)
 		unlink(FEH_FILE(l->data)->filename);
-	D_RETURN_(4);
+	return;
 }
 
 gib_list *feh_file_info_preload(gib_list * list)
@@ -245,7 +235,6 @@ gib_list *feh_file_info_preload(gib_list * list)
 	feh_file *file = NULL;
 	gib_list *remove_list = NULL;
 
-	D_ENTER(4);
 	if (opt.verbose)
 		fprintf(stdout, PACKAGE " - preloading...\n");
 
@@ -270,7 +259,7 @@ gib_list *feh_file_info_preload(gib_list * list)
 		gib_list_free(remove_list);
 	}
 
-	D_RETURN(4, list);
+	return(list);
 }
 
 int feh_file_info_load(feh_file * file, Imlib_Image im)
@@ -278,8 +267,6 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 	struct stat st;
 	int need_free = 1;
 	Imlib_Image im1;
-
-	D_ENTER(4);
 
 	D(4, ("im is %p\n", im));
 
@@ -308,16 +295,16 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 				weprintf("couldn't open %s ", file->filename);
 			break;
 		}
-		D_RETURN(4, 1);
+		return(1);
 	}
 
 	if (im)
 		im1 = im;
 	else if (!feh_load_image(&im1, file))
-		D_RETURN(4, 1);
+		return(1);
 
 	if (!im1)
-		D_RETURN(4, 1);
+		return(1);
 
 	file->info = feh_file_info_new();
 
@@ -334,54 +321,46 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	if (need_free && im1)
 		gib_imlib_free_image_and_decache(im1);
-	D_RETURN(4, 0);
+	return(0);
 }
 
 int feh_cmp_filename(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+	return(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int feh_cmp_name(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+	return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int feh_cmp_width(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, (FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
+	return((FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
 }
 
 int feh_cmp_height(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, (FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
+	return((FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
 }
 
 int feh_cmp_pixels(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, (FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
+	return((FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
 }
 
 int feh_cmp_size(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, (FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
+	return((FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
 }
 
 int feh_cmp_format(void *file1, void *file2)
 {
-	D_ENTER(4);
-	D_RETURN(4, strcmp(FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
+	return(strcmp(FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
 }
 
 void feh_prepare_filelist(void)
 {
-	D_ENTER(4);
 	if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
 			|| opt.preload) {
 		/* For these sort options, we have to preload images */
@@ -432,7 +411,7 @@ void feh_prepare_filelist(void)
 		filelist = gib_list_reverse(filelist);
 	}
 
-	D_RETURN_(4);
+	return;
 }
 
 int feh_write_filelist(gib_list * list, char *filename)
@@ -440,15 +419,13 @@ int feh_write_filelist(gib_list * list, char *filename)
 	FILE *fp;
 	gib_list *l;
 
-	D_ENTER(4);
-
 	if (!list || !filename)
-		D_RETURN(4, 0);
+		return(0);
 
 	errno = 0;
 	if ((fp = fopen(filename, "w")) == NULL) {
 		weprintf("can't write filelist %s:", filename);
-		D_RETURN(4, 0);
+		return(0);
 	}
 
 	for (l = list; l; l = l->next)
@@ -456,7 +433,7 @@ int feh_write_filelist(gib_list * list, char *filename)
 
 	fclose(fp);
 
-	D_RETURN(4, 1);
+	return(1);
 }
 
 gib_list *feh_read_filelist(char *filename)
@@ -466,10 +443,8 @@ gib_list *feh_read_filelist(char *filename)
 	char s[1024], s1[1024];
 	Imlib_Image im1;
 
-	D_ENTER(4);
-
 	if (!filename)
-		D_RETURN(4, NULL);
+		return(NULL);
 
 	/* try and load the given filelist as an image, cowardly refuse to
 	 * overwrite an image with a filelist. (requested by user who did feh -df *
@@ -481,14 +456,14 @@ gib_list *feh_read_filelist(char *filename)
 				"The file you specified as a filelist to read - %s - appears to be an image. Ignoring it (this is a common mistake).\n",
 				filename);
 		opt.filelistfile = NULL;
-		D_RETURN(4, NULL);
+		return(NULL);
 	}
 
 	errno = 0;
 	if ((fp = fopen(filename, "r")) == NULL) {
 		/* return quietly, as it's okay to specify a filelist file that doesn't
 		   exist. In that case we create it on exit. */
-		D_RETURN(4, NULL);
+		return(NULL);
 	}
 
 	for (; fgets(s, sizeof(s), fp);) {
@@ -503,7 +478,7 @@ gib_list *feh_read_filelist(char *filename)
 	}
 	fclose(fp);
 
-	D_RETURN(4, list);
+	return(list);
 }
 
 char *feh_absolute_path(char *path)
@@ -513,12 +488,10 @@ char *feh_absolute_path(char *path)
 	char temp[PATH_MAX];
 	char *ret;
 
-	D_ENTER(4);
-
 	if (!path)
-		D_RETURN(4, NULL);
+		return(NULL);
 	if (path[0] == '/')
-		D_RETURN(4, estrdup(path));
+		return(estrdup(path));
 	/* This path is not relative. We're gonna convert it, so that a
 	   filelist file can be saved anywhere and feh will still find the
 	   images */
@@ -534,14 +507,12 @@ char *feh_absolute_path(char *path)
 		ret = estrdup(temp);
 	}
 	D(4, ("Converted path to %s\n", ret));
-	D_RETURN(4, ret);
+	return(ret);
 }
 
 void feh_save_filelist()
 {
 	char *tmpname;
-
-	D_ENTER(4);
 
 	tmpname = feh_unique_filename("", "filelist");
 
@@ -550,5 +521,5 @@ void feh_save_filelist()
 
 	feh_write_filelist(filelist, tmpname);
 	free(tmpname);
-	D_RETURN_(4);
+	return;
 }

@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef DEBUG_H
 #define DEBUG_H
 
-/* #define DEBUG */
-
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
 #define emalloc(a) malloc(a)
@@ -50,36 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          fflush(stdout); \
       } \
   }
-#define D_ENTER(i) \
-  { \
-     call_level++; \
-     if(i <= opt.debug_level) \
-     { \
-         printf("%s +%u %s() %s ENTER\n",__FILE__,__LINE__,__FUNCTION__, stroflen('>', call_level)); \
-         fflush(stdout); \
-     } \
-  }
-#define D_RETURN(i, a) \
-{ \
-      if(i <= opt.debug_level) \
-      { \
-         printf("%s +%u %s() %s LEAVE\n",__FILE__,__LINE__,__FUNCTION__, stroflen('<', call_level)); \
-         fflush(stdout); \
-      } \
-      call_level--; \
-      return (a); \
-  }
-#define D_RETURN_(i) \
-{ \
-      if(i <= opt.debug_level) \
-      { \
-         printf("%s +%u %s() %s LEAVE\n",__FILE__,__LINE__,__FUNCTION__, stroflen('<', call_level)); \
-         fflush(stdout); \
-      } \
-      call_level--; \
-      return; \
-  }
-#else
+#else					/* __GNUC__ */
 #define D(i, a) \
 { \
    if(i <= opt.debug_level) \
@@ -89,27 +58,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    } \
       fflush(stdout); \
   }
-#define D_ENTER(a)
-#define D_RETURN(i, a) \
-  { \
-      return(a); \
-  }
-#define D_RETURN_(i) \
-  { \
-      return; \
-  }
-#endif
-#else
+#endif					/* __GNUC__ */
+#else					/* DEBUG */
 #define D(i,a)
-#define D_ENTER(a)
-#define D_RETURN(i, a) \
-  { \
-      return (a); \
-  }
-#define D_RETURN_(i) \
-  { \
-      return; \
-  }
-#endif
+#endif					/* DEBUG */
 
-#endif
+#endif					/* DEBUG_H */
