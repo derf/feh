@@ -1,5 +1,6 @@
-git HEAD
+Thu Jun 10 12:12:04 CEST 2010
 
+* Release v1.7
     * Fix segfault in Thumbnail mode when trying to open a no longer
       existing image (e.g. when the file was renamed by a previous action)
     * Set a negative slideshow-delay to start the slideshow in paused mode
