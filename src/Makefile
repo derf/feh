@@ -4,7 +4,7 @@ TARGETS = ${shell echo *.c}
 OBJECTS = ${TARGETS:.c=.o}
 
 feh: deps.mk ${OBJECTS}
-	${CC} ${CFLAGS} -o $@ ${OBJECTS} ${LDFLAGS}
+	${CC} ${LDFLAGS} ${CFLAGS} -o $@ ${OBJECTS} ${LDLIBS}
 
 deps.mk: ${TARGETS}
 	${CC} -MM ${TARGETS} > $@

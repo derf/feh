@@ -32,4 +32,4 @@ dmalloc = -DWITH_DMALLOC
 CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
-LDFLAGS += -lm -lpng -lX11 -lImlib2 -lgiblib ${xinerama_ld}
+LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib ${xinerama_ld}
