@@ -691,7 +691,7 @@ void feh_menu_calc_size(feh_menu * m)
 
 void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 {
-	D(5, ("drawing item %p (text %s) on menu %p (name %s)\n", i, i->text, m, m->name));
+	D(5, ("drawing item %p (text %s)\n", i, i->text));
 
 	if (i->text) {
 		D(5, ("text item\n"));

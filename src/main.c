@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 char **cmdargv = NULL;
 int cmdargc = 0;
-int call_level = 0;
 char *mode = NULL;
 
 int main(int argc, char **argv)

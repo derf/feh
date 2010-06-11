@@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 { \
       if(i <= opt.debug_level) \
       { \
-         printf("%s +%u %s() %s ",__FILE__,__LINE__,__FUNCTION__, stroflen(' ', call_level)); \
+         printf("%-12s +%-4u %-20s : ",__FILE__,__LINE__,__FUNCTION__); \
          printf a; \
          fflush(stdout); \
       } \
@@ -53,7 +53,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 { \
    if(i <= opt.debug_level) \
    { \
-      printf("%s +%u : ",__FILE__,__LINE__); \
+      printf("%-12s +%-4u : ",__FILE__,__LINE__); \
          printf a; \
    } \
       fflush(stdout); \

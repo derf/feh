@@ -167,7 +167,6 @@ extern Window root;
 extern XContext xid_context;
 extern Screen *scr;
 extern unsigned char reset_output;
-extern int call_level;
 extern feh_menu *menu_main;
 extern feh_menu *menu_close;
 extern char *mode;		/* label for the current mode */
