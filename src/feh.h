@@ -60,7 +60,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "structs.h"
 #include "menu.h"
-#include "ipc.h"
 
 #include "utils.h"
 #include "getopt.h"
