@@ -95,7 +95,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	else
 		ret->name = estrdup(PACKAGE);
 
-	if (opt.full_screen)
+	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
 		ret->full_screen = True;
 	winwidget_create_window(ret, ret->w, ret->h);
 	winwidget_render_image(ret, 1, 1);
