@@ -42,7 +42,8 @@ void setup_signal_handlers()
 	}
 
 	feh_sh.sa_handler = feh_handle_signal;
-	feh_sh.sa_mask = feh_ss;
+	feh_sh.sa_mask    = feh_ss;
+	feh_sh.sa_flags   = 0;
 
 	if (
 		(sigaction(SIGUSR1, &feh_sh, NULL) == -1) ||
