@@ -7,8 +7,9 @@ use Test::More tests => 30;
 use X11::GUITest qw/
 	FindWindowLike
 	GetWindowName
-	StartApp
+	SetInputFocus
 	SendKeys
+	StartApp
 	WaitWindowViewable
 /;
 
@@ -26,6 +27,10 @@ sub feh_start {
 
 	if (not $id) {
 		BAIL_OUT("Unable to start feh ${opts} ${files}");
+	}
+
+	if (not SetInputFocus($id)) {
+		BAIL_OUT("Unable to focus window");
 	}
 
 	return $id;
@@ -126,6 +131,7 @@ $win = feh_start('--cycle-once --slideshow-delay -0.01',
 sleep(0.1);
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 SendKeys('h');
+sleep(1);
 test_no_win('cycle-once + negative delay + [h]');
 
 $win = feh_start(q{}, 'test/ok.png test/ok.gif test/ok.gif test/ok.jpg');

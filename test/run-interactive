@@ -1,0 +1,8 @@
+#!/bin/sh
+
+Xnest :1 &
+pid=${!}
+
+DISPLAY=:1 prove test/feh.i
+
+kill ${pid}
