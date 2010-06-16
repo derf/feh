@@ -55,7 +55,7 @@ void init_parse_options(int argc, char **argv)
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
-	opt.font = estrdup(DEFAULT_FONT);
+	opt.font = NULL;
 	opt.image_bg = estrdup("default");
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
@@ -1081,10 +1081,10 @@ static void show_usage(void)
 " -o, --output FILE         Save the created montage to FILE\n"
 " -O, --output-only  FILE   Just save the created montage to FILE\n"
 "                           WITHOUT displaying it (use in scripts)\n"
-" INDEX MODE OPTIONS\n"
 " -e, --font FONT           Use FONT to print the information under each\n"
 "                           thumbnail. FONT should be defined in the form\n"
 "                           fontname/size(points). eg -e myfont/12\n"
+" INDEX MODE OPTIONS\n"
 " -@, --title-font FONT     Use FONT to print a title on the index, if no\n"
 "                           font is specified, a title will not be printed\n"
 " SLIDESHOW KEYS\n"

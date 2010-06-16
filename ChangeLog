@@ -3,7 +3,8 @@ git HEAD
     * support LDLIBS in Makefile/config.mk
     * Don't make the --thumbnails window fullscreen. The images launched from
       thumbnail mode may be fullscreen, though. You can still use 'v' to
-       toggle fullscreen, should you really need it.
+      toggle fullscreen, should you really need it.
+    * --font now sets the global default font (for action/filename display etc.)
 
 Thu Jun 10 12:12:04 CEST 2010
 

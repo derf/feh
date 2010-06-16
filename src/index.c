@@ -68,7 +68,11 @@ void init_index_mode(void)
 		mode = "index";
 	}
 
-	fn = gib_imlib_load_font(opt.font);
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
+	if (!fn)
+		fn = gib_imlib_load_font(DEFAULT_FONT);
 
 	if (opt.title_font) {
 		int fh, fw;

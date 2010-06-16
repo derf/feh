@@ -185,6 +185,10 @@ when
 .Nm
 exits.  You can add files to filelists by specifying them on the commandline
 when also specifying the list.
+.It Cm -e , --font Ar font
+Set global font.  Should be a truetype font, resident in the current directory
+or the font directory, and should be defined in the form fontname/points, like
+.Qq myfont/12 .
 .It Cm -C , --fontpath Ar path
 Specify
 .Ar path
@@ -472,11 +476,6 @@ will only redraw once all thumbnails are loaded.
 .
 .Sh INDEX MODE OPTIONS
 .Bl -tag -width indent
-.It Cm -e , --font Ar font
-Set font for printing the information under each thumbnail.  Should be a
-truetype font, resident in the current directory or the font directory, and
-should be defined in the form fontname/points, like
-.Qq myfont/12 .
 .It Cm -@ , --title-font Ar font
 Set font to print a title on the index, if no font is specified, no title will
 be printed.

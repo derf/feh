@@ -92,7 +92,11 @@ void init_thumbnail_mode(void)
 
 	mode = "thumbnail";
 
-	td.font_main = gib_imlib_load_font(opt.font);
+	if (opt.font)
+		td.font_main = gib_imlib_load_font(opt.font);
+
+	if (!td.font_main)
+		td.font_main = gib_imlib_load_font(DEFAULT_FONT);
 
 	if (opt.title_font) {
 		int fh, fw;

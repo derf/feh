@@ -552,15 +552,19 @@ void feh_draw_zoom(winwidget w)
 	if (!w->im)
 		return;
 
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
 	if (!fn) {
 		fn = gib_imlib_load_font(DEFAULT_FONT);
-		memset(atab, 0, sizeof(atab));
 	}
 
 	if (!fn) {
 		weprintf("Couldn't load font for zoom printing");
 		return;
 	}
+
+	memset(atab, 0, sizeof(atab));
 
 	snprintf(buf, sizeof(buf), "%.0f%%, %dx%d", w->zoom * 100,
 			(int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
@@ -598,8 +602,10 @@ void feh_draw_filename(winwidget w)
 			|| (!FEH_FILE(w->file->data)->filename))
 		return;
 
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
 	if (!fn) {
-		memset(atab, 0, sizeof(atab));
 		if (w->full_screen)
 			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
 		else
@@ -610,6 +616,8 @@ void feh_draw_filename(winwidget w)
 		weprintf("Couldn't load font for filename printing");
 		return;
 	}
+
+	memset(atab, 0, sizeof(atab));
 
 	/* Work out how high the font is */
 	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
@@ -730,8 +738,10 @@ void feh_draw_caption(winwidget w)
 	caption_style->bits = gib_list_add_front(caption_style->bits,
 		gib_style_bit_new(1, 1, 0, 0, 0, 255));
 
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
 	if (!fn) {
-		memset(atab, 0, sizeof(atab));
 		if (w->full_screen)
 			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
 		else
@@ -742,6 +752,8 @@ void feh_draw_caption(winwidget w)
 		weprintf("Couldn't load font for caption printing");
 		return;
 	}
+
+	memset(atab, 0, sizeof(atab));
 
 	if (*(file->caption) == '\0') {
 		p = estrdup("Caption entry mode - Hit ESC to cancel");
@@ -1035,8 +1047,10 @@ void feh_draw_actions(winwidget w)
 			|| (!FEH_FILE(w->file->data)->filename))
 		return;
 
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
 	if (!fn) {
-		memset(atab, 0, sizeof(atab));
 		if (w->full_screen)
 			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
 		else
@@ -1047,6 +1061,8 @@ void feh_draw_actions(winwidget w)
 		weprintf("Couldn't load font for actions printing");
 		return;
 	}
+
+	memset(atab, 0, sizeof(atab));
 
 	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 /* Check for the widest line */
