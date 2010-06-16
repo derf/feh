@@ -7,9 +7,6 @@ test: all
 	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
 
 test-interactive: all
-	@echo 'Note: X Testing sucks, and Xnest is also prone to weird behaviour.'
-	@echo 'If the test fails, try rerunning it one or two times.'
-	@echo 'If it works then, everything is fine.'
 	@test/run-interactive
 
 install: install-man install-doc install-bin install-font install-img

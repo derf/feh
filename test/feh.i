@@ -4,10 +4,24 @@ use warnings;
 use 5.010;
 
 use Test::More tests => 34;
+use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
 my $win;
 my ($width, $height);
+
+sub waitfor(&) {
+	my ($sub) = @_;
+	my $out;
+	for (1 .. 40) {
+		sleep(0.05);
+		$out = &{$sub};
+		if ($out) {
+			return $out;
+		}
+	}
+	return 0;
+}
 
 sub feh_start {
 	my ($opts, $files) = @_;
@@ -32,44 +46,36 @@ sub feh_start {
 
 sub feh_stop {
 	SendKeys('{ESC}');
-	for (1 .. 10) {
-		sleep(0.1);
-		if (FindWindowLike(qr{^feh}) == 0) {
-			return;
-		}
+	if (not waitfor { not FindWindowLike(qr{^feh}) }) {
+		BAIL_OUT("Unclosed feh window still open, cannot continue");
 	}
-	BAIL_OUT("Unclosed feh window still open, cannot continue");
 }
 
 sub test_no_win {
 	my ($reason) = @_;
 
-	for (1 .. 10) {
-		sleep(0.1);
-		if (FindWindowLike(qr{^feh}) == 0) {
-			pass("Window closed ($reason)");
-			return;
-		}
+	if (waitfor { not FindWindowLike(qr{^feh}) }) {
+		pass("Window closed ($reason)");
 	}
-	fail("Window closed ($reason)");
-	BAIL_OUT("unclosed window still open, cannot continue");
+	else {
+		fail("Window closed ($reason)");
+		BAIL_OUT("unclosed window still open, cannot continue");
+	}
 }
 
 sub test_win_title {
 	my ($win, $wtitle) = @_;
 	my $rtitle;
 
-	for (1 .. 10) {
-		sleep(0.1);
-		$rtitle = GetWindowName($win);
-		if ($rtitle eq $wtitle) {
-			pass("Window has title: $wtitle");
-			return;
-		}
+	if (waitfor { GetWindowName($win) eq $wtitle }) {
+		pass("Window has title: $wtitle");
 	}
-	fail("Window has title: $wtitle");
-	diag("expected: $wtitle");
-	diag("     got: $rtitle");
+	else {
+		$rtitle = GetWindowName($win);
+		fail("Window has title: $wtitle");
+		diag("expected: $wtitle");
+		diag("     got: $rtitle");
+	}
 }
 
 if (FindWindowLike(qr{^feh})) {
@@ -117,15 +123,13 @@ test_no_win("--cycle-once -> window closed");
 
 feh_start('--cycle-once --slideshow-delay 0.5',
 	'test/ok.png test/ok.jpg test/ok.gif');
-sleep(1);
+sleep(1.5);
 test_no_win('cycle-once + slideshow-delay -> window closed');
 
 $win = feh_start('--cycle-once --slideshow-delay -0.01',
 	'test/ok.png test/ok.jpg test/ok.gif');
-sleep(0.1);
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 SendKeys('h');
-sleep(1);
 test_no_win('cycle-once + negative delay + [h]');
 
 $win = feh_start(q{}, 'test/ok.png test/ok.gif test/ok.gif test/ok.jpg');
@@ -167,6 +171,5 @@ ClickMouseButton(M_BTN1);
 ok($win, 'Thumbnail mode: Window opened');
 SetInputFocus($win);
 SendKeys('x');
-sleep(0.2);
-is(FindWindowLike(qr{^ok\.png$}), 0, 'Thumbnail mode: Window closed (x)');
+ok(waitfor { not FindWindowLike(qr{^ok\.png$}) }, 'Thumbnail mode: closed');
 feh_stop();
