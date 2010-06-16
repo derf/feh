@@ -1,6 +1,6 @@
 #!/bin/sh
 
-Xnest :1 &
+Xnest :1 > /dev/null 2>&1 &
 pid=${!}
 
 DISPLAY=:1 prove test/feh.i
