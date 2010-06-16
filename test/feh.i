@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 19;
+use Test::More tests => 30;
 use X11::GUITest qw/
 	FindWindowLike
 	GetWindowName
@@ -127,3 +127,32 @@ sleep(0.1);
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 SendKeys('h');
 test_no_win('cycle-once + negative delay + [h]');
+
+$win = feh_start(q{}, 'test/ok.png test/ok.gif test/ok.gif test/ok.jpg');
+for (1 .. 2) {
+	SendKeys('{END}');
+	test_win_title($win, 'feh [4 of 4] - test/ok.jpg');
+}
+for (1 .. 2) {
+	SendKeys('{HOM}');
+	test_win_title($win, 'feh [1 of 4] - test/ok.png');
+}
+
+SendKeys('{PGU}');
+test_win_title($win, 'feh [4 of 4] - test/ok.jpg');
+SendKeys('{PGD}');
+test_win_title($win, 'feh [1 of 4] - test/ok.png');
+SendKeys('{PGD}');
+test_win_title($win, 'feh [2 of 4] - test/ok.gif');
+
+feh_stop();
+
+$win = feh_start(q{}, 'test/ok.png ' x 100);
+test_win_title($win, 'feh [1 of 100] - test/ok.png');
+SendKeys('{PGD}');
+test_win_title($win, 'feh [6 of 100] - test/ok.png');
+SendKeys('{PGD}');
+test_win_title($win, 'feh [11 of 100] - test/ok.png');
+SendKeys('{HOM PGU}');
+test_win_title($win, 'feh [96 of 100] - test/ok.png');
+feh_stop();
