@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 12;
+use Test::More tests => 15;
 use X11::GUITest qw/
 	FindWindowLike
 	GetWindowName
@@ -91,11 +91,17 @@ $win = feh_start(q{}, 'test/ok.png test/ok.jpg test/ok.gif');
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 SendKeys('{RIG}');
 test_win_title($win, 'feh [2 of 3] - test/ok.jpg');
-SendKeys('{RIG}');
+SendKeys('n');
 test_win_title($win, 'feh [3 of 3] - test/ok.gif');
-SendKeys('{RIG}');
+SendKeys('{SPA}');
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 SendKeys('{LEF}');
+test_win_title($win, 'feh [3 of 3] - test/ok.gif');
+SendKeys('p');
+test_win_title($win, 'feh [2 of 3] - test/ok.jpg');
+SendKeys('{BAC}');
+test_win_title($win, 'feh [1 of 3] - test/ok.png');
+SendKeys('p');
 test_win_title($win, 'feh [3 of 3] - test/ok.gif');
 SendKeys('{DEL}');
 test_win_title($win, 'feh [1 of 2] - test/ok.png');
