@@ -3,17 +3,11 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 30;
-use X11::GUITest qw/
-	FindWindowLike
-	GetWindowName
-	SetInputFocus
-	SendKeys
-	StartApp
-	WaitWindowViewable
-/;
+use Test::More tests => 34;
+use X11::GUITest qw/:ALL/;
 
 my $win;
+my ($width, $height);
 
 sub feh_start {
 	my ($opts, $files) = @_;
@@ -161,4 +155,18 @@ SendKeys('{PGD}');
 test_win_title($win, 'feh [11 of 100] - test/ok.png');
 SendKeys('{HOM PGU}');
 test_win_title($win, 'feh [96 of 100] - test/ok.png');
+feh_stop();
+
+$win = feh_start('--thumbnails', 'test/ok.png test/ok.gif test/ok.jpg');
+test_win_title($win, 'feh [thumbnail mode]');
+$width = (GetWindowPos($win))[2];
+is($width, 640, 'thumbnail win: Correct default size');
+MoveMouseAbs(30, 30);
+ClickMouseButton(M_BTN1);
+($win) = WaitWindowViewable(qr{^ok\.png$});
+ok($win, 'Thumbnail mode: Window opened');
+SetInputFocus($win);
+SendKeys('x');
+sleep(0.2);
+is(FindWindowLike(qr{^ok\.png$}), 0, 'Thumbnail mode: Window closed (x)');
 feh_stop();
