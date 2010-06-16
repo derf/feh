@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 15;
+use Test::More tests => 19;
 use X11::GUITest qw/
 	FindWindowLike
 	GetWindowName
@@ -109,3 +109,21 @@ SendKeys('{DEL}');
 test_win_title($win, 'feh [1 of 1] - test/ok.jpg');
 SendKeys('{DEL}');
 test_no_win("Removed all images from slideshow");
+
+feh_start('--cycle-once', 'test/ok.png test/ok.jpg');
+for (1 .. 2) {
+	SendKeys('{RIG}');
+}
+test_no_win("--cycle-once -> window closed");
+
+feh_start('--cycle-once --slideshow-delay 0.5',
+	'test/ok.png test/ok.jpg test/ok.gif');
+sleep(1);
+test_no_win('cycle-once + slideshow-delay -> window closed');
+
+$win = feh_start('--cycle-once --slideshow-delay -0.01',
+	'test/ok.png test/ok.jpg test/ok.gif');
+sleep(0.1);
+test_win_title($win, 'feh [1 of 3] - test/ok.png');
+SendKeys('h');
+test_no_win('cycle-once + negative delay + [h]');
