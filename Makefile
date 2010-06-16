@@ -6,6 +6,17 @@ all:
 test: all
 	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
 
+test-interactive: all
+	@if [ "$$(whoami)" != derf ]; then \
+		echo "Note: This will do stuff with your X and take a while"; \
+		echo "If you don't know what's going on, hit ^C now"; \
+		sleep 5; \
+		echo "Okay, running test"; \
+	fi
+	@if [ "$$(whoami)" = derf ]; then setxkbmap us; fi
+	@prove test/*.i
+	@if [ "$$(whoami)" = derf ]; then setxkbmap greedy; fi
+
 install: install-man install-doc install-bin install-font install-img
 
 install-man:
