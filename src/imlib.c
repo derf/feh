@@ -67,7 +67,6 @@ void init_imlib_fonts(void)
 	/* Set up the font stuff */
 	imlib_add_path_to_font_path(".");
 	imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
-	imlib_add_path_to_font_path("./ttfonts");
 
 	return;
 }
