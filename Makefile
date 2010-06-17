@@ -6,7 +6,7 @@ all:
 test: all
 	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
 
-test-interactive: all
+test-x11: all
 	@test/run-interactive
 
 install: install-man install-doc install-bin install-font install-img
@@ -55,5 +55,5 @@ uninstall:
 clean:
 	@${MAKE} -C src clean
 
-.PHONY: all test install uninstall clean install-man install-doc install-bin \
-	install-font install-img
+.PHONY: all test test-x11 install uninstall clean install-man install-doc \
+	install-bin install-font install-img

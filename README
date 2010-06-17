@@ -47,7 +47,7 @@ Requires
  * X11::GUITest
  * Xnest
 
-$ make test-interactive
+$ make test-x11
 
 Be aware that this is quite experimental, so far the X-tests have only been
 run on one machine. So they may or may not work for you.
