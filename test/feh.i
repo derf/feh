@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 34;
+use Test::More tests => 39;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -149,6 +149,19 @@ test_win_title($win, 'feh [1 of 4] - test/ok.png');
 SendKeys('{PGD}');
 test_win_title($win, 'feh [2 of 4] - test/ok.gif');
 
+feh_stop();
+
+$win = feh_start('--slideshow-delay 1', 'test/ok.png test/ok.gif test/ok.jpg');
+sleep(1.7);
+test_win_title($win, 'feh [3 of 3] - test/ok.jpg');
+SendKeys('h');
+test_win_title($win, 'feh [3 of 3] - test/ok.jpg [Paused]');
+SendKeys('{RIG}');
+test_win_title($win, 'feh [1 of 3] - test/ok.png [Paused]');
+SendKeys('h');
+test_win_title($win, 'feh [1 of 3] - test/ok.png');
+sleep(0.8);
+test_win_title($win, 'feh [2 of 3] - test/ok.gif');
 feh_stop();
 
 $win = feh_start(q{}, 'test/ok.png ' x 100);
