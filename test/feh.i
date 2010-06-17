@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 39;
+use Test::More tests => 40;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -128,7 +128,13 @@ test_no_win('cycle-once + slideshow-delay -> window closed');
 
 $win = feh_start('--cycle-once --slideshow-delay -0.01',
 	'test/ok.png test/ok.jpg test/ok.gif');
+
+TODO: {
+	local $TODO = '"Paused" with negative delay broken for first window';
+	test_win_title($win, 'feh [1 of 3] - test/ok.png [Paused]');
+}
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
+
 SendKeys('h');
 test_no_win('cycle-once + negative delay + [h]');
 
