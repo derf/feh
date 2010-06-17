@@ -23,3 +23,6 @@ thumbnails are created, becoming quite slow for large filelists.
 A workaround (--thumb-redraw) exists, but at some point a rewrite with a
 GUI-toolkit or similar (or maybe writing a completely new tool for that and
 removing the feature from feh) would be due.
+
+Saving the filelist from thumbnail mode will access uninitialized memory if a
+file was removed from the filelist.
