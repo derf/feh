@@ -3,6 +3,6 @@
 Xnest :1 > /dev/null 2>&1 &
 pid=${!}
 
-DISPLAY=:1 prove test/feh.i
+DISPLAY=:1 prove -v test/feh.i
 
 kill ${pid}
