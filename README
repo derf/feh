@@ -44,6 +44,7 @@ Testing (X):
 
 Requires
  * perl >= 5.10
+ * Test::More
  * X11::GUITest
  * Xnest
 
