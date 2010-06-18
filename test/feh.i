@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 60;
+use Test::More tests => 63;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -283,4 +283,22 @@ $win = feh_start('--geometry 423x232');
 (undef, undef, $width, $height) = GetWindowPos($win);
 is($width, 423, '--geometry: correct width');
 is($height, 232, '--geometry: correct height');
+feh_stop();
+
+$win = feh_start();
+(undef, undef, $width, $height) = GetWindowPos($win);
+is($width, 16, 'correct default window width');
+is($height, 16, 'correct default window height');
+
+ResizeWindow($win, 25, 30);
+(undef, undef, $width, $height) = GetWindowPos($win);
+
+SKIP: {
+	if (not ([$width, $height] ~~ [25, 30])) {
+		skip('ResizeWindow failed', 2)
+	}
+	PressKey('w');
+	ok(waitfor { [(GetWindowPos($win))[2, 3]] ~~ [16, 16] },
+		'w key resizes correctly');
+}
 feh_stop();
