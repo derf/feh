@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 58;
+use Test::More tests => 60;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -278,3 +278,9 @@ $win = feh_start('--filelist test/filelist', q{});
 test_win_title($win, "feh [1 of 3] - ${pwd}/test/ok.gif");
 feh_stop();
 unlink('test/filelist');
+
+$win = feh_start('--geometry 423x232');
+(undef, undef, $width, $height) = GetWindowPos($win);
+is($width, 423, '--geometry: correct width');
+is($height, 232, '--geometry: correct height');
+feh_stop();
