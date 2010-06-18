@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 65;
+use Test::More tests => 67;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -308,4 +308,19 @@ SKIP: {
 	ok(waitfor { [(GetWindowPos($win))[2, 3]] ~~ [16, 16] },
 		'w key resizes correctly');
 }
+feh_stop();
+
+$win = feh_start(q{}, 'test/huge.png');
+ok(waitfor {
+		   (GetWindowPos($win))[2] == (GetScreenRes())[0]
+		|| (GetWindowPos($win))[3] == (GetScreenRes())[1]
+	},
+	'Large window limited to screen size');
+feh_stop();
+
+$win = feh_start('--screen-clip 0', 'test/huge.png');
+ok(waitfor {
+		[(GetWindowPos($win))[2, 3]] ~~ [4000, 3000]
+	},
+	'disabled screen clip');
 feh_stop();
