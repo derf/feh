@@ -3,12 +3,14 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 55;
+use Cwd;
+use Test::More tests => 58;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
 my $win;
 my ($width, $height);
+my $pwd = getcwd();
 
 sub waitfor(&) {
 	my ($sub) = @_;
@@ -259,3 +261,20 @@ is(slurp('test/.captions/ok.png.txt'), "Foo Bar\nmiep",
 
 unlink('test/.captions/ok.png.txt');
 rmdir('test/.captions');
+
+$win = feh_start('--filelist test/filelist',
+	'test/ok.png test/ok.gif test/ok.png test/ok.jpg');
+SendKeys('{DEL}');
+test_win_title($win, "feh [1 of 3] - ${pwd}/test/ok.gif");
+feh_stop();
+
+is(slurp('test/filelist'), <<"EOF", 'Filelist saved');
+${pwd}/test/ok.gif
+${pwd}/test/ok.png
+${pwd}/test/ok.jpg
+EOF
+
+$win = feh_start('--filelist test/filelist', q{});
+test_win_title($win, "feh [1 of 3] - ${pwd}/test/ok.gif");
+feh_stop();
+unlink('test/filelist');
