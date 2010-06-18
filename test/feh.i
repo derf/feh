@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 50;
+use Test::More tests => 52;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -225,3 +225,9 @@ ok(waitfor { not FindWindowLike(qr{^feh - test/ok\.jpg$}) }, 'win 2 closed');
 SetInputFocus($win);
 SendKeys('x');
 test_no_win('all multiwindows closed');
+
+$win = feh_start('--start-at test/ok.jpg', 'test/ok.png test/ok.gif test/ok.jpg');
+test_win_title($win, 'feh [3 of 3] - test/ok.jpg');
+SendKeys('{RIG}');
+test_win_title($win, 'feh [1 of 3] - test/ok.png');
+feh_stop();
