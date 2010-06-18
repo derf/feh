@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 52;
+use Test::More tests => 55;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -76,6 +76,16 @@ sub test_win_title {
 		diag("expected: $wtitle");
 		diag("     got: $rtitle");
 	}
+}
+
+sub slurp {
+	my ($file) = @_;
+	my $ret;
+	local $/ = undef;
+	open(my $fh, '<', $file) or die("Can't open $file: $!");
+	$ret = <$fh>;
+	close($fh) or die("Can't close $file: $!");
+	return($ret);
 }
 
 if (FindWindowLike(qr{^feh})) {
@@ -231,3 +241,21 @@ test_win_title($win, 'feh [3 of 3] - test/ok.jpg');
 SendKeys('{RIG}');
 test_win_title($win, 'feh [1 of 3] - test/ok.png');
 feh_stop();
+
+feh_start('--caption-path .captions', 'test/ok.png');
+SendKeys('cFoo Bar Quux Moep~');
+feh_stop();
+ok(-d 'test/.captions', 'autocreated captions directory');
+is(slurp('test/.captions/ok.png.txt'), 'Foo Bar Quux Moep',
+	'Correct caption saved');
+
+feh_start('--caption-path .captions', 'test/ok.png');
+SendKeys('c');
+SendKeys('{BKS}' x length('Foo Bar Quux Moep'));
+SendKeys('Foo Bar^(~)miep~');
+feh_stop();
+is(slurp('test/.captions/ok.png.txt'), "Foo Bar\nmiep",
+	'Caption with newline + correct backspace');
+
+unlink('test/.captions/ok.png.txt');
+rmdir('test/.captions');
