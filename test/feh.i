@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 63;
+use Test::More tests => 65;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -126,6 +126,13 @@ SendKeys('{DEL}');
 test_win_title($win, 'feh [1 of 1] - test/ok.jpg');
 SendKeys('{DEL}');
 test_no_win("Removed all images from slideshow");
+
+$win = feh_start('--title \'feh %m %u/%l %n\'',
+	'test/ok.png test/ok.jpg test/ok.gif');
+test_win_title($win, 'feh slideshow 1/3 ok.png');
+SendKeys('{RIG}');
+test_win_title($win, 'feh slideshow 2/3 ok.jpg');
+feh_stop();
 
 feh_start('--cycle-once', 'test/ok.png test/ok.jpg');
 for (1 .. 2) {
