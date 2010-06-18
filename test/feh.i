@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 40;
+use Test::More tests => 42;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -191,4 +191,15 @@ ok($win, 'Thumbnail mode: Window opened');
 SetInputFocus($win);
 SendKeys('x');
 ok(waitfor { not FindWindowLike(qr{^ok\.png$}) }, 'Thumbnail mode: closed');
+
+MoveMouseAbs(90, 30);
+ClickMouseButton(M_BTN1);
+($win) = WaitWindowViewable(qr{^ok\.gif$});
+ok($win, 'Thumbnail mode: Window opened');
+
+MoveMouseAbs(150,30);
+ClickMouseButton(M_BTN1);
+($win) = WaitWindowViewable(qr{^ok\.jpg$});
+ok($win, 'Thumbnail mode: Other window opened');
+
 feh_stop();
