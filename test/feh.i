@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.010;
 
-use Test::More tests => 42;
+use Test::More tests => 50;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -203,3 +203,25 @@ ClickMouseButton(M_BTN1);
 ok($win, 'Thumbnail mode: Other window opened');
 
 feh_stop();
+
+feh_start('--multiwindow', 'test/ok.png test/ok.gif test/ok.jpg');
+ok(waitfor { FindWindowLike(qr{^feh - test/ok\.png$}) }, 'multiwindow 1/3');
+ok(waitfor { FindWindowLike(qr{^feh - test/ok\.gif$}) }, 'multiwindow 2/3');
+ok(waitfor { FindWindowLike(qr{^feh - test/ok\.jpg$}) }, 'multiwindow 3/3');
+
+($win) = FindWindowLike(qr{^feh - test/ok\.gif$});
+SetInputFocus($win);
+SendKeys('x');
+ok(waitfor { not FindWindowLike(qr{^feh - test/ok\.gif$}) }, 'win 1 closed');
+ok(FindWindowLike(qr{^feh - test/ok\.png$}), 'multiwindow 1/2');
+ok(FindWindowLike(qr{^feh - test/ok\.jpg$}), 'multiwindow 2/2');
+
+($win) = FindWindowLike(qr{^feh - test/ok\.jpg$});
+SetInputFocus($win);
+SendKeys('x');
+ok(waitfor { not FindWindowLike(qr{^feh - test/ok\.jpg$}) }, 'win 2 closed');
+
+($win) = FindWindowLike(qr{^feh - test/ok\.png$});
+SetInputFocus($win);
+SendKeys('x');
+test_no_win('all multiwindows closed');
