@@ -6,6 +6,7 @@ git HEAD
       toggle fullscreen, should you really need it.
     * --font now sets the global default font (for action/filename display etc.)
     * Rename --screen-clip 0 to --no-screen-clip
+    * Allow multiline theme definitions (via backslash, like in the shell)
 
 Thu Jun 10 12:12:04 CEST 2010
 

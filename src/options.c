@@ -147,6 +147,8 @@ static void feh_load_options_for_theme(char *theme)
 	char *home;
 	char *rcpath = NULL;
 	char s[1024], s1[1024], s2[1024];
+	int cont = 0;
+	int bspos;
 
 	if (opt.rcfile) {
 		if ((fp = fopen(opt.rcfile, "r")) == NULL) {
@@ -176,14 +178,40 @@ static void feh_load_options_for_theme(char *theme)
 	for (; fgets(s, sizeof(s), fp);) {
 		s1[0] = '\0';
 		s2[0] = '\0';
-		sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
-		if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#'))
-			continue;
-		D(5, ("Got theme/options pair %s/%s\n", s1, s2));
-		if (!strcmp(s1, theme)) {
+
+		if (cont) {
+			sscanf(s, " %[^\n]\n", (char *) &s2);
+			if (!*s2)
+				break;
+			D(5, ("Got continued options %s\n", s2));
+		} else {
+			sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
+			if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#')) {
+				cont = 0;
+				continue;
+			}
+			D(5, ("Got theme/options pair %s/%s\n", s1, s2));
+		}
+
+		if (!strcmp(s1, theme) || cont) {
+
+			bspos = strlen(s2)-1;
+
+			if (s2[bspos] == '\\') {
+				D(5, ("Continued line\n"));
+				s2[bspos] = '\0';
+				cont = 1;
+				/* A trailing whitespace confuses the option parser */
+				if (bspos && (s2[bspos-1] == ' '))
+					s2[bspos-1] = '\0';
+			} else
+				cont = 0;
+
 			D(4, ("A match. Using options %s\n", s2));
 			feh_parse_options_from_string(s2);
-			break;
+
+			if (!cont)
+				break;
 		}
 	}
 	fclose(fp);
@@ -1182,8 +1210,10 @@ static void feh_create_default_config(char *rcfile)
 "# Set the default feh options to be recursive and verbose\n"
 "# feh -rV\n"
 "\n"
-"# Multiple options can of course be used. They should all be on one line\n"
-"# imagemap -rV --quiet -W 400 -H 300 --thumb-width 40 --thumb-height 30\n"
+"# Multiple options can of course be used. If they are not in one line,\n"
+"# the lines after the theme name must start with a tab character. Like:\n"
+"# imagemap -rV --quiet -W 400 -H 300 \\\n"
+"#          --thumb-width 40 --thumb-height 30\n"
 "\n"
 "# ====================\n"
 "# A few default themes\n"
