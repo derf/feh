@@ -1,2 +1,3 @@
 /src/*.o
+/src/*.inc
 /src/feh

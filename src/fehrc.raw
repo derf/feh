@@ -1,0 +1,66 @@
+# Feh configuration file.
+# Lines starting with # are comments. Don't use comments mid-line.
+
+# Feh expects to find this as ~/.fehrc or /etc/fehrc
+# If both are available, ~/.fehrc will be used
+
+# Options are defined in theme_name/options pairs.
+# Separate themename and options by whitespace.
+
+# There are two ways of specifying the theme. Either use feh -Tthemename,
+# or use a symbolic link to feh with the name of the theme. eg
+# ln -s `which feh` ~/bin/mkindex
+# Now when you run 'mkindex', feh will load the config specified for the
+# mkindex theme.
+
+# ======================
+# Some examples of usage
+# ======================
+
+# Set the default feh options to be recursive and verbose
+# feh -rV
+
+# Multiple options can of course be used. If they are not in one line,
+# the lines after the theme name must start with a tab character. Like:
+# imagemap -rV --quiet -W 400 -H 300 \\
+#          --thumb-width 40 --thumb-height 30
+
+# ====================
+# A few default themes
+# ====================
+
+# Webcam mode, simply specify the url(s).
+# e.g. feh -Twebcam http://cam1 http://cam2
+webcam --multiwindow --reload 20
+
+# Create an index of the current directory. This version uses . as the
+# current dir, so you don't even need any commandline arguments.
+mkindex -iVO index.jpg .
+
+# More ambitious version...
+imgidx -iVO .fehindex.jpg --limit-width 1200 --thumb-width 90 --thumb-height 90 .
+
+# Show a presentation
+present --full-screen --sort name
+
+# Booth mode ;-)
+booth --full-screen --hide-pointer --slideshow-delay 20
+
+# Screw xscreensaver, use feh =)
+screensave --full-screen --randomize --slideshow-delay 5
+
+# Add <img> tags to your html with ease :-)
+newimg -q -L \"<img src=\\\"%f\\\" alt=\\\"%n\\\" border=\\\"0\\\" width=\\\"%w\\\" height=\\\"%h\\\">\"
+
+# Different menus
+chrome --menu-bg " PREFIX "/share/feh/images/menubg_chrome.png
+brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png
+pastel --menu-bg " PREFIX "/share/feh/images/menubg_pastel.png
+aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png
+wood --menu-bg " PREFIX "/share/feh/images/menubg_wood.png
+aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png
+sky --menu-bg " PREFIX "/share/feh/images/menubg_sky.png
+orange --menu-bg " PREFIX "/share/feh/images/menubg_orange.png
+light --menu-bg " PREFIX "/share/feh/images/menubg_light.png
+black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \\
+      --menu-style " PREFIX "/share/feh/fonts/black.style

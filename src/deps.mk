@@ -24,7 +24,7 @@ menu.o: menu.c feh.h structs.h menu.h utils.h getopt.h debug.h support.h \
 multiwindow.o: multiwindow.c feh.h structs.h menu.h utils.h getopt.h \
   debug.h winwidget.h timers.h filelist.h options.h
 options.o: options.c feh.h structs.h menu.h utils.h getopt.h debug.h \
-  filelist.h options.h
+  filelist.h options.h help.inc fehrc.inc
 signals.o: signals.c feh.h structs.h menu.h utils.h getopt.h debug.h \
   winwidget.h
 slideshow.o: slideshow.c feh.h structs.h menu.h utils.h getopt.h debug.h \
