@@ -886,6 +886,35 @@ void winwidget_reset_image(winwidget winwid)
 	return;
 }
 
+void winwidget_center_image(winwidget winwid)
+{
+	int scr_width, scr_height;
+
+	scr_width = scr->width;
+	scr_height = scr->height;
+
+#ifdef HAVE_LIBXINERAMA
+	if (opt.xinerama && xinerama_screens) {
+		scr_width = xinerama_screens[xinerama_screen].width;
+		scr_height = xinerama_screens[xinerama_screen].height;
+	}
+#endif				/* HAVE_LIBXINERAMA */
+
+	if (winwid->full_screen) {
+		winwid->im_x = (scr_width - lround(winwid->im_w * winwid->zoom)) >> 1;
+		winwid->im_y = (scr_height - lround(winwid->im_h * winwid->zoom)) >> 1;
+	} else {
+		if (opt.geom_flags & WidthValue)
+			winwid->im_x = (opt.geom_w - lround(winwid->im_w * winwid->zoom)) >> 1;
+		else
+			winwid->im_x = 0;
+		if (opt.geom_flags & HeightValue)
+			winwid->im_y = (opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
+		else
+			winwid->im_y = 0;
+	}
+}
+
 void winwidget_sanitise_offsets(winwidget winwid)
 {
 	int far_left, far_top;

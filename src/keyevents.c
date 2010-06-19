@@ -271,11 +271,13 @@ void feh_event_handle_keypress(XEvent * ev)
 	case XK_KP_Multiply:
 		len = 0;
 		winwid->zoom = 1;
+		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Divide:
 		len = 0;
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 1);
 		break;
 	case XK_KP_Begin:

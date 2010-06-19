@@ -61,22 +61,12 @@ void feh_event_init(void)
 static void feh_event_handle_ButtonPress(XEvent * ev)
 {
 	winwidget winwid = NULL;
-	int scr_width, scr_height;
 
 	/* get the heck out if it's a mouse-click on the
 	   cover, we'll hide the menus on release */
 	if (ev->xbutton.window == menu_cover) {
 		return;
 	}
-
-	scr_width = scr->width;
-	scr_height = scr->height;
-#ifdef HAVE_LIBXINERAMA
-	if (opt.xinerama && xinerama_screens) {
-		scr_width = xinerama_screens[xinerama_screen].width;
-		scr_height = xinerama_screens[xinerama_screen].height;
-	}
-#endif				/* HAVE_LIBXINERAMA */
 
 	winwid = winwidget_get_from_window(ev->xbutton.window);
 	if (winwid && winwid->caption_entry) {
@@ -132,23 +122,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 			winwid->im_click_offset_y = (winwid->click_offset_y
 					- winwid->im_y) / winwid->old_zoom;
 
-			/* center the image */
-			if (winwid->full_screen) {
-				winwid->im_x = (scr_width - winwid->im_w) >> 1;
-				winwid->im_y = (scr_height - winwid->im_h) >> 1;
-			} else {
-				if (opt.geom_flags & WidthValue) {
-					winwid->im_x = (opt.geom_w - winwid->im_w) >> 1;
-				} else {
-					winwid->im_x = 0;
-				}
-				if (opt.geom_flags & HeightValue) {
-					winwid->im_y = (opt.geom_h - winwid->im_h) >> 1;
-				} else {
-					winwid->im_y = 0;
-				}
-			}
-
+			winwidget_center_image(winwid);
 			winwidget_render_image(winwid, 0, 0);
 		}
 	} else if (ev->xbutton.button == opt.reload_button) {
