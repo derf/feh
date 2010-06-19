@@ -373,7 +373,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"bg-seamless", 1, 0, 203},
 		{"menu-style", 1, 0, 204},
 		{"zoom", 1, 0, 205},
-		{"screen-clip", 1, 0, 206},
+		{"no-screen-clip", 0, 0, 206},
 		{"menu-border", 1, 0, 207},
 		{"caption-path", 1, 0, 208},
 		{"action1", 1, 0, 209},
@@ -667,7 +667,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.default_zoom = atoi(optarg);
 			break;
 		case 206:
-			opt.screen_clip = atoi(optarg);
+			opt.screen_clip = 0;
 			break;
 		case 207:
 			opt.menu_border = atoi(optarg);
@@ -1028,7 +1028,7 @@ static void show_usage(void)
 "                           any mode -- just use the button (default=off).\n"
 "     --no-xinerama         Disable Xinerama support.  Only useful if\n"
 "                           you have Xinerama compiled in.\n"
-"     --screen-clip [0|1]   Enable/disable window clipping based on screen\n"
+"     --no-screen-clip      Disable window clipping based on screen\n"
 "                           size.  WARNING: with this option disabled,\n"
 "                           image windows could become very large, making\n"
 "                           them unmanageable in certain window managers.\n"

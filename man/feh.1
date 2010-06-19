@@ -270,6 +270,11 @@ in slideshow mode, multiple windows will be opened; one per file.
 Don't jump to the first image after resorting the filelist.
 .It Cm -N , --no-menus
 Don't load or show any menus.
+.It Cm --no-screen-clip
+By default, window sizes are limited to the screen size.  With this option,
+windows will have the size of the image inside them.  Note that they may
+become very large this way, making them unmanageable in certain window
+managers.
 .It Cm --no-xinerama
 Disable Xinerama support.  Only makes sense when you have Xinerama support
 compiled in.
@@ -309,10 +314,6 @@ E.g. to sort in reverse width order, use
 .Cm -nSwidth .
 .It Cm -. , --scale-down
 When not in fullscreen: Scale images to screen size if they are too big.
-.It Cm --screen-clip Ar bool
-Disable/Enable screen clipping based on window size.  With this disabled,
-windows may become very large, making them unmanageable in certain window
-managers.
 .It Cm -D , --slideshow-delay Ar float
 For slideshow mode, wait
 .Ar float

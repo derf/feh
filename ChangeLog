@@ -5,6 +5,7 @@ git HEAD
       thumbnail mode may be fullscreen, though. You can still use 'v' to
       toggle fullscreen, should you really need it.
     * --font now sets the global default font (for action/filename display etc.)
+    * Rename --screen-clip 0 to --no-screen-clip
 
 Thu Jun 10 12:12:04 CEST 2010
 

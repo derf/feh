@@ -318,7 +318,7 @@ ok(waitfor {
 	'Large window limited to screen size');
 feh_stop();
 
-$win = feh_start('--screen-clip 0', 'test/huge.png');
+$win = feh_start('--no-screen-clip', 'test/huge.png');
 ok(waitfor {
 		[(GetWindowPos($win))[2, 3]] ~~ [4000, 3000]
 	},
