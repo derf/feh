@@ -28,3 +28,5 @@ Saving the filelist from thumbnail mode will access uninitialized memory if a
 file was removed from the filelist.
 
 Maybe: Zoom mode like --bg-fill?
+
+Configurable key bindings
