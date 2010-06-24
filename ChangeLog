@@ -8,6 +8,9 @@ git HEAD
     * Rename --screen-clip 0 to --no-screen-clip
     * Allow multiline theme definitions (via backslash, like in the shell)
     * Center the image after pressing <keypad /> or <keypad *>
+    * Saving the filelist from thumbnail mode caused undefined behaviour due
+      to handling of uninitialised memory. Since I consider this a rarely
+      useful action, the feature has been disabled for thumbnail mode.
 
 Thu Jun 10 12:12:04 CEST 2010
 

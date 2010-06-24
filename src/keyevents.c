@@ -336,7 +336,11 @@ void feh_event_handle_keypress(XEvent * ev)
 		slideshow_save_image(winwid);
 		break;
 	case 'f':
-		feh_save_filelist();
+		if ((winwid->type == WIN_TYPE_THUMBNAIL)
+				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER))
+			weprintf("Filelist saving is not supported in thumbnail mode\n");
+		else
+			feh_save_filelist();
 		break;
 	case 'w':
 		winwidget_size_to_image(winwid);
