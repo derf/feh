@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 67;
+use Test::More tests => 70;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -199,27 +199,31 @@ SendKeys('{HOM PGU}');
 test_win_title($win, 'feh [96 of 100] - test/ok.png');
 feh_stop();
 
-$win = feh_start('--thumbnails', 'test/ok.png test/ok.gif test/ok.jpg');
+$win = feh_start('--thumbnails --thumb-title "%P [%l] %f"',
+	'test/ok.png test/ok.gif test/ok.jpg');
 test_win_title($win, 'feh [thumbnail mode]');
 $width = (GetWindowPos($win))[2];
 is($width, 640, 'thumbnail win: Correct default size');
 MoveMouseAbs(30, 30);
 ClickMouseButton(M_BTN1);
-($win) = WaitWindowViewable(qr{^ok\.png$});
+($win) = WaitWindowViewable(qr{test/ok\.png$});
 ok($win, 'Thumbnail mode: Window opened');
+test_win_title($win, 'feh [3] test/ok.png');
 SetInputFocus($win);
 SendKeys('x');
 ok(waitfor { not FindWindowLike(qr{^ok\.png$}) }, 'Thumbnail mode: closed');
 
 MoveMouseAbs(90, 30);
 ClickMouseButton(M_BTN1);
-($win) = WaitWindowViewable(qr{^ok\.gif$});
+($win) = WaitWindowViewable(qr{test/ok\.gif$});
 ok($win, 'Thumbnail mode: Window opened');
+test_win_title($win, 'feh [3] test/ok.gif');
 
 MoveMouseAbs(150,30);
 ClickMouseButton(M_BTN1);
-($win) = WaitWindowViewable(qr{^ok\.jpg$});
+($win) = WaitWindowViewable(qr{test/ok\.jpg$});
 ok($win, 'Thumbnail mode: Other window opened');
+test_win_title($win, 'feh [3] test/ok.jpg');
 
 feh_stop();
 

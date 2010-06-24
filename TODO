@@ -25,7 +25,7 @@ GUI-toolkit or similar (or maybe writing a completely new tool for that and
 removing the feature from feh) would be due.
 
 Saving the filelist from thumbnail mode is not possible. I wonder if this
-matters enough to be fixed.
+matters enough to be fixed. %u is borked there for the same reason.
 
 Maybe: Zoom mode like --bg-fill?
 
