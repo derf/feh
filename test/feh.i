@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 70;
+use Test::More tests => 71;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -294,6 +294,12 @@ $win = feh_start('--geometry 423x232');
 (undef, undef, $width, $height) = GetWindowPos($win);
 is($width, 423, '--geometry: correct width');
 is($height, 232, '--geometry: correct height');
+feh_stop();
+
+$win = feh_start('--full-screen');
+(undef, undef, $width, $height) = GetWindowPos($win);
+ok([(GetWindowPos($win))[2, 3]] ~~ [GetScreenRes()],
+	'fullscreen uses full screen size');
 feh_stop();
 
 $win = feh_start();
