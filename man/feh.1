@@ -9,28 +9,33 @@
 .Sh SYNOPSIS
 .Nm
 .Op Ar options
-.Ar
+.Ar files or directories ...
 .
 .Sh DESCRIPTION
 .Nm
-is an image viewer using the imlib2 library to open and manipulate
-images.  It has a large number of operational modes.  The default mode is an
-image slideshow, showing one image at a time from those specified on the
-command line.  Keys and mouse control may be used to move through them.
-Other modes can be specified on the commandline, and are described below.
+is a mode-based image viewer useful for viewing and cataloguing images.  It
+is especially aimed at commandline users who need a fast image viewer without
+huge GUI dependencies, though it can also be started by
+.Pq graphical
+file managers to view an imagee.
 .Pp
 .Nm
-can also recurse through a directory structure to form a filelist for
-processing, and will convert directory names on the commandline into a list
-of their contents automatically.
-.Pp
-Filelists can be sorted in a number of ways.  The default is the order in
-which the files were specified on the commandline, or the order in which they
-were read from the disk.  You can specify sorting modes such as randomize
-or you can sort by filename, image name, width, height, pixels, etc.
-Filelists can also be saved to or loaded from files.
+supports filelists, various image sorting modes, image captions and more.
+Control happens via keyboard shortcuts; the mouse can also be used to control
+it, but is only required for very few actions.
 .
 .Sh MODES
+.Nm
+is based on various modes, which are selected at startup by comandline
+options.
+.Pp
+Slideshow mode is the default.  It opens one window and displays the first
+image in it, the keyboard and mouse can be used to change slides
+.Pq images .
+In slideshow mode, images can be deleted either from the filelist or from the
+disk, the new filelist can then be saved to the disk and reopened at a later
+time.
+.Pp
 Montage mode forms a montage from the filelist.  The resulting image can be
 viewed or saved, and its size can be limited by height, width or both.
 .Pp
@@ -48,9 +53,6 @@ the selected image in a new window.
 Multiwindow mode shows images in multiple windows, instead of as a slideshow
 in one window.  Don't use with a large filelist ;)
 .Pp
-Fullscreen mode shows images in fullscreen view.  Can be combined with a
-slide-change delay to show an automated presentation.
-.Pp
 List mode doesn't display images.  Outputs an
 .Cm ls - No style
 listing of the files in the filelist, including image info such as size,
@@ -60,17 +62,6 @@ in the format you choose.
 .Nm
 can also list either all the loadable files in a filelist or all the
 unloadable files.  Useful for preening a directory.
-.Pp
-.Nm
-also has the ability to load files via http or ftp, simply specify the url on
-the commandline.
-.Pp
-.Nm
-can read options from the commandline, or from a config file.  The syntax is
-the same in each case.  See
-.Sx CONFIG FILE SYNTAX
-for details about using themes defined in a config file.
-These methods may be used in conjunction.
 .
 .Sh OPTIONS
 .Bl -tag -width indent
