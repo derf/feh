@@ -698,11 +698,6 @@ void winwidget_show(winwidget winwid)
 	return;
 }
 
-int winwidget_count(void)
-{
-	return(window_num);
-}
-
 void winwidget_move(winwidget winwid, int x, int y)
 {
 	if (winwid && ((winwid->x != x) || (winwid->y != y))) {

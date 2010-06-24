@@ -130,7 +130,6 @@ void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 void winwidget_rerender_all(int resize, int alias);
 void winwidget_destroy_xwin(winwidget winwid);
-int winwidget_count(void);
 
 void winwidget_set_pointer(winwidget winwid, int visible);
 
