@@ -232,9 +232,6 @@ char *feh_http_load_image(char *url)
 {
 	char *tmpname;
 	char *basename;
-	char *newurl = NULL;
-	char randnum[20];
-	int rnum;
 	char *path = NULL;
 
 	if (opt.keep_http) {
@@ -247,11 +244,6 @@ char *feh_http_load_image(char *url)
 
 	basename = strrchr(url, '/') + 1;
 	tmpname = feh_unique_filename(path, basename);
-
-	rnum = rand();
-	snprintf(randnum, sizeof(randnum), "%d", rnum);
-	newurl = estrjoin("?", url, randnum, NULL);
-	D(3, ("newurl: %s\n", newurl));
 
 	if (opt.builtin_http) {
 		/* state for HTTP header parser */
@@ -287,13 +279,12 @@ char *feh_http_load_image(char *url)
 			return(NULL);
 		}
 
-		hostname = feh_strip_hostname(newurl);
+		hostname = feh_strip_hostname(url);
 		if (!hostname) {
-			weprintf("couldn't work out hostname from %s:", newurl);
+			weprintf("couldn't work out hostname from %s:", url);
 			fclose(fp);
 			unlink(tmpname);
 			free(tmpname);
-			free(newurl);
 			return(NULL);
 		}
 
@@ -305,7 +296,6 @@ char *feh_http_load_image(char *url)
 			unlink(tmpname);
 			free(hostname);
 			free(tmpname);
-			free(newurl);
 			return(NULL);
 		}
 
@@ -322,7 +312,6 @@ char *feh_http_load_image(char *url)
 			unlink(tmpname);
 			free(tmpname);
 			free(hostname);
-			free(newurl);
 			return(NULL);
 		}
 		if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
@@ -331,11 +320,10 @@ char *feh_http_load_image(char *url)
 			unlink(tmpname);
 			free(tmpname);
 			free(hostname);
-			free(newurl);
 			return(NULL);
 		}
 
-		get_url = strchr(newurl, '/') + 2;
+		get_url = strchr(url, '/') + 2;
 		get_url = strchr(get_url, '/');
 
 		get_string = estrjoin(" ", "GET", get_url, "HTTP/1.0", NULL);
@@ -360,7 +348,6 @@ char *feh_http_load_image(char *url)
 			free(query_string);
 			free(tmpname);
 			free(hostname);
-			free(newurl);
 			weprintf("error sending over socket:");
 			return(NULL);
 		}
@@ -368,7 +355,6 @@ char *feh_http_load_image(char *url)
 		free(host_string);
 		free(query_string);
 		free(hostname);
-		free(newurl);
 
 		while ((size = read(sockno, &buf, OUR_BUF_SIZE))) {
 			if (body == IN_BODY) {
@@ -455,7 +441,6 @@ char *feh_http_load_image(char *url)
 		if ((pid = fork()) < 0) {
 			weprintf("open url: fork failed:");
 			free(tmpname);
-			free(newurl);
 			return(NULL);
 		} else if (pid == 0) {
 			char *quiet = NULL;
@@ -463,7 +448,7 @@ char *feh_http_load_image(char *url)
 			if (!opt.verbose)
 				quiet = estrdup("-q");
 
-			execlp("wget", "wget", "--cache=off", "-O", tmpname, newurl, quiet, NULL);
+			execlp("wget", "wget", "--cache=off", "-O", tmpname, url, quiet, NULL);
 			eprintf("url: exec failed: wget:");
 		} else {
 			waitpid(pid, &status, 0);
@@ -471,11 +456,9 @@ char *feh_http_load_image(char *url)
 			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 				weprintf("url: wget failed to load URL %s\n", url);
 				unlink(tmpname);
-				free(newurl);
 				free(tmpname);
 				return(NULL);
 			}
-			free(newurl);
 		}
 	}
 
