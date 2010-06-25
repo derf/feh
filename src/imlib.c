@@ -231,7 +231,6 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 char *feh_http_load_image(char *url)
 {
 	char *tmpname;
-	char *tmpname_timestamper = NULL;
 	char *basename;
 	char *newurl = NULL;
 	char randnum[20];
@@ -249,19 +248,9 @@ char *feh_http_load_image(char *url)
 	basename = strrchr(url, '/') + 1;
 	tmpname = feh_unique_filename(path, basename);
 
-	if (opt.wget_timestamp) {
-		char cppid[10];
-		pid_t ppid;
-
-		ppid = getpid();
-		snprintf(cppid, sizeof(cppid), "%06ld", (long) ppid);
-		tmpname_timestamper = estrjoin("", "/tmp/feh_", cppid, "_", basename, NULL);
-		newurl = estrdup(url);
-	} else {
-		rnum = rand();
-		snprintf(randnum, sizeof(randnum), "%d", rnum);
-		newurl = estrjoin("?", url, randnum, NULL);
-	}
+	rnum = rand();
+	snprintf(randnum, sizeof(randnum), "%d", rnum);
+	newurl = estrjoin("?", url, randnum, NULL);
 	D(3, ("newurl: %s\n", newurl));
 
 	if (opt.builtin_http) {
@@ -474,27 +463,17 @@ char *feh_http_load_image(char *url)
 			if (!opt.verbose)
 				quiet = estrdup("-q");
 
-			if (opt.wget_timestamp) {
-				execlp("wget", "wget", "-N", "-O", tmpname_timestamper, newurl, quiet, (char *) NULL);
-			} else {
-				execlp("wget", "wget", "--cache=off", "-O", tmpname, newurl, quiet, NULL);
-			}
+			execlp("wget", "wget", "--cache=off", "-O", tmpname, newurl, quiet, NULL);
 			eprintf("url: exec failed: wget:");
 		} else {
 			waitpid(pid, &status, 0);
 
 			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 				weprintf("url: wget failed to load URL %s\n", url);
-				unlink(opt.wget_timestamp ? tmpname_timestamper : tmpname);
+				unlink(tmpname);
 				free(newurl);
 				free(tmpname);
 				return(NULL);
-			}
-			if (opt.wget_timestamp) {
-				char cmd[2048];
-
-				snprintf(cmd, sizeof(cmd), "/bin/cp %s %s", tmpname_timestamper, tmpname);
-				system(cmd);
 			}
 			free(newurl);
 		}

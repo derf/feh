@@ -40,8 +40,6 @@ OPTIONS
  -k, --keep-http           Keep local copies when viewing HTTP/FTP files
      --caption-path PATH   Path to caption directory, enables caption display
  -j, --output-dir          With -k: Output directory for saved files
- -G, --wget-timestamp      Try to only reload a file if it changed. Also,
-                           don't add \"?1234...\" timestamp to file URL
  -l, --list                list mode: ls-style output with image information
  -L, --customlist FORMAT   list mode with custom output, see FORMAT SPECIFIERS
  -U, --loadable            List all loadable files. No image display

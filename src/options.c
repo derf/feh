@@ -317,7 +317,7 @@ char *feh_string_normalize(char *str)
 static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
-	    "a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
+	    "a:A:b:B:cC:dD:e:E:f:Fg:hH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
 	static struct option lopts[] = {
 		/* actions */
 		{"help", 0, 0, 'h'},	/* okay */
@@ -346,7 +346,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"preload", 0, 0, 'p'},
 		{"reverse", 0, 0, 'n'},
 		{"thumbnails", 0, 0, 't'},
-		{"wget-timestamp", 0, 0, 'G'},
 		{"builtin", 0, 0, 'Q'},
 		{"scale-down", 0, 0, '.'},	/* okay */
 		{"no-jump-on-resort", 0, 0, 220},
@@ -461,9 +460,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 'l':
 			opt.list = 1;
 			opt.display = 0;
-			break;
-		case 'G':
-			opt.wget_timestamp = 1;
 			break;
 		case 'Q':
 			opt.builtin_http = 1;
