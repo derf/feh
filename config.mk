@@ -1,5 +1,5 @@
 PACKAGE ?= feh
-VERSION ?= 1.7-git
+VERSION ?= 1.8-git
 
 # Prefix for all installed files
 PREFIX ?= /usr/local

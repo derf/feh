@@ -1,5 +1,6 @@
-git HEAD
+Fri, 25 Jun 2010 16:07:20 +0200
 
+* Release v1.8
     * support LDLIBS in Makefile/config.mk
     * Don't make the --thumbnails window fullscreen. The images launched from
       thumbnail mode may be fullscreen, though. You can still use 'v' to
@@ -15,8 +16,8 @@ git HEAD
       correctly, plus it contained a code execution hole when used with
       malicious URLs containing shell metacharacters (but only if those URLs
       led to a valid file)
-    * Don't add ?randomnumber to URLs, it confuses some servers and is
-      not really neccessary in general
+    * Don't add ?randomnumber to URLs when downloading them, it confuses some
+      servers and is not really neccessary in general
 
 Thu Jun 10 12:12:04 CEST 2010
 
