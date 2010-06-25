@@ -1,4 +1,4 @@
-Fri, 25 Jun 2010 16:07:20 +0200
+Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.8
     * support LDLIBS in Makefile/config.mk
@@ -19,7 +19,7 @@ Fri, 25 Jun 2010 16:07:20 +0200
     * Don't add ?randomnumber to URLs when downloading them, it confuses some
       servers and is not really neccessary in general
 
-Thu Jun 10 12:12:04 CEST 2010
+Thu Jun 10 12:12:04 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.7
     * Fix segfault in Thumbnail mode when trying to open a no longer
