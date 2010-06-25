@@ -12,7 +12,7 @@ git HEAD
       to handling of uninitialised memory. Since I consider this a rarely
       useful action, the feature has been disabled for thumbnail mode.
     * Remove -G/--wget-timestamp option. It was probably not working
-      correctly, plus it contained a remote code execution hole when used with
+      correctly, plus it contained a code execution hole when used with
       malicious URLs containing shell metacharacters (but only if those URLs
       led to a valid file)
     * Don't add ?randomnumber to URLs, it confuses some servers and is
