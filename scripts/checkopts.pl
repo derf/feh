@@ -12,12 +12,17 @@ while (my $line = <$c_fh>) {
 	if ($line =~ /\{"(?<long>[\w-]+)",.*,\s*(?:'(?<short>.)'|(?<short>\d+))\}/o) {
 		push(@{$options->{$+{long}}}, ['source', $+{short}]);
 	}
-	elsif ($line =~ /" (?:\-(?<short>.), |\s*)--(?<long>[\w-]+) /) {
-		push(@{$options->{$+{long}}}, ['help', $+{short}]);
-	}
-
 }
 close($c_fh);
+
+open(my $h_fh, '<', 'src/help.raw') or die("Can't read help.raw: $!");
+while (my $line = <$h_fh>) {
+
+	if ($line =~ /^ (?:\-(?<short>.), |\s*)--(?<long>[\w-]+) /) {
+		push(@{$options->{$+{long}}}, ['help', $+{short}]);
+	}
+}
+close($h_fh);
 
 open(my $man_fh, '<', 'man/feh.1') or die("Can't read feh.1: $!");
 while (my $line = <$man_fh>) {
