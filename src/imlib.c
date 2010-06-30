@@ -449,7 +449,7 @@ char *feh_http_load_image(char *url)
 				quiet = estrdup("-q");
 
 			execlp("wget", "wget", "--cache=off", "-O", tmpname, url, quiet, NULL);
-			eprintf("url: exec failed: wget:");
+			eprintf("url: Is 'wget' installed? Failed to exec wget:");
 		} else {
 			waitpid(pid, &status, 0);
 
@@ -964,7 +964,7 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
 				rotate_str, "-outfile", file_str, file_str, NULL);
 
-		eprintf("lossless rotate: exec failed: jpegtran:");
+		eprintf("lossless rotate: Is 'jpegtran' installed? Failed to exec:");
 	} else {
 		waitpid(pid, &status, 0);
 
