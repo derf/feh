@@ -319,105 +319,104 @@ static void feh_parse_option_array(int argc, char **argv)
 	static char stropts[] =
 	    "a:A:b:B:cC:dD:e:E:f:Fg:hH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
 	static struct option lopts[] = {
-		/* actions */
-		{"help", 0, 0, 'h'},	/* okay */
-		{"version", 0, 0, 'v'},	/* okay */
-		/* toggles */
-		{"montage", 0, 0, 'm'},	/* okay */
-		{"collage", 0, 0, 'c'},	/* okay */
-		{"index", 0, 0, 'i'},	/* okay */
-		{"fullindex", 0, 0, 'I'},	/* okay */
-		{"verbose", 0, 0, 'V'},	/* okay */
-		{"borderless", 0, 0, 'x'},	/* okay */
-		{"keep-http", 0, 0, 'k'},	/* okay */
-		{"stretch", 0, 0, 's'},	/* okay */
-		{"multiwindow", 0, 0, 'w'},	/* okay */
-		{"recursive", 0, 0, 'r'},	/* okay */
-		{"randomize", 0, 0, 'z'},	/* okay */
-		{"list", 0, 0, 'l'},	/* okay */
-		{"quiet", 0, 0, 'q'},	/* okay */
-		{"loadable", 0, 0, 'U'},	/* okay */
-		{"unloadable", 0, 0, 'u'},	/* okay */
-		{"no-menus", 0, 0, 'N'},
-		{"full-screen", 0, 0, 'F'}, /* deprecated */
-		{"fullscreen", 0, 0, 'F'},
-		{"auto-zoom", 0, 0, 'Z'},
-		{"ignore-aspect", 0, 0, 'X'},
-		{"draw-filename", 0, 0, 'd'},
-		{"preload", 0, 0, 'p'},
-		{"reverse", 0, 0, 'n'},
-		{"thumbnails", 0, 0, 't'},
-		{"builtin", 0, 0, 'Q'},
-		{"scale-down", 0, 0, '.'},	/* okay */
+		{"help"          , 0, 0, 'h'},
+		{"version"       , 0, 0, 'v'},
+		{"montage"       , 0, 0, 'm'},
+		{"collage"       , 0, 0, 'c'},
+		{"index"         , 0, 0, 'i'},
+		{"fullindex"     , 0, 0, 'I'},
+		{"verbose"       , 0, 0, 'V'},
+		{"borderless"    , 0, 0, 'x'},
+		{"keep-http"     , 0, 0, 'k'},
+		{"stretch"       , 0, 0, 's'},
+		{"multiwindow"   , 0, 0, 'w'},
+		{"recursive"     , 0, 0, 'r'},
+		{"randomize"     , 0, 0, 'z'},
+		{"list"          , 0, 0, 'l'},
+		{"quiet"         , 0, 0, 'q'},
+		{"loadable"      , 0, 0, 'U'},
+		{"unloadable"    , 0, 0, 'u'},
+		{"no-menus"      , 0, 0, 'N'},
+		{"full-screen"   , 0, 0, 'F'}, /* deprecated */
+		{"fullscreen"    , 0, 0, 'F'},
+		{"auto-zoom"     , 0, 0, 'Z'},
+		{"ignore-aspect" , 0, 0, 'X'},
+		{"draw-filename" , 0, 0, 'd'},
+		{"preload"       , 0, 0, 'p'},
+		{"reverse"       , 0, 0, 'n'},
+		{"thumbnails"    , 0, 0, 't'},
+		{"builtin"       , 0, 0, 'Q'},
+		{"scale-down"    , 0, 0, '.'},
 		{"no-jump-on-resort", 0, 0, 220},
-		{"hide-pointer", 0, 0, 221},
-		{"draw-actions", 0, 0, 222},
+		{"hide-pointer"  , 0, 0, 221},
+		{"draw-actions"  , 0, 0, 222},
 		{"cache-thumbnails", 0, 0, 223},
-		{"cycle-once", 0, 0, 224},
-		{"no-xinerama", 0, 0, 225},
+		{"cycle-once"    , 0, 0, 224},
+		{"no-xinerama"   , 0, 0, 225},
 		{"no-rotate-ctrl-mask", 0, 0, 226},
 		{"no-blur-ctrl-mask", 0, 0, 227},
-		{"menu-ctrl-mask", 0, 0, 228},	/* okay */
-		/* options with values */
-		{"output", 1, 0, 'o'},	/* okay */
-		{"output-only", 1, 0, 'O'},	/* okay */
-		{"action", 1, 0, 'A'},	/* okay */
-		{"limit-width", 1, 0, 'W'},	/* okay */
-		{"limit-height", 1, 0, 'H'},	/* okay */
-		{"reload", 1, 0, 'R'},	/* okay */
-		{"alpha", 1, 0, 'a'},	/* okay */
-		{"sort", 1, 0, 'S'},	/* okay */
-		{"theme", 1, 0, 'T'},	/* okay */
-		{"filelist", 1, 0, 'f'},	/* okay */
-		{"customlist", 1, 0, 'L'},	/* okay */
-		{"geometry", 1, 0, 'g'},	/* okay */
-		{"menu-font", 1, 0, 'M'},
-		{"thumb-width", 1, 0, 'y'},
-		{"thumb-height", 1, 0, 'E'},
-		{"slideshow-delay", 1, 0, 'D'},
-		{"font", 1, 0, 'e'},
-		{"title-font", 1, 0, '@'},
-		{"title", 1, 0, '^'},
-		{"thumb-title", 1, 0, '~'},
-		{"bg", 1, 0, 'b'},
-		{"fontpath", 1, 0, 'C'},
-		{"menu-bg", 1, 0, ')'},
-		{"image-bg", 1, 0, 'B'},
-		{"reload-button", 1, 0, '0'},
-		{"pan-button", 1, 0, '1'},
-		{"zoom-button", 1, 0, '2'},
-		{"menu-button", 1, 0, '3'},
-		{"prev-button", 1, 0, '4'},
-		{"next-button", 1, 0, '5'},
-		{"rotate-button", 1, 0, '8'},
-		{"blur-button", 1, 0, '9'},
-		{"start-at", 1, 0, '|'},
-		{"rcfile", 1, 0, '_'},
-		{"debug-level", 1, 0, '+'},
-		{"output-dir", 1, 0, 'j'},
-		{"bg-tile", 1, 0, 200},
-		{"bg-center", 1, 0, 201},
-		{"bg-scale", 1, 0, 202},
-		{"bg-seamless", 1, 0, 203},
-		{"menu-style", 1, 0, 204},
-		{"zoom", 1, 0, 205},
+		{"menu-ctrl-mask", 0, 0, 228},
+
+		{"output"        , 1, 0, 'o'},
+		{"output-only"   , 1, 0, 'O'},
+		{"action"        , 1, 0, 'A'},
+		{"limit-width"   , 1, 0, 'W'},
+		{"limit-height"  , 1, 0, 'H'},
+		{"reload"        , 1, 0, 'R'},
+		{"alpha"         , 1, 0, 'a'},
+		{"sort"          , 1, 0, 'S'},
+		{"theme"         , 1, 0, 'T'},
+		{"filelist"      , 1, 0, 'f'},
+		{"customlist"    , 1, 0, 'L'},
+		{"geometry"      , 1, 0, 'g'},
+		{"menu-font"     , 1, 0, 'M'},
+		{"thumb-width"   , 1, 0, 'y'},
+		{"thumb-height"  , 1, 0, 'E'},
+		{"slideshow-delay",1, 0, 'D'},
+		{"font"          , 1, 0, 'e'},
+		{"title-font"    , 1, 0, '@'},
+		{"title"         , 1, 0, '^'},
+		{"thumb-title"   , 1, 0, '~'},
+		{"bg"            , 1, 0, 'b'},
+		{"fontpath"      , 1, 0, 'C'},
+		{"menu-bg"       , 1, 0, ')'},
+		{"image-bg"      , 1, 0, 'B'},
+		{"reload-button" , 1, 0, '0'},
+		{"pan-button"    , 1, 0, '1'},
+		{"zoom-button"   , 1, 0, '2'},
+		{"menu-button"   , 1, 0, '3'},
+		{"prev-button"   , 1, 0, '4'},
+		{"next-button"   , 1, 0, '5'},
+		{"rotate-button" , 1, 0, '8'},
+		{"blur-button"   , 1, 0, '9'},
+		{"start-at"      , 1, 0, '|'},
+		{"rcfile"        , 1, 0, '_'},
+		{"debug-level"   , 1, 0, '+'},
+		{"output-dir"    , 1, 0, 'j'},
+		{"bg-tile"       , 1, 0, 200},
+		{"bg-center"     , 1, 0, 201},
+		{"bg-scale"      , 1, 0, 202},
+		{"bg-seamless"   , 1, 0, 203},
+		{"menu-style"    , 1, 0, 204},
+		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
-		{"menu-border", 1, 0, 207},
-		{"caption-path", 1, 0, 208},
-		{"action1", 1, 0, 209},
-		{"action2", 1, 0, 210},
-		{"action3", 1, 0, 211},
-		{"action4", 1, 0, 212},
-		{"action5", 1, 0, 213},
-		{"action6", 1, 0, 214},
-		{"action7", 1, 0, 215},
-		{"action8", 1, 0, 216},
-		{"action9", 1, 0, 217},
-		{"bg-fill", 1, 0, 218},
-		{"index-name", 1, 0, 230},
-		{"index-size", 1, 0, 231},
-		{"index-dim", 1, 0, 232},
-		{"thumb-redraw", 1, 0, 233},
+		{"menu-border"   , 1, 0, 207},
+		{"caption-path"  , 1, 0, 208},
+		{"action1"       , 1, 0, 209},
+		{"action2"       , 1, 0, 210},
+		{"action3"       , 1, 0, 211},
+		{"action4"       , 1, 0, 212},
+		{"action5"       , 1, 0, 213},
+		{"action6"       , 1, 0, 214},
+		{"action7"       , 1, 0, 215},
+		{"action8"       , 1, 0, 216},
+		{"action9"       , 1, 0, 217},
+		{"bg-fill"       , 1, 0, 218},
+		{"index-name"    , 1, 0, 230},
+		{"index-size"    , 1, 0, 231},
+		{"index-dim"     , 1, 0, 232},
+		{"thumb-redraw"  , 1, 0, 233},
+
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;

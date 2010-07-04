@@ -296,7 +296,7 @@ is($width, 423, '--geometry: correct width');
 is($height, 232, '--geometry: correct height');
 feh_stop();
 
-$win = feh_start('--full-screen');
+$win = feh_start('--fullscreen');
 (undef, undef, $width, $height) = GetWindowPos($win);
 ok([(GetWindowPos($win))[2, 3]] ~~ [GetScreenRes()],
 	'fullscreen uses full screen size');
