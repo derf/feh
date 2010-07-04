@@ -339,7 +339,8 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"loadable", 0, 0, 'U'},	/* okay */
 		{"unloadable", 0, 0, 'u'},	/* okay */
 		{"no-menus", 0, 0, 'N'},
-		{"full-screen", 0, 0, 'F'},
+		{"full-screen", 0, 0, 'F'}, /* deprecated */
+		{"fullscreen", 0, 0, 'F'},
 		{"auto-zoom", 0, 0, 'Z'},
 		{"ignore-aspect", 0, 0, 'X'},
 		{"draw-filename", 0, 0, 'd'},

@@ -23,8 +23,8 @@ OPTIONS
                            before attempting to display anything
  -., --scale-down          Automatically scale down images to fit the screen
                            size
- -F, --full-screen         Make the window fullscreen
- -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode
+ -F, --fullscreen          Make the window full screen
+ -Z, --auto-zoom           Zoom picture to screen size in full screen mode
      --zoom PERCENT        Zooms images by a PERCENT, when in full screen
                            mode or when window geometry is fixed. If combined
                            with --auto-zoom, zooming will be limited to the

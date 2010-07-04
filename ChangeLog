@@ -1,3 +1,7 @@
+git HEAD
+
+    * Add --fullscreen option, --full-screen is now deprecated
+
 Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 
 * Release v1.8
