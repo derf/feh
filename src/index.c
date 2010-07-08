@@ -497,11 +497,6 @@ void init_index_mode(void)
 	return;
 }
 
-char *chop_file_from_full_path(char *str)
-{
-	return(strrchr(str, '/') + 1);
-}
-
 static char *create_index_size_string(char *file)
 {
 	static char str[50];

@@ -120,7 +120,6 @@ void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
 void slideshow_pause_toggle(winwidget w);
 char *slideshow_create_name(feh_file * file);
-char *chop_file_from_full_path(char *str);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_action_run(feh_file * file, char *action);
 char *feh_printf(char *str, feh_file * file);
