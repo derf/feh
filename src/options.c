@@ -74,7 +74,7 @@ void init_parse_options(int argc, char **argv)
 	opt.no_blur_ctrl_mask = 0;
 
 	opt.start_list_at = NULL;
-	opt.no_jump_on_resort = 0;
+	opt.jump_on_resort = 1;
 
 	opt.builtin_http = 0;
 
@@ -722,7 +722,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.actions[9] = estrdup(optarg);
 			break;
 		case 220:
-			opt.no_jump_on_resort = 1;
+			opt.jump_on_resort = 0;
 			break;
 		case 221:
 			opt.hide_pointer = 1;
