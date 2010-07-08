@@ -77,7 +77,6 @@ OPTIONS
  -M, --menu-font FONT      Use FONT for the font in menus.
      --menu-style FILE     Use FILE as the style descriptor for menu text.
  -), --menu-bg BG          Use BG for the background image in menus.
-     --menu-border INT     Set border of menu images
  -B, --image-bg STYLE      Set background for transparent images and the like.
                            Accepted values: white, black, default
  -N, --no-menus            Don't load or show any menus.

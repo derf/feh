@@ -111,10 +111,8 @@ feh_menu *feh_menu_new(void)
 	if (!bg) {
 		feh_load_image_char(&bg, opt.menu_bg);
 		if (bg) {
-			border.left = opt.menu_border;
-			border.right = opt.menu_border;
-			border.top = opt.menu_border;
-			border.bottom = opt.menu_border;
+			border.left = border.right = border.top = border.bottom
+				= 4;
 			imlib_context_set_image(bg);
 			imlib_image_set_border(&border);
 		}

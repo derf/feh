@@ -34,5 +34,4 @@ Configurable key bindings
 Maybe remove some unneccessary stuff?
  * Builtin HTTP client
  * Support for custom menu backgrounds/themes
- * Menu border
  * output-dir (cd $dir; feh is good enough)

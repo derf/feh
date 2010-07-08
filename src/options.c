@@ -59,7 +59,6 @@ void init_parse_options(int argc, char **argv)
 	opt.image_bg = estrdup("default");
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
-	opt.menu_border = 4;
 
 	opt.reload_button = 0;
 	opt.pan_button = 1;
@@ -400,7 +399,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
-		{"menu-border"   , 1, 0, 207},
 		{"caption-path"  , 1, 0, 208},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
@@ -692,9 +690,6 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 206:
 			opt.screen_clip = 0;
-			break;
-		case 207:
-			opt.menu_border = atoi(optarg);
 			break;
 		case 208:
 			opt.caption_path = estrdup(optarg);

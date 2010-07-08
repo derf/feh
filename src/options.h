@@ -118,7 +118,6 @@ struct __fehoptions {
 	unsigned int geom_w;
 	unsigned int geom_h;
 	int default_zoom;
-	int menu_border;
 	unsigned char adjust_reload;
 
 	unsigned char mode;
