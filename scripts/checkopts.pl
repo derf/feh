@@ -9,7 +9,7 @@ my $options;
 open(my $c_fh, '<', 'src/options.c') or die("Can't read options.c: $!");
 while (my $line = <$c_fh>) {
 
-	if ($line =~ /\{"(?<long>[\w-]+)",.*,\s*(?:'(?<short>.)'|(?<short>\d+))\}/o) {
+	if ($line =~ /\{"(?<long>[\w-]+)"\s*,.*,\s*(?:'(?<short>.)'|(?<short>\d+))\}/o) {
 		push(@{$options->{$+{long}}}, ['source', $+{short}]);
 	}
 }
