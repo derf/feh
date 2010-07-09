@@ -2,6 +2,10 @@ git HEAD
 
     * Add --fullscreen option, --full-screen is now deprecated
     * Removed --menu-border option, it is largely useless
+    * Add short options: -P for --cache-thumbnails,
+                         -K for --caption-papth,
+                         -G for --draw-actions
+                    and  -J for --thumb-redraw
 
 Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 

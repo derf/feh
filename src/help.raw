@@ -38,7 +38,7 @@ OPTIONS
  -R, --reload NUM          Reload images after NUM seconds
  -Q, --builtin             Use builtin http client instead of wget
  -k, --keep-http           Keep local copies when viewing HTTP/FTP files
-     --caption-path PATH   Path to caption directory, enables caption display
+ -K, --caption-path PATH   Path to caption directory, enables caption display
  -j, --output-dir          With -k: Output directory for saved files
  -l, --list                list mode: ls-style output with image information
  -L, --customlist FORMAT   list mode with custom output, see FORMAT SPECIFIERS
@@ -50,14 +50,14 @@ OPTIONS
  -A, --action ACTION       Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
      --action[1-9]         Extra actions triggered by pressing keys <1>to <9>.
-     --draw-actions        Show the defined actions in the image window
+ -G, --draw-actions        Show the defined actions in the image window
  -m, --montage             Enable montage mode
  -c, --collage             Montage mode with randomly distributed thumbnails
  -i, --index               Create an index print of all images
  -t, --thumbnails          Show images as clickable thumbnails
-     --cache-thumbnails    Enable thumbnail caching for thumbnail mode.
+ -P, --cache-thumbnails    Enable thumbnail caching for thumbnail mode.
                            Only works with thumbnails <= 256x256 pixels
-     --thumb-redraw N      Redraw thumbnail window every N images
+ -J, --thumb-redraw N      Redraw thumbnail window every N images
  -~, --thumb-title STRING  Title for windows opened from thumbnail mode
  -I, --fullindex           Index mode with additional image information
      --index-name BOOL     Show/Don't show filename in index/thumbnail mode

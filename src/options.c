@@ -316,7 +316,8 @@ char *feh_string_normalize(char *str)
 static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
-	    "a:A:b:B:cC:dD:e:E:f:Fg:hH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
+		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ"
+		"0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
 	static struct option lopts[] = {
 		{"help"          , 0, 0, 'h'},
 		{"version"       , 0, 0, 'v'},
@@ -348,8 +349,8 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"scale-down"    , 0, 0, '.'},
 		{"no-jump-on-resort", 0, 0, 220},
 		{"hide-pointer"  , 0, 0, 221},
-		{"draw-actions"  , 0, 0, 222},
-		{"cache-thumbnails", 0, 0, 223},
+		{"draw-actions"  , 0, 0, 'G'},
+		{"cache-thumbnails", 0, 0, 'P'},
 		{"cycle-once"    , 0, 0, 224},
 		{"no-xinerama"   , 0, 0, 225},
 		{"no-rotate-ctrl-mask", 0, 0, 226},
@@ -399,7 +400,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
-		{"caption-path"  , 1, 0, 208},
+		{"caption-path"  , 1, 0, 'K'},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
 		{"action3"       , 1, 0, 211},
@@ -413,7 +414,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-name"    , 1, 0, 230},
 		{"index-size"    , 1, 0, 231},
 		{"index-dim"     , 1, 0, 232},
-		{"thumb-redraw"  , 1, 0, 233},
+		{"thumb-redraw"  , 1, 0, 'J'},
 
 		{0, 0, 0, 0}
 	};
@@ -691,7 +692,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 206:
 			opt.screen_clip = 0;
 			break;
-		case 208:
+		case 'K':
 			opt.caption_path = estrdup(optarg);
 			break;
 		case 209:
@@ -727,10 +728,10 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 221:
 			opt.hide_pointer = 1;
 			break;
-		case 222:
+		case 'G':
 			opt.draw_actions = 1;
 			break;
-		case 223:
+		case 'P':
 			opt.cache_thumbnails = 1;
 			break;
 		case 224:
@@ -757,7 +758,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 232:
 			opt.index_show_dim = atoi(optarg);
 			break;
-		case 233:
+		case 'J':
 			opt.thumb_redraw = atoi(optarg);
 			break;
 		default:

@@ -124,11 +124,11 @@ Create borderless windows.
 .It Cm -Q , --builtin
 Use builtin HTTP client to grab remote files instead of
 .Xr wget 1 .
-.It Cm --cache-thumbnails
+.It Cm -P , --cache-thumbnails
 Enable (experimental) thumbnail caching in
 .Pa ~/.thumbnails .
 Only works with thumbnails <= 256x256 pixels.
-.It Cm --caption-path Ar path
+.It Cm -K , --caption-path Ar path
 Path to directory containing image captions.  This turns on caption viewing,
 and if captions are found in
 .Ar path ,
@@ -154,7 +154,7 @@ for list output.  See
 .Sx FORMAT SPECIFIERS .
 .It Cm --cycle-once
 Exit feh after one loop through the slideshow.
-.It Cm --draw-actions
+.It Cm -G , --draw-actions
 Draw the defined actions and what they do at the top-left of the image.
 .It Cm -d , --draw-filename
 Draw the filename at the top-left of the image.
@@ -441,7 +441,7 @@ is specified.
 Set thumbnail height.
 .It Cm -y , --thumb-width Ar pixels
 Set thumbnail width.
-.It Cm --thumb-redraw Ar n
+.It Cm -J , --thumb-redraw Ar n
 Only relevant for
 .Cm --thumbnails :
 Redraw thumbnail window every
