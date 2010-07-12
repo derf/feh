@@ -35,3 +35,5 @@ Maybe remove some unneccessary stuff?
  * Builtin HTTP client
  * Support for custom menu backgrounds/themes
  * output-dir (cd $dir; feh is good enough)
+
+Incorporate patch to fix behaviour with tiling WMs
