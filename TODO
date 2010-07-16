@@ -36,4 +36,4 @@ Maybe remove some unneccessary stuff?
  * Support for custom menu backgrounds/themes
  * output-dir (cd $dir; feh is good enough)
 
-Incorporate patch to fix behaviour with tiling WMs
+--scale-down is slightly broken with large images & xinerama
