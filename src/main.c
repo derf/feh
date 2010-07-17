@@ -126,14 +126,14 @@ int feh_main_iteration(int block)
 	ft = first_timer;
 	/* Don't do timers if we're zooming/panning/etc or if we are paused */
 	if (ft && (opt.mode == MODE_NORMAL) && !opt.paused) {
-		D(5, ("There are timers in the queue\n"));
+		D(("There are timers in the queue\n"));
 		if (ft->just_added) {
-			D(5, ("The first timer has just been added\n"));
-			D(5, ("ft->in = %f\n", ft->in));
+			D(("The first timer has just been added\n"));
+			D(("ft->in = %f\n", ft->in));
 			ft->just_added = 0;
 			t1 = ft->in;
 		} else {
-			D(5, ("The first timer was not just added\n"));
+			D(("The first timer was not just added\n"));
 			t1 = ft->in - t2;
 			if (t1 < 0.0)
 				t1 = 0.0;
@@ -141,7 +141,7 @@ int feh_main_iteration(int block)
 		}
 
 		XSync(disp, False);
-		D(5, ("I next need to action a timer in %f seconds\n", t1));
+		D(("I next need to action a timer in %f seconds\n", t1));
 		/* Only do a blocking select if there's a timer due, or no events
 		   waiting */
 		if (t1 == 0.0 || (block && !XPending(disp))) {
@@ -152,7 +152,7 @@ int feh_main_iteration(int block)
 			if (tval.tv_usec <= 1000)
 				tval.tv_usec = 1000;
 			errno = 0;
-			D(5, ("Performing blocking select - waiting for timer or event\n"));
+			D(("Performing blocking select - waiting for timer or event\n"));
 			count = select(fdsize, &fdset, NULL, NULL, &tval);
 			if ((count < 0)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
@@ -169,7 +169,7 @@ int feh_main_iteration(int block)
 		/* Don't block if there are events in the queue. That's a bit rude ;-) */
 		if (block && !XPending(disp)) {
 			errno = 0;
-			D(5, ("Performing blocking select - no timers, or zooming\n"));
+			D(("Performing blocking select - no timers, or zooming\n"));
 			count = select(fdsize, &fdset, NULL, NULL, NULL);
 			if ((count < 0)
 					&& ((errno == ENOMEM) || (errno == EINVAL)

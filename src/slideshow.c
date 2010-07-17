@@ -311,7 +311,7 @@ void feh_action_run(feh_file * file, char *action)
 {
 	if (action) {
 		char *sys;
-		D(3, ("Running action %s\n", action));
+		D(("Running action %s\n", action));
 		sys = feh_printf(action, file);
 
 		if (opt.verbose && !opt.list && !opt.customlist)

@@ -39,28 +39,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef DEBUG
 #ifdef __GNUC__
-#define D(i, a) \
+#define D(a) \
 { \
-      if(i <= opt.debug_level) \
-      { \
-         printf("%-12s +%-4u %-20s : ",__FILE__,__LINE__,__FUNCTION__); \
-         printf a; \
-         fflush(stdout); \
-      } \
+	if (opt.debug) { \
+		printf("%-12s +%-4u %-20s : ",__FILE__,__LINE__,__FUNCTION__); \
+		printf a; \
+		fflush(stdout); \
+	} \
   }
 #else					/* __GNUC__ */
-#define D(i, a) \
+#define D(a) \
 { \
-   if(i <= opt.debug_level) \
-   { \
-      printf("%-12s +%-4u : ",__FILE__,__LINE__); \
-         printf a; \
-   } \
-      fflush(stdout); \
-  }
+	if (opt.debug) { \
+		printf("%-12s +%-4u : ",__FILE__,__LINE__); \
+		printf a; \
+		fflush(stdout); \
+	} \
+}
 #endif					/* __GNUC__ */
 #else					/* DEBUG */
-#define D(i,a)
+#define D(a)
 #endif					/* DEBUG */
 
 #endif					/* DEBUG_H */

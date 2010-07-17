@@ -88,10 +88,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		imlib_context_set_image(im);
 		imlib_image_set_format("png");
 		gib_imlib_save_image(im, bgfil);
-		D(3, ("bg saved as %s\n", bgfil));
+		D(("bg saved as %s\n", bgfil));
 		fil = bgfil;
 	}
-	D(3, ("Setting bg %s\n", fil));
+	D(("Setting bg %s\n", fil));
 
 	if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None)) {
 		snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil);
@@ -148,7 +148,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		GC gc;
 		int in, out, w, h;
 
-		D(3, ("Falling back to XSetRootWindowPixmap\n"));
+		D(("Falling back to XSetRootWindowPixmap\n"));
 
 		/* Put the filename in filbuf between ' and escape ' in the filename */
 		out = 0;
@@ -183,7 +183,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			GC gc;
 			int x, y;
 
-			D(3, ("centering\n"));
+			D(("centering\n"));
 			w = scr->width;
 			h = scr->height;
 
@@ -316,10 +316,10 @@ signed char feh_wm_get_wm_is_e(void)
 		/* XXX: This only covers E17 prior to 6/22/05 */
 		if ((XInternAtom(disp, "ENLIGHTENMENT_COMMS", True) != None)
 		    && (XInternAtom(disp, "ENLIGHTENMENT_VERSION", True) != None)) {
-			D(3, ("Enlightenment detected.\n"));
+			D(("Enlightenment detected.\n"));
 			e = 1;
 		} else {
-			D(3, ("Enlightenment not detected.\n"));
+			D(("Enlightenment not detected.\n"));
 			e = 0;
 		}
 	}
@@ -337,7 +337,7 @@ int feh_wm_get_num_desks(void)
 	buf = enl_send_and_wait("num_desks ?");
 	if (buf == IPC_FAKE)	/* Fake E17 IPC */
 		return(-1);
-	D(3, ("Got from E IPC: %s\n", buf));
+	D(("Got from E IPC: %s\n", buf));
 	ptr = buf;
 	while (ptr && !isdigit(*ptr))
 		ptr++;
@@ -357,7 +357,7 @@ Window enl_ipc_get_win(void)
 	int dummy_int;
 	unsigned int dummy_uint;
 
-	D(3, ("Searching for IPC window.\n"));
+	D(("Searching for IPC window.\n"));
 
 	/*
 	 * Shortcircuit this entire func
@@ -368,14 +368,14 @@ Window enl_ipc_get_win(void)
 
 		    prop = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
 	if (prop == None) {
-		D(3, ("Enlightenment is not running.\n"));
+		D(("Enlightenment is not running.\n"));
 		return(None);
 	} else {
 		/* XXX: This will only work with E17 prior to 6/22/2005 */
 		ever = XInternAtom(disp, "ENLIGHTENMENT_VERSION", True);
 		if (ever == None) {
 			/* This is an E without ENLIGHTENMENT_VERSION */
-			D(3, ("E16 IPC Protocol not supported"));
+			D(("E16 IPC Protocol not supported"));
 			return(None);
 		}
 	}
@@ -388,7 +388,7 @@ Window enl_ipc_get_win(void)
 		if (!XGetGeometry
 		    (disp, ipc_win, &dummy_win, &dummy_int, &dummy_int,
 		     &dummy_uint, &dummy_uint, &dummy_uint, &dummy_uint)) {
-			D(3, (" -> IPC Window property is valid, but the window doesn't exist.\n"));
+			D((" -> IPC Window property is valid, but the window doesn't exist.\n"));
 			ipc_win = None;
 		}
 		str = NULL;
@@ -398,7 +398,7 @@ Window enl_ipc_get_win(void)
 			if (str) {
 				XFree(str);
 			} else {
-				D(3, (" -> IPC Window lacks the proper atom.  I can't talk to fake IPC windows....\n"));
+				D((" -> IPC Window lacks the proper atom.  I can't talk to fake IPC windows....\n"));
 				ipc_win = None;
 			}
 		}
@@ -416,14 +416,13 @@ Window enl_ipc_get_win(void)
 			 * -- richlowe 2005-06-22
 			 */
 			XFree(str);
-			D(3, (" -> Found a fake E17 IPC window, ignoring"));
+			D((" -> Found a fake E17 IPC window, ignoring"));
 			ipc_win = None;
 			e17_fake_ipc = 1;
 			return(ipc_win);
 		}
 
-		D(3,
-		  (" -> IPC Window found and verified as 0x%08x.  Registering feh as an IPC client.\n", (int) ipc_win));
+		D((" -> IPC Window found and verified as 0x%08x.  Registering feh as an IPC client.\n", (int) ipc_win));
 		XSelectInput(disp, ipc_win, StructureNotifyMask | SubstructureNotifyMask);
 		enl_ipc_send("set clientname " PACKAGE);
 		enl_ipc_send("set version " VERSION);
@@ -451,24 +450,24 @@ void enl_ipc_send(char *str)
 		if (last_msg == NULL)
 			eprintf("eeek");
 		str = last_msg;
-		D(4, ("Resending last message \"%s\" to Enlightenment.\n", str));
+		D(("Resending last message \"%s\" to Enlightenment.\n", str));
 	} else {
 		if (last_msg != NULL) {
 			free(last_msg);
 		}
 		last_msg = estrdup(str);
-		D(4, ("Sending \"%s\" to Enlightenment.\n", str));
+		D(("Sending \"%s\" to Enlightenment.\n", str));
 	}
 	if (ipc_win == None) {
 		if ((ipc_win = enl_ipc_get_win()) == None) {
-			D(3, ("Hrm. Enlightenment doesn't seem to be running. No IPC window, no IPC.\n"));
+			D(("Hrm. Enlightenment doesn't seem to be running. No IPC window, no IPC.\n"));
 			return;
 		}
 	}
 	len = strlen(str);
 	ipc_atom = XInternAtom(disp, "ENL_MSG", False);
 	if (ipc_atom == None) {
-		D(3, ("IPC error:  Unable to find/create ENL_MSG atom.\n"));
+		D(("IPC error:  Unable to find/create ENL_MSG atom.\n"));
 		return;
 	}
 	for (; XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev););	/* Discard any out-of-sync messages */
@@ -552,7 +551,7 @@ char *enl_ipc_get(const char *msg_data)
 	if (blen < 12) {
 		ret_msg = message;
 		message = NULL;
-		D(4, ("Received complete reply:  \"%s\"\n", ret_msg));
+		D(("Received complete reply:  \"%s\"\n", ret_msg));
 	}
 	return(ret_msg);
 }
@@ -586,7 +585,7 @@ char *enl_send_and_wait(char *msg)
 		for (; !(reply = enl_ipc_get(enl_wait_for_reply())););
 		if (reply == IPC_TIMEOUT) {
 			/* We timed out.  The IPC window must be AWOL.  Reset and resend message. */
-			D(3, ("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
+			D(("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
 			XSelectInput(disp, ipc_win, None);
 			ipc_win = None;
 		}

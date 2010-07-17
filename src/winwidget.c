@@ -127,7 +127,7 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 	if (!ret->win) {
 		ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
 		ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
-		D(3, ("image is %dx%d pixels, format %s\n", ret->w, ret->h, gib_imlib_image_format(ret->im)));
+		D(("image is %dx%d pixels, format %s\n", ret->w, ret->h, gib_imlib_image_format(ret->im)));
 		if (opt.full_screen)
 			ret->full_screen = True;
 		winwidget_create_window(ret, ret->w, ret->h);
@@ -147,7 +147,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	int x = 0;
 	int y = 0;
 
-	D(4, ("winwidget_create_window %dx%d\n", w, h));
+	D(("winwidget_create_window %dx%d\n", w, h));
 
 	if (ret->full_screen) {
 		w = scr->width;
@@ -290,7 +290,7 @@ void winwidget_update_title(winwidget ret)
 {
 	char *name;
 
-	D(4, ("winwid->name = %s\n", ret->name));
+	D(("winwid->name = %s\n", ret->name));
 	name = ret->name ? ret->name : "feh";
 	XStoreName(disp, ret->win, name);
 	XSetIconName(disp, ret->win, name);
@@ -313,7 +313,7 @@ void winwidget_setup_pixmaps(winwidget winwid)
 		XFillRectangle(disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width, scr->height);
 	} else {
 		if (!winwid->bg_pmap || winwid->had_resize) {
-			D(4, ("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
+			D(("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
 			if (winwid->bg_pmap)
 				XFreePixmap(disp, winwid->bg_pmap);
 
@@ -344,17 +344,17 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 	if (winwid->im_y > winwid->h)
 		winwid->im_y = winwid->h;
 
-	D(2, ("winwidget_render_image resize %d alias %d im %dx%d\n",
+	D(("winwidget_render_image resize %d alias %d im %dx%d\n",
 	      resize, alias, winwid->im_w, winwid->im_h));
 
 	winwidget_setup_pixmaps(winwid);
 
 	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
 						       || (winwid->h < winwid->im_h))) {
-		D(2, ("scaling down image %dx%d\n", winwid->w, winwid->h));
+		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
 
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
-		D(2, ("after scaling down image %dx%d\n", winwid->w, winwid->h));
+		D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
 	}
 
 	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im)) || (opt.geom_flags)
@@ -385,7 +385,7 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 			}
 		}
 
-		D(4, ("Calculating for fullscreen/fixed geom render\n"));
+		D(("Calculating for fullscreen/fixed geom render\n"));
 		smaller = ((winwid->im_w < max_w)
 			   && (winwid->im_h < max_h));
 
@@ -484,11 +484,10 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 	sw = lround(dw / winwid->zoom);
 	sh = lround(dh / winwid->zoom);
 
-	D(5,
-	  ("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
+	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
-	D(5, ("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
+	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
 	if (winwid->has_rotated)
 		gib_imlib_render_image_part_on_drawable_at_size_with_rotation
 		    (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh, winwid->im_angle, 1, 1, alias);
@@ -681,7 +680,7 @@ winwidget winwidget_get_first_window_of_type(unsigned int type)
 
 int winwidget_loadimage(winwidget winwid, feh_file * file)
 {
-	D(4, ("filename %s\n", file->filename));
+	D(("filename %s\n", file->filename));
 	return(feh_load_image(&(winwid->im), file));
 }
 
@@ -695,9 +694,9 @@ void winwidget_show(winwidget winwid)
 		if (opt.full_screen)
 			XMoveWindow(disp, winwid->win, 0, 0);
 		/* wait for the window to map */
-		D(4, ("Waiting for window to map\n"));
+		D(("Waiting for window to map\n"));
 		XMaskEvent(disp, StructureNotifyMask, &ev);
-		D(4, ("Window mapped\n"));
+		D(("Window mapped\n"));
 		winwid->visible = 1;
 	}
 	return;
@@ -713,7 +712,7 @@ void winwidget_move(winwidget winwid, int x, int y)
 		XMoveWindow(disp, winwid->win, winwid->x, winwid->y);
 		XFlush(disp);
 	} else {
-		D(4, ("No move actually needed\n"));
+		D(("No move actually needed\n"));
 	}
 	return;
 }
@@ -729,7 +728,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 		return;
 	}
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		D(4, ("Really doing a resize\n"));
+		D(("Really doing a resize\n"));
 		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
 			winwid->w = (w > scr->width) ? scr->width : w;
@@ -767,7 +766,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 #endif				/* HAVE_LIBXINERAMA */
 
 	} else {
-		D(4, ("No resize actually needed\n"));
+		D(("No resize actually needed\n"));
 	}
 
 	return;
@@ -782,7 +781,7 @@ void winwidget_hide(winwidget winwid)
 
 static void winwidget_register(winwidget win)
 {
-	D(5, ("window %p\n", win));
+	D(("window %p\n", win));
 	window_num++;
 	if (windows)
 		windows = erealloc(windows, window_num * sizeof(winwidget));

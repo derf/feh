@@ -85,15 +85,15 @@ void init_parse_options(int argc, char **argv)
 	opt.xinerama = 1;
 #endif				/* HAVE_LIBXINERAMA */
 
-	D(3, ("About to parse env options (if any)\n"));
+	D(("About to parse env options (if any)\n"));
 	/* Check for and parse any options in FEH_OPTIONS */
 	feh_parse_environment_options();
 
-	D(3, ("About to parse commandline options\n"));
+	D(("About to parse commandline options\n"));
 	/* Parse the cmdline args */
 	feh_parse_option_array(argc, argv);
 
-	D(3, ("About to check for theme configuration\n"));
+	D(("About to check for theme configuration\n"));
 	feh_check_theme_options(argc, argv);
 
 	/* If we have a filelist to read, do it now */
@@ -101,11 +101,11 @@ void init_parse_options(int argc, char **argv)
 		/* joining two reverse-sorted lists in this manner works nicely for us
 		   here, as files specified on the commandline end up at the *end* of
 		   the combined filelist, in the specified order. */
-		D(3, ("About to load filelist from file\n"));
+		D(("About to load filelist from file\n"));
 		filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
 	}
 
-	D(4, ("Options parsed\n"));
+	D(("Options parsed\n"));
 
 	if (opt.bgmode)
 		return;
@@ -131,7 +131,7 @@ static void feh_check_theme_options(int arg, char **argv)
 		else
 			theme = estrdup(argv[0]);
 	}
-	D(3, ("Theme name is %s\n", theme));
+	D(("Theme name is %s\n", theme));
 
 	feh_load_options_for_theme(theme);
 
@@ -160,7 +160,7 @@ static void feh_load_options_for_theme(char *theme)
 			eprintf("D'oh! Please define HOME in your environment! "
 					"It would really help me out...\n");
 		rcpath = estrjoin("/", home, ".fehrc", NULL);
-		D(3, ("Trying %s for config\n", rcpath));
+		D(("Trying %s for config\n", rcpath));
 		fp = fopen(rcpath, "r");
 
 		if (!fp && ((fp = fopen("/etc/fehrc", "r")) == NULL)) {
@@ -182,14 +182,14 @@ static void feh_load_options_for_theme(char *theme)
 			sscanf(s, " %[^\n]\n", (char *) &s2);
 			if (!*s2)
 				break;
-			D(5, ("Got continued options %s\n", s2));
+			D(("Got continued options %s\n", s2));
 		} else {
 			sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
 			if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#')) {
 				cont = 0;
 				continue;
 			}
-			D(5, ("Got theme/options pair %s/%s\n", s1, s2));
+			D(("Got theme/options pair %s/%s\n", s1, s2));
 		}
 
 		if (!strcmp(s1, theme) || cont) {
@@ -197,7 +197,7 @@ static void feh_load_options_for_theme(char *theme)
 			bspos = strlen(s2)-1;
 
 			if (s2[bspos] == '\\') {
-				D(5, ("Continued line\n"));
+				D(("Continued line\n"));
 				s2[bspos] = '\0';
 				cont = 1;
 				/* A trailing whitespace confuses the option parser */
@@ -206,7 +206,7 @@ static void feh_load_options_for_theme(char *theme)
 			} else
 				cont = 0;
 
-			D(4, ("A match. Using options %s\n", s2));
+			D(("A match. Using options %s\n", s2));
 			feh_parse_options_from_string(s2);
 
 			if (!cont)
@@ -288,7 +288,7 @@ char *feh_string_normalize(char *str)
 	int i = 0;
 	char last = 0;
 
-	D(4, ("normalizing %s\n", str));
+	D(("normalizing %s\n", str));
 	ret[0] = '\0';
 
 	for (s = str;; s++) {
@@ -308,7 +308,7 @@ char *feh_string_normalize(char *str)
 		ret[i - 1] = '\0';
 	else
 		ret[i] = '\0';
-	D(4, ("normalized to %s\n", ret));
+	D(("normalized to %s\n", ret));
 
 	return(estrdup(ret));
 }
@@ -391,7 +391,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"blur-button"   , 1, 0, '9'},
 		{"start-at"      , 1, 0, '|'},
 		{"rcfile"        , 1, 0, '_'},
-		{"debug-level"   , 1, 0, '+'},
+		{"debug"         , 0, 0, '+'},
 		{"output-dir"    , 1, 0, 'j'},
 		{"bg-tile"       , 1, 0, 200},
 		{"bg-center"     , 1, 0, 201},
@@ -422,7 +422,7 @@ static void feh_parse_option_array(int argc, char **argv)
 
 	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
-		D(5, ("Got option, getopt calls it %d, or %c\n", optch, optch));
+		D(("Got option, getopt calls it %d, or %c\n", optch, optch));
 		switch (optch) {
 		case 0:
 			break;
@@ -472,7 +472,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.menu_font = estrdup(optarg);
 			break;
 		case '+':
-			opt.debug_level = atoi(optarg);
+			opt.debug = 1;
 			break;
 		case 'n':
 			opt.reverse = 1;
@@ -564,7 +564,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			theme = estrdup(optarg);
 			break;
 		case 'C':
-			D(3, ("adding fontpath %s\n", optarg));
+			D(("adding fontpath %s\n", optarg));
 			imlib_add_path_to_font_path(optarg);
 			break;
 		case 'e':

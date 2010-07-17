@@ -116,7 +116,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
 
-	D(3, ("filename is %s, image is %p\n", file->filename, im));
+	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
 		return(0);
@@ -220,11 +220,11 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 						file->filename, err);
 			break;
 		}
-		D(3, ("Load *failed*\n"));
+		D(("Load *failed*\n"));
 		return(0);
 	}
 
-	D(3, ("Loaded ok\n"));
+	D(("Loaded ok\n"));
 	return(1);
 }
 
@@ -271,7 +271,7 @@ char *feh_http_load_image(char *url)
 		char accept_string[] = "Accept: image/*";
 		FILE *fp;
 
-		D(4, ("using builtin http collection\n"));
+		D(("using builtin http collection\n"));
 		fp = fopen(tmpname, "w");
 		if (!fp) {
 			weprintf("couldn't write to file %s:", tmpname);
@@ -288,7 +288,7 @@ char *feh_http_load_image(char *url)
 			return(NULL);
 		}
 
-		D(4, ("trying hostname %s\n", hostname));
+		D(("trying hostname %s\n", hostname));
 
 		if (!(hptr = feh_gethostbyname(hostname))) {
 			weprintf("error resolving host %s:", hostname);
@@ -635,7 +635,7 @@ char *build_caption_filename(feh_file * file)
 
 	caption_dir = estrjoin("/", dir, opt.caption_path, NULL);
 
-	D(4, ("dir %s, cp %s, cdir %s\n", dir, opt.caption_path, caption_dir))
+	D(("dir %s, cp %s, cdir %s\n", dir, opt.caption_path, caption_dir))
 
 	if (stat(caption_dir, &cdir_stat) == -1) {
 		if (mkdir(caption_dir, 0755) == -1)
@@ -789,7 +789,7 @@ void feh_display_status(char stat)
 	static int init_len = 0;
 	int j = 0;
 
-	D(5, ("filelist %p, filelist->next %p\n", filelist, filelist->next));
+	D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
 	if (!init_len)
 		init_len = gib_list_length(filelist);

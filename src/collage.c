@@ -50,7 +50,7 @@ void init_collage_mode(void)
 			trans_bg = 1;
 		else {
 
-			D(4, ("Time to apply a background to blend onto\n"));
+			D(("Time to apply a background to blend onto\n"));
 			if (feh_load_image_char(&bg_im, opt.bg_file) != 0) {
 				bg_w = gib_imlib_image_get_width(bg_im);
 				bg_h = gib_imlib_image_get_height(bg_im);
@@ -82,7 +82,7 @@ void init_collage_mode(void)
 
 	w = opt.limit_w;
 	h = opt.limit_h;
-	D(4, ("Limiting width to %d and height to %d\n", w, h));
+	D(("Limiting width to %d and height to %d\n", w, h));
 
 	im_main = imlib_create_image(w, h);
 
@@ -119,9 +119,9 @@ void init_collage_mode(void)
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
-		D(3, ("About to load image %s\n", file->filename));
+		D(("About to load image %s\n", file->filename));
 		if (feh_load_image(&im_temp, file) != 0) {
-			D(3, ("Successfully loaded %s\n", file->filename));
+			D(("Successfully loaded %s\n", file->filename));
 			if (opt.verbose)
 				feh_display_status('.');
 			www = opt.thumb_w;
@@ -150,7 +150,7 @@ void init_collage_mode(void)
 			/* pick random coords for thumbnail */
 			xxx = ((w - www) * ((double) rand() / RAND_MAX));
 			yyy = ((h - hhh) * ((double) rand() / RAND_MAX));
-			D(5, ("image going on at x=%d, y=%d\n", xxx, yyy));
+			D(("image going on at x=%d, y=%d\n", xxx, yyy));
 
 			im_thumb = gib_imlib_create_cropped_scaled_image(im_temp,
 					0, 0, ww, hh, www, hhh, 1);
@@ -159,7 +159,7 @@ void init_collage_mode(void)
 			if (opt.alpha) {
 				DATA8 atab[256];
 
-				D(4, ("Applying alpha options\n"));
+				D(("Applying alpha options\n"));
 				gib_imlib_image_set_has_alpha(im_thumb, 1);
 				memset(atab, opt.alpha_level, sizeof(atab));
 				gib_imlib_apply_color_modifier_to_rectangle(im_thumb,

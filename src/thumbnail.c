@@ -127,7 +127,7 @@ void init_thumbnail_mode(void)
 			trans_bg = 1;
 		else {
 
-			D(3, ("Time to apply a background to blend onto\n"));
+			D(("Time to apply a background to blend onto\n"));
 			if (feh_load_image_char(&td.im_bg, opt.bg_file) != 0) {
 				td.bg_w = gib_imlib_image_get_width(td.im_bg);
 				td.bg_h = gib_imlib_image_get_height(td.im_bg);
@@ -202,12 +202,12 @@ void init_thumbnail_mode(void)
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
-		D(4, ("About to load image %s\n", file->filename));
+		D(("About to load image %s\n", file->filename));
 		/*      if (feh_load_image(&im_temp, file) != 0) */
 		if (feh_thumbnail_get_thumbnail(&im_temp, file) != 0) {
 			if (opt.verbose)
 				feh_display_status('.');
-			D(4, ("Successfully loaded %s\n", file->filename));
+			D(("Successfully loaded %s\n", file->filename));
 			www = opt.thumb_w;
 			hhh = opt.thumb_h;
 			ww = gib_imlib_image_get_width(im_temp);
@@ -243,7 +243,7 @@ void init_thumbnail_mode(void)
 			if (opt.alpha) {
 				DATA8 atab[256];
 
-				D(3, ("Applying alpha options\n"));
+				D(("Applying alpha options\n"));
 				gib_imlib_image_set_has_alpha(im_thumb, 1);
 				memset(atab, opt.alpha_level, sizeof(atab));
 				gib_imlib_apply_color_modifier_to_rectangle
@@ -471,7 +471,7 @@ feh_file *feh_thumbnail_get_file_from_coords(int x, int y)
 			}
 		}
 	}
-	D(4, ("No matching %d %d\n", x, y));
+	D(("No matching %d %d\n", x, y));
 	return(NULL);
 }
 
@@ -488,7 +488,7 @@ feh_thumbnail *feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 			}
 		}
 	}
-	D(4, ("No matching %d %d\n", x, y));
+	D(("No matching %d %d\n", x, y));
 	return(NULL);
 }
 
@@ -505,7 +505,7 @@ feh_thumbnail *feh_thumbnail_get_from_file(feh_file * file)
 			}
 		}
 	}
-	D(4, ("No match\n"));
+	D(("No match\n"));
 	return(NULL);
 }
 
@@ -733,7 +733,7 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file)
 		if (!status)
 			status = feh_thumbnail_generate(image, file, thumb_file, uri);
 
-		D(1, ("uri is %s, thumb_file is %s\n", uri, thumb_file));
+		D(("uri is %s, thumb_file is %s\n", uri, thumb_file));
 		free(uri);
 		free(thumb_file);
 	} else

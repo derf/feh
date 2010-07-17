@@ -58,7 +58,7 @@ void init_multiwindow_mode(void)
 			if (!feh_main_iteration(0))
 				exit(0);
 		} else {
-			D(3, ("EEEK. Couldn't load image in multiwindow mode. "
+			D(("EEEK. Couldn't load image in multiwindow mode. "
 						"I 'm not sure if this is a problem\n"));
 		}
 		free(s);

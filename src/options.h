@@ -111,7 +111,7 @@ struct __fehoptions {
 	unsigned int thumb_redraw;
 	int reload;
 	int sort;
-	int debug_level;
+	int debug;
 	int geom_flags;
 	int geom_x;
 	int geom_y;

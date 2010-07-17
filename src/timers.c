@@ -34,14 +34,14 @@ void feh_handle_timer(void)
 	fehtimer ft;
 
 	if (!first_timer) {
-		D(3, ("No timer to handle, returning\n"));
+		D(("No timer to handle, returning\n"));
 		return;
 	}
 	ft = first_timer;
 	first_timer = first_timer->next;
-	D(3, ("Executing timer function now\n"));
+	D(("Executing timer function now\n"));
 	(*(ft->func)) (ft->data);
-	D(3, ("Freeing the timer\n"));
+	D(("Freeing the timer\n"));
 	if (ft && ft->name)
 		free(ft->name);
 	if (ft)
@@ -61,14 +61,14 @@ void feh_remove_timer(char *name)
 {
 	fehtimer ft, ptr, pptr;
 
-	D(3, ("removing %s\n", name));
+	D(("removing %s\n", name));
 	pptr = NULL;
 	ptr = first_timer;
 	while (ptr) {
-		D(3, ("Stepping through event list\n"));
+		D(("Stepping through event list\n"));
 		ft = ptr;
 		if (!strcmp(ft->name, name)) {
-			D(3, ("Found it. Removing\n"));
+			D(("Found it. Removing\n"));
 			if (pptr)
 				pptr->next = ft->next;
 			else
@@ -92,7 +92,7 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 	fehtimer ft, ptr, pptr;
 	double tally;
 
-	D(3, ("adding timer %s for %f seconds time\n", name, in));
+	D(("adding timer %s for %f seconds time\n", name, in));
 	feh_remove_timer(name);
 	ft = malloc(sizeof(_fehtimer));
 	ft->next = NULL;
@@ -101,13 +101,13 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 	ft->name = estrdup(name);
 	ft->just_added = 1;
 	ft->in = in;
-	D(3, ("ft->in = %f\n", ft->in));
+	D(("ft->in = %f\n", ft->in));
 	tally = 0.0;
 	if (!first_timer) {
-		D(3, ("No first timer\n"));
+		D(("No first timer\n"));
 		first_timer = ft;
 	} else {
-		D(3, ("There is a first timer\n"));
+		D(("There is a first timer\n"));
 		pptr = NULL;
 		ptr = first_timer;
 		tally = 0.0;
@@ -134,7 +134,7 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 			first_timer = ft;
 		ft->in -= tally;
 	}
-	D(3, ("ft->in = %f\n", ft->in));
+	D(("ft->in = %f\n", ft->in));
 	return;
 }
 
@@ -144,7 +144,7 @@ void feh_add_unique_timer(void (*func) (void *data), void *data, double in)
 	char evname[20];
 
 	snprintf(evname, sizeof(evname), "T_%ld", i);
-	D(4, ("adding timer with unique name %s\n", evname));
+	D(("adding timer with unique name %s\n", evname));
 	feh_add_timer(func, data, in, evname);
 	i++;
 	/* Mega paranoia ;) */

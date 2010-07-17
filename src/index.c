@@ -101,7 +101,7 @@ void init_index_mode(void)
 		if (!strcmp(opt.bg_file, "trans"))
 			trans_bg = 1;
 		else {
-			D(3, ("Time to apply a background to blend onto\n"));
+			D(("Time to apply a background to blend onto\n"));
 			if (feh_load_image_char(&bg_im, opt.bg_file) != 0) {
 				bg_w = gib_imlib_image_get_width(bg_im);
 				bg_h = gib_imlib_image_get_height(bg_im);
@@ -310,11 +310,11 @@ void init_index_mode(void)
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
-		D(4, ("About to load image %s\n", file->filename));
+		D(("About to load image %s\n", file->filename));
 		if (feh_load_image(&im_temp, file) != 0) {
 			if (opt.verbose)
 				feh_display_status('.');
-			D(4, ("Successfully loaded %s\n", file->filename));
+			D(("Successfully loaded %s\n", file->filename));
 			www = opt.thumb_w;
 			hhh = opt.thumb_h;
 			ww = gib_imlib_image_get_width(im_temp);
@@ -345,7 +345,7 @@ void init_index_mode(void)
 			if (opt.alpha) {
 				DATA8 atab[256];
 
-				D(3, ("Applying alpha options\n"));
+				D(("Applying alpha options\n"));
 				gib_imlib_image_set_has_alpha(im_thumb, 1);
 				memset(atab, opt.alpha_level, sizeof(atab));
 				gib_imlib_apply_color_modifier_to_rectangle

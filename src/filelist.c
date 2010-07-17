@@ -106,7 +106,7 @@ gib_list *feh_file_rm_and_free(gib_list * list, gib_list * l)
 gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l)
 {
 	feh_file_free(FEH_FILE(l->data));
-	D(4, ("filelist_len %d -> %d\n", filelist_len, filelist_len - 1));
+	D(("filelist_len %d -> %d\n", filelist_len, filelist_len - 1));
 	filelist_len--;
 	return(gib_list_remove(list, l));
 }
@@ -121,7 +121,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		return;
 
 	path = estrdup(origpath);
-	D(4, ("file is %s\n", path));
+	D(("file is %s\n", path));
 
 	if (level == FILELIST_FIRST) {
 		/* First time through, sort out pathname */
@@ -135,7 +135,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 				|| (!strncmp(path, "https://", 8))
 				|| (!strncmp(path, "ftp://", 6))) {
 			/* Its a url */
-			D(3, ("Adding url %s to filelist\n", path));
+			D(("Adding url %s to filelist\n", path));
 			filelist = gib_list_add_front(filelist, feh_file_new(path));
 			/* We'll download it later... */
 			free(path);
@@ -178,7 +178,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		struct dirent *de;
 		DIR *dir;
 
-		D(4, ("It is a directory\n"));
+		D(("It is a directory\n"));
 
 		if ((dir = opendir(path)) == NULL) {
 			if (!opt.quiet)
@@ -207,7 +207,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		}
 		closedir(dir);
 	} else if (S_ISREG(st.st_mode)) {
-		D(5, ("Adding regular file %s to filelist\n", path));
+		D(("Adding regular file %s to filelist\n", path));
 		filelist = gib_list_add_front(filelist, feh_file_new(path));
 	}
 	free(path);
@@ -240,9 +240,9 @@ gib_list *feh_file_info_preload(gib_list * list)
 
 	for (l = list; l; l = l->next) {
 		file = FEH_FILE(l->data);
-		D(5, ("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
+		D(("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
 		if (feh_file_info_load(file, NULL)) {
-			D(3, ("Failed to load file %p\n", file));
+			D(("Failed to load file %p\n", file));
 			remove_list = gib_list_add_front(remove_list, l);
 			if (opt.verbose)
 				feh_display_status('x');
@@ -268,7 +268,7 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 	int need_free = 1;
 	Imlib_Image im1;
 
-	D(4, ("im is %p\n", im));
+	D(("im is %p\n", im));
 
 	if (im)
 		need_free = 0;
@@ -369,7 +369,7 @@ void feh_prepare_filelist(void)
 			show_mini_usage();
 	}
 
-	D(3, ("sort mode requested is: %d\n", opt.sort));
+	D(("sort mode requested is: %d\n", opt.sort));
 	switch (opt.sort) {
 	case SORT_NONE:
 		if (opt.randomize) {
@@ -407,7 +407,7 @@ void feh_prepare_filelist(void)
 
 	/* no point reversing a random list */
 	if (opt.reverse && (opt.sort != SORT_NONE)) {
-		D(3, ("Reversing filelist as requested\n"));
+		D(("Reversing filelist as requested\n"));
 		filelist = gib_list_reverse(filelist);
 	}
 
@@ -467,12 +467,12 @@ gib_list *feh_read_filelist(char *filename)
 	}
 
 	for (; fgets(s, sizeof(s), fp);) {
-		D(5, ("Got line '%s'\n", s));
+		D(("Got line '%s'\n", s));
 		s1[0] = '\0';
 		sscanf(s, "%[^\n]", (char *) &s1);
 		if (!(*s1) || (*s1 == '\n'))
 			continue;
-		D(5, ("Got filename %s from filelist file\n", s1));
+		D(("Got filename %s from filelist file\n", s1));
 		/* Add it to the new list */
 		list = gib_list_add_front(list, feh_file_new(s1));
 	}
@@ -495,7 +495,7 @@ char *feh_absolute_path(char *path)
 	/* This path is not relative. We're gonna convert it, so that a
 	   filelist file can be saved anywhere and feh will still find the
 	   images */
-	D(4, ("Need to convert %s to an absolute form\n", path));
+	D(("Need to convert %s to an absolute form\n", path));
 	/* I SHOULD be able to just use a simple realpath() here, but dumb * 
 	   old Solaris's realpath doesn't return an absolute path if the
 	   path you give it is relative. Linux and BSD get this right... */
@@ -506,7 +506,7 @@ char *feh_absolute_path(char *path)
 	} else {
 		ret = estrdup(temp);
 	}
-	D(4, ("Converted path to %s\n", ret));
+	D(("Converted path to %s\n", ret));
 	return(ret);
 }
 

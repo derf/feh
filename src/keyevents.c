@@ -31,8 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void feh_event_invoke_action(winwidget winwid, char *action)
 {
-	D(4, ("action is '%s'\n", action));
-	D(4, ("winwid is '%p'\n", winwid));
+	D(("action is '%s'\n", action));
+	D(("winwid is '%p'\n", winwid));
 	if (action) {
 		if (opt.slideshow) {
 			feh_action_run(FEH_FILE(winwid->file->data), action);

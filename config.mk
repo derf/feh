@@ -21,7 +21,7 @@ xinerama = -DHAVE_LIBXINERAMA
 xinerama_ld = -lXinerama
 
 # Uncomment this for debug mode
-# (Use feh -+ <level> or feh --debug-level <level> to see debug output)
+# (Use feh -+ or feh --debug to see debug output)
 #CFLAGS += -DDEBUG
 
 # Uncomment this to use dmalloc
