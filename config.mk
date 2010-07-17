@@ -20,14 +20,12 @@ CFLAGS += -Wall -Wextra -pedantic
 xinerama = -DHAVE_LIBXINERAMA
 xinerama_ld = -lXinerama
 
-debug = -DDEBUG
 # Uncomment this for debug mode
 # (Use feh -+ <level> or feh --debug-level <level> to see debug output)
-#CFLAGS += ${debug}
+#CFLAGS += -DDEBUG
 
-dmalloc = -DWITH_DMALLOC
 # Uncomment this to use dmalloc
-#CFLAGS += ${dmalloc}
+#CFLAGS += -DWITH_DMALLOC
 
 CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
