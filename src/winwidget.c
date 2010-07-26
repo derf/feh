@@ -146,6 +146,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	Atom prop = None;
 	int x = 0;
 	int y = 0;
+	char *tmpname;
 
 	D(("winwidget_create_window %dx%d\n", w, h));
 
@@ -194,6 +195,13 @@ void winwidget_create_window(winwidget ret, int w, int h)
 				h = xinerama_screens[xinerama_screen].height;
 		}
 #endif				/* HAVE_LIBXINERAMA */
+	}
+
+	if (opt.paused) {
+		printf("name %s\n", ret->name);
+		tmpname = estrjoin(" ", ret->name, "[Paused]", NULL);
+		free(ret->name);
+		ret->name = tmpname;
 	}
 
 	ret->x = x;

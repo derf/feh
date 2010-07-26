@@ -340,7 +340,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	case 'f':
 		if ((winwid->type == WIN_TYPE_THUMBNAIL)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER))
-			weprintf("Filelist saving is not supported in thumbnail mode\n");
+			weprintf("Filelist saving is not supported in thumbnail mode");
 		else
 			feh_save_filelist();
 		break;
