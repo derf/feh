@@ -7,6 +7,7 @@ git HEAD
                          -G for --draw-actions
                     and  -J for --thumb-redraw
     * Patch by Noel Cragg: Improve support for tiling window managers
+    * Set correct window title when starting feh in paused mode
 
 Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 
