@@ -8,6 +8,8 @@ git HEAD
                     and  -J for --thumb-redraw
     * Patch by Noel Cragg: Improve support for tiling window managers
     * Set correct window title when starting feh in paused mode
+    * Add Up/Down keys for zooming
+    * When zooming via keyboard: Always zoom around the center of the window
 
 Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 

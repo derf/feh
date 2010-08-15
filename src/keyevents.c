@@ -261,16 +261,25 @@ void feh_event_handle_keypress(XEvent * ev)
 	case XK_Up:
 		/* erroneously recognized as '+' in the *kbuf switch. Work around this. */
 		len = 0;
+		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 1.25;
-		/* TODO: Center only around current view */
-		winwidget_center_image(winwid);
+		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
+			winwid->old_zoom * winwid->zoom);
+		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
+			winwid->old_zoom * winwid->zoom);
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 		break;
 	case XK_KP_Subtract:
 	case XK_Down:
 		len = 0;
+		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 0.75;
-		winwidget_center_image(winwid);
+		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
+			winwid->old_zoom * winwid->zoom);
+		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
+			winwid->old_zoom * winwid->zoom);
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 		break;
 	case XK_KP_Multiply:
