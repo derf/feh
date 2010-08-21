@@ -57,9 +57,17 @@ uninstall:
 	rm -rf ${font_dir}
 	rm -rf ${image_dir}
 
+dist:
+	mkdir /tmp/feh-${VERSION}
+	git --work-tree=/tmp/feh-${VERSION} checkout -f
+	sed -i 's/^VERSION ?= .*$$/VERSION ?= ${VERSION}/' \
+		/tmp/feh-${VERSION}/config.mk
+	tar -C /tmp -cjf ../feh-${VERSION}.tar.bz2 feh-${VERSION}
+	rm -r /tmp/feh-${VERSION}
+
 clean:
 	@${MAKE} -C src clean
 	@${MAKE} -C man clean
 
 .PHONY: all test test-x11 install uninstall clean install-man install-doc \
-	install-bin install-font install-img
+	install-bin install-font install-img dist
