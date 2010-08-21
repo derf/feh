@@ -1,3 +1,5 @@
+See also: <http://github.com/derf/feh/issues>
+
 key/option/signal/timeout to totally reload filelist (rescan directories etc)
 
 <keypad begin> antialieses the image, but doing that automatically upon
