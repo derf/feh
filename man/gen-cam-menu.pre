@@ -8,6 +8,9 @@
 .Sh SYNOPSIS
 .Nm
 .
+.Sh VERSION
+This manual documents gen-cam-menu, shipped with feh version $VERSION$
+.
 .Sh DESCRIPTION
 .Nm
 is a shell script which creates Enlightenment user menu entries for the

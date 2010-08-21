@@ -14,6 +14,10 @@
 .Ar files or directories ...
 .
 .
+.Sh VERSION
+This manual documents feh $VERSION$
+.
+.
 .Sh DESCRIPTION
 .Nm
 is a mode-based image viewer.  It is especially aimed at commandline users who

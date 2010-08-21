@@ -1,7 +1,12 @@
 include config.mk
 
-all:
+all: build-src build-man
+
+build-src:
 	@${MAKE} -C src
+
+build-man:
+	@${MAKE} -C man
 
 test: all
 	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
@@ -14,7 +19,7 @@ install: install-man install-doc install-bin install-font install-img
 install-man:
 	@echo installing manuals to ${man_dir}
 	@mkdir -p ${man_dir}/man1
-	@cp man/* ${man_dir}/man1
+	@cp man/*.1 ${man_dir}/man1
 	@chmod 644 ${man_dir}/man1/feh.1 ${man_dir}/man1/feh-cam.1 \
 		${man_dir}/man1/gen-cam-menu.1
 
@@ -54,6 +59,7 @@ uninstall:
 
 clean:
 	@${MAKE} -C src clean
+	@${MAKE} -C man clean
 
 .PHONY: all test test-x11 install uninstall clean install-man install-doc \
 	install-bin install-font install-img
