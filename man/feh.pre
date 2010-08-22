@@ -846,11 +846,16 @@ The --scale-down option creates too large windows when used in floating mode.
 .Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
-.Pp
+.
+.Ss REPORTING BUGS
 If you find a bug, please report it to
 .Aq derf@chaosdorf.de
 or via
 .Aq http://github.com/derf/feh/issues
+.Pp
+Please include the feh version
+.Aq the output of Qq feh --version ,
+steps to reproduce the bug and (if necessary), images to reproduce it.
 .
 .Sh LICENSE
 Copyright Tom Gilbert (and various contributors), 1999, 2000
