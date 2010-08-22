@@ -7,6 +7,7 @@ all: ${TARGETS}
 
 .pre.1:
 	sed 's/\$$VERSION\$$/${VERSION}/g' < ${@:.1=.pre} > $@
+	sed 's/\$$DATE\$$/'"$$(date '+%B %d, %Y')"/g < ${@:.1=.pre} > $@
 
 clean:
 	rm *.1
