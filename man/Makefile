@@ -6,8 +6,10 @@ TARGETS = ${SOURCES:.pre=.1}
 all: ${TARGETS}
 
 .pre.1:
-	sed 's/\$$VERSION\$$/${VERSION}/g' < ${@:.1=.pre} > $@
-	sed 's/\$$DATE\$$/'"$$(date '+%B %d, %Y')"/g < ${@:.1=.pre} > $@
+	sed \
+	-e 's/\$$VERSION\$$/${VERSION}/g' \
+	-e 's/\$$DATE\$$/'"$$(date '+%B %d, %Y')"/g \
+	< ${@:.1=.pre} > $@
 
 clean:
 	rm *.1
