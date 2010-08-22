@@ -156,11 +156,19 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	switch (keysym) {
 	case XK_Left:
-		if (opt.slideshow)
+		if (kev->state & ControlMask) {
+			winwid->im_x -= 10;
+			winwidget_render_image(winwid, 0, 0);
+		}
+		else if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_PREV);
 		break;
 	case XK_Right:
-		if (opt.slideshow)
+		if (kev->state & ControlMask) {
+			winwid->im_x += 10;
+			winwidget_render_image(winwid, 0, 0);
+		}
+		else if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT);
 		break;
 	case XK_Page_Up:
@@ -242,45 +250,57 @@ void feh_event_handle_keypress(XEvent * ev)
 		feh_event_invoke_action(winwid, opt.actions[9]);
 		break;
 	case XK_KP_Left:
-		winwid->im_x = winwid->im_x - 10;
+		winwid->im_x -= 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Right:
-		winwid->im_x = winwid->im_x + 10;
+		winwid->im_x += 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Up:
-		winwid->im_y = winwid->im_y - 10;
+		winwid->im_y -= 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Down:
-		winwid->im_y = winwid->im_y + 10;
+		winwid->im_y += 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Add:
 	case XK_Up:
-		/* erroneously recognized as '+' in the *kbuf switch. Work around this. */
-		len = 0;
-		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * 1.25;
-		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
-			winwid->old_zoom * winwid->zoom);
-		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
-			winwid->old_zoom * winwid->zoom);
-		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if (kev->state & ControlMask) {
+			winwid->im_y -= 10;
+			winwidget_render_image(winwid, 0, 0);
+		}
+		else {
+			/* erroneously recognized as '+' in the *kbuf switch. Work around this. */
+			len = 0;
+			winwid->old_zoom = winwid->zoom;
+			winwid->zoom = winwid->zoom * 1.25;
+			winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
+				winwid->old_zoom * winwid->zoom);
+			winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
+				winwid->old_zoom * winwid->zoom);
+			winwidget_sanitise_offsets(winwid);
+			winwidget_render_image(winwid, 0, 1);
+		}
 		break;
 	case XK_KP_Subtract:
 	case XK_Down:
-		len = 0;
-		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * 0.75;
-		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
-			winwid->old_zoom * winwid->zoom);
-		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
-			winwid->old_zoom * winwid->zoom);
-		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if (kev->state & ControlMask) {
+			winwid->im_y += 10;
+			winwidget_render_image(winwid, 0, 0);
+		}
+		else {
+			len = 0;
+			winwid->old_zoom = winwid->zoom;
+			winwid->zoom = winwid->zoom * 0.75;
+			winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
+				winwid->old_zoom * winwid->zoom);
+			winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
+				winwid->old_zoom * winwid->zoom);
+			winwidget_sanitise_offsets(winwid);
+			winwidget_render_image(winwid, 0, 1);
+		}
 		break;
 	case XK_KP_Multiply:
 		len = 0;

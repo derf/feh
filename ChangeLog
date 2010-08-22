@@ -10,6 +10,7 @@ git HEAD
     * Set correct window title when starting feh in paused mode
     * Add Up/Down keys for zooming
     * When zooming via keyboard: Always zoom around the center of the window
+    * The image can now be panned with Ctrl + arrow keys
 
 Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
 

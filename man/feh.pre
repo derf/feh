@@ -667,11 +667,11 @@ change slides based on
 Show menu.  Use the arrow keys and return to select items,
 .Aq escape
 to close the menu.
-.It n , Ao space Ac , Aq right arrow
+.It n , Ao Space Ac , Aq Right
 Show next image
 .It o
 Toggle pointer visibility
-.It p , Ao backspace Ac , Aq left arrow
+.It p , Ao Backspace Ac , Aq Left
 Show previous image
 .It q
 Quit feh
@@ -697,7 +697,7 @@ for more about lossless JPEG rotation.
 .It 0 .. 9
 Execute the corresponding action
 .Pq 0 = Cm --action , No 1 = Cm --action1 No etc.
-.It Aq return
+.It Aq Return
 Run the command defined by
 .Cm --action
 .It Aq home
@@ -718,19 +718,19 @@ Decrease reload delay
 Remove current file from filelist
 .It Aq CTRL+delete
 Remove current file from filelist and delete it
-.It Aq keypad left
+.It Ao keypad left Ac , Ao Ctrl+Left Ac
 Move the image to the lift
-.It Aq keypad right
+.It Ao keypad right Ac , Ao Ctrl+Right Ac
 Move the image to the right
-.It Aq keypad up
+.It Ao keypad up Ac , Ao Ctrl+Up Ac
 Move the image up
-.It Aq keypad down
+.It Ao keypad down Ac , Ao Ctrl+Down Ac
 Move the image down
 .It Aq keypad begin
 Antialias the image
-.It Ao keypad + Ac , Ao up arrow Ac
+.It Ao keypad + Ac , Ao Up Ac
 Zoom in
-.It Ao keypad - Ac , Ao down arrow Ac
+.It Ao keypad - Ac , Ao Down Ac
 Zoom out
 .It Aq keypad *
 Zoom to 100%
