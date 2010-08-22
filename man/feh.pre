@@ -96,47 +96,6 @@ Extra actions which can be set and triggered using the appropiate number key.
 Zoom pictures to screen size in fullscreen
 .Pq affected by Cm --stretch No and Cm --ignore-aspect .
 .
-.It Cm --bg-center Ar file
-Set
-.Ar file
-as centered desktop background
-.
-.It Cm --bg-fill Ar file
-Like
-.Cm --bg-scale ,
-but preserves aspect ratio by zooming the image until it fits.  Either a
-horizontal or a vertical part of the image will be cut off.
-.
-.It Cm --bg-scale Ar file
-Set
-.Ar file
-as scaled desktop background.  This will fill the whole background with
-.Ar file ,
-but its aspect ratio will not be preserved.
-.
-.It Cm --bg-seamless Ar file
-Like
-.Cm --bg-tile ,
-but with blurry corners so that it is
-.Pq in some cases ;-)
-less obvious that the image is too small for the screen.
-.
-.It Cm --bg-tile Ar file
-Set
-.Ar file
-as desktop background, tiled if necessary.
-.Nm
-can use enlightenment IPC if you are running it, or it will fall back to X
-methods.
-.Nm
-stores the commandline necessary to restore the background in
-.Pa ~/.fehbg .
-So to have your background restored when you restart X, add the line
-.Qq `cat ~/.fehbg`
-to your X startup script
-.Pq e.g. Pa ~/.xinitrc .
-Note that you only need to do this for non E window managers.
-.
 .It Cm -x , --borderless
 Create borderless windows.
 .
@@ -562,6 +521,49 @@ will only redraw once all thumbnails are loaded.
 Set font to print a title on the index, if no font is specified, no title will
 be printed.
 .El
+.
+.Sh BACKGROUND SETTING
+.Nm
+can also be used as a background setter.  It will store the command line
+necessary to set the background in
+.Pa ~/.fehbg ,
+so to have your background restored everytime you start X, you can add
+.Qq `cat ~/.fehbg`
+to your X startup script
+.Pq like Pa ~/.xinitrc .
+.Pp
+The following options control how exactly the background is set.  Each of them
+takes exactly one file as argument.
+.Bl -tag -width indent
+.
+.It Cm --bg-center
+Center the file on the background.  If it is too small, it will be surrounded
+by a black border
+.
+.It Cm --bg-fill
+Like
+.Cm --bg-scale ,
+but preserves aspect ratio by zooming the image until it fits.  Either a
+horizontal or a vertical part of the image will be cut off
+.
+.It Cm --bg-scale
+Fit the file into the background without repeating it, cutting off stuff or
+using borders.  But the aspect ratio is not preserved either
+.
+.It Cm --bg-seamless
+Like
+.Cm --bg-tile ,
+but with blurry corners so that it is
+.Pq in some cases ;-)
+less obvious that the image is too small
+.
+.It Cm --bg-tile
+Tile
+.Pq repeat
+the image in case it is too small for the screen
+.
+.El
+.
 .
 .Sh FORMAT SPECIFIERS
 .Bl -tag -width indent
