@@ -435,7 +435,12 @@ Use CTRL+Button for blurring
 Don't require CTRL+Button for blurring - just use the button.
 .El
 .
+.
 .Sh MONTAGE MODE OPTIONS
+.
+These additional options can be used for montage, collage and (partially)
+thumbnail modes.
+.
 .Bl -tag -width indent
 .
 .It Cm -a , --alpha Ar int
@@ -876,7 +881,8 @@ Make zoom options more intuitive
 .
 .
 .Sh LICENSE
-Copyright Tom Gilbert (and various contributors), 1999, 2000
+Copyright (C) 1999, 2000 by Tom Gilbert (and various contributors).
+Copyright (C) 2010 by Daniel Friesel (and even more contributors).
 .Pp
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -897,9 +903,10 @@ THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .Pp
-Current developer:
+Current developer: Daniel Friesel
 .Aq derf@chaosdorf.de
 .Pp
 Original author
 .Pq no longer developing :
+Tom Gilbert
 .Aq feh_sucks@linuxbrit.co.uk
