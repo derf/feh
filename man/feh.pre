@@ -859,6 +859,22 @@ Please include the feh version
 .Aq the output of Qq feh --version ,
 steps to reproduce the bug and (if necessary), images to reproduce it.
 .
+.Sh FUTURE PLANS
+Plans for the following releases:
+.Bl -bullet -compact
+.
+.It
+Switch to real config file from fehrc theme definitions
+.
+.It
+Add config options to rebind keys + proper mouse action rebinding
+.
+.It
+Make zoom options more intuitive
+.
+.El
+.
+.
 .Sh LICENSE
 Copyright Tom Gilbert (and various contributors), 1999, 2000
 .Pp
