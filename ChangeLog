@@ -1,5 +1,6 @@
-git HEAD
+Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
 
+* Release v1.9
     * Add --fullscreen option, --full-screen is now deprecated
     * Removed --menu-border option, it is largely useless
     * Add short options: -P for --cache-thumbnails,
