@@ -65,6 +65,14 @@ dist:
 	tar -C /tmp -cjf ../feh-${VERSION}.tar.bz2 feh-${VERSION}
 	rm -r /tmp/feh-${VERSION}
 
+disttest: dist
+	tar -C /tmp -xjf ../feh-${VERSION}.tar.bz2
+	make -C /tmp/feh-${VERSION}
+	make -C /tmp/feh-${VERSION} test
+	make -C /tmp/feh-${VERSION} install DESTDIR=./install
+	make -C /tmp/feh-${VERSION} uninstall DESTDIR=./install
+	rm -r /tmp/feh-${VERSION}
+
 clean:
 	@${MAKE} -C src clean
 	@${MAKE} -C man clean
