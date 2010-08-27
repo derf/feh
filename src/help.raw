@@ -108,7 +108,7 @@ OPTIONS
                            any mode -- just use the button (default=off).
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
-     --hide-pointer        Hide the pointer
+ -Y, --hide-pointer        Hide the pointer
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without

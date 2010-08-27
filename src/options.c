@@ -316,7 +316,7 @@ char *feh_string_normalize(char *str)
 static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
-		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ"
+		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
 		"0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
 	static struct option lopts[] = {
 		{"help"          , 0, 0, 'h'},
@@ -348,7 +348,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"builtin"       , 0, 0, 'Q'},
 		{"scale-down"    , 0, 0, '.'},
 		{"no-jump-on-resort", 0, 0, 220},
-		{"hide-pointer"  , 0, 0, 221},
+		{"hide-pointer"  , 0, 0, 'Y'},
 		{"draw-actions"  , 0, 0, 'G'},
 		{"cache-thumbnails", 0, 0, 'P'},
 		{"cycle-once"    , 0, 0, 224},
@@ -725,7 +725,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 220:
 			opt.jump_on_resort = 0;
 			break;
-		case 221:
+		case 'Y':
 			opt.hide_pointer = 1;
 			break;
 		case 'G':

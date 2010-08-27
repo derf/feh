@@ -191,7 +191,7 @@ by clicking the zoom button.
 .It Cm -h , --help
 display help output and exit.
 .
-.It Cm --hide-pointer
+.It Cm -Y , --hide-pointer
 Hide the pointer
 .Pq useful for slideshows etc .
 .
