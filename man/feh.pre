@@ -551,6 +551,11 @@ Like
 but preserves aspect ratio by zooming the image until it fits.  Either a
 horizontal or a vertical part of the image will be cut off
 .
+.It Cm --bg-max
+Like
+.Cm --bg-fill ,
+but scale the image to the maximum size that fits the screen with black borders on one side.
+.
 .It Cm --bg-scale
 Fit the file into the background without repeating it, cutting off stuff or
 using borders.  But the aspect ratio is not preserved either

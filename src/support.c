@@ -63,6 +63,8 @@ void feh_wm_set_bg_file(char *file, unsigned char bgmode)
 			break;
 		case BG_MODE_FILL:
 			feh_wm_set_bg(file, im, 0, 0, 1, 0, 1);
+		case BG_MODE_MAX:
+			feh_wm_set_bg(file, im, 0, 0, 2, 0, 1);
 			break;
 		default:
 			feh_wm_set_bg(file, im, 1, 0, 0, 0, 1);
@@ -205,7 +207,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
-		} else if (filled) {
+		} else if (filled == 1) {
 			int x = scr->width;
 			int y = scr->height;
 			int u = gib_imlib_image_get_width(im);
@@ -226,6 +228,44 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, s, t,
 					w, h, 1, 0, 1);
 			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
+		} else if (filled == 2) {
+			int x = scr->width;
+			int y = scr->height;
+			int u = gib_imlib_image_get_width(im);
+			int v = gib_imlib_image_get_height(im);
+			int s = 0;
+			int t = 0;
+			XGCValues gcval;
+
+			if(u>v) {
+				w = x;
+				h = (((x * 10) / u) * v) / 10;
+				t = (y - h) / 2;
+				if(h>y) {
+					h = y;
+					w = (((y * 10) / h) * w) / 10;
+					s = (x - w) / 2;
+					t = 0;
+				}
+			} else {
+				h = y;
+				w = (((y * 10) / v) * u) / 10;
+				s = (x - w) / 2;
+				if(w>x) {
+					w = x;
+					h = (((x * 10) / w) * h) / 10;
+					s = 0;
+					t = (y - h) / 2;
+				}
+			}
+
+			pmap_d1 = XCreatePixmap(disp, root, x, y, depth);
+			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+			gc = XCreateGC(disp, root, GCForeground, &gcval);
+			XFillRectangle(disp, pmap_d1, gc, 0, 0, x, y);
+			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, s, t, w, h, 1, 0, 1);
+			XFreeGC(disp, gc);
+			fehbg = estrjoin(" ", "feh --bg-max", filbuf, NULL);
 		} else {
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
