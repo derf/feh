@@ -51,7 +51,7 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i);
 enum {
 	CB_ABOUT = 1, CB_CLOSE, CB_EXIT, CB_RELOAD, CB_REMOVE, CB_DELETE, CB_RESET,
 	CB_REMOVE_THUMB, CB_DELETE_THUMB, CB_BG_TILED, CB_BG_SCALED,
-	CB_BG_SEAMLESS, CB_BG_CENTERED, CB_BG_FILLED, CB_BG_TILED_NOFILE,
+	CB_BG_CENTERED, CB_BG_FILLED, CB_BG_TILED_NOFILE,
 	CB_BG_SCALED_NOFILE, CB_BG_CENTERED_NOFILE, CB_BG_FILLED_NOFILE,
 	CB_SORT_FILENAME, CB_SORT_IMAGENAME, CB_SORT_FILESIZE, CB_SORT_RANDOMIZE,
 	CB_SAVE_IMAGE, CB_SAVE_FILELIST, CB_FIT, CB_OPT_DRAW_FILENAME,
@@ -1023,7 +1023,6 @@ void feh_menu_init_common()
 	num_desks = feh_wm_get_num_desks();
 	if (num_desks > 1) {
 		feh_menu_add_entry(menu_bg, "Set Tiled", NULL, "TILED", 0, NULL, NULL);
-		feh_menu_add_entry(menu_bg, "Set Seamless", NULL, "SEAMLESS", 0, NULL, NULL);
 		feh_menu_add_entry(menu_bg, "Set Scaled", NULL, "SCALED", 0, NULL, NULL);
 		feh_menu_add_entry(menu_bg, "Set Centered", NULL, "CENTERED", 0, NULL, NULL);
 		feh_menu_add_entry(menu_bg, "Set Filled", NULL, "FILLED", 0, NULL, NULL);
@@ -1038,14 +1037,6 @@ void feh_menu_init_common()
 			else
 				feh_menu_add_entry(m, buf, NULL, NULL, CB_BG_TILED_NOFILE,
 						(void *) i, NULL);
-		}
-
-		m = feh_menu_new();
-		m->name = estrdup("SEAMLESS");
-		for (i = 0; i < num_desks; i++) {
-			snprintf(buf, sizeof(buf), "Desktop %d", i + 1);
-			feh_menu_add_entry(m, buf, NULL, NULL, CB_BG_SEAMLESS,
-					(void *) i, NULL);
 		}
 
 		m = feh_menu_new();
@@ -1090,8 +1081,6 @@ void feh_menu_init_common()
 		if (opt.slideshow || opt.multiwindow) {
 			feh_menu_add_entry(menu_bg, "Set Tiled", NULL,
 					NULL, CB_BG_TILED, NULL, NULL);
-			feh_menu_add_entry(menu_bg, "Set Seamless", NULL,
-					NULL, CB_BG_SEAMLESS, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Scaled", NULL,
 					NULL, CB_BG_SCALED, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Centered", NULL,
@@ -1101,8 +1090,6 @@ void feh_menu_init_common()
 		} else {
 			feh_menu_add_entry(menu_bg, "Set Tiled", NULL,
 					NULL, CB_BG_TILED_NOFILE, NULL, NULL);
-			feh_menu_add_entry(menu_bg, "Set Seamless", NULL,
-					NULL, CB_BG_SEAMLESS, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Scaled", NULL,
 					NULL, CB_BG_SCALED_NOFILE, NULL, NULL);
 			feh_menu_add_entry(menu_bg, "Set Centered", NULL,
@@ -1301,12 +1288,6 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
 			feh_wm_set_bg(path, m->fehwin->im, 0, 0, 0, (int) data, 1);
 			free(path);
-			break;
-		case CB_BG_SEAMLESS:
-			im = gib_imlib_clone_image(m->fehwin->im);
-			gib_imlib_image_tile(im);
-			feh_wm_set_bg(NULL, im, 0, 0, 0, (int) data, 1);
-			gib_imlib_free_image_and_decache(im);
 			break;
 		case CB_BG_SCALED:
 			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);

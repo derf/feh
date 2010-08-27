@@ -71,7 +71,6 @@ OPTIONS
      --bg-fill FILE        Like --bg-scale, but preserves aspect ratio by
                            zooming the image until it fits. May cut off
                            corners
-     --bg-seamless FILE    Like --bg-tile, but with blurry corners
  -C, --fontpath PATH       Specify an extra directory to look in for fonts,
                            can be used multiple times to add multiple paths.
  -M, --menu-font FONT      Use FONT for the font in menus.

@@ -1,6 +1,7 @@
 git HEAD
 
-    * Patch yb Stefan Mark: Add --bg-max (scaled with borders)
+    * Patch by Stefan Mark: Add --bg-max (scaled with borders)
+    * Removed rather obscure --bg-seamless mode
 
 Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
 

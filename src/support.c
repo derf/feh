@@ -51,10 +51,6 @@ void feh_wm_set_bg_file(char *file, unsigned char bgmode)
 		if (feh_load_image(&im, fil) == 0)
 			eprintf("Couldn't load image in order to set bg");
 		switch (bgmode) {
-		case BG_MODE_SEAMLESS:
-			gib_imlib_image_tile(im);
-			feh_wm_set_bg(NULL, im, 0, 0, 0, 0, 1);
-			break;
 		case BG_MODE_TILE:
 			feh_wm_set_bg(file, im, 0, 0, 0, 0, 1);
 			break;

@@ -396,7 +396,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"bg-tile"       , 1, 0, 200},
 		{"bg-center"     , 1, 0, 201},
 		{"bg-scale"      , 1, 0, 202},
-		{"bg-seamless"   , 1, 0, 203},
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
@@ -673,10 +672,6 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 202:
 			opt.bgmode = BG_MODE_SCALE;
-			opt.output_file = estrdup(optarg);
-			break;
-		case 203:
-			opt.bgmode = BG_MODE_SEAMLESS;
 			opt.output_file = estrdup(optarg);
 			break;
 		case 218:
