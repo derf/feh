@@ -560,13 +560,6 @@ but scale the image to the maximum size that fits the screen with black borders 
 Fit the file into the background without repeating it, cutting off stuff or
 using borders.  But the aspect ratio is not preserved either
 .
-.It Cm --bg-seamless
-Like
-.Cm --bg-tile ,
-but with blurry corners so that it is
-.Pq in some cases ;-)
-less obvious that the image is too small
-.
 .It Cm --bg-tile
 Tile
 .Pq repeat
