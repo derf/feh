@@ -306,6 +306,29 @@ void winwidget_update_title(winwidget ret)
 	return;
 }
 
+void winwidget_update_caption(winwidget winwid)
+{
+	if (opt.caption_path) {
+		/* TODO: Does someone understand the caching here. Is this the right
+		 * approach now that I have broken this out into a separate function. -lsmith */
+
+		/* cache bg pixmap. during caption entry, multiple redraws are done
+		 * because the caption overlay changes - the image doesn't though, so re-
+		 * rendering that is a waste of time */
+		if (winwid->caption_entry) {
+			GC gc;
+			if (winwid->bg_pmap_cache)
+				XFreePixmap(disp, winwid->bg_pmap_cache);
+			winwid->bg_pmap_cache = XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
+			gc = XCreateGC(disp, winwid->win, 0, NULL);
+			XCopyArea(disp, winwid->bg_pmap, winwid->bg_pmap_cache, gc, 0, 0, winwid->w, winwid->h, 0, 0);
+			XFreeGC(disp, gc);
+		}
+		feh_draw_caption(winwid);
+	}
+	return;
+}
+
 void winwidget_setup_pixmaps(winwidget winwid)
 {
 	if (winwid->full_screen) {
@@ -506,22 +529,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 								sh, dx, dy,
 								dw, dh, 1,
 								gib_imlib_image_has_alpha(winwid->im), alias);
-	if (opt.caption_path) {
-		/* cache bg pixmap. during caption entry, multiple redraws are done
-		 * because the caption overlay changes - the image doesn't though, so re-
-		 * rendering that is a waste of time */
-		if (winwid->caption_entry) {
-			GC gc;
-			if (winwid->bg_pmap_cache)
-				XFreePixmap(disp, winwid->bg_pmap_cache);
-			winwid->bg_pmap_cache = XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
-			gc = XCreateGC(disp, winwid->win, 0, NULL);
-			XCopyArea(disp, winwid->bg_pmap, winwid->bg_pmap_cache, gc, 0, 0, winwid->w, winwid->h, 0, 0);
-			XFreeGC(disp, gc);
-		}
-		feh_draw_caption(winwid);
-	}
-
+	if (opt.caption_path)
+		winwidget_update_caption(winwid);
 	if (opt.draw_filename)
 		feh_draw_filename(winwid);
 	if (opt.draw_actions)
