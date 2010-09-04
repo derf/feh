@@ -35,9 +35,11 @@ void feh_event_invoke_action(winwidget winwid, char *action)
 	D(("winwid is '%p'\n", winwid));
 	if (action) {
 		if (opt.slideshow) {
-			feh_action_run(FEH_FILE(winwid->file->data), action);
-			winwidget_update_caption(winwid);
-			/* slideshow_change_image(winwid, SLIDE_NEXT); */
+		    feh_action_run(FEH_FILE(winwid->file->data), action);
+		    winwidget_update_caption(winwid);
+
+		    if (! opt.action_hold_slide)
+		      slideshow_change_image(winwid, SLIDE_NEXT);
 
 		} else if ((winwid->type == WIN_TYPE_SINGLE)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {

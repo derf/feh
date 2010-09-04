@@ -42,6 +42,8 @@ fehoptions opt;
 
 void init_parse_options(int argc, char **argv)
 {
+	/* TODO: sort these to match declaration of __fehoptions */
+
 	/* For setting the command hint on X windows */
 	cmdargc = argc;
 	cmdargv = argv;
@@ -67,6 +69,9 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_ctrl_mask = 0;
 	opt.prev_button = 4;
 	opt.next_button = 5;
+
+	opt.draw_actions = 0;
+	opt.action_hold_slide = 0;
 
 	opt.rotate_button = 2;
 	opt.no_rotate_ctrl_mask = 0;
@@ -318,6 +323,8 @@ static void feh_parse_option_array(int argc, char **argv)
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
 		"0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
+
+	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
 		{"help"          , 0, 0, 'h'},
 		{"version"       , 0, 0, 'v'},
@@ -415,6 +422,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-size"    , 1, 0, 231},
 		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
+		{"action-hold-slide", 0, 0, 233},
 
 		{0, 0, 0, 0}
 	};
@@ -760,6 +768,9 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 'J':
 			opt.thumb_redraw = atoi(optarg);
+			break;
+		case 233:
+			opt.action_hold_slide = 1;
 			break;
 		default:
 			break;

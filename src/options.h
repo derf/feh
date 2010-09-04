@@ -66,6 +66,7 @@ struct __fehoptions {
 	unsigned char screen_clip;
 	unsigned char hide_pointer;
 	unsigned char draw_actions;
+	unsigned char action_hold_slide;
 	unsigned char cache_thumbnails;
 	unsigned char cycle_once;
 
