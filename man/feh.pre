@@ -854,7 +854,7 @@ as it could be.
 .
 .Ss REPORTING BUGS
 If you find a bug, please report it to
-.Aq derf@chaosdorf.de
+.Aq derf@finalrewind.org
 or via
 .Aq http://github.com/derf/feh/issues
 .Pp
@@ -902,7 +902,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 .Pp
 Current developer: Daniel Friesel
-.Aq derf@chaosdorf.de
+.Aq derf@finalrewind.org
 .Pp
 Original author
 .Pq no longer developing :
