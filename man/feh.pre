@@ -722,13 +722,13 @@ Remove current file from filelist
 .It Aq CTRL+delete
 Remove current file from filelist and delete it
 .It Ao keypad left Ac , Ao Ctrl+Left Ac
-Move the image to the lift
+Scroll to the left
 .It Ao keypad right Ac , Ao Ctrl+Right Ac
-Move the image to the right
+Scroll to the right
 .It Ao keypad up Ac , Ao Ctrl+Up Ac
-Move the image up
+Scroll up
 .It Ao keypad down Ac , Ao Ctrl+Down Ac
-Move the image down
+Scroll down
 .It Aq keypad begin
 Antialias the image
 .It Ao keypad + Ac , Ao Up Ac

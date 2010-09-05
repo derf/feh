@@ -161,7 +161,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	switch (keysym) {
 	case XK_Left:
 		if (kev->state & ControlMask) {
-			winwid->im_x -= 10;
+			winwid->im_x += 10;
 			winwidget_render_image(winwid, 0, 0);
 		}
 		else if (opt.slideshow)
@@ -169,7 +169,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		break;
 	case XK_Right:
 		if (kev->state & ControlMask) {
-			winwid->im_x += 10;
+			winwid->im_x -= 10;
 			winwidget_render_image(winwid, 0, 0);
 		}
 		else if (opt.slideshow)
@@ -254,25 +254,25 @@ void feh_event_handle_keypress(XEvent * ev)
 		feh_event_invoke_action(winwid, opt.actions[9]);
 		break;
 	case XK_KP_Left:
-		winwid->im_x -= 10;
-		winwidget_render_image(winwid, 0, 0);
-		break;
-	case XK_KP_Right:
 		winwid->im_x += 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
+	case XK_KP_Right:
+		winwid->im_x -= 10;
+		winwidget_render_image(winwid, 0, 0);
+		break;
 	case XK_KP_Up:
-		winwid->im_y -= 10;
+		winwid->im_y += 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Down:
-		winwid->im_y += 10;
+		winwid->im_y -= 10;
 		winwidget_render_image(winwid, 0, 0);
 		break;
 	case XK_KP_Add:
 	case XK_Up:
 		if (kev->state & ControlMask) {
-			winwid->im_y -= 10;
+			winwid->im_y += 10;
 			winwidget_render_image(winwid, 0, 0);
 		}
 		else {
@@ -291,7 +291,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	case XK_KP_Subtract:
 	case XK_Down:
 		if (kev->state & ControlMask) {
-			winwid->im_y += 10;
+			winwid->im_y -= 10;
 			winwidget_render_image(winwid, 0, 0);
 		}
 		else {
