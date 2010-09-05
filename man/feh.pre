@@ -92,6 +92,9 @@ multiwindow mode, the window will be closed.
 .It Cm --action1 No .. Cm --action9
 Extra actions which can be set and triggered using the appropiate number key.
 .
+.It Cm --action-hold-slide
+Do not change to the next image after pressing an action key.
+.
 .It Cm -Z , --auto-zoom
 Zoom pictures to screen size in fullscreen
 .Pq affected by Cm --stretch No and Cm --ignore-aspect .

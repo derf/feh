@@ -49,7 +49,8 @@ OPTIONS
  -n, --reverse             Reverse sort order
  -A, --action ACTION       Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
-     --action[1-9]         Extra actions triggered by pressing keys <1>to <9>.
+     --action[1-9]         Extra actions triggered by pressing keys <1>to <9>
+     --action-hold-slide   Do not change to next image after running an action
  -G, --draw-actions        Show the defined actions in the image window
  -m, --montage             Enable montage mode
  -c, --collage             Montage mode with randomly distributed thumbnails
