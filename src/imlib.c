@@ -55,7 +55,10 @@ void init_xinerama(void)
 {
 	if (opt.xinerama && XineramaIsActive(disp)) {
 		int major, minor;
-		xinerama_screen = 0;
+		if (getenv("XINERAMA_SCREEN"))
+			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+		else
+			xinerama_screen = 0;
 		XineramaQueryVersion(disp, &major, &minor);
 		xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
 	}

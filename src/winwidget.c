@@ -158,6 +158,8 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		if (opt.xinerama && xinerama_screens) {
 			w = xinerama_screens[xinerama_screen].width;
 			h = xinerama_screens[xinerama_screen].height;
+			x = xinerama_screens[xinerama_screen].x_org;
+			y = xinerama_screens[xinerama_screen].y_org;
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	} else if (opt.geom_flags) {
@@ -779,6 +781,8 @@ void winwidget_resize(winwidget winwid, int w, int h)
 				}
 
 			}
+			if (getenv("XINERAMA_SCREEN"))
+				xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
 		}
 #endif				/* HAVE_LIBXINERAMA */
 

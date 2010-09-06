@@ -419,6 +419,9 @@ void feh_event_handle_keypress(XEvent * ev)
 					break;
 				}
 			}
+			if (getenv("XINERAMA_SCREEN"))
+				curr_screen = xinerama_screen =
+					atoi(getenv("XINERAMA_SCREEN"));
 		}
 #endif				/* HAVE_LIBXINERAMA */
 		winwid->full_screen = !winwid->full_screen;
