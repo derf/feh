@@ -4,7 +4,7 @@ git HEAD
     * Removed rather obscure --bg-seamless mode
     * Short option -Y for --hide-pointer
     * Panning via keys: Make it behave like scrolling (inverted directions)
-    * Patch by Live Smith: Add --action-hold-slide option
+    * Patch by Levi Smith: Add --action-hold-slide option
     * Workaround for Xinerama fuckups: Set XINERAMA_SCREEN to the correct
       xinerama screen number
 
