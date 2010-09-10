@@ -539,6 +539,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 		feh_draw_actions(winwid);
 	if ((opt.mode == MODE_ZOOM) && !alias)
 		feh_draw_zoom(winwid);
+	if (opt.info_cmd)
+		feh_draw_info(winwid);
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
 	return;
@@ -559,6 +561,8 @@ void winwidget_render_image_cached(winwidget winwid)
 		feh_draw_filename(winwid);
 	if (opt.draw_actions)
 		feh_draw_actions(winwid);
+	if (opt.info_cmd)
+		feh_draw_info(winwid);
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
 }

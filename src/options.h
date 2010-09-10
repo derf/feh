@@ -88,6 +88,7 @@ struct __fehoptions {
 	char *menu_style;
 	char *caption_path;
 	char *start_list_at;
+	char *info_cmd;
 
 	gib_style *menu_style_l;
 

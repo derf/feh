@@ -423,6 +423,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"action-hold-slide", 0, 0, 233},
+		{"info"          , 1, 0, 234},
 
 		{0, 0, 0, 0}
 	};
@@ -771,6 +772,9 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 233:
 			opt.action_hold_slide = 1;
+			break;
+		case 234:
+			opt.info_cmd = estrdup(optarg);
 			break;
 		default:
 			break;

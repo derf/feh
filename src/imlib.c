@@ -622,6 +622,85 @@ void feh_draw_filename(winwidget w)
 	return;
 }
 
+void feh_draw_info(winwidget w)
+{
+	static Imlib_Font fn = NULL;
+	int tw = 0, th = 0;
+	int tmp_tw = 0, tmp_th = 0;
+	Imlib_Image im = NULL;
+	static DATA8 atab[256];
+	int no_lines = 0;
+	char *info_cmd;
+	char info_buf[256];
+	FILE *info_pipe;
+
+	if ((!w->file) || (!FEH_FILE(w->file->data))
+			|| (!FEH_FILE(w->file->data)->filename))
+		return;
+
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
+	if (!fn) {
+		if (w->full_screen)
+			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
+		else
+			fn = gib_imlib_load_font(DEFAULT_FONT);
+	}
+
+	if (!fn) {
+		weprintf("Couldn't load font for filename printing");
+		return;
+	}
+
+	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data));
+
+	memset(atab, 0, sizeof(atab));
+
+	gib_imlib_get_text_size(fn, "w", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+
+	info_pipe = popen(info_cmd, "r");
+
+	im = imlib_create_image(290 * tw, 20 * th);
+	if (!im)
+		eprintf("Couldn't create image. Out of memory?");
+
+	gib_imlib_image_set_has_alpha(im, 1);
+	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, 290 * tw, 20 * th, NULL, NULL, NULL, atab);
+	gib_imlib_image_fill_rectangle(im, 0, 0, 290 * tw, 20 * th, 0, 0, 0, 0);
+
+	if (!info_pipe) {
+		gib_imlib_text_draw(im, fn, NULL, 2, 2,
+				"Error runnig info command", IMLIB_TEXT_TO_RIGHT,
+				255, 0, 0, 255);
+		gib_imlib_get_text_size(fn, "Error running info command", NULL, &tw, &th,
+				IMLIB_TEXT_TO_RIGHT);
+		no_lines = 1;
+	}
+	else {
+		while ((no_lines < 20) && fgets(info_buf, 256, info_pipe)) {
+			info_buf[strlen(info_buf)-1] = '\0';
+	gib_imlib_get_text_size(fn, "w", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+			gib_imlib_text_draw(im, fn, NULL, 2, (no_lines*th)+2, info_buf,
+					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+			gib_imlib_text_draw(im, fn, NULL, 1, (no_lines*th)+1, info_buf,
+					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+			no_lines++;
+			gib_imlib_get_text_size(fn, info_buf, NULL, &tmp_tw, &tmp_th, IMLIB_TEXT_TO_RIGHT);
+			if (tmp_tw > tw)
+				tw = tmp_tw;
+		}
+		pclose(info_pipe);
+	}
+
+
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, w->w - tw - 5, w->h -
+	(th * no_lines) - 5, 1, 1, 0);
+
+	gib_imlib_free_image_and_decache(im);
+	return;
+}
+
 char *build_caption_filename(feh_file * file)
 {
 	char *caption_filename;
