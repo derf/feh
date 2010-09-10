@@ -680,7 +680,6 @@ void feh_draw_info(winwidget w)
 	else {
 		while ((no_lines < 20) && fgets(info_buf, 256, info_pipe)) {
 			info_buf[strlen(info_buf)-1] = '\0';
-	gib_imlib_get_text_size(fn, "w", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 			gib_imlib_text_draw(im, fn, NULL, 2, (no_lines*th)+2, info_buf,
 					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 			gib_imlib_text_draw(im, fn, NULL, 1, (no_lines*th)+1, info_buf,
