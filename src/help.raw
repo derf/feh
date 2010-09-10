@@ -55,6 +55,7 @@ OPTIONS
  -m, --montage             Enable montage mode
  -c, --collage             Montage mode with randomly distributed thumbnails
  -i, --index               Create an index print of all images
+     --info CMD            Run CMD and show its output in the image window
  -t, --thumbnails          Show images as clickable thumbnails
  -P, --cache-thumbnails    Enable thumbnail caching for thumbnail mode.
                            Only works with thumbnails <= 256x256 pixels

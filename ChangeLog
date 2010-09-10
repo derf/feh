@@ -7,6 +7,7 @@ git HEAD
     * Patch by Levi Smith: Add --action-hold-slide option
     * Workaround for Xinerama fuckups: Set XINERAMA_SCREEN to the correct
       xinerama screen number
+    * Add --info option to display custom image information
 
 Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
 
