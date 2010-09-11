@@ -838,6 +838,9 @@ images are still in the slideshow and can be viewed normally
 .
 .It feh --start-at foo.jpg *
 Same as above
+.
+.It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' '%f' \&| cut -d \&. -f 4-\&" \&.
+Show some EXIF information, extracted by exifprobe/exifgrep
 .El
 .
 .
