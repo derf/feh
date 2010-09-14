@@ -4,10 +4,11 @@ git HEAD
     * Removed rather obscure --bg-seamless mode
     * Short option -Y for --hide-pointer
     * Panning via keys: Make it behave like scrolling (inverted directions)
-    * Patch by Levi Smith: Add --action-hold-slide option
     * Workaround for Xinerama fuckups: Set XINERAMA_SCREEN to the correct
       xinerama screen number
     * Add --info option to display custom image information
+    * Do not change to the next slide when executing an action with ; as first
+      character (this character is stripped when executing the action)
 
 Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
 

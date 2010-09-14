@@ -71,7 +71,6 @@ void init_parse_options(int argc, char **argv)
 	opt.next_button = 5;
 
 	opt.draw_actions = 0;
-	opt.action_hold_slide = 0;
 
 	opt.rotate_button = 2;
 	opt.no_rotate_ctrl_mask = 0;
@@ -422,12 +421,12 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-size"    , 1, 0, 231},
 		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
-		{"action-hold-slide", 0, 0, 233},
 		{"info"          , 1, 0, 234},
 
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
+	int i = 0;
 
 	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
@@ -770,9 +769,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 'J':
 			opt.thumb_redraw = atoi(optarg);
 			break;
-		case 233:
-			opt.action_hold_slide = 1;
-			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);
 			break;
@@ -787,6 +783,13 @@ static void feh_parse_option_array(int argc, char **argv)
 			/* If recursive is NOT set, but the only argument is a directory
 			   name, we grab all the files in there, but not subdirs */
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
+		}
+	}
+
+	for (i = 0; i < 10; i++) {
+		if (opt.actions[i] && !opt.hold_actions[i] && (opt.actions[i][0] == ';')) {
+			opt.hold_actions[i] = 1;
+			opt.actions[i] = &opt.actions[i][1];
 		}
 	}
 

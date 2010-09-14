@@ -29,21 +29,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "winwidget.h"
 #include "options.h"
 
-void feh_event_invoke_action(winwidget winwid, char *action)
+void feh_event_invoke_action(winwidget winwid, unsigned char action)
 {
-	D(("action is '%s'\n", action));
-	D(("winwid is '%p'\n", winwid));
-	if (action) {
+	if (opt.actions[action]) {
 		if (opt.slideshow) {
-		    feh_action_run(FEH_FILE(winwid->file->data), action);
-		    winwidget_update_caption(winwid);
+			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
+			winwidget_update_caption(winwid);
 
-		    if (! opt.action_hold_slide)
-		      slideshow_change_image(winwid, SLIDE_NEXT);
+			if (! opt.hold_actions[action])
+				slideshow_change_image(winwid, SLIDE_NEXT);
 
 		} else if ((winwid->type == WIN_TYPE_SINGLE)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
-			feh_action_run(FEH_FILE(winwid->file->data), action);
+			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
 			winwidget_destroy(winwid);
 		} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
 			printf("actions from the main thumb window aren't currentl supported!\n");
@@ -215,43 +213,43 @@ void feh_event_handle_keypress(XEvent * ev)
 	case XK_KP_Enter:
 	case XK_0:
 	case XK_KP_0:
-		feh_event_invoke_action(winwid, opt.actions[0]);
+		feh_event_invoke_action(winwid, 0);
 		break;
 	case XK_1:
 	case XK_KP_1:
-		feh_event_invoke_action(winwid, opt.actions[1]);
+		feh_event_invoke_action(winwid, 1);
 		break;
 	case XK_2:
 	case XK_KP_2:
-		feh_event_invoke_action(winwid, opt.actions[2]);
+		feh_event_invoke_action(winwid, 2);
 		break;
 	case XK_3:
 	case XK_KP_3:
-		feh_event_invoke_action(winwid, opt.actions[3]);
+		feh_event_invoke_action(winwid, 3);
 		break;
 	case XK_4:
 	case XK_KP_4:
-		feh_event_invoke_action(winwid, opt.actions[4]);
+		feh_event_invoke_action(winwid, 4);
 		break;
 	case XK_5:
 	case XK_KP_5:
-		feh_event_invoke_action(winwid, opt.actions[5]);
+		feh_event_invoke_action(winwid, 5);
 		break;
 	case XK_6:
 	case XK_KP_6:
-		feh_event_invoke_action(winwid, opt.actions[6]);
+		feh_event_invoke_action(winwid, 6);
 		break;
 	case XK_7:
 	case XK_KP_7:
-		feh_event_invoke_action(winwid, opt.actions[7]);
+		feh_event_invoke_action(winwid, 7);
 		break;
 	case XK_8:
 	case XK_KP_8:
-		feh_event_invoke_action(winwid, opt.actions[8]);
+		feh_event_invoke_action(winwid, 8);
 		break;
 	case XK_9:
 	case XK_KP_9:
-		feh_event_invoke_action(winwid, opt.actions[9]);
+		feh_event_invoke_action(winwid, 9);
 		break;
 	case XK_KP_Left:
 		winwid->im_x += 10;
