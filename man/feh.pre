@@ -75,12 +75,20 @@ unloadable files.  Useful for preening a directory.
 .Sh OPTIONS
 .Bl -tag -width indent
 .
-.It Cm -A , --action Ar action
+.It Cm -A , --action Oo Ar flag Oc Ns Ar action
 Specify a string as an action to perform on the image.  In slideshow or
 multiwindow modes, the action will be run when the enter key is pressed, in
 list mode, the action will be run for each file listed.  In
 loadables/unloadables mode, the action will be run for each
 loadable/unloadable file, respectively.
+.Pp
+If
+.Ar flag
+is
+.Qq \&; ,
+.Nm
+will not switch to the next image after executing the action.
+.Pp
 The action will be executed by /bin/sh.  Use format specifiers to refer to
 image info.  See
 .Sx FORMAT SPECIFIERS
@@ -91,9 +99,6 @@ multiwindow mode, the window will be closed.
 .
 .It Cm --action1 No .. Cm --action9
 Extra actions which can be set and triggered using the appropiate number key.
-.
-.It Cm --action-hold-slide
-Do not change to the next image after pressing an action key.
 .
 .It Cm -Z , --auto-zoom
 Zoom pictures to screen size in fullscreen
