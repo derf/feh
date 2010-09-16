@@ -626,7 +626,6 @@ void feh_draw_info(winwidget w)
 {
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
-	int tmp_tw = 0, tmp_th = 0;
 	Imlib_Image im = NULL;
 	static DATA8 atab[256];
 	int no_lines = 0;
@@ -685,16 +684,13 @@ void feh_draw_info(winwidget w)
 			gib_imlib_text_draw(im, fn, NULL, 1, (no_lines*th)+1, info_buf,
 					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 			no_lines++;
-			gib_imlib_get_text_size(fn, info_buf, NULL, &tmp_tw, &tmp_th, IMLIB_TEXT_TO_RIGHT);
-			if (tmp_tw > tw)
-				tw = tmp_tw;
 		}
 		pclose(info_pipe);
 	}
 
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, w->w - tw - 5, w->h -
-	(th * no_lines) - 5, 1, 1, 0);
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 2,
+			w->h - (th * no_lines) - 2, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;

@@ -225,7 +225,7 @@ Toggle showing the filesize in thumbnail/index mode.
 .It Cm --info Ar commandline
 Execute
 .Ar commandline
-and display its output in the bottom right corner of the image.  Can be used to
+and display its output in the bottom left corner of the image.  Can be used to
 display e.g. image dimensions or EXIF information.  Supports
 .Sx FORMAT SPECIFIERS .
 .
