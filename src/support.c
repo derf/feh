@@ -235,21 +235,21 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			if(u>v) {
 				w = x;
-				h = (((x * 10) / u) * v) / 10;
+				h = (((x * 100) / u) * v) / 100;
 				t = (y - h) / 2;
 				if(h>y) {
+					w = (((y * 100) / h) * w) / 100;
 					h = y;
-					w = (((y * 10) / h) * w) / 10;
 					s = (x - w) / 2;
 					t = 0;
 				}
 			} else {
 				h = y;
-				w = (((y * 10) / v) * u) / 10;
+				w = (((y * 100) / v) * u) / 100;
 				s = (x - w) / 2;
 				if(w>x) {
+					h = (((x * 100) / w) * h) / 100;
 					w = x;
-					h = (((x * 10) / w) * h) / 10;
 					s = 0;
 					t = (y - h) / 2;
 				}
