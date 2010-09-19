@@ -205,62 +205,63 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
 		} else if (filled == 1) {
-			int x = scr->width;
-			int y = scr->height;
-			int u = gib_imlib_image_get_width(im);
-			int v = gib_imlib_image_get_height(im);
-			int s = 0;
-			int t = 0;
+			int scr_w = scr->width;
+			int scr_h = scr->height;
+			int img_w = gib_imlib_image_get_width(im);
+			int img_h = gib_imlib_image_get_height(im);
+			int render_x = 0;
+			int render_y = 0;
 
-			if ((u * y) > (x * v)) {
-				h = y;
-				w = (y * u) / v;
-				s = (x - w) / 2;
+			if ((img_w * scr_h) > (scr_w * img_h)) {
+				h = scr_h;
+				w = (scr_h * img_w) / img_h;
+				render_x = (scr_w - w) / 2;
 			} else {
-				h = (x * v) / u;
-				w = x;
-				t = (y - h) / 2;
+				h = (scr_w * img_h) / img_w;
+				w = scr_w;
+				render_y = (scr_h - h) / 2;
 			}
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
-			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, s, t,
-					w, h, 1, 0, 1);
+			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
+					render_x, render_y, w, h, 1, 0, 1);
 			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
 		} else if (filled == 2) {
-			int x = scr->width;
-			int y = scr->height;
-			int u = gib_imlib_image_get_width(im);
-			int v = gib_imlib_image_get_height(im);
-			int s = 0;
-			int t = 0;
+			int scr_w = scr->width;
+			int scr_h = scr->height;
+			int img_w = gib_imlib_image_get_width(im);
+			int img_h = gib_imlib_image_get_height(im);
+			int render_x = 0;
+			int render_y = 0;
 			XGCValues gcval;
 
-			if(u>v) {
-				w = x;
-				h = (((x * 100) / u) * v) / 100;
-				t = (y - h) / 2;
-				if(h>y) {
-					w = (((y * 100) / h) * w) / 100;
-					h = y;
-					s = (x - w) / 2;
-					t = 0;
+			if (img_w > img_h) {
+				w = scr_w;
+				h = (((scr_w * 100) / img_w) * img_h) / 100;
+				render_y = (scr_h - h) / 2;
+				if (h > scr_h) {
+					w = (((scr_h * 100) / h) * w) / 100;
+					h = scr_h;
+					render_x = (scr_w - w) / 2;
+					render_y = 0;
 				}
 			} else {
-				h = y;
-				w = (((y * 100) / v) * u) / 100;
-				s = (x - w) / 2;
-				if(w>x) {
-					h = (((x * 100) / w) * h) / 100;
-					w = x;
-					s = 0;
-					t = (y - h) / 2;
+				h = scr_h;
+				w = (((scr_h * 100) / img_h) * img_w) / 100;
+				render_x = (scr_w - w) / 2;
+				if (w > scr_w) {
+					h = (((scr_w * 100) / w) * h) / 100;
+					w = scr_w;
+					render_x = 0;
+					render_y = (scr_h - h) / 2;
 				}
 			}
 
-			pmap_d1 = XCreatePixmap(disp, root, x, y, depth);
+			pmap_d1 = XCreatePixmap(disp, root, scr_w, scr_h, depth);
 			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
-			XFillRectangle(disp, pmap_d1, gc, 0, 0, x, y);
-			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, s, t, w, h, 1, 0, 1);
+			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr_w, scr_h);
+			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
+					render_x, render_y, w, h, 1, 0, 1);
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-max", filbuf, NULL);
 		} else {
