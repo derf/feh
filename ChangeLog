@@ -9,6 +9,7 @@ git HEAD
     * Add --info option to display custom image information
     * Do not change to the next slide when executing an action with ; as first
       character (this character is stripped when executing the action)
+    * Speed up panning, zooming etc. by hiding image overlay text
 
 Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
 
