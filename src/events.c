@@ -114,16 +114,12 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 			winwid->click_offset_x = ev->xbutton.x;
 			winwid->click_offset_y = ev->xbutton.y;
 			winwid->old_zoom = winwid->zoom;
-			winwid->zoom = 1.0;
 
 			/* required to adjust the image position in zoom mode */
 			winwid->im_click_offset_x = (winwid->click_offset_x
 					- winwid->im_x) / winwid->old_zoom;
 			winwid->im_click_offset_y = (winwid->click_offset_y
 					- winwid->im_y) / winwid->old_zoom;
-
-			winwidget_center_image(winwid);
-			winwidget_render_image(winwid, 0, 0);
 		}
 	} else if (ev->xbutton.button == opt.reload_button) {
 		D(("Reload Button Press event\n"));
@@ -242,7 +238,15 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			D(("Disabling mode\n"));
 			opt.mode = MODE_NORMAL;
 			winwid->mode = MODE_NORMAL;
-			winwidget_sanitise_offsets(winwid);
+
+			if ((ev->xbutton.button == opt.zoom_button)
+					&& (ev->xbutton.x == winwid->click_offset_x)
+					&& (ev->xbutton.y == winwid->click_offset_y)) {
+				winwid->zoom = 1.0;
+				winwidget_center_image(winwid);
+			} else
+				winwidget_sanitise_offsets(winwid);
+
 			winwidget_render_image(winwid, 0, 1);
 		}
 	} else if ((ev->xbutton.button == opt.blur_button)

@@ -779,11 +779,10 @@ will warp your cursor to the opposite border so you can continue panning.
 .Pp
 When clicking the zoom button and immediately releasing it, the image will be
 back at 100% zoom.  When clicking it and moving the mouse while holding the
-button down, the zoom will be continued at the previous zoom level.  Do not let
-the short snapback to 100% confuse you, it'll be removed as soon as you move
-the mouse.  The zoom will always happen so that the pixel on which you entered
-the zoom mode remains stationary.  So, to enlarge a specific part of an image,
-click the zoom button on that part.
+button down, the zoom will be continued at the previous zoom level.  The zoom
+will always happen so that the pixel on which you entered the zoom mode
+remains stationary.  So, to enlarge a specific part of an image, click the
+zoom button on that part.
 .
 .Sh SIGNALS
 In slideshow mode,
