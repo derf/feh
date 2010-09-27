@@ -531,6 +531,7 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 								sh, dx, dy,
 								dw, dh, 1,
 								gib_imlib_image_has_alpha(winwid->im), alias);
+
 	if (opt.mode == MODE_NORMAL) {
 		if (opt.caption_path)
 			winwidget_update_caption(winwid);
@@ -538,11 +539,11 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 			feh_draw_filename(winwid);
 		if (opt.draw_actions)
 			feh_draw_actions(winwid);
-		if ((opt.mode == MODE_ZOOM) && !alias)
-			feh_draw_zoom(winwid);
 		if (opt.info_cmd)
 			feh_draw_info(winwid);
-	}
+	} else if ((opt.mode == MODE_ZOOM) && !alias)
+		feh_draw_zoom(winwid);
+
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
 	return;
