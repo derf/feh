@@ -603,9 +603,8 @@ void feh_draw_filename(winwidget w)
 			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-	/* Print the position in the filelist, if we are in fullscreen and the
-	 * list has more than one element */
-	if (w->full_screen && (gib_list_length(filelist) - 1)) {
+	/* Print the position in the filelist, if we have >=2 files */
+	if (gib_list_length(filelist) > 1) {
 		/* sic! */
 		len = snprintf(NULL, 0, "%d of %d", gib_list_length(filelist), gib_list_length(filelist)) + 1;
 		s = emalloc(len);
