@@ -43,9 +43,9 @@ work without X, so they can safely be run even on a headless buildserver.
 Testing (X):
 
 Requires
- * perl >= 5.10
- * Test::More
- * X11::GUITest
+ * import (usually supplied by imagemagick)
+ * perl >= 5.10 with GD, Test::More and X11::GUITest
+ * twm
  * Xnest
 
 $ make test-x11

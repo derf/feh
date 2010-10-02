@@ -1,0 +1,11 @@
+#!/bin/sh
+
+Xnest -geometry 500x500 :7 > /dev/null 2>&1 &
+pid=${!}
+
+# Wallpaper setting requires a window manager to work reliably
+DISPLAY=:7 twm > /dev/null 2>&1 &
+
+DISPLAY=:7 prove -v test/feh-bg.i
+
+kill ${pid}

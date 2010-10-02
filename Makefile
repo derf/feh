@@ -12,7 +12,9 @@ test: all
 	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
 
 test-x11: all
-	@test/run-interactive
+	test/run-interactive
+	sleep 3
+	test/run-bg
 
 install: install-man install-doc install-bin install-font install-img
 
