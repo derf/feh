@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 70;
+use Test::More tests => 71;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -195,11 +195,12 @@ SendKeys('{HOM PGU}');
 test_win_title($win, 'feh [96 of 100] - test/ok.png');
 feh_stop();
 
-$win = feh_start('--thumbnails --thumb-title "%P [%l] %f"',
+$win = feh_start('--thumbnails -H 300 -W 310 --thumb-title "%P [%l] %f"',
 	'test/ok.png test/ok.gif test/ok.jpg');
 test_win_title($win, 'feh [thumbnail mode]');
-$width = (GetWindowPos($win))[2];
-is($width, 640, 'thumbnail win: Correct default size');
+($width, $height) = (GetWindowPos($win))[2,3];
+is($width, 310, 'thumbnail win: Set correct width');
+is($height, 300, 'thumbnail win: Set correct height');
 MoveMouseAbs(30, 30);
 ClickMouseButton(M_BTN1);
 ($win) = WaitWindowViewable(qr{test/ok\.png$});

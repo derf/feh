@@ -1,8 +1,8 @@
 #!/bin/sh
 
-Xnest :1 > /dev/null 2>&1 &
+Xnest -geometry 500x500 :7 > /dev/null 2>&1 &
 pid=${!}
 
-DISPLAY=:1 prove -v test/feh.i
+DISPLAY=:7 prove -v test/feh.i
 
 kill ${pid}
