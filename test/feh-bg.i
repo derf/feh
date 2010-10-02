@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 30;
+use Test::More tests => 70;
 use Time::HiRes qw/sleep/;
 
 sub set_bg {
@@ -47,6 +47,18 @@ for my $mode (qw( center fill max scale tile )) {
 
 	set_bg($mode, 'bg_451x500.png');
 	check_bg("bg_451x500_${mode}.png");
+
+	set_bg($mode, 'bg_small_w.png');
+	check_bg("bg_small_w_${mode}.png");
+
+	set_bg($mode, 'bg_small_h.png');
+	check_bg("bg_small_h_${mode}.png");
+
+	set_bg($mode, 'bg_large_w.png');
+	check_bg("bg_large_w_${mode}.png");
+
+	set_bg($mode, 'bg_large_h.png');
+	check_bg("bg_large_h_${mode}.png");
 }
 
 unlink("/tmp/feh_${$}.png");
