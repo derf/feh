@@ -1,0 +1,4 @@
+test/ok/gif; 16; 4; list; gif; 256; 953; gif; 0; 16
+test/ok/jpg; 16; 4; list; jpg; 256; 354; jpeg; 0; 16
+test/ok/png; 16; 4; list; png; 256; 403; png; 0; 16
+test/ok/pnm; 16; 4; list; pnm; 256; 269; pnm; 0; 16
