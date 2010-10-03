@@ -3,7 +3,7 @@
 Xnest -geometry 500x500 :7 > /dev/null 2>&1 &
 pid=${!}
 
-DISPLAY=:7 prove -v test/feh.i
+DISPLAY=:7 prove test/feh-scr.i test/feh.i
 ret=${?}
 
 kill ${pid}
