@@ -1127,10 +1127,8 @@ void feh_draw_actions(winwidget w)
 	/* This depends on feh_draw_filename internals...
 	 * should be fixed some time
 	 */
-	if (opt.draw_filename && w->full_screen)
+	if (opt.draw_filename)
 		th_offset = line_th * 2;
-	else if (opt.draw_filename)
-		th_offset = line_th;
 
 	im = imlib_create_image(tw, th);
 	if (!im)
