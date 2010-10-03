@@ -13,8 +13,7 @@ test: all
 
 test-x11: all
 	test/run-interactive
-	sleep 3
-	test/run-bg
+	prove test/feh-bg.i
 
 install: install-man install-doc install-bin install-font install-img
 

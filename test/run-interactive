@@ -8,4 +8,6 @@ ret=${?}
 
 kill ${pid}
 
+sleep 2
+
 exit ${ret}
