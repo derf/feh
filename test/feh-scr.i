@@ -211,7 +211,7 @@ test_scr('draw_action');
 SendKeys('d');
 test_scr('draw_filename_action');
 
-SendKeys('ddaada');
+SendKeys('da');
 test_scr('draw_nothing');
 
 feh_stop();
