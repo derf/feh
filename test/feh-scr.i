@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 19;
+use Test::More tests => 27;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -172,6 +172,47 @@ test_scr('caption_none');
 
 SendKeys('cfoobar{ESC}');
 test_scr('caption_none');
+
+feh_stop();
+
+feh_start(
+	'--draw-actions --action8 "nrm \'%f\'"',
+	'test/bg/exact/in'
+);
+test_scr('draw_action');
+feh_stop();
+
+feh_start(
+	'--draw-filename',
+	'test/bg/exact/in'
+);
+test_scr('draw_filename');
+feh_stop();
+
+feh_start(
+	'--draw-filename --draw-actions --action8 "nrm \'%f\'"',
+	'test/bg/exact/in'
+);
+test_scr('draw_filename_action');
+feh_stop();
+
+feh_start(
+	'--action8 "nrm \'%f\'"',
+	'test/bg/exact/in'
+);
+test_scr('draw_nothing');
+
+SendKeys('d');
+test_scr('draw_filename');
+
+SendKeys('da');
+test_scr('draw_action');
+
+SendKeys('d');
+test_scr('draw_filename_action');
+
+SendKeys('ddaada');
+test_scr('draw_nothing');
 
 feh_stop();
 
