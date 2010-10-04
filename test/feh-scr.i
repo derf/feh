@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 27;
+use Test::More tests => 38;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -14,6 +14,7 @@ my ($pid_xnest, $pid_twm);
 my $win;
 my ($width, $height);
 my $pwd = getcwd();
+my $test_id = 0;
 
 sub waitfor(&) {
 	my ($sub) = @_;
@@ -62,6 +63,10 @@ sub same_files {
 	my $img_one = GD::Image->new($one);
 	my $img_two = GD::Image->new($two);
 
+	if (not defined $img_one or not defined $img_two) {
+		return 0;
+	}
+
 	return( ! ($img_one->compare($img_two) & GD_CMP_IMAGE));
 }
 
@@ -75,11 +80,17 @@ sub check_scr {
 
 sub test_scr {
 	my ($file) = @_;
+	my $msg = "X root window is test/scr/${file}";
 
-	ok(
-		waitfor { check_scr($file) },
-		"X root window is test/scr/${file}",
-	);
+	$test_id++;
+
+	if (waitfor { check_scr($file) }) {
+		pass($msg);
+	}
+	else {
+		fail($msg);
+		rename("/tmp/feh_${$}.png", "/tmp/feh_${$}_${test_id}_${file}.png");
+	}
 }
 
 if (FindWindowLike(qr{^feh})) {
@@ -215,6 +226,44 @@ SendKeys('da');
 test_scr('draw_nothing');
 
 feh_stop();
+
+feh_start(q{}, 'test/bg/large/h/in');
+test_scr('feh_lhi');
+
+SendKeys('{UP}');
+test_scr('feh_lhi_i');
+
+SendKeys('{UP}');
+test_scr('feh_lhi_ii');
+
+SendKeys('^({RIG})');
+test_scr('feh_lhi_iir');
+
+SendKeys('^({RIG})');
+test_scr('feh_lhi_iirr');
+
+SendKeys('{UP}');
+test_scr('feh_lhi_iirri');
+
+SendKeys('{DOW}');
+test_scr('feh_lhi_iirrio');
+
+feh_stop();
+
+feh_start(q{}, 'test/bg/large/h/in');
+test_scr('feh_lhi');
+
+SendKeys('{DOW}');
+test_scr('feh_lhi_o');
+
+SendKeys('{DOW}');
+test_scr('feh_lhi_oo');
+
+SendKeys('{DOW}');
+test_scr('feh_lhi_ooo');
+
+feh_stop();
+
 
 unlink('test/bg/exact/.tc/in.txt');
 rmdir('test/bg/exact/.tc');
