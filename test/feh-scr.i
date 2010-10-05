@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 38;
+use Test::More tests => 42;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -264,6 +264,21 @@ test_scr('feh_lhi_ooo');
 
 feh_stop();
 
+feh_start(q{}, 'test/bg/transparency');
+test_scr('feh_ibg_default');
+feh_stop();
+
+feh_start('--image-bg default', 'test/bg/transparency');
+test_scr('feh_ibg_default');
+feh_stop();
+
+feh_start('--image-bg black', 'test/bg/transparency');
+test_scr('feh_ibg_black');
+feh_stop();
+
+feh_start('--image-bg white', 'test/bg/transparency');
+test_scr('feh_ibg_white');
+feh_stop();
 
 unlink('test/bg/exact/.tc/in.txt');
 rmdir('test/bg/exact/.tc');
