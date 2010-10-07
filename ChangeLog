@@ -1,5 +1,6 @@
-git HEAD
+Thu, 07 Oct 2010 20:15:12 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.10 (aka "2.0 will come real soon now")
     * Patch by Stefan Mark: Add --bg-max (scaled with borders)
     * Removed rather obscure --bg-seamless mode
     * Short option -Y for --hide-pointer
