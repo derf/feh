@@ -12,7 +12,7 @@ all: ${TARGETS}
 	< ${@:.1=.pre} > $@
 
 clean:
-	rm *.1
+	rm -f *.1
 
 .SUFFIXES: .pre .1
 
