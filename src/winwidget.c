@@ -387,6 +387,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
 
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+		if (resize)
+			 winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
 		D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
 	}
 
