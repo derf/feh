@@ -1066,7 +1066,7 @@ void feh_draw_actions(winwidget w)
 	int i = 0;
 	int num_actions = 0;
 	int cur_action = 0;
-	char index[1];
+	char index[2];
 	char *line;
 
 	/* Count number of defined actions. This method sucks a bit since it needs
