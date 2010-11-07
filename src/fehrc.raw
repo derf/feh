@@ -31,7 +31,7 @@ webcam --multiwindow --reload 20
 mkindex -iVO index.jpg .
 
 # More ambitious version...
-imgidx --index --output-only .fehindex.jpg --limit-width 1024 \
+imgidx --index --output-only .fehindex.jpg --limit-width 1024 \\
        --thumb-width 128 --thumb-height 128 --verbose --quiet
 
 # Show a presentation
@@ -59,16 +59,16 @@ black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \\
 rfs --full-screen --hide-pointer --auto-zoom --randomize
 fs  --full-screen --hide-pointer --auto-zoom --sort filename
 
-thumb_s  --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \
-         --limit-width 1024 --sort filename \
+thumb_s  --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \\
+         --limit-width 1024 --sort filename \\
          --fontpath /usr/share/fonts/truetype/ttf-dejavu/ --font DejaVuSans/8
 
-thumb_b  --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \
-         --limit-width 1024 --sort filename \
+thumb_b  --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \\
+         --limit-width 1024 --sort filename \\
          --fontpath /usr/share/fonts/truetype/ttf-dejavu/ --font DejaVuSans/8
 
-thumb_s_nt --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \
+thumb_s_nt --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \\
            --limit-width 1024 --sort filename --index-name 0
 
-thumb_b_nt --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \
+thumb_b_nt --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \\
            --limit-width 1024 --sort filename --index-name 0
