@@ -864,8 +864,6 @@ available or use the builtin HTTP client
 .Sh BUGS
 Xinerama support does not really work on Xinerama screens != 0.
 .Pp
-The --scale-down option creates too large windows when used in floating mode.
-.Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
 .

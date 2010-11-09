@@ -37,5 +37,3 @@ Maybe remove some unneccessary stuff?
  * Builtin HTTP client
  * Support for custom menu backgrounds/themes
  * output-dir (cd $dir; feh is good enough)
-
---scale-down is slightly broken with large images & xinerama
