@@ -177,6 +177,10 @@ void slideshow_change_image(winwidget winwid, int change)
 	gib_list *last = NULL;
 	int i = 0;
 	int jmp = 1;
+	/* We can't use filelist_len in the for loop, since that changes when we
+	 * encounter invalid images.
+	 */
+	int our_filelist_len = filelist_len;
 	char *s;
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
@@ -197,7 +201,7 @@ void slideshow_change_image(winwidget winwid, int change)
 	}
 
 	/* The for loop prevents us looping infinitely */
-	for (i = 0; i < filelist_len; i++) {
+	for (i = 0; i < our_filelist_len; i++) {
 		winwidget_free_image(winwid);
 		switch (change) {
 		case SLIDE_NEXT:
