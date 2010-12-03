@@ -1,5 +1,6 @@
-git HEAD
+Fri, 03 Dec 2010 19:41:45 +0100
 
+* Release v1.10.1
     * Partially fix --scale-down behaviour (zooming is still broken)
     * Fix buffer overflow when using --draw-actions
     * Fix segfaults after trying to load several unloadable images
