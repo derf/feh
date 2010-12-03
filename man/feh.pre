@@ -866,6 +866,9 @@ Xinerama support does not really work on Xinerama screens != 0.
 .Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
+.Pp
+.Cm --scale-down
+does not support zooming.
 .
 .Ss REPORTING BUGS
 If you find a bug, please report it to

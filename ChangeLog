@@ -3,6 +3,7 @@ git HEAD
     * Partially fix --scale-down behaviour (zooming is still broken)
     * Fix buffer overflow when using --draw-actions
     * Fix segfaults after trying to load several unloadable images
+    * Fix fehrc created by feh (contined escape errors)
 
 Thu, 07 Oct 2010 20:15:12 +0200  Daniel Friesel <derf@finalrewind.org>
 
