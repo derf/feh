@@ -262,8 +262,8 @@ char *feh_http_load_image(char *url)
 		int sockno = 0;
 		int size;
 		int body = SAW_NONE;
-		struct sockaddr_in addr;
-		struct hostent *hptr;
+		struct addrinfo hints;
+		struct addrinfo *result, *rp;
 		char *hostname;
 		char *get_string;
 		char *host_string;
@@ -293,7 +293,12 @@ char *feh_http_load_image(char *url)
 
 		D(("trying hostname %s\n", hostname));
 
-		if (!(hptr = feh_gethostbyname(hostname))) {
+		memset(&hints, 0, sizeof(struct addrinfo));
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_flags = AI_NUMERICSERV;
+		hints.ai_protocol = 0;
+		if (getaddrinfo(hostname, "80", &hints, &result) != 0) {
 			weprintf("error resolving host %s:", hostname);
 			fclose(fp);
 			unlink(tmpname);
@@ -301,30 +306,26 @@ char *feh_http_load_image(char *url)
 			free(tmpname);
 			return(NULL);
 		}
-
-		/* Copy the address of the host to socket description. */
-		memcpy(&addr.sin_addr, hptr->h_addr, hptr->h_length);
-
-		/* Set port and protocol */
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(80);
-
-		if ((sockno = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-			weprintf("error opening socket:");
-			fclose(fp);
-			unlink(tmpname);
-			free(tmpname);
-			free(hostname);
-			return(NULL);
+		for (rp = result; rp != NULL; rp = rp->ai_next) {
+			sockno = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+			if (sockno == -1) {
+				continue;
+			}
+			if (connect(sockno, rp->ai_addr, rp->ai_addrlen) != -1) {
+				break;
+			}
+			close(sockno);
 		}
-		if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+		if (rp == NULL) {
 			weprintf("error connecting socket:");
+			freeaddrinfo(result);
 			fclose(fp);
 			unlink(tmpname);
 			free(tmpname);
 			free(hostname);
 			return(NULL);
 		}
+		freeaddrinfo(result);
 
 		get_url = strchr(url, '/') + 2;
 		get_url = strchr(get_url, '/');
@@ -466,19 +467,6 @@ char *feh_http_load_image(char *url)
 	}
 
 	return(tmpname);
-}
-
-struct hostent *feh_gethostbyname(const char *name)
-{
-	struct hostent *hp;
-	unsigned long addr;
-
-	addr = (unsigned long) inet_addr(name);
-	if ((int) addr != -1)
-		hp = gethostbyaddr((char *) &addr, sizeof(addr), AF_INET);
-	else
-		hp = gethostbyname(name);
-	return(hp);
 }
 
 char *feh_strip_hostname(char *url)
