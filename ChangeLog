@@ -1,3 +1,8 @@
+git HEAD
+
+    * Patch by Pascal Bleser: Use getaddrinfo for builtin http client,
+      this enables IPv6 support
+
 Fri, 03 Dec 2010 19:41:45 +0100
 
 * Release v1.10.1
