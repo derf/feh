@@ -6,7 +6,8 @@ use Test::Command tests => 48;
 
 my $fehrc = "/tmp/.fehrc-$$";
 my $feh = "src/feh --rcfile $fehrc";
-my $images = 'test/ok/* test/fail/*';
+my $images = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm '
+           . 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
 
 my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
 
