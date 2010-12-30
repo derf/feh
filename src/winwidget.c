@@ -383,7 +383,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 	winwidget_setup_pixmaps(winwid);
 
 	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
-						       || (winwid->h < winwid->im_h))) {
+						       || (winwid->h < winwid->im_h)) &&
+							  (winwid->old_zoom == 1.0)) {
 		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
 
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -908,6 +909,7 @@ void feh_debug_print_winwid(winwidget w)
 void winwidget_reset_image(winwidget winwid)
 {
 	winwid->zoom = 1.0;
+	winwid->old_zoom = 1.0;
 	winwid->im_x = 0;
 	winwid->im_y = 0;
 	winwid->im_angle = 0.0;
