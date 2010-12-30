@@ -307,6 +307,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	case XK_KP_Multiply:
 		len = 0;
 		winwid->zoom = 1;
+		winwid->old_zoom = 1.001; /* hack for --scale-down */
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 		break;
