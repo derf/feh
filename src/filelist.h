@@ -60,6 +60,7 @@ void feh_file_free(feh_file * file);
 feh_file_info *feh_file_info_new(void);
 void feh_file_info_free(feh_file_info * info);
 gib_list *feh_file_rm_and_free(gib_list * list, gib_list * file);
+int file_selector_all(const struct dirent *unused);
 void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);

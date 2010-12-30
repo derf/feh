@@ -111,6 +111,11 @@ gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l)
 	return(gib_list_remove(list, l));
 }
 
+int file_selector_all(const struct dirent *unused __attribute__((unused)))
+{
+  return 1;
+}
+
 /* Recursive */
 void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 {
@@ -175,8 +180,9 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 	}
 
 	if ((S_ISDIR(st.st_mode)) && (level != FILELIST_LAST)) {
-		struct dirent *de;
+		struct dirent **de;
 		DIR *dir;
+		int cnt, n;
 
 		D(("It is a directory\n"));
 
@@ -186,13 +192,25 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			free(path);
 			return;
 		}
-		de = readdir(dir);
-		while (de != NULL) {
-			if (strcmp(de->d_name, ".")
-					&& strcmp(de->d_name, "..")) {
+		n = scandir(path, &de, file_selector_all, alphasort);
+		if (n < 0) {
+		  switch (errno) {
+		  case ENOMEM:
+		    if (!opt.quiet)
+		      weprintf("Insufficient memory to scan directory %s:", path);
+		    break;
+		  default:
+		    if (!opt.quiet)
+		      weprintf("Failed to scan directory %s:", path);
+		  }
+		}
+
+		for (cnt = 0; cnt < n; cnt++) {
+			if (strcmp(de[cnt]->d_name, ".")
+					&& strcmp(de[cnt]->d_name, "..")) {
 				char *newfile;
 
-				newfile = estrjoin("", path, "/", de->d_name, NULL);
+				newfile = estrjoin("", path, "/", de[cnt]->d_name, NULL);
 
 				/* This ensures we go down one level even if not fully recursive
 				   - this way "feh some_dir" expands to some_dir's contents */
@@ -202,9 +220,10 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 					add_file_to_filelist_recursively(newfile, FILELIST_LAST);
 
 				free(newfile);
+				free(de[cnt]);
 			}
-			de = readdir(dir);
 		}
+		free(de);
 		closedir(dir);
 	} else if (S_ISREG(st.st_mode)) {
 		D(("Adding regular file %s to filelist\n", path));
