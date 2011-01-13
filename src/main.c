@@ -43,8 +43,10 @@ int main(int argc, char **argv)
 
 	init_imlib_fonts();
 
-	if (opt.display)
+	if (opt.display) {
 		init_x_and_imlib();
+		init_keyevents();
+	}
 
 	feh_event_init();
 

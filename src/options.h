@@ -130,6 +130,59 @@ struct __fehoptions {
 	Imlib_Font menu_fn;
 };
 
+struct __fehkey {
+	int keysyms[3];
+	int keystates[3];
+};
+
+struct __fehkb {
+	struct __fehkey move_right;
+	struct __fehkey prev_img;
+	struct __fehkey move_left;
+	struct __fehkey next_img;
+	struct __fehkey move_up;
+	struct __fehkey move_down;
+	struct __fehkey jump_back;
+	struct __fehkey quit;
+	struct __fehkey jump_fwd;
+	struct __fehkey remove;
+	struct __fehkey delete;
+	struct __fehkey jump_first;
+	struct __fehkey jump_last;
+	struct __fehkey action_0;
+	struct __fehkey action_1;
+	struct __fehkey action_2;
+	struct __fehkey action_3;
+	struct __fehkey action_4;
+	struct __fehkey action_5;
+	struct __fehkey action_6;
+	struct __fehkey action_7;
+	struct __fehkey action_8;
+	struct __fehkey action_9;
+	struct __fehkey zoom_in;
+	struct __fehkey zoom_out;
+	struct __fehkey zoom_default;
+	struct __fehkey zoom_fit;
+	struct __fehkey render;
+	struct __fehkey toggle_actions;
+	struct __fehkey toggle_filenames;
+	struct __fehkey toggle_pointer;
+	struct __fehkey jump_random;
+	struct __fehkey toggle_caption;
+	struct __fehkey toggle_pause;
+	struct __fehkey reload_image;
+	struct __fehkey save_image;
+	struct __fehkey save_filelist;
+	struct __fehkey size_to_image;
+	struct __fehkey toggle_menu;
+	struct __fehkey close;
+	struct __fehkey orient_1;
+	struct __fehkey orient_3;
+	struct __fehkey toggle_fullscreen;
+	struct __fehkey reload_minus;
+	struct __fehkey reload_plus;
+};
+
 void init_parse_options(int argc, char **argv);
 char *feh_string_normalize(char *str);
 
