@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 static void check_options(void);
-static void feh_create_default_config(char *rcfile);
 static void feh_parse_option_array(int argc, char **argv);
 static void feh_parse_environment_options(void);
 static void feh_check_theme_options(int arg, char **argv);
@@ -163,15 +162,12 @@ static void feh_load_options_for_theme(char *theme)
 		if (!home)
 			eprintf("D'oh! Please define HOME in your environment! "
 					"It would really help me out...\n");
-		rcpath = estrjoin("/", home, ".fehrc", NULL);
+		rcpath = estrjoin("/", home, ".config/feh/themes", NULL);
 		D(("Trying %s for config\n", rcpath));
 		fp = fopen(rcpath, "r");
 
 		if (!fp && ((fp = fopen("/etc/fehrc", "r")) == NULL)) {
-			feh_create_default_config(rcpath);
-
-			if ((fp = fopen(rcpath, "r")) == NULL)
-				return;
+			return;
 		}
 
 		free(rcpath);
@@ -860,21 +856,4 @@ static void show_usage(void)
 #include "help.inc"
 	, stdout);
 	exit(0);
-}
-
-static void feh_create_default_config(char *rcfile)
-{
-	FILE *fp;
-
-	if ((fp = fopen(rcfile, "w")) == NULL) {
-		weprintf("Unable to create default config file %s\n", rcfile);
-		return;
-	}
-
-	fputs(
-#include "fehrc.inc"
-	, fp);
-	fclose(fp);
-
-	return;
 }
