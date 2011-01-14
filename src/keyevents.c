@@ -54,7 +54,26 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 			case 'C':
 				mod = ControlMask;
 				break;
+			case 'S':
+				mod = ShiftMask;
+				break;
+			case '1':
+				mod = Mod1Mask;
+				break;
+			case '2':
+				mod = Mod2Mask;
+				break;
+			case '3':
+				mod = Mod3Mask;
+				break;
+			case '4':
+				mod = Mod4Mask;
+				break;
+			case '5':
+				mod = Mod5Mask;
+				break;
 			default:
+				weprintf("feh keys: invalid modifier %c in %s", ks[0], ks);
 				break;
 		}
 		cur = ks + 2;
