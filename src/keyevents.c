@@ -68,12 +68,18 @@ void init_keyevents(void) {
 	char *home, *confpath;
 	char line[128];
 	char action[32], k1[32], k2[32], k3[32];
-	fehkb *cur_kb = NULL;
+	struct __fehkey *cur_kb = NULL;
 	FILE *conf = NULL;
 	int read = 0;
 
 	memset(&keys, 0, sizeof(keys));
 
+	feh_set_kb(&keys.menu_close, 0, XK_Escape    , 0, 0            , 0, 0);
+	feh_set_kb(&keys.menu_parent,0, XK_Left      , 0, 0            , 0, 0);
+	feh_set_kb(&keys.menu_down , 0, XK_Down      , 0, 0            , 0, 0);
+	feh_set_kb(&keys.menu_up   , 0, XK_Up        , 0, 0            , 0, 0);
+	feh_set_kb(&keys.menu_child, 0, XK_Right     , 0, 0            , 0, 0);
+	feh_set_kb(&keys.menu_select,0, XK_Return    , 0, XK_space     , 0, 0);
 	feh_set_kb(&keys.move_right, 0, XK_KP_Left   , 4, XK_Left      , 0, 0);
 	feh_set_kb(&keys.move_left , 0, XK_KP_Right  , 4, XK_Right     , 0, 0);
 	feh_set_kb(&keys.move_up   , 0, XK_KP_Down   , 4, XK_Down      , 0, 0);
@@ -142,7 +148,19 @@ void init_keyevents(void) {
 		if ((read == EOF) || (read < 2))
 			continue;
 
-		if (!strcmp(action, "move_right"))
+		if (!strcmp(action, "menu_close"))
+			cur_kb = &keys.menu_close;
+		else if (!strcmp(action, "menu_parent"))
+			cur_kb = &keys.menu_parent;
+		else if (!strcmp(action, "menu_down"))
+			cur_kb = &keys.menu_down;
+		else if (!strcmp(action, "menu_up"))
+			cur_kb = &keys.menu_up;
+		else if (!strcmp(action, "menu_child"))
+			cur_kb = &keys.menu_child;
+		else if (!strcmp(action, "menu_select"))
+			cur_kb = &keys.menu_select;
+		else if (!strcmp(action, "move_right"))
 			cur_kb = &keys.move_right;
 		else if (!strcmp(action, "move_left"))
 			cur_kb = &keys.move_left;
@@ -300,30 +318,18 @@ void feh_event_handle_keypress(XEvent * ev)
 	/* menus are showing, so this is a menu control keypress */
 	if (ev->xbutton.window == menu_cover) {
 		selected_item = feh_menu_find_selected_r(menu_root, &selected_menu);
-		switch (keysym) {
-		case XK_Escape:
+		if (feh_is_kp(&keys.menu_close, keysym, kev->state))
 			feh_menu_hide(menu_root, True);
-			break;
-		case XK_Left:
+		else if (feh_is_kp(&keys.menu_parent, keysym, kev->state))
 			feh_menu_select_parent(selected_menu);
-			break;
-		case XK_Down:
+		else if (feh_is_kp(&keys.menu_down, keysym, kev->state))
 			feh_menu_select_next(selected_menu, selected_item);
-			break;
-		case XK_Up:
+		else if (feh_is_kp(&keys.menu_up, keysym, kev->state))
 			feh_menu_select_prev(selected_menu, selected_item);
-			break;
-		case XK_Right:
+		else if (feh_is_kp(&keys.menu_child, keysym, kev->state))
 			feh_menu_select_submenu(selected_menu);
-			break;
-		case XK_Return:
-		case XK_space:
+		else if (feh_is_kp(&keys.menu_select, keysym, kev->state))
 			feh_menu_item_activate(selected_menu, selected_item);
-			break;
-		default:
-			break;
-		}
-
 		return;
 	}
 

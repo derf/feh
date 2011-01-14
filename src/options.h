@@ -136,6 +136,12 @@ struct __fehkey {
 };
 
 struct __fehkb {
+	struct __fehkey menu_close;
+	struct __fehkey menu_parent;
+	struct __fehkey menu_down;
+	struct __fehkey menu_up;
+	struct __fehkey menu_child;
+	struct __fehkey menu_select;
 	struct __fehkey move_right;
 	struct __fehkey prev_img;
 	struct __fehkey move_left;
