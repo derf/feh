@@ -40,7 +40,36 @@ static void feh_set_kb(fehkey *key, int s0, int y0, int s1, int y1, int s2, int 
 	key->keysyms[2] = y2;
 }
 
+static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
+	char *cur = ks;
+	int mod = 0;
+
+	if (!*ks)
+		return;
+
+	if (ks[1] == '-') {
+		switch (ks[0]) {
+			case 'C':
+				mod = ControlMask;
+				break;
+			default:
+				break;
+		}
+		cur = ks + 2;
+	}
+
+	key->keysyms[index] = XStringToKeysym(cur);
+	key->keystates[index] = mod;
+}
+
 void init_keyevents(void) {
+	char *home, *confpath;
+	char line[128];
+	char action[32], k1[32], k2[32], k3[32];
+	fehkb *cur_kb = NULL;
+	FILE *conf = NULL;
+	int read = 0;
+
 	memset(&keys, 0, sizeof(keys));
 
 	feh_set_kb(&keys.move_right, 0, XK_KP_Left   , 4, XK_Left      , 0, 0);
@@ -88,6 +117,128 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.orient_3, 0, XK_less, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_minus, 0, XK_minus, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_plus, 0, XK_plus, 0, 0, 0, 0);
+
+	home = getenv("HOME");
+	if (!home)
+		eprintf("No HOME in environment\n");
+
+	confpath = estrjoin("/", home, ".config/feh/keys", NULL);
+	conf = fopen(confpath, "r");
+
+	if (!conf)
+		return;
+
+	while (fgets(line, sizeof(line), conf)) {
+		*action = '\0';
+		*k1 = '\0';
+		*k2 = '\0';
+		*k3 = '\0';
+
+		read = sscanf(line, "%31s %31s %31s %31s\n",
+			(char *) &action, (char *) &k1, (char* ) &k2, (char *) &k3);
+
+		if ((read == EOF) || (read < 2))
+			continue;
+
+		if (!strcmp(action, "move_right"))
+			cur_kb = &keys.move_right;
+		else if (!strcmp(action, "move_left"))
+			cur_kb = &keys.move_left;
+		else if (!strcmp(action, "move_up"))
+			cur_kb = &keys.move_up;
+		else if (!strcmp(action, "move_down"))
+			cur_kb = &keys.move_down;
+		else if (!strcmp(action, "prev_img"))
+			cur_kb = &keys.prev_img;
+		else if (!strcmp(action, "next_img"))
+			cur_kb = &keys.next_img;
+		else if (!strcmp(action, "jump_back"))
+			cur_kb = &keys.jump_back;
+		else if (!strcmp(action, "jump_fwd"))
+			cur_kb = &keys.jump_fwd;
+		else if (!strcmp(action, "jump_random"))
+			cur_kb = &keys.jump_random;
+		else if (!strcmp(action, "quit"))
+			cur_kb = &keys.quit;
+		else if (!strcmp(action, "close"))
+			cur_kb = &keys.close;
+		else if (!strcmp(action, "remove"))
+			cur_kb = &keys.remove;
+		else if (!strcmp(action, "delete"))
+			cur_kb = &keys.delete;
+		else if (!strcmp(action, "jump_first"))
+			cur_kb = &keys.jump_first;
+		else if (!strcmp(action, "jump_last"))
+			cur_kb = &keys.jump_last;
+		else if (!strcmp(action, "action_0"))
+			cur_kb = &keys.action_0;
+		else if (!strcmp(action, "action_1"))
+			cur_kb = &keys.action_1;
+		else if (!strcmp(action, "action_2"))
+			cur_kb = &keys.action_2;
+		else if (!strcmp(action, "action_3"))
+			cur_kb = &keys.action_3;
+		else if (!strcmp(action, "action_4"))
+			cur_kb = &keys.action_4;
+		else if (!strcmp(action, "action_5"))
+			cur_kb = &keys.action_5;
+		else if (!strcmp(action, "action_6"))
+			cur_kb = &keys.action_6;
+		else if (!strcmp(action, "action_7"))
+			cur_kb = &keys.action_7;
+		else if (!strcmp(action, "action_8"))
+			cur_kb = &keys.action_8;
+		else if (!strcmp(action, "action_9"))
+			cur_kb = &keys.action_9;
+		else if (!strcmp(action, "zoom_in"))
+			cur_kb = &keys.zoom_in;
+		else if (!strcmp(action, "zoom_out"))
+			cur_kb = &keys.zoom_out;
+		else if (!strcmp(action, "zoom_default"))
+			cur_kb = &keys.zoom_default;
+		else if (!strcmp(action, "zoom_fit"))
+			cur_kb = &keys.zoom_fit;
+		else if (!strcmp(action, "size_to_image"))
+			cur_kb = &keys.size_to_image;
+		else if (!strcmp(action, "render"))
+			cur_kb = &keys.render;
+		else if (!strcmp(action, "toggle_actions"))
+			cur_kb = &keys.toggle_actions;
+		else if (!strcmp(action, "toggle_filenames"))
+			cur_kb = &keys.toggle_filenames;
+		else if (!strcmp(action, "toggle_pointer"))
+			cur_kb = &keys.toggle_pointer;
+		else if (!strcmp(action, "toggle_caption"))
+			cur_kb = &keys.toggle_caption;
+		else if (!strcmp(action, "toggle_pause"))
+			cur_kb = &keys.toggle_pause;
+		else if (!strcmp(action, "toggle_menu"))
+			cur_kb = &keys.toggle_menu;
+		else if (!strcmp(action, "toggle_fullscreen"))
+			cur_kb = &keys.toggle_fullscreen;
+		else if (!strcmp(action, "reload_image"))
+			cur_kb = &keys.reload_image;
+		else if (!strcmp(action, "save_image"))
+			cur_kb = &keys.save_image;
+		else if (!strcmp(action, "save_filelist"))
+			cur_kb = &keys.save_filelist;
+		else if (!strcmp(action, "orient_1"))
+			cur_kb = &keys.orient_1;
+		else if (!strcmp(action, "orient_3"))
+			cur_kb = &keys.orient_3;
+		else if (!strcmp(action, "reload_minus"))
+			cur_kb = &keys.reload_minus;
+		else if (!strcmp(action, "reload_plus"))
+			cur_kb = &keys.reload_plus;
+
+		if (cur_kb) {
+			feh_set_parse_kb_partial(cur_kb, 0, k1);
+			feh_set_parse_kb_partial(cur_kb, 1, k2);
+			feh_set_parse_kb_partial(cur_kb, 2, k3);
+		}
+	}
+	fclose(conf);
+	free(confpath);
 }
 
 static short feh_is_kp(fehkey *key, int sym, int state) {
