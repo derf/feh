@@ -317,7 +317,7 @@ displaying.
 Use
 .Ar file
 to parse themes and options from, instead of the default
-.Pa ~/.fehrc , /etc/fehrc
+.Pa ~/.config/feh/themes , /etc/fehrc
 files.
 .
 .It Cm -r , --recursive
@@ -615,14 +615,10 @@ version
 .Sh CONFIG FILE SYNTAX
 The config file allows the naming of option groups, called themes.
 If
-.Pa ~/.fehrc No or Pa /etc/fehrc
+.Pa ~/.config/feh/themes No or Pa /etc/fehrc
 exist,
 .Nm
 will look in them for name/options pairs.
-If neither of them exist,
-.Nm
-will create a default one in
-.Pa ~/.fehrc .
 .Pp
 It takes entries of the form
 .Qq Ar theme options ... ,
@@ -655,7 +651,7 @@ to use these options.
 Note that you can split a theme over several lines by placing a backslash at
 the end of a line, like in the shell.
 .Pp
-You can combine these themes with commandline options.  An example .fehrc is
+You can combine these themes with commandline options.  An example fehrc is
 provided with a couple of cool example themes.
 .
 .Sh KEYS
@@ -885,7 +881,7 @@ Plans for the following releases:
 .Bl -bullet -compact
 .
 .It
-Switch to real config file from fehrc theme definitions
+Switch to real config file from feh/theme definitions
 .
 .It
 Add config options to rebind keys + proper mouse action rebinding
