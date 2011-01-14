@@ -145,7 +145,7 @@ void init_keyevents(void) {
 		read = sscanf(line, "%31s %31s %31s %31s\n",
 			(char *) &action, (char *) &k1, (char* ) &k2, (char *) &k3);
 
-		if ((read == EOF) || (read < 2))
+		if ((read == EOF) || (read < 2) || (line[0] == '#'))
 			continue;
 
 		if (!strcmp(action, "menu_close"))
@@ -250,6 +250,8 @@ void init_keyevents(void) {
 			cur_kb = &keys.reload_minus;
 		else if (!strcmp(action, "reload_plus"))
 			cur_kb = &keys.reload_plus;
+		else
+			weprintf("feh keys: Invalid action: %s", action);
 
 		if (cur_kb) {
 			feh_set_parse_kb_partial(cur_kb, 0, k1);
