@@ -44,8 +44,10 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 	char *cur = ks;
 	int mod = 0;
 
-	if (!*ks)
+	if (!*ks) {
+		key->keysyms[index] = 0;
 		return;
+	}
 
 	if (ks[1] == '-') {
 		switch (ks[0]) {
