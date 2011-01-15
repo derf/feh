@@ -16,6 +16,7 @@ test-x11: all
 	prove test/feh-bg.i
 
 install: install-man install-doc install-bin install-font install-img
+install: install-examples
 
 install-man:
 	@echo installing manuals to ${man_dir}
@@ -49,6 +50,12 @@ install-img:
 	@cp data/images/* ${image_dir}
 	@chmod 644 ${image_dir}/*
 
+install-examples:
+	@echo installing examples to ${example_dir}
+	@mkdir -p ${example_dir}
+	@cp data/examples/* ${example_dir}
+	@chmod 644 ${example_dir}/*
+
 
 uninstall:
 	rm -f ${man_dir}/man1/feh.1 ${man_dir}/man1/feh-cam.1
@@ -79,4 +86,4 @@ clean:
 	@${MAKE} -C man clean
 
 .PHONY: all test test-x11 install uninstall clean install-man install-doc \
-	install-bin install-font install-img dist
+	install-bin install-font install-img install-examples dist

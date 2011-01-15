@@ -1,8 +1,6 @@
-# Feh configuration file.
-# Lines starting with # are comments. Don't use comments mid-line.
-
-# Feh expects to find this as ~/.fehrc or /etc/fehrc
-# If both are available, ~/.fehrc will be used
+# Feh themes configuration file.
+# Lines starting with # are comments. Midline comments are not supported.
+# Place this as either ~/.config/feh/themes or /etc/feh/themes
 
 # Options are defined in theme_name/options pairs.
 # Separate themename and options by whitespace.
@@ -14,8 +12,8 @@
 # mkindex theme.
 
 # Multiple options can of course be used. If they are too long for one line,
-# you can (usually) use a \\ to make them continue on the next one:
-# imagemap -rV --quiet -W 400 -H 300 \\
+# you can use a \ to make them continue on the next one, but not mid-option.
+# imagemap -rV --quiet -W 400 -H 300 \
 #          --thumb-width 40 --thumb-height 30
 
 # ====================
@@ -31,7 +29,7 @@ webcam --multiwindow --reload 20
 mkindex -iVO index.jpg .
 
 # More ambitious version...
-imgidx --index --output-only .fehindex.jpg --limit-width 1024 \\
+imgidx --index --output-only .fehindex.jpg --limit-width 1024 \
        --thumb-width 128 --thumb-height 128 --verbose --quiet
 
 # Show a presentation
@@ -43,15 +41,12 @@ booth --full-screen --hide-pointer --slideshow-delay 20
 # Screw xscreensaver, use feh =)
 screensave --recursive --full-screen --randomize --slideshow-delay 10 --hide-pointer
 
-# Add <img> tags to your html with ease :-)
-newimg -q -L \"<img src=\\\"%f\\\" alt=\\\"%n\\\" border=\\\"0\\\" width=\\\"%w\\\" height=\\\"%h\\\">\"
-
 # Different menus
 brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png
 aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png
 aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png
 sky --menu-bg " PREFIX "/share/feh/images/menubg_sky.png
-black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \\
+black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \
       --menu-style " PREFIX "/share/feh/fonts/black.style
 
 # Some more examples, used by the feh developer
@@ -59,16 +54,16 @@ black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \\
 rfs --full-screen --hide-pointer --auto-zoom --randomize
 fs  --full-screen --hide-pointer --auto-zoom --sort filename
 
-thumb_s  --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \\
-         --limit-width 1024 --sort filename \\
+thumb_s  --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \
+         --limit-width 1024 --sort filename \
          --fontpath /usr/share/fonts/truetype/ttf-dejavu/ --font DejaVuSans/8
 
-thumb_b  --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \\
-         --limit-width 1024 --sort filename \\
+thumb_b  --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \
+         --limit-width 1024 --sort filename \
          --fontpath /usr/share/fonts/truetype/ttf-dejavu/ --font DejaVuSans/8
 
-thumb_s_nt --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \\
+thumb_s_nt --thumbnails --cache-thumbnails --thumb-width 128 --thumb-height 128 \
            --limit-width 1024 --sort filename --index-name 0
 
-thumb_b_nt --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \\
+thumb_b_nt --thumbnails --cache-thumbnails --thumb-width 256 --thumb-height 256 \
            --limit-width 1024 --sort filename --index-name 0
