@@ -605,13 +605,29 @@ Image width
 version
 .El
 .
-.Sh CONFIG FILE SYNTAX
-The config file allows the naming of option groups, called themes.
-If
-.Pa ~/.config/feh/themes No or Pa /etc/fehrc
-exist,
+.Sh CONFIGURATION
 .Nm
-will look in them for name/options pairs.
+has two config files:
+.Pa themes
+for theme definitions and
+.Pa keys
+for key bindings.
+It will try to read them from
+.Pa $XDG_CONFIG_HOME/feh/ ,
+which
+.Pq when XDG_CONFIG_HOME is unset
+defaults to
+.Pa ~/.config/feh/ .
+If the files are not found in that directory, it will also try
+.Pa /etc/feh/ .
+.Pp
+All config files treat lines starting with a
+.Qq #
+character as comments.
+Note that mid-line comments are not supported.
+.
+.Sh THEMES CONFIG SYNTAX
+This file allows the naming of option groups, called themes.
 .Pp
 It takes entries of the form
 .Qq Ar theme options ... ,
@@ -646,6 +662,32 @@ the end of a line, like in the shell.
 .Pp
 You can combine these themes with commandline options.  An example fehrc is
 provided with a couple of cool example themes.
+.
+.Sh KEYS CONFIG SYNTAX
+This file defines the key bindings. It has entries of the form
+.Qq Ar action Ar key1 Op Ar key2 Op Ar key3
+.Pp
+Each
+.Ar key
+is an X11 keysym name as shown by
+.Xr xev 1 ,
+like
+.Qq Delete .
+It may optionally start with a modifier for things like Control, in which case
+.Ar key
+looks like
+.Ar mod No - Ar keysym
+.Pq for example Qo C-Delete Qc for Ctrl+Delete .
+.Pp
+Available modifiers are
+.Ar C No for Control ,
+.Ar S No for Shift and
+.Ar 1 No to Ar 5 No for Mod1 to Mod5
+.Pp
+for a list of the
+.Ar action
+names, see
+.Sx EYS .
 .
 .Sh KEYS
 In an image window, the following keys may be used:
