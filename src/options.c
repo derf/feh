@@ -148,6 +148,7 @@ static void feh_load_options_for_theme(char *theme)
 	FILE *fp = NULL;
 	char *home = getenv("HOME");
 	char *rcpath = NULL;
+	char *oldrcpath = NULL;
 	char *confbase = getenv("XDG_CONFIG_HOME");
 	char s[1024], s1[1024], s2[1024];
 	int cont = 0;
@@ -155,6 +156,8 @@ static void feh_load_options_for_theme(char *theme)
 
 	if (!home)
 		eprintf("You have no HOME, cannot read themes");
+
+	oldrcpath = estrjoin("/", home, ".fehrc", NULL);
 
 	if (confbase)
 		rcpath = estrjoin("/", confbase, "feh/themes", NULL);
@@ -164,6 +167,12 @@ static void feh_load_options_for_theme(char *theme)
 	fp = fopen(rcpath, "r");
 
 	free(rcpath);
+
+	if (!fp && ((fp = fopen(oldrcpath, "r")) != NULL))
+		weprintf("the config is now read from .config/feh/themes, "
+			"please update your path!");
+
+	free(oldrcpath);
 
 	if (!fp && ((fp = fopen("/etc/feh/themes", "r")) == NULL))
 		return;
