@@ -162,7 +162,7 @@ void init_keyevents(void) {
 
 	free(confpath);
 
-	if (!conf)
+	if (!conf && ((conf = fopen("/etc/feh/keys", "r")) == NULL))
 		return;
 
 	while (fgets(line, sizeof(line), conf)) {

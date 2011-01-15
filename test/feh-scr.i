@@ -16,6 +16,8 @@ my ($width, $height);
 my $pwd = getcwd();
 my $test_id = 0;
 
+$ENV{XDG_CONFIG_HOME} = "/tmp/feh-test-$$";
+
 sub waitfor(&) {
 	my ($sub) = @_;
 	my $out;

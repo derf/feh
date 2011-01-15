@@ -10,6 +10,8 @@ use Time::HiRes qw/sleep/;
 
 my ($pid_xnest, $pid_twm);
 
+$ENV{XDG_CONFIG_HOME} = "/tmp/feh-test-$$";
+
 sub set_bg {
 	my ($mode, $file) = @_;
 
