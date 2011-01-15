@@ -10,7 +10,6 @@ OPTIONS
  -V, --verbose             Show progress bars and other extra information
  -q, --quiet               Hide non-fatal errors. May be used with --verbose
  -T, --theme THEME         Load options with name THEME
- -_, --rcfile FILE         Use FILE to parse themes and options from
  -r, --recursive           Recursively expand any directories in FILE to
                            the content of those directories. (Take it easy)
  -z, --randomize           Randomize the filelist

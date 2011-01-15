@@ -146,32 +146,27 @@ static void feh_check_theme_options(int arg, char **argv)
 static void feh_load_options_for_theme(char *theme)
 {
 	FILE *fp = NULL;
-	char *home;
+	char *home = getenv("HOME");
 	char *rcpath = NULL;
+	char *confbase = getenv("XDG_CONFIG_HOME");
 	char s[1024], s1[1024], s2[1024];
 	int cont = 0;
 	int bspos;
 
-	if (opt.rcfile) {
-		if ((fp = fopen(opt.rcfile, "r")) == NULL) {
-			weprintf("couldn't load the specified rcfile %s\n", opt.rcfile);
-			return;
-		}
-	} else {
-		home = getenv("HOME");
-		if (!home)
-			eprintf("D'oh! Please define HOME in your environment! "
-					"It would really help me out...\n");
+	if (!home)
+		eprintf("You have no HOME, cannot read themes");
+
+	if (confbase)
+		rcpath = estrjoin("/", confbase, "feh/themes", NULL);
+	else
 		rcpath = estrjoin("/", home, ".config/feh/themes", NULL);
-		D(("Trying %s for config\n", rcpath));
-		fp = fopen(rcpath, "r");
 
-		if (!fp && ((fp = fopen("/etc/fehrc", "r")) == NULL)) {
-			return;
-		}
+	fp = fopen(rcpath, "r");
 
-		free(rcpath);
-	}
+	free(rcpath);
+
+	if (!fp && ((fp = fopen("/etc/feh/themes", "r")) == NULL))
+		return;
 
 	/* Oooh. We have an options file :) */
 	for (; fgets(s, sizeof(s), fp);) {
@@ -226,7 +221,7 @@ static void feh_parse_environment_options(void)
 
 	weprintf
 	    ("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
-	     "Use the .fehrc configuration file instead.");
+	     "Use the feh/themes configuration file instead.");
 
 	/* We definitely have some options to parse */
 	feh_parse_options_from_string(opts);
@@ -314,10 +309,11 @@ char *feh_string_normalize(char *str)
 }
 
 static void feh_parse_option_array(int argc, char **argv)
+
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
-		"0:1:2:4:5:8:9:.@:^:~:):|:_:+:";
+		"0:1:2:4:5:8:9:.@:^:~:):|:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
@@ -392,7 +388,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"rotate-button" , 1, 0, '8'},
 		{"blur-button"   , 1, 0, '9'},
 		{"start-at"      , 1, 0, '|'},
-		{"rcfile"        , 1, 0, '_'},
 		{"debug"         , 0, 0, '+'},
 		{"output-dir"    , 1, 0, 'j'},
 		{"bg-tile"       , 1, 0, 200},
@@ -586,9 +581,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 'b':
 			opt.bg = 1;
 			opt.bg_file = estrdup(optarg);
-			break;
-		case '_':
-			opt.rcfile = estrdup(optarg);
 			break;
 		case 'A':
 			opt.actions[0] = estrdup(optarg);

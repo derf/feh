@@ -313,13 +313,6 @@ only errors.
 When viewing multiple files in a slideshow, randomize the file list before
 displaying.
 .
-.It Cm -_ , --rcfile Ar file
-Use
-.Ar file
-to parse themes and options from, instead of the default
-.Pa ~/.config/feh/themes , /etc/fehrc
-files.
-.
 .It Cm -r , --recursive
 Recursively expand any directories in the commandline arguments
 to the content of those directories, all the way down to the bottom level.
