@@ -84,7 +84,9 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 }
 
 void init_keyevents(void) {
-	char *home, *confpath;
+	char *home = NULL;
+	char *confhome = NULL;
+	char *confpath = NULL;
 	char line[128];
 	char action[32], k1[32], k2[32], k3[32];
 	struct __fehkey *cur_kb = NULL;
@@ -149,8 +151,16 @@ void init_keyevents(void) {
 	if (!home)
 		eprintf("No HOME in environment\n");
 
-	confpath = estrjoin("/", home, ".config/feh/keys", NULL);
+	confhome = getenv("XDG_CONFIG_HOME");
+
+	if (confhome)
+		confpath = estrjoin("/", confhome, "feh/keys", NULL);
+	else
+		confpath = estrjoin("/", home, ".config/feh/keys", NULL);
+
 	conf = fopen(confpath, "r");
+
+	free(confpath);
 
 	if (!conf)
 		return;
@@ -279,7 +289,6 @@ void init_keyevents(void) {
 		}
 	}
 	fclose(conf);
-	free(confpath);
 }
 
 static short feh_is_kp(fehkey *key, int sym, int state) {
