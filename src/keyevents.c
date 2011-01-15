@@ -73,7 +73,7 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 				mod = Mod5Mask;
 				break;
 			default:
-				weprintf("feh keys: invalid modifier %c in %s", ks[0], ks);
+				weprintf("keys: invalid modifier %c in %s", ks[0], ks);
 				break;
 		}
 		cur = ks + 2;
@@ -81,6 +81,9 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 
 	key->keysyms[index] = XStringToKeysym(cur);
 	key->keystates[index] = mod;
+
+	if (key->keysyms[index] == NoSymbol)
+		weprintf("keys: Invalid keysym: %s", cur);
 }
 
 void init_keyevents(void) {
@@ -280,7 +283,7 @@ void init_keyevents(void) {
 		else if (!strcmp(action, "reload_plus"))
 			cur_kb = &keys.reload_plus;
 		else
-			weprintf("feh keys: Invalid action: %s", action);
+			weprintf("keys: Invalid action: %s", action);
 
 		if (cur_kb) {
 			feh_set_parse_kb_partial(cur_kb, 0, k1);
