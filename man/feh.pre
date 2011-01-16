@@ -934,9 +934,6 @@ Xinerama support does not really work on Xinerama screens != 0.
 .Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
-.Pp
-.Cm --scale-down
-does not support zooming.
 .
 .Ss REPORTING BUGS
 If you find a bug, please report it to
@@ -951,12 +948,6 @@ steps to reproduce the bug and (if necessary), images to reproduce it.
 .Sh FUTURE PLANS
 Plans for the following releases:
 .Bl -bullet -compact
-.
-.It
-Switch to real config file from feh/theme definitions
-.
-.It
-Add config options to rebind keys + proper mouse action rebinding
 .
 .It
 Make zoom options more intuitive
