@@ -13,3 +13,28 @@ menu_child  l Right
 menu_down   j Down
 menu_up     k Up
 menu_select space Return
+
+# Same for image navigation ...
+next_img j Right space
+prev_img k Left BackSpace
+remove     l   Delete
+delete   C-l C-Delete
+
+# and image movement
+scroll_up    S-J C-Up
+scroll_down  S-K C-Down
+scroll_left  S-H C-Left
+scroll_right S-L C-Right
+
+# zooming
+zoom_in  C-Up f
+zoom_out C-Down a
+zoom_default d
+zoom_fit s
+
+# I only hit these accidentaly
+save_image
+save_filelist
+
+# This leaves some conflicts with existing default bindings, but you should
+# get the idea.  And I'm not gonna fix the conflicts, I don't use qwerty ;-)
