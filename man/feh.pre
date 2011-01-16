@@ -4,21 +4,25 @@
 .
 .
 .Sh NAME
+.
 .Nm feh
 .Nd image viewer and cataloguer
 .
 .
 .Sh SYNOPSIS
+.
 .Nm
 .Op Ar options
 .Ar files or directories ...
 .
 .
 .Sh VERSION
+.
 This manual documents feh $VERSION$
 .
 .
 .Sh DESCRIPTION
+.
 .Nm
 is a mode-based image viewer.  It is especially aimed at commandline users who
 need a fast image viewer without huge GUI dependencies, though it can also be
@@ -33,6 +37,7 @@ it, but is only required for very few actions.
 .
 .
 .Sh MODES
+.
 .Nm
 is based on various modes, which are selected at startup by comandline
 options.
@@ -73,6 +78,7 @@ unloadable files.  Useful for preening a directory.
 .
 .
 .Sh OPTIONS
+.
 .Bl -tag -width indent
 .
 .It Cm -A , --action Oo Ar flag Oc Ns Ar action
@@ -397,6 +403,7 @@ zooming will be limited to the specified
 .
 .
 .Sh BUTTON OPTIONS
+.
 .Bl -tag -width indent
 .
 .It Cm -0 , --reload-button Ar int
@@ -527,7 +534,9 @@ to get the old behaviour,
 will only redraw once all thumbnails are loaded.
 .El
 .
+.
 .Sh INDEX MODE OPTIONS
+.
 .Bl -tag -width indent
 .
 .It Cm -@ , --title-font Ar font
@@ -535,7 +544,9 @@ Set font to print a title on the index, if no font is specified, no title will
 be printed.
 .El
 .
+.
 .Sh BACKGROUND SETTING
+.
 .Nm
 can also be used as a background setter.  It will store the command line
 necessary to set the background in
@@ -577,6 +588,7 @@ the image in case it is too small for the screen
 .
 .
 .Sh FORMAT SPECIFIERS
+.
 .Bl -tag -width indent
 .It %f
 Image path/filename
@@ -605,7 +617,9 @@ Image width
 version
 .El
 .
+.
 .Sh CONFIGURATION
+.
 .Nm
 has two config files:
 .Pa themes
@@ -626,7 +640,9 @@ All config files treat lines starting with a
 character as comments.
 Note that mid-line comments are not supported.
 .
+.
 .Sh THEMES CONFIG SYNTAX
+.
 This file allows the naming of option groups, called themes.
 .Pp
 It takes entries of the form
@@ -663,9 +679,11 @@ the end of a line, like in the shell.
 You can combine these themes with commandline options.  An example fehrc is
 provided with a couple of cool example themes.
 .
+.
 .Sh KEYS CONFIG SYNTAX
+.
 This file defines the key bindings. It has entries of the form
-.Qq Ar action Ar key1 Op Ar key2 Op Ar key3 .
+.Qq Ar action Op Ar key1 Op Ar key2 Op Ar key3 .
 .Pp
 Each
 .Ar key
@@ -684,12 +702,18 @@ Available modifiers are
 .Ar S No for Shift and
 .Ar 1 No to Ar 5 No for Mod1 to Mod5 .
 .Pp
+Specifying an
+.Ar action
+without any keys unbinds it (i.e. the default bindings are removed).
+.Pp
 for a list of the
 .Ar action
 names, see
 .Sx KEYS .
 .
+.
 .Sh KEYS
+.
 In an image window, the following keys may be used
 .Pq The strings in Bo square brackets Bc are the config action names :
 .
@@ -824,7 +848,9 @@ Zoom to fit the window size
 .
 .El
 .
+.
 .Sh MOUSE ACTIONS
+.
 When viewing an image, by default mouse button 1 pans
 .Pq moves the image around
 or, when only clicked, moves to the next image
@@ -852,7 +878,9 @@ will always happen so that the pixel on which you entered the zoom mode
 remains stationary.  So, to enlarge a specific part of an image, click the
 zoom button on that part.
 .
+.
 .Sh SIGNALS
+.
 In slideshow mode,
 .Nm
 handles the following signals:
@@ -863,7 +891,9 @@ Switch to next image
 Switch to previous image
 .El
 .
+.
 .Sh USAGE EXAMPLES
+.
 Here are some examples of useful option combinations
 .Bl -tag -width indent
 .
@@ -917,6 +947,7 @@ Show some EXIF information, extracted by exifprobe/exifgrep
 .
 .
 .Sh DEPENDENCIES
+.
 .Nm
 requires the
 .Cm jpegtran
@@ -929,7 +960,9 @@ To view images from URLs such as http://, you need to have
 available or use the builtin HTTP client
 .Pq see Cm --builtin .
 .
+.
 .Sh BUGS
+.
 Xinerama support does not really work on Xinerama screens != 0.
 .Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
@@ -945,7 +978,9 @@ Please include the feh version
 .Aq the output of Qq feh --version ,
 steps to reproduce the bug and (if necessary), images to reproduce it.
 .
+.
 .Sh FUTURE PLANS
+.
 Plans for the following releases:
 .Bl -bullet -compact
 .
@@ -956,6 +991,7 @@ Make zoom options more intuitive
 .
 .
 .Sh LICENSE
+.
 Copyright (C) 1999, 2000 by Tom Gilbert (and various contributors).
 Copyright (C) 2010 by Daniel Friesel (and even more contributors).
 .Pp

@@ -177,7 +177,7 @@ void init_keyevents(void) {
 		read = sscanf(line, "%31s %31s %31s %31s\n",
 			(char *) &action, (char *) &k1, (char* ) &k2, (char *) &k3);
 
-		if ((read == EOF) || (read < 2) || (line[0] == '#'))
+		if ((read == EOF) || (read == 0) || (line[0] == '#'))
 			continue;
 
 		if (!strcmp(action, "menu_close"))
