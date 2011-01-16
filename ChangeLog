@@ -2,6 +2,10 @@ git HEAD
 
     * Patch by Pascal Bleser: Use getaddrinfo for builtin http client,
       this enables IPv6 support
+    * Fix zooming when --scale-down is used
+    * The themes are now read from ~/.config/feh/themes (BC for .fehrc exists)
+    * Key bindings can now be configured via ~/.config/feh/keys
+    * Removes --rcpath, use XDG_CONFIG_HOME instead
 
 Fri, 03 Dec 2010 19:41:45 +0100
 

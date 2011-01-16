@@ -31,8 +31,6 @@ matters enough to be fixed. %u is borked there for the same reason.
 
 Maybe: Zoom mode like --bg-fill?
 
-Configurable key bindings
-
 Maybe remove some unneccessary stuff?
  * Builtin HTTP client
  * Support for custom menu backgrounds/themes
