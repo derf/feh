@@ -665,7 +665,7 @@ provided with a couple of cool example themes.
 .
 .Sh KEYS CONFIG SYNTAX
 This file defines the key bindings. It has entries of the form
-.Qq Ar action Ar key1 Op Ar key2 Op Ar key3
+.Qq Ar action Ar key1 Op Ar key2 Op Ar key3 .
 .Pp
 Each
 .Ar key
@@ -676,26 +676,30 @@ like
 It may optionally start with a modifier for things like Control, in which case
 .Ar key
 looks like
-.Ar mod No - Ar keysym
+.Ar mod Ns No - Ns Ar keysym
 .Pq for example Qo C-Delete Qc for Ctrl+Delete .
 .Pp
 Available modifiers are
 .Ar C No for Control ,
 .Ar S No for Shift and
-.Ar 1 No to Ar 5 No for Mod1 to Mod5
+.Ar 1 No to Ar 5 No for Mod1 to Mod5 .
 .Pp
 for a list of the
 .Ar action
 names, see
-.Sx EYS .
+.Sx KEYS .
 .
 .Sh KEYS
-In an image window, the following keys may be used:
+In an image window, the following keys may be used
+.Pq The strings in Bo square brackets Bc are the config action names :
+.
 .Bl -tag -width indent
-.It a
+.
+.It a Bq toggle_actions
 Toggle actions display
 .Pq see Cm --draw-actions
-.It c
+.
+.It c Bq toggle_caption
 Caption entry mode.  If
 .Cm --caption-path
 has been specified, then this enables caption editing.  The caption at the
@@ -703,88 +707,121 @@ bottom of the screen will turn yellow and can be edited.  Hit return to confirm
 and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
 .Aq CTRL+return .
-.It d
+.
+.It d Bq toggle_filenames
 Toggle filename display
 .Pq see Cm --draw-filename
-.It f
+.
+.It f Bq save_filelist
 Save the current filelist to a unique filename
-.It h
+.
+.It h Bq toggle_pause
 Pause/Continue the slideshow.  When it is paused, it will not automatically
 change slides based on
 .Cm --slideshow-delay .
-.It m
+.
+.It m Bq toggle_menu
 Show menu.  Use the arrow keys and return to select items,
 .Aq escape
 to close the menu.
-.It n , Ao Space Ac , Aq Right
+.
+.It n , Ao Space Ac , Ao Right Ac Bq next_img
 Show next image
-.It o
+.
+.It o Bq toggle_pointer
 Toggle pointer visibility
-.It p , Ao Backspace Ac , Aq Left
+.
+.It p , Ao Backspace Ac , Ao Left Ac Bq prev_img
 Show previous image
-.It q
+.
+.It q , Ao Escape Ac Bq quit
 Quit feh
-.It r
+.
+.It r Bq reload_image
 Reload current image.  Useful for webcams
-.It s
+.
+.It s Bq save_image
 Save the current image to a unique filename
-.It v
+.
+.It v Bq toggle_fullscreen
 Toggle fullscreen
-.It w
+.
+.It w Bq size_to_image
 Change window size to fit current image size
-.It x
+.
+.It x Bq close
 Close current window
-.It z
+.
+.It z Bq jump_random
 Jump to a random position in the current filelist
-.It < , >
+.
+.It < , > Bq orient_3 , orient_1
 In place editing - rotate the images 90 degrees (counter)clockwise.
 The rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.  Rotating in the reverse direction will make them go
 away.  See
 .Xr jpegtran 1
 for more about lossless JPEG rotation.
-.It 0 .. 9
+.
+.It 0 .. 9 Bq action_0 .. action_9
 Execute the corresponding action
 .Pq 0 = Cm --action , No 1 = Cm --action1 No etc.
-.It Aq Return
+.
+.It Ao Return Ac Bq action_0
 Run the command defined by
 .Cm --action
-.It Aq home
+.
+.It Ao home Ac Bq jump_first
 Show first image
-.It Aq end
+.
+.It Ao end Ac Bq jump_last
 Show last image
-.It Aq page up
+.
+.It Ao page up Ac Bq jump_fwd
 Go forward ~5% of the filelist
-.It Aq page down
+.
+.It Ao page down Ac Bq jump_back
 Go backward ~5% of the filelist
-.It Aq escape
-Quit the slideshow
-.It +
+.
+.It + Bq reload_plus
 Increase reload delay
-.It -
+.
+.It - Bq reload_minus
 Decrease reload delay
-.It Aq delete
+.
+.It Ao delete Ac Bq remove
 Remove current file from filelist
-.It Aq CTRL+delete
+.
+.It Ao CTRL+delete Ac Bq delete
 Remove current file from filelist and delete it
-.It Ao keypad left Ac , Ao Ctrl+Left Ac
+.
+.It Ao keypad left Ac , Ao Ctrl+Left Ac Bq scroll_left
 Scroll to the left
-.It Ao keypad right Ac , Ao Ctrl+Right Ac
+.
+.It Ao keypad right Ac , Ao Ctrl+Right Ac Bq scroll_right
 Scroll to the right
-.It Ao keypad up Ac , Ao Ctrl+Up Ac
+.
+.It Ao keypad up Ac , Ao Ctrl+Up Ac Bq scroll_up
 Scroll up
-.It Ao keypad down Ac , Ao Ctrl+Down Ac
+.
+.It Ao keypad down Ac , Ao Ctrl+Down Ac Bq scroll_down
 Scroll down
-.It Aq keypad begin
+.
+.It Ao keypad begin Ac Bq render
 Antialias the image
-.It Ao keypad + Ac , Ao Up Ac
+.
+.It Ao keypad + Ac , Ao Up Ac Bq zoom_in
 Zoom in
-.It Ao keypad - Ac , Ao Down Ac
+.
+.It Ao keypad - Ac , Ao Down Ac Bq zoom_out
 Zoom out
-.It Aq keypad *
+.
+.It Ao keypad * Ac Bq zoom_default
 Zoom to 100%
-.It Aq keypad /
+.
+.It Ao keypad / Ac Bq zoom_fit
 Zoom to fit the window size
+.
 .El
 .
 .Sh MOUSE ACTIONS
