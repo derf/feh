@@ -54,9 +54,6 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 			case 'C':
 				mod = ControlMask;
 				break;
-			case 'S':
-				mod = ShiftMask;
-				break;
 			case '1':
 				mod = Mod1Mask;
 				break;
@@ -296,8 +293,16 @@ void init_keyevents(void) {
 
 static short feh_is_kp(fehkey *key, int sym, int state) {
 	int i;
+
+	/*
+	 * Regarding the | 0x1: state 1 = shift, but we don't care about that.
+	 * Shift produces different keysyms than non-shift anyways.
+	 */
+
 	for (i = 0; i < 3; i++) {
-		if ((key->keysyms[i] == sym) && (key->keystates[i] == state))
+		if (
+				(key->keysyms[i] == sym) && 
+				((key->keystates[i] | 0x1) == (state | 0x1)))
 			return 1;
 		else if (key->keysyms[i] == 0)
 			return 0;

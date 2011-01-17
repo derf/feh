@@ -21,10 +21,10 @@ remove     l   Delete
 delete   C-l C-Delete
 
 # and image movement
-scroll_up    S-J C-Up
-scroll_down  S-K C-Down
-scroll_left  S-H C-Left
-scroll_right S-L C-Right
+scroll_up    J C-Up
+scroll_down  K C-Down
+scroll_left  H C-Left
+scroll_right L C-Right
 
 # zooming
 zoom_in  C-Up f

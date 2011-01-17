@@ -698,8 +698,7 @@ looks like
 .Pq for example Qo C-Delete Qc for Ctrl+Delete .
 .Pp
 Available modifiers are
-.Ar C No for Control ,
-.Ar S No for Shift and
+.Ar C No for Control and
 .Ar 1 No to Ar 5 No for Mod1 to Mod5 .
 .Pp
 Specifying an
