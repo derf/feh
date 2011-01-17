@@ -360,7 +360,7 @@ See
 Load options from config file with name
 .Ar theme
 - see
-.Sx CONFIG FILE SYNTAX
+.Sx THEMES CONFIG SYNTAX
 for more info.  Note that options from the theme file always override
 commandline options.
 .
