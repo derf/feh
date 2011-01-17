@@ -10,7 +10,7 @@ use Time::HiRes qw/sleep/;
 
 my ($pid_xnest, $pid_twm);
 
-$ENV{XDG_CONFIG_HOME} = "/tmp/feh-test-$$";
+$ENV{HOME} = 'test';
 
 sub set_bg {
 	my ($mode, $file) = @_;
@@ -76,3 +76,4 @@ kill(15, $pid_xnest);
 sleep(0.2);
 
 unlink("/tmp/feh_${$}.png");
+unlink('test/.fehbg');

@@ -4,7 +4,8 @@ use warnings;
 use 5.010;
 use Test::Command tests => 48;
 
-$ENV{XDG_CONFIG_HOME} = "/tmp/feh-test-$$";
+$ENV{HOME} = 'test';
+
 my $feh = "src/feh";
 my $images = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm '
            . 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
