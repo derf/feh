@@ -41,19 +41,19 @@ install-bin:
 install-font:
 	@echo installing fonts to ${font_dir}
 	@mkdir -p ${font_dir}
-	@cp data/fonts/* ${font_dir}
+	@cp share/fonts/* ${font_dir}
 	@chmod 644 ${font_dir}/*
 
 install-img:
 	@echo installing images to ${image_dir}
 	@mkdir -p ${image_dir}
-	@cp data/images/* ${image_dir}
+	@cp share/images/* ${image_dir}
 	@chmod 644 ${image_dir}/*
 
 install-examples:
 	@echo installing examples to ${example_dir}
 	@mkdir -p ${example_dir}
-	@cp data/examples/* ${example_dir}
+	@cp examples/* ${example_dir}
 	@chmod 644 ${example_dir}/*
 
 
