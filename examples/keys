@@ -17,14 +17,19 @@ menu_select space Return
 # Same for image navigation ...
 next_img j Right space
 prev_img k Left BackSpace
-remove     l   Delete
-delete   C-l C-Delete
 
 # and image movement
 scroll_up    J C-Up
 scroll_down  K C-Down
 scroll_left  H C-Left
 scroll_right L C-Right
+
+# File deletion
+remove     d   Delete
+delete   C-d C-Delete
+
+# remove now conflicts with toggle_filenames, so change that
+toggle_filenames f
 
 # zooming
 zoom_in  C-Up f
