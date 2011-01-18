@@ -962,7 +962,9 @@ available or use the builtin HTTP client
 .
 .Sh BUGS
 .
-Xinerama support does not really work on Xinerama screens != 0.
+Xinerama support does not really work on Xinerama screens != 0.  Set
+.Ev XINERAMA_SCREEN
+to the correct number as a workaround.
 .Pp
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
