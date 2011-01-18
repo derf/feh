@@ -147,7 +147,7 @@ FORMAT SPECIFIERS
  %l     total number of files in the filelist
  %u     current file number
  %%     %
- \\n    newline
+ \\n     newline
 
 KEYS
  p, <BACKSPACE>, <LEFT>  Go to previous slide
