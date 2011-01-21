@@ -847,6 +847,31 @@ Zoom to fit the window size
 .
 .El
 .
+.Ss MENU KEYS
+.
+The following keys bindings are used for the feh menu:
+.
+.Bl -tag -width indent
+.
+.It Ao Escape Ac Bq menu_close
+Close the menu
+.
+.It Ao Up Ac Bq menu_up
+Highlight previous menu item
+.
+.It Ao Down Ac Bq menu_down
+Highlight next menu item
+.
+.It Ao Left Ac Bq menu_parent
+Highlight parent menu item
+.
+.It Ao Right Ac Bq menu_child
+Highlight child menu item
+.
+.It Ao Return Ac , Ao Space Ac Bq menu_select
+Select highlighted menu item
+.
+.El
 .
 .Sh MOUSE ACTIONS
 .
