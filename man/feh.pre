@@ -973,7 +973,9 @@ as it could be.
 If you find a bug, please report it to
 .Aq derf@finalrewind.org
 or via
-.Aq http://github.com/derf/feh/issues
+.Aq http://github.com/derf/feh/issues .
+You are also welcome to direct any feh-related comments/questions/... to #feh
+on irc.oftc.net.
 .Pp
 Please include the feh version
 .Aq the output of Qq feh --version ,
