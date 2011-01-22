@@ -1,5 +1,6 @@
-git HEAD
+Sat, 22 Jan 2011 11:48:33 +0100
 
+* Release v1.11
     * Patch by Pascal Bleser: Use getaddrinfo for builtin http client,
       this enables IPv6 support
     * Fix zooming when --scale-down is used
