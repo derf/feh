@@ -362,7 +362,13 @@ Load options from config file with name
 - see
 .Sx THEMES CONFIG SYNTAX
 for more info.  Note that options from the theme file always override
-commandline options.
+commandline options.  The theme can also be set via the program name
+.Pq e.g. with symlinks ,
+so by default
+.Nm
+will look for a
+.Qq Nm
+theme.
 .
 .It Cm -t , --thumbnails
 Same as Index mode, but the thumbnails are clickable image launchers.
