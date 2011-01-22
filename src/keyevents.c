@@ -435,19 +435,19 @@ void feh_event_handle_keypress(XEvent * ev)
 			slideshow_change_image(winwid, SLIDE_PREV);
 	}
 	else if (feh_is_kp(&keys.scroll_right, keysym, kev->state)) {
-		winwid->im_x -= 10;
+		winwid->im_x -= 20;
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_left, keysym, kev->state)) {
-		winwid->im_x += 10;
+		winwid->im_x += 20;
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_down, keysym, kev->state)) {
-		winwid->im_y -= 10;
+		winwid->im_y -= 20;
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_up, keysym, kev->state)) {
-		winwid->im_y += 10;
+		winwid->im_y += 20;
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.jump_back, keysym, kev->state)) {
@@ -521,7 +521,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.zoom_out, keysym, kev->state)) {
 		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * 0.75;
+		winwid->zoom = winwid->zoom * 0.80;
 		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
 			winwid->old_zoom * winwid->zoom);
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
