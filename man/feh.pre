@@ -398,13 +398,23 @@ output useful information, progress bars, etc.
 .It Cm -v , --version
 output version information and exit.
 .
-.It Cm --zoom Ar percent
+.It Cm --zoom Ar percent No | Cm max No | Cm fill
 Zoom images by
 .Ar percent
 when in full screen mode or when window geometry is fixed.  When combined with
 .Cm --auto-zoom ,
 zooming will be limited to the specified
 .Ar percent .
+Specifying
+.Cm fill
+is like setting
+.Cm --auto-zoom ,
+using
+.Cm max
+makes feh zoom the image like the
+.Cm --bg-max
+mode.
+.
 .El
 .
 .
