@@ -426,7 +426,7 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 		smaller = ((winwid->im_w < max_w)
 			   && (winwid->im_h < max_h));
 
-		if (!smaller || (opt.zoom_mode == ZOOM_MODE_FILL)) {
+		if (!smaller || opt.zoom_mode) {
 			double ratio = 0.0;
 
 			/* Image is larger than the screen (so wants shrinking), or it's
@@ -579,6 +579,9 @@ double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, in
 	double ratio = 0.0;
 
 	ratio = ((double) orig_w / orig_h) / ((double) dest_w / dest_h);
+
+	if (opt.zoom_mode == ZOOM_MODE_MAX)
+		ratio = 1.0 / ratio;
 
 	if (ratio > 1.0)
 		*zoom = ((double) dest_w / orig_w);
