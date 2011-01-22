@@ -6,6 +6,8 @@ git HEAD
     * The themes are now read from ~/.config/feh/themes (BC for .fehrc exists)
     * Key bindings can now be configured via ~/.config/feh/keys
     * Removes --rcpath, use XDG_CONFIG_HOME instead
+    * Increase movement steps for Ctrl+Left etc.
+    * Make in/out zoom use equal zoom ratio
 
 Fri, 03 Dec 2010 19:41:45 +0100
 
