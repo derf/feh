@@ -523,7 +523,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.full_screen = 1;
 			break;
 		case 'Z':
-			opt.auto_zoom = 1;
+			opt.zoom_mode = ZOOM_MODE_FILL;
 			break;
 		case 'U':
 			opt.loadables = 1;
@@ -693,7 +693,12 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.menu_style = estrdup(optarg);
 			break;
 		case 205:
-			opt.default_zoom = atoi(optarg);
+			if (!strcmp("fill", optarg))
+				opt.zoom_mode = ZOOM_MODE_FILL;
+			else if (!strcmp("max", optarg))
+				opt.zoom_mode = ZOOM_MODE_MAX;
+			else
+				opt.default_zoom = atoi(optarg);
 			break;
 		case 206:
 			opt.screen_clip = 0;
