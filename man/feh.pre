@@ -711,7 +711,7 @@ Specifying an
 .Ar action
 without any keys unbinds it (i.e. the default bindings are removed).
 .Pp
-for a list of the
+For a list of the
 .Ar action
 names, see
 .Sx KEYS .
