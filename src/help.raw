@@ -2,7 +2,7 @@
 
 Usage : " PACKAGE " [options] <files or directories ...>
 
- This is just a short option summary.  Please consult the manual for details.
+ This is just a short option summary.  Please see \"man " PACKAGE "\" for details.
 
 OPTIONS
  -h, --help                Show help and exit
@@ -187,7 +187,8 @@ KEYS
  1-9                     Run action 1-9 specified by --action[1-9] options
 
 This program is free software, see the file COPYING for licensing info.
-Copyright Tom Gilbert (and various contributors) 1999-2003
+Copyright Tom Gilbert (and various contributors) 1999-2003.
+Copyright Daniel Friesel 2010-2011.
 
-Homepage: https://derf.homelinux.org/p/feh
-Email bugs to <derf@finalrewind.org>
+Homepage: http://derf0.net/p/feh
+Report bugs to <derf@finalrewind.org> or #feh on irc.oftc.net.
