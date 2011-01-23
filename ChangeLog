@@ -1,3 +1,10 @@
+git HEAD
+
+    * Show correct image dimensions in for cached thumbnails
+    * Allow commandline options to override those set in a theme
+    * Add --zoom fill as equivalent for --auto-zoom
+    * Add --zoom max (zooming like in --bg-max)
+
 Sat, 22 Jan 2011 11:48:33 +0100
 
 * Release v1.11
