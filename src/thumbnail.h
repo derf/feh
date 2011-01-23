@@ -74,9 +74,9 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted);
 
 void feh_thumbnail_calculate_geometry(void);
 
-int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file);
-int feh_thumbnail_generate(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri);
-int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char *thumb_file);
+int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file, int * orig_w, int * orig_h);
+int feh_thumbnail_generate(Imlib_Image * image, feh_file * file, char *thumb_file, char *uri, int * orig_w, int * orig_h);
+int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char * thumb_file, int * orig_w, int * orig_h);
 char *feh_thumbnail_get_name(char *uri);
 char *feh_thumbnail_get_name_uri(char *name);
 char *feh_thumbnail_get_name_md5(char *uri);

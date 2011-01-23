@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 
 #define FEH_PNG_COMPRESSION 3
-#define FEH_PNG_NUM_COMMENTS 2	/* only Thumb::URI and Thumb::MTime for now */
+#define FEH_PNG_NUM_COMMENTS 4
 
 gib_hash *feh_png_read_comments(char *file)
 {

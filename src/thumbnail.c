@@ -58,6 +58,7 @@ void init_thumbnail_mode(void)
 
 	Imlib_Image im_temp;
 	int ww = 0, hh = 0, www, hhh, xxx, yyy;
+	int orig_w, orig_h;
 	int x = 0, y = 0;
 	winwidget winwid = NULL;
 	Imlib_Image im_thumb = NULL;
@@ -205,7 +206,8 @@ void init_thumbnail_mode(void)
 		}
 		D(("About to load image %s\n", file->filename));
 		/*      if (feh_load_image(&im_temp, file) != 0) */
-		if (feh_thumbnail_get_thumbnail(&im_temp, file) != 0) {
+		if (feh_thumbnail_get_thumbnail(&im_temp, file, &orig_w, &orig_h)
+				!= 0) {
 			if (opt.verbose)
 				feh_display_status('.');
 			D(("Successfully loaded %s\n", file->filename));
@@ -213,6 +215,12 @@ void init_thumbnail_mode(void)
 			hhh = opt.thumb_h;
 			ww = gib_imlib_image_get_width(im_temp);
 			hh = gib_imlib_image_get_height(im_temp);
+
+			if (!orig_w) {
+				orig_w = ww;
+				orig_h = hh;
+			}
+
 			thumbnailcount++;
 			if (gib_imlib_image_has_alpha(im_temp))
 				imlib_context_set_blend(1);
@@ -334,7 +342,7 @@ void init_thumbnail_mode(void)
 						td.font_main, NULL,
 						x + x_offset_dim,
 						y + opt.thumb_h + (lines++ * (th + 2)) + 2,
-						create_index_dimension_string(ww, hh),
+						create_index_dimension_string(orig_w, orig_h),
 						IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 			if (opt.index_show_size)
 				gib_imlib_text_draw(td.im_main,
@@ -718,10 +726,14 @@ void feh_thumbnail_calculate_geometry(void)
 	}
 }
 
-int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file)
+int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file,
+	int * orig_w, int * orig_h)
 {
 	int status = 0;
 	char *thumb_file = NULL, *uri = NULL;
+
+	*orig_w = 0;
+	*orig_h = 0;
 
 	if (!file || !file->filename)
 		return (0);
@@ -729,10 +741,12 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file)
 	if (td.cache_thumbnails) {
 		uri = feh_thumbnail_get_name_uri(file->filename);
 		thumb_file = feh_thumbnail_get_name(uri);
-		status = feh_thumbnail_get_generated(image, file, thumb_file);
+		status = feh_thumbnail_get_generated(image, file, thumb_file,
+			orig_w, orig_h);
 
 		if (!status)
-			status = feh_thumbnail_generate(image, file, thumb_file, uri);
+			status = feh_thumbnail_generate(image, file, thumb_file, uri,
+				orig_w, orig_h);
 
 		D(("uri is %s, thumb_file is %s\n", uri, thumb_file));
 		free(uri);
@@ -809,15 +823,16 @@ char *feh_thumbnail_get_name_md5(char *uri)
 }
 
 int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
-		char *thumb_file, char *uri)
+		char *thumb_file, char *uri, int * orig_w, int * orig_h)
 {
 	int w, h, thumb_w, thumb_h;
 	Imlib_Image im_temp;
 	struct stat sb;
+	char c_width[8], c_height[8];
 
 	if (feh_load_image(&im_temp, file) != 0) {
-		w = gib_imlib_image_get_width(im_temp);
-		h = gib_imlib_image_get_height(im_temp);
+		*orig_w = w = gib_imlib_image_get_width(im_temp);
+		*orig_h = h = gib_imlib_image_get_height(im_temp);
 		thumb_w = td.cache_dim;
 		thumb_h = td.cache_dim;
 
@@ -835,8 +850,12 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 		if (!stat(file->filename, &sb)) {
 			char c_mtime[128];
 			sprintf(c_mtime, "%d", (int)sb.st_mtime);
+			snprintf(c_width, 8, "%d", w);
+			snprintf(c_height, 8, "%d", h);
 			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri,
-					"Thumb::MTime", c_mtime);
+					"Thumb::MTime", c_mtime,
+					"Thumb::Image::Width", c_width,
+					"Thumb::Image::Height", c_height);
 		}
 
 		gib_imlib_free_image_and_decache(im_temp);
@@ -847,19 +866,27 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 	return (0);
 }
 
-int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file, char *thumb_file)
+int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
+	char *thumb_file, int * orig_w, int * orig_h)
 {
 	struct stat sb;
 	char *c_mtime;
+	char *c_width, *c_height;
 	time_t mtime = 0;
 	gib_hash *hash;
 
 	if (!stat(file->filename, &sb)) {
 		hash = feh_png_read_comments(thumb_file);
 		if (hash != NULL) {
-			c_mtime = (char *) gib_hash_get(hash, "Thumb::MTime");
+			c_mtime  = (char *) gib_hash_get(hash, "Thumb::MTime");
+			c_width  = (char *) gib_hash_get(hash, "Thumb::Image::Width");
+			c_height = (char *) gib_hash_get(hash, "Thumb::Image::Height");
 			if (c_mtime != NULL)
 				mtime = (time_t) strtol(c_mtime, NULL, 10);
+			if (c_width != NULL)
+				*orig_w = atoi(c_width);
+			if (c_height != NULL)
+				*orig_h = atoi(c_height);
 			gib_hash_free_and_data(hash);
 		}
 
