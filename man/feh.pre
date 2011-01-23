@@ -361,8 +361,8 @@ Load options from config file with name
 .Ar theme
 - see
 .Sx THEMES CONFIG SYNTAX
-for more info.  Note that options from the theme file always override
-commandline options.  The theme can also be set via the program name
+for more info.  Note that commandline options always override theme options.
+The theme can also be set via the program name
 .Pq e.g. with symlinks ,
 so by default
 .Nm

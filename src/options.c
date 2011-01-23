@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 static void check_options(void);
+static void feh_getopt_theme(int argc, char **argv);
 static void feh_parse_option_array(int argc, char **argv);
 static void feh_parse_environment_options(void);
 static void feh_check_theme_options(int arg, char **argv);
@@ -93,12 +94,14 @@ void init_parse_options(int argc, char **argv)
 	/* Check for and parse any options in FEH_OPTIONS */
 	feh_parse_environment_options();
 
-	D(("About to parse commandline options\n"));
-	/* Parse the cmdline args */
-	feh_parse_option_array(argc, argv);
+	feh_getopt_theme(argc, argv);
 
 	D(("About to check for theme configuration\n"));
 	feh_check_theme_options(argc, argv);
+
+	D(("About to parse commandline options\n"));
+	/* Parse the cmdline args */
+	feh_parse_option_array(argc, argv);
 
 	/* If we have a filelist to read, do it now */
 	if (opt.filelistfile) {
@@ -318,8 +321,27 @@ char *feh_string_normalize(char *str)
 	return(estrdup(ret));
 }
 
-static void feh_parse_option_array(int argc, char **argv)
+static void feh_getopt_theme(int argc, char **argv)
+{
+	static char stropts[] = "-T:";
+	static struct option lopts[] = {
+		{"theme", 1, 0, 'T'},
+		{0, 0, 0, 0}
+	};
+	int optch = 0, cmdx = 0;
 
+	opterr = 0;
+
+	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
+		if (optch == 'T')
+			theme = estrdup(optarg);
+	}
+
+	opterr = 1;
+	optind = 0;
+}
+
+static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
