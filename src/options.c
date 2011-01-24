@@ -90,10 +90,6 @@ void init_parse_options(int argc, char **argv)
 	opt.xinerama = 1;
 #endif				/* HAVE_LIBXINERAMA */
 
-	D(("About to parse env options (if any)\n"));
-	/* Check for and parse any options in FEH_OPTIONS */
-	feh_parse_environment_options();
-
 	feh_getopt_theme(argc, argv);
 
 	D(("About to check for theme configuration\n"));
@@ -222,22 +218,6 @@ static void feh_load_options_for_theme(char *theme)
 		}
 	}
 	fclose(fp);
-	return;
-}
-
-static void feh_parse_environment_options(void)
-{
-	char *opts;
-
-	if ((opts = getenv("FEH_OPTIONS")) == NULL)
-		return;
-
-	weprintf
-	    ("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
-	     "Use the feh/themes configuration file instead.");
-
-	/* We definitely have some options to parse */
-	feh_parse_options_from_string(opts);
 	return;
 }
 
