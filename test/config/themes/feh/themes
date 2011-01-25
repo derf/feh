@@ -1,0 +1,5 @@
+test_general   --action1 "touch a1"
+
+test_multiline --action1 "touch a1" \
+--action2 "touch a2" \
+      --action3 "touch a3"

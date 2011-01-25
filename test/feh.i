@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 97;
+use Test::More tests => 102;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -209,7 +209,8 @@ feh_stop();
 # .config/feh/keys
 # Action Unbinding + non-conflicting none/shift/control/meta modifiers
 
-$ENV{XDG_CONFIG_HOME} = 'test/config';
+$ENV{XDG_CONFIG_HOME} = 'test/config/keys';
+
 $win = feh_start(
 	'--action1 "touch a1" --action2 "touch a2" ' .
 	'--action3 "touch a3" --action4 "touch a4" ' .
@@ -245,11 +246,47 @@ SendKeys('^(X)');
 ok(waitfor { -e 'a4' }, 'action 4 = Ctrl+Shift+X ok');
 SendKeys('%(x)');
 ok(waitfor { -e 'a5' }, 'action 5 = Alt+X ok');
-delete $ENV{XDG_CONFIG_HOME};
 for my $f (qw(a1 a2 a3 a4 a5)) {
 	unlink($f);
 }
 feh_stop();
+
+$ENV{XDG_CONFIG_HOME} = 'test/config/themes';
+
+$win = feh_start(
+	'-Ttest_general',
+	'test/ok/png test/ok/jpg'
+);
+SendKeys('1');
+ok(waitfor { -e 'a1' }, 'theme: action 1 okay');
+unlink('a1');
+feh_stop();
+
+$win = feh_start(
+	'-Ttest_general --action1 "touch c1"',
+	'test/ok/png test/ok/jpg'
+);
+SendKeys('1');
+ok(waitfor { -e 'c1' }, 'theme: commandline overrides theme');
+unlink('c1');
+feh_stop();
+
+$win = feh_start(
+	'-Ttest_multiline',
+	'test/ok/png test/ok/jpg'
+);
+SendKeys('1');
+ok(waitfor { -e 'a1' }, 'multiline theme: first line ok');
+SendKeys('2');
+ok(waitfor { -e 'a2' }, 'multiline theme: second line ok');
+SendKeys('3');
+ok(waitfor { -e 'a3' }, 'multiline theme: last line ok');
+for my $f (qw(a1 a2 a3)) {
+	unlink($f);
+}
+feh_stop();
+
+delete $ENV{XDG_CONFIG_HOME};
 
 
 $win = feh_start(q{}, 'test/ok/png ' x 100);
