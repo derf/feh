@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 75;
+use Test::More tests => 82;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -185,6 +185,24 @@ SendKeys('h');
 test_win_title($win, 'feh [1 of 3] - test/ok/png');
 sleep(0.8);
 test_win_title($win, 'feh [2 of 3] - test/ok/gif');
+feh_stop();
+
+$win = feh_start(
+	'--action3 ";echo foo" --action7 "echo foo" ' .
+	'--action8 ";touch feh_test_%u_%l" --action9 "rm feh_test_%u_%l"',
+	'test/ok/png test/ok/gif test/ok/jpg'
+);
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('3');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('7');
+test_win_title($win, 'feh [2 of 3] - test/ok/gif');
+SendKeys('8');
+test_win_title($win, 'feh [2 of 3] - test/ok/gif');
+ok(-e 'feh_test_2_3', 'feh action created file with correct format specifiers');
+SendKeys('9');
+ok(waitfor { not -e 'feh_test_2_3' }, 'feh action removed file');
+test_win_title($win, 'feh [3 of 3] - test/ok/jpg');
 feh_stop();
 
 $win = feh_start(q{}, 'test/ok/png ' x 100);
