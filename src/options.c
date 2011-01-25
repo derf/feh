@@ -429,7 +429,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
-	int i = 0;
 
 	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
@@ -791,13 +790,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		}
 	}
 
-	for (i = 0; i < 10; i++) {
-		if (opt.actions[i] && !opt.hold_actions[i] && (opt.actions[i][0] == ';')) {
-			opt.hold_actions[i] = 1;
-			opt.actions[i] = &opt.actions[i][1];
-		}
-	}
-
 	/* So that we can safely be called again */
 	optind = 1;
 	return;
@@ -805,6 +797,14 @@ static void feh_parse_option_array(int argc, char **argv)
 
 static void check_options(void)
 {
+	int i;
+	for (i = 0; i < 10; i++) {
+		if (opt.actions[i] && !opt.hold_actions[i] && (opt.actions[i][0] == ';')) {
+			opt.hold_actions[i] = 1;
+			opt.actions[i] = &opt.actions[i][1];
+		}
+	}
+
 	if ((opt.index + opt.collage) > 1) {
 		weprintf("you can't use collage mode and index mode together.\n"
 				"   I'm going with index");
