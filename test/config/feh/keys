@@ -1,0 +1,17 @@
+action_1 x
+action_2 X
+action_3 C-x
+action_4 C-X
+action_5 1-x
+action_6
+action_7
+
+next_img a b c
+prev_img d e f
+
+# conflict with next_img/prev_img
+toggle_actions
+toggle_caption
+toggle_filenames
+save_filelist
+close

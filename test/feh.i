@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 82;
+use Test::More tests => 97;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -204,6 +204,53 @@ SendKeys('9');
 ok(waitfor { not -e 'feh_test_2_3' }, 'feh action removed file');
 test_win_title($win, 'feh [3 of 3] - test/ok/jpg');
 feh_stop();
+
+
+# .config/feh/keys
+# Action Unbinding + non-conflicting none/shift/control/meta modifiers
+
+$ENV{XDG_CONFIG_HOME} = 'test/config';
+$win = feh_start(
+	'--action1 "touch a1" --action2 "touch a2" ' .
+	'--action3 "touch a3" --action4 "touch a4" ' .
+	'--action5 "touch a5" --action6 "touch a6" ',
+	'test/ok/png test/ok/jpg test/ok/pnm'
+);
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('6');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('{RIG}');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('a');
+test_win_title($win, 'feh [2 of 3] - test/ok/jpg');
+SendKeys('b');
+test_win_title($win, 'feh [3 of 3] - test/ok/pnm');
+SendKeys('c');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('d');
+test_win_title($win, 'feh [3 of 3] - test/ok/pnm');
+SendKeys('e');
+test_win_title($win, 'feh [2 of 3] - test/ok/jpg');
+SendKeys('f');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('1');
+test_win_title($win, 'feh [1 of 3] - test/ok/png');
+SendKeys('x');
+ok(waitfor { -e 'a1' }, 'action 1 = X ok');
+SendKeys('X');
+ok(waitfor { -e 'a2' }, 'action 2 = Shift+X ok');
+SendKeys('^(x)');
+ok(waitfor { -e 'a3' }, 'action 3 = Ctrl+X ok');
+SendKeys('^(X)');
+ok(waitfor { -e 'a4' }, 'action 4 = Ctrl+Shift+X ok');
+SendKeys('%(x)');
+ok(waitfor { -e 'a5' }, 'action 5 = Alt+X ok');
+delete $ENV{XDG_CONFIG_HOME};
+for my $f (qw(a1 a2 a3 a4 a5)) {
+	unlink($f);
+}
+feh_stop();
+
 
 $win = feh_start(q{}, 'test/ok/png ' x 100);
 test_win_title($win, 'feh [1 of 100] - test/ok/png');
