@@ -1,5 +1,6 @@
-git HEAD
+Wed, 26 Jan 2011 21:07:19 +0100
 
+* Release v1.11.1
     * Show correct image dimensions in for cached thumbnails
     * Allow commandline options to override those set in a theme
     * Add --zoom fill as equivalent for --auto-zoom
