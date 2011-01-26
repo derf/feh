@@ -27,9 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
-#define ZOOM_MODE_FILL 1
-#define ZOOM_MODE_MAX  2
-
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
@@ -54,6 +51,7 @@ struct __fehoptions {
 	unsigned char randomize;
 	unsigned char jump_on_resort;
 	unsigned char full_screen;
+	unsigned char auto_zoom;
 	unsigned char draw_filename;
 	unsigned char list;
 	unsigned char quiet;
@@ -122,7 +120,6 @@ struct __fehoptions {
 	unsigned int geom_w;
 	unsigned int geom_h;
 	int default_zoom;
-	int zoom_mode;
 	unsigned char adjust_reload;
 
 	unsigned char mode;
