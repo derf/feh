@@ -1,10 +1,13 @@
+git HEAD
+
+    * Add --zoom fill as equivalent for --auto-zoom
+    * Add --zoom max (zooming like in --bg-max)
+
 Wed, 26 Jan 2011 21:07:19 +0100
 
 * Release v1.11.1
     * Show correct image dimensions in for cached thumbnails
     * Allow commandline options to override those set in a theme
-    * Add --zoom fill as equivalent for --auto-zoom
-    * Add --zoom max (zooming like in --bg-max)
     * Remove support for FEH_OPTIONS (was deprecated >5 years ago)
     * Restrict available modifiers to Control/Mod1/Mod4
 
