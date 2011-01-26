@@ -58,17 +58,8 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 			case '1':
 				mod = Mod1Mask;
 				break;
-			case '2':
-				mod = Mod2Mask;
-				break;
-			case '3':
-				mod = Mod3Mask;
-				break;
 			case '4':
 				mod = Mod4Mask;
-				break;
-			case '5':
-				mod = Mod5Mask;
 				break;
 			default:
 				weprintf("keys: invalid modifier %c in %s", ks[0], ks);
@@ -349,8 +340,7 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	kev = (XKeyEvent *) ev;
 	len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
-	state = kev->state & (ControlMask | Mod1Mask | Mod2Mask | Mod3Mask |
-		Mod4Mask | Mod5Mask);
+	state = kev->state & (ControlMask | Mod1Mask | Mod4Mask);
 
 	/* menus are showing, so this is a menu control keypress */
 	if (ev->xbutton.window == menu_cover) {

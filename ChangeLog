@@ -5,6 +5,7 @@ git HEAD
     * Add --zoom fill as equivalent for --auto-zoom
     * Add --zoom max (zooming like in --bg-max)
     * Remove support for FEH_OPTIONS (was deprecated >5 years ago)
+    * Restrict available modifiers to Control/Mod1/Mod4
 
 Sat, 22 Jan 2011 11:48:33 +0100
 

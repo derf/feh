@@ -715,7 +715,7 @@ looks like
 .Pp
 Available modifiers are
 .Ar C No for Control and
-.Ar 1 No to Ar 5 No for Mod1 to Mod5 .
+.Ar 1 , 4 No for Mod1 and Mod4 .
 .Pp
 Specifying an
 .Ar action
