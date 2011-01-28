@@ -1,0 +1,316 @@
+Overall test status, what's covered / missing
+
+# Features
+
+# Options
+
+--action
+--action1
+--action2
+--action3
+--action4
+--action5
+--action6
+--action7
+--action8
+--action9
+
+ [x] correct command execution
+ [x] hold-action flag
+ [x] supports format specifiers
+ [x] with --list
+
+--alpha
+--auto-zoom
+--bg
+--bg-center
+
+ [x] sets centered wallpaper
+
+
+--bg-fill
+
+ [x] Sets wallpaper zoomed to fill
+
+
+--bg-max
+
+ [x] Sets wallpaper zoomed to max
+
+
+--bg-scale
+
+ [x] sets scaled wallpaper, ignoring aspect ratio
+
+
+--bg-tile
+
+ [x] sets tiled wallpaper
+
+
+--blur-button
+--borderless
+--builtin
+--cache-thumbnails
+--caption-path
+
+ [x] loads/saves captions
+ [x] autocreates caption dir
+ [x] caption newline support
+ [x] correct caption display
+
+
+--collage
+--customlist
+
+ [x] correct output
+ [x] format specifiers
+
+
+--cycle-once
+
+ [x] closes feh window at end of slideshow
+ [x] combination with --slideshow-delay
+
+
+--debug
+--draw-actions
+
+ [x] lists correct actions
+ [x] Alignment with/without --draw-filename
+
+
+--draw-filename
+
+ [x] shows filename
+ [ ] shows filename and position in fullscreen
+
+
+--filelist
+
+ [x] saves filelist
+ [x] loads filelist
+
+
+--font
+--fontpath
+--fullindex
+--fullscreen
+
+ [x] uses full screen size
+
+
+--geometry
+
+ [x] correct window dimensions
+
+
+--help
+--hide-pointer
+--ignore-aspect
+--image-bg
+
+ [x] black
+ [x] white
+ [x] default
+
+
+--index
+--index-dim
+--index-name
+--index-size
+--info
+
+ [x] executes commands
+ [x] correct output
+
+
+--keep-http
+--limit-height
+
+ [x] sets correct thumbnail window height
+
+
+--limit-width
+
+ [x] sets correct thumbnail window width
+
+
+--list
+
+ [x] correct output
+
+
+--loadable
+
+ [x] lists loadable images
+
+
+--menu-bg
+--menu-button
+--menu-ctrl-mask
+--menu-font
+--menu-style
+--montage
+--multiwindow
+
+ [x] opens one window per image
+
+
+--next-button
+--no-blur-ctrl-mask
+--no-jump-on-resort
+--no-menus
+--no-rotate-ctrl-mask
+--no-screen-clip
+
+ [x] creates huge window
+
+
+--no-xinerama
+--output
+--output-dir
+--output-only
+--pan-button
+--preload
+--prev-button
+--quiet
+
+ [x] quiet output
+
+
+--randomize
+--recursive
+--reload
+--reload-button
+--reverse
+--rotate-button
+--scale-down
+
+ [x] correct window size
+ [x] correct zoom level
+ [ ] correct zoom behaviour
+
+
+--slideshow-delay
+
+ [x] positive delay -> automatic window change
+ [x] negative delay -> starts paused
+
+
+--sort
+
+ [x] name
+ [x] filename
+ [x] width
+ [x] height
+ [x] pixels
+ [x] size
+ [x] format
+
+
+--start-at
+
+ [x] starts at correct image
+
+
+--stretch
+--theme
+
+ [x] loads correct options
+ [x] commandline overrides theme
+ [x] multiline theme specifications
+
+
+--thumb-height
+
+ [ ] sets correct thumbnail height
+
+
+--thumbnails
+
+ [x] starts thumbnail mode
+ [ ] shows correct thumbnail dimensions (GH-29)
+
+
+--thumb-redraw
+--thumb-title
+--thumb-width
+
+ [ ] sets correct thumbnail width
+
+
+--title
+
+ [x] Sets correct window title
+ [x] Supports format specifiers
+
+
+--title-font
+--unloadable
+
+ [x] lists unloadable images
+
+
+--verbose
+--version
+
+ [x] correct output
+
+
+--zoom
+--zoom-button
+
+# Keys
+
+action_0
+action_1
+action_2
+action_3
+action_4
+action_5
+action_6
+action_7
+action_8
+action_9
+[x] close
+delete
+[x] jump_back
+[x] jump_first
+[x] jump_fwd
+[x] jump_last
+jump_random
+menu_child
+menu_close
+menu_down
+menu_parent
+menu_select
+menu_up
+[x] next_img
+orient_1
+orient_3
+[x] prev_img
+[x] quit
+reload_image
+reload_minus
+reload_plus
+[x] remove
+render
+save_filelist
+save_image
+[x] scroll_down
+[x] scroll_left
+[x] scroll_right
+[x] scroll_up
+[x] size_to_image
+[x] toggle_actions
+[x] toggle_caption
+[x] toggle_filenames
+toggle_fullscreen
+toggle_menu
+[x] toggle_pause
+toggle_pointer
+zoom_default
+zoom_fit
+[x] zoom_in
+[x] zoom_out
