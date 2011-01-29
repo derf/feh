@@ -78,7 +78,6 @@ OPTIONS
  -C, --fontpath PATH       Specify an extra directory to look in for fonts,
                            can be used multiple times to add multiple paths.
  -M, --menu-font FONT      Use FONT for the font in menus.
-     --menu-style FILE     Use FILE as the style descriptor for menu text.
  -), --menu-bg BG          Use BG for the background image in menus.
  -B, --image-bg STYLE      Set background for transparent images and the like.
                            Accepted values: white, black, default

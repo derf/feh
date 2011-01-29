@@ -267,11 +267,6 @@ Use
 .Pq truetype, with size, like Qq yudit/12
 as menu font.
 .
-.It Cm --menu-style Ar file
-Read
-.Ar file
-to determine menu style.
-.
 .It Cm -m , --montage
 Enable montage mode.  Montage mode creates a new image consisting of a grid of
 thumbnails of the images in the filelist.  When montage mode is selected,

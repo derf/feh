@@ -692,6 +692,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 204:
 			free(opt.menu_style);
 			opt.menu_style = estrdup(optarg);
+			weprintf("--menu-style is deprecated and will be removed soon");
 			break;
 		case 205:
 			if (!strcmp("fill", optarg))

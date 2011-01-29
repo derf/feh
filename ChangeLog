@@ -2,6 +2,7 @@ git HEAD
 
     * Add --zoom fill as equivalent for --auto-zoom
     * Add --zoom max (zooming like in --bg-max)
+    * --menu-style is now deprecated
 
 Wed, 26 Jan 2011 21:07:19 +0100
 
