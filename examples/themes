@@ -42,12 +42,9 @@ booth --full-screen --hide-pointer --slideshow-delay 20
 screensave --recursive --full-screen --randomize --slideshow-delay 10 --hide-pointer
 
 # Different menus
-brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png
-aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png
 aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png
 sky --menu-bg " PREFIX "/share/feh/images/menubg_sky.png
-black --menu-bg " PREFIX "/share/feh/images/menubg_black.png \
-      --menu-style " PREFIX "/share/feh/fonts/black.style
+black --menu-bg " PREFIX "/share/feh/images/menubg_black.png
 
 # Some more examples, used by the feh developer
 
