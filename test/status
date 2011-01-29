@@ -19,9 +19,17 @@ Overall test status, what's covered / missing
  [x] hold-action flag
  [x] supports format specifiers
  [x] with --list
+ [ ] with --loadable
+ [ ] with --unloadable
 
 --alpha
 --auto-zoom
+
+ [ ] zooms to fullscreen
+ [ ] with --stretch
+ [ ] with --ignore-aspect
+
+
 --bg
 --bg-center
 
@@ -50,8 +58,22 @@ Overall test status, what's covered / missing
 
 --blur-button
 --borderless
+
+ [ ] create borderless window (need test WM with borders first...)
+
+
 --builtin
+
+ [ ] View via builtin HTTP client
+ [ ] View via wget
+
+
 --cache-thumbnails
+
+ [ ] ./thumbnails/normal
+ [ ] .thumbnails/large
+
+
 --caption-path
 
  [x] loads/saves captions
@@ -61,6 +83,7 @@ Overall test status, what's covered / missing
 
 
 --collage
+
 --customlist
 
  [x] correct output
@@ -73,7 +96,6 @@ Overall test status, what's covered / missing
  [x] combination with --slideshow-delay
 
 
---debug
 --draw-actions
 
  [x] lists correct actions
@@ -93,8 +115,22 @@ Overall test status, what's covered / missing
 
 
 --font
+
+ [ ] Sets different font
+
+
 --fontpath
+
+ [ ] Adds font path
+
+
 --fullindex
+
+ [ ] Shows correct image size
+ [ ] Shows correct image dimensions
+ [ ] With --cache-thumbnails
+
+
 --fullscreen
 
  [x] uses full screen size
@@ -106,7 +142,15 @@ Overall test status, what's covered / missing
 
 
 --help
+
+ [ ] Displays help
+
+
 --hide-pointer
+
+ [ ] Hides pointer visibility
+
+
 --ignore-aspect
 --image-bg
 
@@ -119,13 +163,19 @@ Overall test status, what's covered / missing
 --index-dim
 --index-name
 --index-size
+
 --info
 
  [x] executes commands
  [x] correct output
+ [ ] format specifiers
 
 
 --keep-http
+
+ [ ] keeps local file copies
+
+
 --limit-height
 
  [x] sets correct thumbnail window height
@@ -147,10 +197,22 @@ Overall test status, what's covered / missing
 
 
 --menu-bg
+
+ to be deprecated
+
+
 --menu-button
 --menu-ctrl-mask
 --menu-font
+
+ [ ] changes menu font
+
+
 --menu-style
+
+ to be deprecated
+
+
 --montage
 --multiwindow
 
@@ -161,6 +223,10 @@ Overall test status, what's covered / missing
 --no-blur-ctrl-mask
 --no-jump-on-resort
 --no-menus
+
+ [ ] disables menu
+
+
 --no-rotate-ctrl-mask
 --no-screen-clip
 
@@ -168,11 +234,23 @@ Overall test status, what's covered / missing
 
 
 --no-xinerama
+
+ [ ] disables xinerama support
+
+
 --output
 --output-dir
+
+ to be deprecated
+
+
 --output-only
 --pan-button
 --preload
+
+ [ ] weeds out unloadable images
+
+
 --prev-button
 --quiet
 
@@ -180,10 +258,26 @@ Overall test status, what's covered / missing
 
 
 --randomize
+
+ [ ] random filelist order
+
+
 --recursive
+
+ [ ] recurses into subdirectories
+
+
 --reload
+
+ [ ] automatically reloads image
+
+
 --reload-button
 --reverse
+
+ [x] reverse sort order
+
+
 --rotate-button
 --scale-down
 
@@ -235,6 +329,10 @@ Overall test status, what's covered / missing
 
 --thumb-redraw
 --thumb-title
+
+ [ ] sets title for windows opened from thumbnail mode
+
+
 --thumb-width
 
  [ ] sets correct thumbnail width
@@ -253,12 +351,22 @@ Overall test status, what's covered / missing
 
 
 --verbose
+
+ [ ] outputs progress bars etc.
+
+
 --version
 
  [x] correct output
 
 
 --zoom
+
+ [ ] percent
+ [ ] max
+ [ ] fill
+
+
 --zoom-button
 
 # Keys
