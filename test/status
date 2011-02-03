@@ -19,8 +19,8 @@ Overall test status, what's covered / missing
  [x] hold-action flag
  [x] supports format specifiers
  [x] with --list
- [ ] with --loadable
- [ ] with --unloadable
+ [x] with --loadable
+ [x] with --unloadable
 
 --alpha
 --auto-zoom

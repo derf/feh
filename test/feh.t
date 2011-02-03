@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 48;
+use Test::Command tests => 60;
 
 $ENV{HOME} = 'test';
 
@@ -59,6 +59,38 @@ $cmd = Test::Command->new(cmd => "$feh --loadable $images");
 
 $cmd->exit_is_num(0);
 $cmd->stdout_like($re_loadable);
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new(
+	cmd => "$feh --loadable --action 'echo touch %f' $images"
+);
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/nx_action/loadable_action');
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new(
+	cmd => "$feh --loadable --action ';echo touch %f' $images"
+);
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/nx_action/loadable_naction');
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new(
+	cmd => "$feh --unloadable --action 'echo rm %f' $images"
+);
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/nx_action/unloadable_action');
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new(
+	cmd => "$feh --unloadable --action ';echo rm %f' $images"
+);
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/nx_action/unloadable_naction');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --unloadable $images");

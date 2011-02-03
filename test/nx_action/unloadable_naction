@@ -1,0 +1,8 @@
+rm test/fail/gif
+rm test/fail/jpg
+rm test/fail/png
+rm test/fail/pnm
+test/fail/gif
+test/fail/jpg
+test/fail/png
+test/fail/pnm
