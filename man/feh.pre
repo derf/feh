@@ -32,8 +32,8 @@ file managers to view an image.
 .Pp
 .Nm
 supports filelists, various image sorting modes, image captions and more.
-Control happens via keyboard shortcuts; the mouse can also be used to control
-it, but is only required for very few actions.
+Configurable keyboard shortcuts are used to control it; the mouse is also
+supported, but only required for very few actions.
 .
 .
 .Sh MODES
