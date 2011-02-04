@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 60;
+use Test::Command tests => 63;
 
 $ENV{HOME} = 'test';
 
@@ -118,6 +118,14 @@ $cmd = Test::Command->new(cmd => "$feh --list $images --sort format --reverse");
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file('test/list/format_reverse');
 $cmd->stderr_like($re_warning);
+
+$cmd = Test::Command->new(
+	cmd => "$feh --list --recursive --sort filename test/ok"
+);
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/list/filename_recursive');
+$cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --customlist '%f; %h; %l; %m; %n; %p; "
                                . "%s; %t; %u; %w' $images");

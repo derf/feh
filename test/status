@@ -259,7 +259,7 @@ Overall test status, what's covered / missing
 
 --recursive
 
- [ ] recurses into subdirectories
+ [x] recurses into subdirectories
 
 
 --reload
