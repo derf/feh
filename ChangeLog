@@ -4,7 +4,7 @@ git HEAD
     * Add --zoom max (zooming like in --bg-max)
     * --menu-style is now deprecated
 
-Wed, 26 Jan 2011 21:07:19 +0100
+Wed, 26 Jan 2011 21:07:19 +0100  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.11.1
     * Show correct image dimensions in for cached thumbnails
@@ -12,7 +12,7 @@ Wed, 26 Jan 2011 21:07:19 +0100
     * Remove support for FEH_OPTIONS (was deprecated >5 years ago)
     * Restrict available modifiers to Control/Mod1/Mod4
 
-Sat, 22 Jan 2011 11:48:33 +0100
+Sat, 22 Jan 2011 11:48:33 +0100  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.11
     * Patch by Pascal Bleser: Use getaddrinfo for builtin http client,
@@ -24,7 +24,7 @@ Sat, 22 Jan 2011 11:48:33 +0100
     * Increase movement steps for Ctrl+Left etc.
     * Make in/out zoom use equal zoom ratio
 
-Fri, 03 Dec 2010 19:41:45 +0100
+Fri, 03 Dec 2010 19:41:45 +0100  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.10.1
     * Partially fix --scale-down behaviour (zooming is still broken)
