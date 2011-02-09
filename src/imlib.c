@@ -453,7 +453,8 @@ char *feh_http_load_image(char *url)
 			if (!opt.verbose)
 				quiet = estrdup("-q");
 
-			execlp("wget", "wget", "--cache=off", "-O", tmpname, url, quiet, NULL);
+			execlp("wget", "wget", "--no-clobber", "--cache=off",
+					"-O", tmpname, url, quiet, NULL);
 			eprintf("url: Is 'wget' installed? Failed to exec wget:");
 		} else {
 			waitpid(pid, &status, 0);
