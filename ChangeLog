@@ -3,9 +3,15 @@ git HEAD
     * Add --zoom fill as equivalent for --auto-zoom
     * Add --zoom max (zooming like in --bg-max)
     * --menu-style is now deprecated
+
+Wed, 09 Feb 2011 20:11:26 +0100  Daniel Friesel <derf@finalrewind.org>
+
+* Release v1.11.2
     * Use wget --no-clobber to prevent TOCTTOU-based hole allowing a
-      well-informed attacker to rewrite arbitrary user files. An attacker can
-      still use it to _create_ arbitrary files.
+      well-informed attacker to rewrite arbitrary user files with images.
+      The attacker needs to know feh's PID and the URL the user gave it.
+      It is still possible for an attacker to _create_ arbitrary files via the
+      same hole.
 
 Wed, 26 Jan 2011 21:07:19 +0100  Daniel Friesel <derf@finalrewind.org>
 
