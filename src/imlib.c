@@ -397,7 +397,7 @@ char *feh_http_load_image(char *url)
 						break;
 
 					case SAW_ONE_CM:
-					if (buf[i] == '\012') {
+						if (buf[i] == '\012') {
 							body = SAW_ONE_CJ;
 						} else {
 							body = SAW_NONE;
