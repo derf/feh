@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <curl/curl.h>
 
 Display *disp = NULL;
 Visual *vis = NULL;
@@ -439,6 +440,8 @@ char *feh_http_load_image(char *url)
 		}		/* while read */
 		close(sockno);
 		fclose(fp);
+	} else if (opt.libcurl_http) {
+
 	} else {
 		int pid;
 		int status;
