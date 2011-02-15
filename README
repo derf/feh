@@ -10,7 +10,7 @@ Dependencies:
  * Imlib2
  * libpng
  * libX11
-
+ * libcurl
 
 Recommended:
 

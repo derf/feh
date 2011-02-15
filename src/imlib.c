@@ -397,7 +397,7 @@ char *feh_http_load_image(char *url)
 						break;
 
 					case SAW_ONE_CM:
-						if (buf[i] == '\012') {
+					if (buf[i] == '\012') {
 							body = SAW_ONE_CJ;
 						} else {
 							body = SAW_NONE;
@@ -441,7 +441,58 @@ char *feh_http_load_image(char *url)
 		close(sockno);
 		fclose(fp);
 	} else if (opt.libcurl_http) {
+	        CURL *curl;
+		CURLcode res;
+	        char *sfn;
+		FILE *sfp;
+		int fd = -1;
+		char *ebuff;
+		char *ret;
 
+		curl = curl_easy_init();
+		if (!curl) {
+		  weprintf("open url: libcurl initialization failure");
+		  return NULL;
+		}
+		
+		sfn = estrjoin("_", tmpname, "XXXXXX");
+		free(tmpname);
+		fd = mkstemp(sfn);
+		if (fd != -1) {
+		  sfp = fdopen(fd, "w+");
+		  if (sfp != NULL) {
+		    curl_easy_setopt(curl, CURLOPT_URL, url);
+		    curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
+		    /* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
+		    ebuff = emalloc(CURL_ERROR_SIZE);
+		    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
+		    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+		    res = curl_easy_perform(curl);
+		    curl_easy_cleanup(curl);
+		    if (res != CURLE_OK) {
+		      weprintf("open url: %s", ebuff);
+		      unlink(sfn);
+		      close(fd);
+		      free(sfn);
+		      sfn = NULL;
+		    }
+
+		    free(ebuff);
+		    fclose(sfp);
+		    return sfn;
+		  } else {
+		    weprintf("open url: fdopen failed:");
+		    free(sfn);
+		    unlink(sfn);
+		    close(fd);
+		  }
+		} else {
+		  weprintf("open url: mkstemp failed:");
+		  free(sfn);
+		}
+		curl_easy_cleanup(curl);
+		return NULL;
 	} else {
 		int pid;
 		int status;

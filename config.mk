@@ -31,4 +31,4 @@ xinerama_ld = -lXinerama
 CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
-LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib ${xinerama_ld}
+LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib -lcurl ${xinerama_ld}
