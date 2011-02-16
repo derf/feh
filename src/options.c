@@ -849,7 +849,23 @@ static void check_options(void)
 
 static void show_version(void)
 {
-	printf(PACKAGE " version " VERSION "\n");
+	puts(PACKAGE " version " VERSION);
+	puts("Compile-time switches: "
+
+#ifdef HAVE_LIBCURL
+		"curl "
+#endif
+
+#ifdef DEBUG
+		"debug "
+#endif
+
+#ifdef HAVE_LIBXINERAMA
+		"xinerama "
+#endif
+
+	);
+
 	exit(0);
 }
 
