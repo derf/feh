@@ -440,6 +440,7 @@ char *feh_http_load_image(char *url)
 		}		/* while read */
 		close(sockno);
 		fclose(fp);
+#ifdef HAVE_LIBCURL
 	} else {
 		CURL *curl;
 		CURLcode res;
@@ -492,6 +493,12 @@ char *feh_http_load_image(char *url)
 		curl_easy_cleanup(curl);
 		return NULL;
 	}
+#else
+	} else {
+		weprintf("Please compile feh with curl=1 to enable http support");
+		return NULL;
+	}
+#endif
 
 	return(tmpname);
 }

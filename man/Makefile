@@ -9,6 +9,9 @@ all: ${TARGETS}
 	sed \
 	-e 's/\$$VERSION\$$/${VERSION}/g' \
 	-e 's/\$$DATE\$$/'"$$(date '+%B %d, %Y')"/g \
+	-e 's/\$$MAN_CURL\$$/${MAN_CURL}/' \
+	-e 's/\$$MAN_DEBUG\$$/${MAN_DEBUG}/' \
+	-e 's/\$$MAN_XINERAMA\$$/${MAN_XINERAMA}/' \
 	< ${@:.1=.pre} > $@
 
 clean:

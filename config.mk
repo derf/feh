@@ -17,18 +17,37 @@ example_dir = ${main_dir}/share/doc/feh/examples
 CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -pedantic
 
-# Comment these out if you don't have libxinerama
-xinerama = -DHAVE_LIBXINERAMA
-xinerama_ld = -lXinerama
+curl ?= 1
+debug ?= 0
+xinerama ?= 1
 
-# Uncomment this for debug mode
-# (Use feh -+ or feh --debug to see debug output)
-#CFLAGS += -DDEBUG
+ifeq (${curl},1)
+	CFLAGS += -DHAVE_LIBCURL
+	LDLIBS += -lcurl
+	MAN_CURL = enabled
+else
+	MAN_CURL = disabled
+endif
+
+ifeq (${debug},1)
+	CFLAGS += -DDEBUG
+	MAN_DEBUG = This is a debug build.
+else
+	MAN_DEBUG =
+endif
+
+ifeq (${xinerama},1)
+	CFLAGS += -DHAVE_LIBXINERAMA
+	LDLIBS += -lXinerama
+	MAN_XINERAMA = enabled
+else
+	MAN_XINERAMA = disabled
+endif
 
 # Uncomment this to use dmalloc
 #CFLAGS += -DWITH_DMALLOC
 
-CFLAGS += ${xinerama} -DPREFIX=\"${PREFIX}\" \
+CFLAGS += -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
-LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib -lcurl ${xinerama_ld}
+LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib
