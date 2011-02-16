@@ -52,7 +52,8 @@ EOF
 $cmd = Test::Command->new(cmd => "$feh --version");
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_eq("${feh_name} version ${feh_version}\n");
+$cmd->stdout_is_eq("${feh_name} version ${feh_version}\n"
+                 . "Compile-time switches: curl xinerama \n");
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --loadable $images");

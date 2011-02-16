@@ -116,10 +116,6 @@ Zoom pictures to screen size in fullscreen
 .It Cm -x , --borderless
 Create borderless windows.
 .
-.It Cm -Q , --builtin
-Use builtin HTTP client to grab remote files instead of
-.Xr wget 1 .
-.
 .It Cm -P , --cache-thumbnails
 Enable (experimental) thumbnail caching in
 .Pa ~/.thumbnails .
@@ -993,10 +989,11 @@ binary
 .Pq usually distributed in Qo libjpeg-progs Qc or similar
 for lossless rotation.
 .Pp
-To view images from URLs such as http://, you need to have
-.Cm wget
-available or use the builtin HTTP client
-.Pq see Cm --builtin .
+To view images from URLs such as http://, you need
+.Nm
+compiled with libcurl support (enabled by default).  See the
+.Sx VERSION
+section.
 .
 .
 .Sh BUGS

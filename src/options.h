@@ -63,8 +63,6 @@ struct __fehoptions {
 	unsigned char reverse;
 	unsigned char no_menus;
 	unsigned char scale_down;
-	unsigned char builtin_http;
-	unsigned char libcurl_http;
 	unsigned char bgmode;
 	unsigned char xinerama;
 	unsigned char screen_clip;

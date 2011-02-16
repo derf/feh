@@ -81,8 +81,6 @@ void init_parse_options(int argc, char **argv)
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
 
-	opt.builtin_http = 0;
-
 	opt.xinerama = 0;
 	opt.screen_clip = 1;
 #ifdef HAVE_LIBXINERAMA
@@ -324,7 +322,7 @@ static void feh_getopt_theme(int argc, char **argv)
 static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
-		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
+		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
 		"0:1:2:4:5:8:9:.@:^:~:):|:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
@@ -355,7 +353,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"preload"       , 0, 0, 'p'},
 		{"reverse"       , 0, 0, 'n'},
 		{"thumbnails"    , 0, 0, 't'},
-		{"builtin"       , 0, 0, 'Q'},
 		{"scale-down"    , 0, 0, '.'},
 		{"no-jump-on-resort", 0, 0, 220},
 		{"hide-pointer"  , 0, 0, 'Y'},
@@ -469,9 +466,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		case 'l':
 			opt.list = 1;
 			opt.display = 0;
-			break;
-		case 'Q':
-			opt.builtin_http = 1;
 			break;
 		case 'L':
 			opt.customlist = estrdup(optarg);

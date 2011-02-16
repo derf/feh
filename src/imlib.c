@@ -233,8 +233,16 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	return(1);
 }
 
+#ifdef HAVE_LIBCURL
+
 char *feh_http_load_image(char *url)
 {
+	CURL *curl;
+	CURLcode res;
+	char *sfn;
+	FILE *sfp;
+	int fd = -1;
+	char *ebuff;
 	char *tmpname;
 	char *basename;
 	char *path = NULL;
@@ -250,258 +258,63 @@ char *feh_http_load_image(char *url)
 	basename = strrchr(url, '/') + 1;
 	tmpname = feh_unique_filename(path, basename);
 
-	if (opt.builtin_http) {
-		/* state for HTTP header parser */
-#define SAW_NONE    1
-#define SAW_ONE_CM  2
-#define SAW_ONE_CJ  3
-#define SAW_TWO_CM  4
-#define IN_BODY     5
+	curl = curl_easy_init();
+	if (!curl) {
+		weprintf("open url: libcurl initialization failure");
+		return NULL;
+	}
+	
+	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
+	free(tmpname);
+	fd = mkstemp(sfn);
+	if (fd != -1) {
+		sfp = fdopen(fd, "w+");
+		if (sfp != NULL) {
+			curl_easy_setopt(curl, CURLOPT_URL, url);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
+			ebuff = emalloc(CURL_ERROR_SIZE);
+			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
+			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 
-#define OUR_BUF_SIZE 1024
-#define EOL "\015\012"
-
-		int sockno = 0;
-		int size;
-		int body = SAW_NONE;
-		struct addrinfo hints;
-		struct addrinfo *result, *rp;
-		char *hostname;
-		char *get_string;
-		char *host_string;
-		char *query_string;
-		char *get_url;
-		static char buf[OUR_BUF_SIZE];
-		char ua_string[] = "User-Agent: feh image viewer";
-		char accept_string[] = "Accept: image/*";
-		FILE *fp;
-
-		D(("using builtin http collection\n"));
-		fp = fopen(tmpname, "w");
-		if (!fp) {
-			weprintf("couldn't write to file %s:", tmpname);
-			free(tmpname);
-			return(NULL);
-		}
-
-		hostname = feh_strip_hostname(url);
-		if (!hostname) {
-			weprintf("couldn't work out hostname from %s:", url);
-			fclose(fp);
-			unlink(tmpname);
-			free(tmpname);
-			return(NULL);
-		}
-
-		D(("trying hostname %s\n", hostname));
-
-		memset(&hints, 0, sizeof(struct addrinfo));
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_flags = AI_NUMERICSERV;
-		hints.ai_protocol = 0;
-		if (getaddrinfo(hostname, "80", &hints, &result) != 0) {
-			weprintf("error resolving host %s:", hostname);
-			fclose(fp);
-			unlink(tmpname);
-			free(hostname);
-			free(tmpname);
-			return(NULL);
-		}
-		for (rp = result; rp != NULL; rp = rp->ai_next) {
-			sockno = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-			if (sockno == -1) {
-				continue;
-			}
-			if (connect(sockno, rp->ai_addr, rp->ai_addrlen) != -1) {
-				break;
-			}
-			close(sockno);
-		}
-		if (rp == NULL) {
-			weprintf("error connecting socket:");
-			freeaddrinfo(result);
-			fclose(fp);
-			unlink(tmpname);
-			free(tmpname);
-			free(hostname);
-			return(NULL);
-		}
-		freeaddrinfo(result);
-
-		get_url = strchr(url, '/') + 2;
-		get_url = strchr(get_url, '/');
-
-		get_string = estrjoin(" ", "GET", get_url, "HTTP/1.0", NULL);
-		host_string = estrjoin(" ", "Host:", hostname, NULL);
-		query_string = estrjoin(EOL, get_string, host_string, accept_string, ua_string, "", "", NULL);
-		/* At this point query_string looks something like
-		 **
-		 **    GET /dir/foo.jpg?123456 HTTP/1.0^M^J
-		 **    Host: www.example.com^M^J
-		 **    Accept: image/ *^M^J
-		 **    User-Agent: feh image viewer^M^J
-		 **    ^M^J
-		 **
-		 ** Host: is required by HTTP/1.1 and very important for some sites,
-		 ** even with HTTP/1.0
-		 **
-		 ** -- BEG
-		 */
-		if ((send(sockno, query_string, strlen(query_string), 0)) == -1) {
-			free(get_string);
-			free(host_string);
-			free(query_string);
-			free(tmpname);
-			free(hostname);
-			weprintf("error sending over socket:");
-			return(NULL);
-		}
-		free(get_string);
-		free(host_string);
-		free(query_string);
-		free(hostname);
-
-		while ((size = read(sockno, &buf, OUR_BUF_SIZE))) {
-			if (body == IN_BODY) {
-				fwrite(buf, 1, size, fp);
-			} else {
-				int i;
-
-				for (i = 0; i < size; i++) {
-					/* We are looking for ^M^J^M^J, but will accept
-					 ** ^J^J from broken servers. Stray ^Ms will be
-					 ** ignored.
-					 **
-					 ** TODO:
-					 ** Checking the headers for a
-					 **    Content-Type: image/ *
-					 ** header would help detect problems with results.
-					 ** Maybe look at the response code too? But there is
-					 ** no fundamental reason why a 4xx or 5xx response
-					 ** could not return an image, it is just the 3xx
-					 ** series we need to worry about.
-					 **
-					 ** Also, grabbing the size from the Content-Length
-					 ** header and killing the connection after that
-					 ** many bytes where read would speed up closing the
-					 ** socket.
-					 ** -- BEG
-					 */
-
-					switch (body) {
-
-					case IN_BODY:
-						fwrite(buf + i, 1, size - i, fp);
-						i = size;
-						break;
-
-					case SAW_ONE_CM:
-						if (buf[i] == '\012') {
-							body = SAW_ONE_CJ;
-						} else {
-							body = SAW_NONE;
-						}
-						break;
-
-					case SAW_ONE_CJ:
-						if (buf[i] == '\015') {
-							body = SAW_TWO_CM;
-						} else {
-							if (buf[i] == '\012') {
-								body = IN_BODY;
-							} else {
-								body = SAW_NONE;
-							}
-						}
-						break;
-
-					case SAW_TWO_CM:
-						if (buf[i] == '\012') {
-							body = IN_BODY;
-						} else {
-							body = SAW_NONE;
-						}
-						break;
-
-					case SAW_NONE:
-						if (buf[i] == '\015') {
-							body = SAW_ONE_CM;
-						} else {
-							if (buf[i] == '\012') {
-								body = SAW_ONE_CJ;
-							}
-						}
-						break;
-
-					}	/* switch */
-				}	/* for i */
-			}
-		}		/* while read */
-		close(sockno);
-		fclose(fp);
-#ifdef HAVE_LIBCURL
-	} else {
-		CURL *curl;
-		CURLcode res;
-		char *sfn;
-		FILE *sfp;
-		int fd = -1;
-		char *ebuff;
-
-		curl = curl_easy_init();
-		if (!curl) {
-			weprintf("open url: libcurl initialization failure");
-			return NULL;
-		}
-		
-		sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
-		free(tmpname);
-		fd = mkstemp(sfn);
-		if (fd != -1) {
-			sfp = fdopen(fd, "w+");
-			if (sfp != NULL) {
-				curl_easy_setopt(curl, CURLOPT_URL, url);
-				curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
-				ebuff = emalloc(CURL_ERROR_SIZE);
-				curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
-				curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-
-				res = curl_easy_perform(curl);
-				curl_easy_cleanup(curl);
-				if (res != CURLE_OK) {
-					weprintf("open url: %s", ebuff);
-					unlink(sfn);
-					close(fd);
-					free(sfn);
-					sfn = NULL;
-				}
-
-				free(ebuff);
-				fclose(sfp);
-				return sfn;
-			} else {
-				weprintf("open url: fdopen failed:");
-				free(sfn);
+			res = curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			if (res != CURLE_OK) {
+				weprintf("open url: %s", ebuff);
 				unlink(sfn);
 				close(fd);
+				free(sfn);
+				sfn = NULL;
 			}
-		} else {
-			weprintf("open url: mkstemp failed:");
-			free(sfn);
-		}
-		curl_easy_cleanup(curl);
-		return NULL;
-	}
-#else
-	} else {
-		weprintf("Please compile feh with curl=1 to enable http support");
-		return NULL;
-	}
-#endif
 
-	return(tmpname);
+			free(ebuff);
+			fclose(sfp);
+			return sfn;
+		} else {
+			weprintf("open url: fdopen failed:");
+			free(sfn);
+			unlink(sfn);
+			close(fd);
+		}
+	} else {
+		weprintf("open url: mkstemp failed:");
+		free(sfn);
+	}
+	curl_easy_cleanup(curl);
+	return NULL;
 }
+
+#else				/* HAVE_LIBCURL */
+
+char *feh_http_load_image(char *url)
+{
+	weprintf(
+		"Cannot load image %s\n Please recompile with libcurl support",
+		url
+	);
+	return NULL;
+}
+
+#endif				/* HAVE_LIBCURL */
 
 char *feh_strip_hostname(char *url)
 {
