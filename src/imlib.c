@@ -455,7 +455,7 @@ char *feh_http_load_image(char *url)
 		  return NULL;
 		}
 		
-		sfn = estrjoin("_", tmpname, "XXXXXX");
+		sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
 		free(tmpname);
 		fd = mkstemp(sfn);
 		if (fd != -1) {
