@@ -1,30 +1,44 @@
 feh - Imlib2 based image viewer
+-------------------------------
 
  * <http://feh.finalrewind.org/>
  * <http://linuxbrit.co.uk/feh/>
  * #feh on irc.oftc.net
 
-Dependencies:
+Dependencies
+------------
 
  * giblib
  * Imlib2
+ * libcurl (disable with make curl=0)
  * libpng
  * libX11
- * libcurl
+ * libXinerama (disable with make xinerama=0)
 
-Recommended:
+Recommended
+-----------
 
  * jpegtran  (supplied by the jpeg library, for lossless image rotation)
- * wget      (for http/ftp support)
 
-
-Installation:
+Installation
+------------
 
 $ make
 $ sudo make install
 
-If compilation does not work or you want to customize stuff (like disable
-Xinerama support), edit config.mk first.
+Make flags
+----------
+
+Use "make flag=bool", e.g. "make xinerama=0 debug=1" to disable Xinerama
+support and get a debug build.
+
+Available flags are:
+
+ * curl     (default 1) - use libcurl to view http:// and similar images
+ * debug    (default 0) - debug build, enables --debug
+ * xinerama (default 1) - Support Xinerama multiscreen setups
+
+So, by default libcurl and Xinerama are enabled, while debug is disabled.
 
 Note: config.mk is designed so that in most cases, you can set environment
 variables instead of editing it. E.g.:
@@ -32,7 +46,8 @@ CFLAGS='-g -Os' make
 export DESTDIR=/tmp/feh PREFIX=/usr; make && make install
 
 
-Testing (non-X):
+Testing (non-X)
+---------------
 
 $ make test
 
@@ -40,7 +55,8 @@ Requires perl >= 5.10 with Test::Command. The tests are non-interactive and
 work without X, so they can safely be run even on a headless buildserver.
 
 
-Testing (X):
+Testing (X)
+-----------
 
 Requires
  * import (usually supplied by imagemagick)
