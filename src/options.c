@@ -82,7 +82,6 @@ void init_parse_options(int argc, char **argv)
 	opt.jump_on_resort = 1;
 
 	opt.builtin_http = 0;
-	opt.libcurl_http = 0;
 
 	opt.xinerama = 0;
 	opt.screen_clip = 1;
@@ -326,7 +325,7 @@ static void feh_parse_option_array(int argc, char **argv)
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:YzZ"
-		"0:1:2:4:5:8:9:.@:^:~:):|:+:{";
+		"0:1:2:4:5:8:9:.@:^:~:):|:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
@@ -357,7 +356,6 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"reverse"       , 0, 0, 'n'},
 		{"thumbnails"    , 0, 0, 't'},
 		{"builtin"       , 0, 0, 'Q'},
-		{"libcurl"       , 0, 0, '{'},
 		{"scale-down"    , 0, 0, '.'},
 		{"no-jump-on-resort", 0, 0, 220},
 		{"hide-pointer"  , 0, 0, 'Y'},
@@ -474,9 +472,6 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 'Q':
 			opt.builtin_http = 1;
-			break;
-		case '{':
-		        opt.libcurl_http = 1;
 			break;
 		case 'L':
 			opt.customlist = estrdup(optarg);

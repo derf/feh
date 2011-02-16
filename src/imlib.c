@@ -447,7 +447,6 @@ char *feh_http_load_image(char *url)
 		FILE *sfp;
 		int fd = -1;
 		char *ebuff;
-		char *ret;
 
 		curl = curl_easy_init();
 		if (!curl) {
@@ -463,7 +462,6 @@ char *feh_http_load_image(char *url)
 			if (sfp != NULL) {
 				curl_easy_setopt(curl, CURLOPT_URL, url);
 				curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
-				/* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
 				ebuff = emalloc(CURL_ERROR_SIZE);
 				curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 				curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
@@ -493,33 +491,6 @@ char *feh_http_load_image(char *url)
 		}
 		curl_easy_cleanup(curl);
 		return NULL;
-	} else {
-		int pid;
-		int status;
-
-		if ((pid = fork()) < 0) {
-			weprintf("open url: fork failed:");
-			free(tmpname);
-			return(NULL);
-		} else if (pid == 0) {
-			char *quiet = NULL;
-
-			if (!opt.verbose)
-				quiet = estrdup("-q");
-
-			execlp("wget", "wget", "--no-clobber", "--cache=off",
-					"-O", tmpname, url, quiet, NULL);
-			eprintf("url: Is 'wget' installed? Failed to exec wget:");
-		} else {
-			waitpid(pid, &status, 0);
-
-			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-				weprintf("url: wget failed to load URL %s\n", url);
-				unlink(tmpname);
-				free(tmpname);
-				return(NULL);
-			}
-		}
 	}
 
 	return(tmpname);
