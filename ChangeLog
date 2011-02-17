@@ -3,6 +3,12 @@ git HEAD
     * Add --zoom fill as equivalent for --auto-zoom
     * Add --zoom max (zooming like in --bg-max)
     * --menu-style is now deprecated
+    * http images are now viewed using libcurl, not wget (thanks to talisein)
+      This adds libcurl as dependency, and removes the wget recommendation
+    * Slight build system change: make now has flags, e.g.
+      "make xinerama=0 debug=1". By default feh is compiled with xinerama and
+      libcurl support enabled, see README.
+    * Remove builtin http client (--builtin)
 
 Wed, 09 Feb 2011 20:11:26 +0100  Daniel Friesel <derf@finalrewind.org>
 
