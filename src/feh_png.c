@@ -66,7 +66,7 @@ gib_hash *feh_png_read_comments(char *file)
 		return hash;
 	}
 
-	if (setjmp(png_ptr->jmpbuf)) {
+	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
 		return hash;
@@ -124,7 +124,7 @@ int feh_png_write_png(Imlib_Image image, char *file, ...)
 		return 0;
 	}
 
-	if (setjmp(png_ptr->jmpbuf)) {
+	if (setjmp(png_jmpbuf(png_ptr))) {
 		fclose(fp);
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 		png_destroy_info_struct(png_ptr, &info_ptr);

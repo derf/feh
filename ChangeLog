@@ -9,6 +9,7 @@ git HEAD
       "make xinerama=0 debug=1". By default feh is compiled with xinerama and
       libcurl support enabled, see README.
     * Remove builtin http client (--builtin)
+    * Fix compilation issues with libpng 1.5.1
 
 Wed, 09 Feb 2011 20:11:26 +0100  Daniel Friesel <derf@finalrewind.org>
 
