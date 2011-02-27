@@ -31,7 +31,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static void check_options(void);
 static void feh_getopt_theme(int argc, char **argv);
 static void feh_parse_option_array(int argc, char **argv);
-static void feh_parse_environment_options(void);
 static void feh_check_theme_options(int arg, char **argv);
 static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
