@@ -517,7 +517,7 @@ static void feh_parse_option_array(int argc, char **argv)
 			opt.full_screen = 1;
 			break;
 		case 'Z':
-			opt.zoom_mode = ZOOM_MODE_FILL;
+			opt.zoom_mode = ZOOM_MODE_MAX;
 			break;
 		case 'U':
 			opt.loadables = 1;
