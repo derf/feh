@@ -4,7 +4,7 @@ use warnings;
 use 5.010;
 
 use Cwd;
-use Test::More tests => 102;
+use Test::More tests => 103;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -444,4 +444,10 @@ ok(waitfor {
 		[(GetWindowPos($win))[2, 3]] ~~ [4000, 3000]
 	},
 	'disabled screen clip');
+feh_stop();
+
+# GH-35 "Custom window title crashes feh on unloadable files"
+$win = feh_start('--title "feh %h"', 'test/ok/png test/fail/png test/ok/jpg');
+SendKeys('{RIG}');
+test_win_title($win, 'feh 16');
 feh_stop();

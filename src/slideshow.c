@@ -252,10 +252,6 @@ void slideshow_change_image(winwidget winwid, int change)
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
-		s = slideshow_create_name(FEH_FILE(current_file->data));
-
-		winwidget_rename(winwid, s);
-		free(s);
 
 		if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
 		    != 0) {
@@ -269,6 +265,11 @@ void slideshow_change_image(winwidget winwid, int change)
 			winwid->im_w = gib_imlib_image_get_width(winwid->im);
 			winwid->im_h = gib_imlib_image_get_height(winwid->im);
 			winwidget_render_image(winwid, 1, 1);
+
+			s = slideshow_create_name(FEH_FILE(current_file->data));
+			winwidget_rename(winwid, s);
+			free(s);
+
 			break;
 		} else
 			last = current_file;
