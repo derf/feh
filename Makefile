@@ -68,6 +68,7 @@ uninstall:
 dist:
 	mkdir /tmp/feh-${VERSION}
 	git --work-tree=/tmp/feh-${VERSION} checkout -f
+	cp src/deps.mk /tmp/feh-${VERSION}/src/deps.mk
 	sed -i 's/^VERSION ?= .*$$/VERSION ?= ${VERSION}/' \
 		/tmp/feh-${VERSION}/config.mk
 	tar -C /tmp -cjf ../feh-${VERSION}.tar.bz2 feh-${VERSION}
