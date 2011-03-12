@@ -1,5 +1,6 @@
-git HEAD
+Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.12
     * Add --zoom fill as equivalent for --auto-zoom
     * Add --zoom max (zooming like in --bg-max)
     * --menu-style is now deprecated
