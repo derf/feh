@@ -2,6 +2,7 @@ git HEAD
 
     * Fix segfault upon unloadable images when image-related format specifiers
       (e.g. %h) are used in --title
+    * Show images in current directory when invoked without file arguments
 
 Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
 

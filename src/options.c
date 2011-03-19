@@ -111,8 +111,10 @@ void init_parse_options(int argc, char **argv)
 		return;
 
 	filelist_len = gib_list_length(filelist);
-	if (!filelist_len)
-		show_mini_usage();
+	if (!filelist_len) {
+		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+		filelist_len = gib_list_length(filelist);
+	}
 
 	check_options();
 
