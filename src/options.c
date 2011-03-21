@@ -423,6 +423,7 @@ static void feh_parse_option_array(int argc, char **argv)
 		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"info"          , 1, 0, 234},
+		{"force-aliasing", 0, 0, 235},
 
 		{0, 0, 0, 0}
 	};
@@ -771,6 +772,9 @@ static void feh_parse_option_array(int argc, char **argv)
 			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);
+			break;
+		case 235:
+			opt.force_aliasing = 1;
 			break;
 		default:
 			break;

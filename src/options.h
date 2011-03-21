@@ -107,6 +107,7 @@ struct __fehoptions {
 	unsigned char no_blur_ctrl_mask;
 	unsigned char no_pan_ctrl_mask;
 
+	int force_aliasing;
 	int thumb_w;
 	int thumb_h;
 	int limit_w;
@@ -175,6 +176,7 @@ struct __fehkb {
 	struct __fehkey toggle_actions;
 	struct __fehkey toggle_filenames;
 	struct __fehkey toggle_pointer;
+	struct __fehkey toggle_aliasing;
 	struct __fehkey jump_random;
 	struct __fehkey toggle_caption;
 	struct __fehkey toggle_pause;

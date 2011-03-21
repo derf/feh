@@ -1268,7 +1268,7 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i)
 	winwidget_destroy_xwin(m->fehwin);
 	winwidget_create_window(m->fehwin, m->fehwin->im_w, m->fehwin->im_h);
 
-	winwidget_render_image(m->fehwin, 1, 1);
+	winwidget_render_image(m->fehwin, 1, 0);
 	winwidget_show(m->fehwin);
 
 #ifdef HAVE_LIBXINERAMA
@@ -1343,7 +1343,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 				winwidget_resize(m->fehwin, m->fehwin->im_w, m->fehwin->im_h);
 			}
 			winwidget_reset_image(m->fehwin);
-			winwidget_render_image(m->fehwin, 1, 1);
+			winwidget_render_image(m->fehwin, 1, 0);
 			break;
 		case CB_RELOAD:
 			feh_reload_image(m->fehwin, 0, 0);
@@ -1404,7 +1404,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 				opt.draw_filename = TRUE;
 			else
 				opt.draw_filename = FALSE;
-			winwidget_rerender_all(0, 1);
+			winwidget_rerender_all(0);
 			break;
 		case CB_OPT_DRAW_ACTIONS:
 			MENU_ITEM_TOGGLE(i);
@@ -1412,7 +1412,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 				opt.draw_actions = TRUE;
 			else
 				opt.draw_actions = FALSE;
-			winwidget_rerender_all(0, 1);
+			winwidget_rerender_all(0);
 			break;
 		case CB_OPT_KEEP_HTTP:
 			MENU_ITEM_TOGGLE(i);
@@ -1440,7 +1440,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 				opt.zoom_mode = ZOOM_MODE_FILL;
 			else
 				opt.zoom_mode = 0;
-			winwidget_rerender_all(1, 1);
+			winwidget_rerender_all(1);
 			break;
 	}
 	return;

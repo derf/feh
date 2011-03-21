@@ -364,7 +364,7 @@ void init_thumbnail_mode(void)
 		if (opt.display) {
 			/* thumb_counter is unsigned, so no need to catch overflows */
 			if (++thumb_counter == opt.thumb_redraw) {
-				winwidget_render_image(winwid, 0, 0);
+				winwidget_render_image(winwid, 0, 1);
 				thumb_counter = 0;
 			}
 			if (!feh_main_iteration(0))
@@ -373,7 +373,7 @@ void init_thumbnail_mode(void)
 	}
 
 	if (thumb_counter != 0)
-		winwidget_render_image(winwid, 0, 0);
+		winwidget_render_image(winwid, 0, 1);
 
 	if (opt.verbose)
 		fprintf(stdout, "\n");

@@ -163,7 +163,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		w->im_w = gib_imlib_image_get_width(w->im);
 		w->im_h = gib_imlib_image_get_height(w->im);
 	}
-	winwidget_render_image(w, resize, 1);
+	winwidget_render_image(w, resize, 0);
 
 	winwidget_rename(w, title);
 	free(title);
@@ -264,7 +264,7 @@ void slideshow_change_image(winwidget winwid, int change)
 			winwidget_reset_image(winwid);
 			winwid->im_w = gib_imlib_image_get_width(winwid->im);
 			winwid->im_h = gib_imlib_image_get_height(winwid->im);
-			winwidget_render_image(winwid, 1, 1);
+			winwidget_render_image(winwid, 1, 0);
 
 			s = slideshow_create_name(FEH_FILE(current_file->data));
 			winwidget_rename(winwid, s);

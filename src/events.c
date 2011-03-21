@@ -183,7 +183,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				opt.mode = MODE_NORMAL;
 				winwid->mode = MODE_NORMAL;
 				winwidget_sanitise_offsets(winwid);
-				winwidget_render_image(winwid, 0, 1);
+				winwidget_render_image(winwid, 0, 0);
 			}
 		} else if (opt.mode == MODE_NEXT) {
 			opt.mode = MODE_NORMAL;
@@ -248,7 +248,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			} else
 				winwidget_sanitise_offsets(winwid);
 
-			winwidget_render_image(winwid, 0, 1);
+			winwidget_render_image(winwid, 0, 0);
 		}
 	} else if ((ev->xbutton.button == opt.blur_button)
 			&& ((opt.no_blur_ctrl_mask)
@@ -281,7 +281,7 @@ static void feh_event_handle_ConfigureNotify(XEvent * ev)
 					opt.geom_w = w->w;
 					opt.geom_h = w->h;
 				}
-				winwidget_render_image(w, 0, 1);
+				winwidget_render_image(w, 0, 0);
 			}
 		}
 	}
@@ -404,7 +404,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->im_y = winwid->click_offset_y
 					- (winwid->im_click_offset_y * winwid->zoom);
 
-			winwidget_render_image(winwid, 0, 0);
+			winwidget_render_image(winwid, 0, 1);
 		}
 	} else if ((opt.mode == MODE_PAN) || (opt.mode == MODE_NEXT)) {
 		int orig_x, orig_y;
@@ -463,7 +463,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 			if ((winwid->im_x != orig_x)
 					|| (winwid->im_y != orig_y))
-				winwidget_render_image(winwid, 0, 0);
+				winwidget_render_image(winwid, 0, 1);
 		}
 	} else if (opt.mode == MODE_ROTATE) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -483,7 +483,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			}
 			winwid->im_angle = (ev->xmotion.x - winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
 			D(("angle: %f\n", winwid->im_angle));
-			winwidget_render_image(winwid, 0, 0);
+			winwidget_render_image(winwid, 0, 1);
 		}
 	} else if (opt.mode == MODE_BLUR) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -503,7 +503,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				gib_imlib_image_blur(temp, 0 - blur_radius);
 			ptr = winwid->im;
 			winwid->im = temp;
-			winwidget_render_image(winwid, 0, 0);
+			winwidget_render_image(winwid, 0, 1);
 			gib_imlib_free_image_and_decache(winwid->im);
 			winwid->im = ptr;
 		}
@@ -522,7 +522,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				imlib_context_set_image(winwid->im);
 				imlib_apply_filter("bump_map_point(x=[],y=[],map="
 						PREFIX "/share/feh/images/about.png);", &x, &y);
-				winwidget_render_image(winwid, 0, 1);
+				winwidget_render_image(winwid, 0, 0);
 				gib_imlib_free_image_and_decache(winwid->im);
 				winwid->im = orig_im;
 			} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
@@ -553,11 +553,11 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 								thumbnail->x + 2, thumbnail->y + 2,
 								thumbnail->w - 4, thumbnail->h - 4,
 								255, 255, 255, 255);
-						winwidget_render_image(winwid, 0, 1);
+						winwidget_render_image(winwid, 0, 0);
 						gib_imlib_free_image_and_decache(winwid->im);
 						winwid->im = origwin;
 					} else
-						winwidget_render_image(winwid, 0, 1);
+						winwidget_render_image(winwid, 0, 0);
 				}
 				last_thumb = thumbnail;
 			}

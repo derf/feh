@@ -58,6 +58,7 @@ static winwidget winwidget_allocate(void)
 	ret->type = WIN_TYPE_UNSET;
 	ret->visible = 0;
 	ret->caption_entry = 0;
+	ret->force_aliasing = opt.force_aliasing;
 
 	/* Zoom stuff */
 	ret->mode = MODE_NORMAL;
@@ -99,7 +100,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
 		ret->full_screen = True;
 	winwidget_create_window(ret, ret->w, ret->h);
-	winwidget_render_image(ret, 1, 1);
+	winwidget_render_image(ret, 1, 0);
 
 	return(ret);
 }
@@ -132,7 +133,7 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 		if (opt.full_screen)
 			ret->full_screen = True;
 		winwidget_create_window(ret, ret->w, ret->h);
-		winwidget_render_image(ret, 1, 1);
+		winwidget_render_image(ret, 1, 0);
 	}
 
 	return(ret);
@@ -362,10 +363,11 @@ void winwidget_setup_pixmaps(winwidget winwid)
 	return;
 }
 
-void winwidget_render_image(winwidget winwid, int resize, int alias)
+void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 {
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
+	int alias = 0; /* TODO should be called antialias */
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -378,8 +380,8 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 	if (winwid->im_y > winwid->h)
 		winwid->im_y = winwid->h;
 
-	D(("winwidget_render_image resize %d alias %d im %dx%d\n",
-	      resize, alias, winwid->im_w, winwid->im_h));
+	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
+	      resize, force_alias, winwid->im_w, winwid->im_h));
 
 	winwidget_setup_pixmaps(winwid);
 
@@ -523,6 +525,9 @@ void winwidget_render_image(winwidget winwid, int resize, int alias)
 
 	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
+
+	if ((winwid->zoom != 1.0) && !force_alias && !winwid->force_aliasing)
+		alias = 1;
 
 	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
 	if (winwid->has_rotated)
@@ -691,13 +696,13 @@ void winwidget_destroy_all(void)
 	return;
 }
 
-void winwidget_rerender_all(int resize, int alias)
+void winwidget_rerender_all(int resize)
 {
 	int i;
 
 	/* Have to DESCEND the list here, 'cos of the way _unregister works */
 	for (i = window_num - 1; i >= 0; i--)
-		winwidget_render_image(windows[i], resize, alias);
+		winwidget_render_image(windows[i], resize, 0);
 	return;
 }
 
@@ -988,7 +993,7 @@ void winwidget_size_to_image(winwidget winwid)
 {
 	winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
 	winwid->im_x = winwid->im_y = 0;
-	winwidget_render_image(winwid, 0, 1);
+	winwidget_render_image(winwid, 0, 0);
 	return;
 }
 

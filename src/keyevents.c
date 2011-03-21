@@ -125,6 +125,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.size_to_image, 0, XK_w      , 0, 0            , 0, 0);
 	feh_set_kb(&keys.render    , 0, XK_KP_Begin  , 0, 0            , 0, 0);
 	feh_set_kb(&keys.toggle_actions, 0, XK_a, 0, 0, 0, 0);
+	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pointer, 0, XK_o, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_caption, 0, XK_c, 0, 0, 0, 0);
@@ -245,6 +246,8 @@ void init_keyevents(void) {
 			cur_kb = &keys.render;
 		else if (!strcmp(action, "toggle_actions"))
 			cur_kb = &keys.toggle_actions;
+		else if (!strcmp(action, "toggle_aliasing"))
+			cur_kb = &keys.toggle_aliasing;
 		else if (!strcmp(action, "toggle_filenames"))
 			cur_kb = &keys.toggle_filenames;
 		else if (!strcmp(action, "toggle_pointer"))
@@ -424,19 +427,19 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.scroll_right, keysym, state)) {
 		winwid->im_x -= 20;
-		winwidget_render_image(winwid, 0, 0);
+		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_left, keysym, state)) {
 		winwid->im_x += 20;
-		winwidget_render_image(winwid, 0, 0);
+		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_down, keysym, state)) {
 		winwid->im_y -= 20;
-		winwidget_render_image(winwid, 0, 0);
+		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_up, keysym, state)) {
 		winwid->im_y += 20;
-		winwidget_render_image(winwid, 0, 0);
+		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.jump_back, keysym, state)) {
 		if (opt.slideshow)
@@ -505,7 +508,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
 			winwid->old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.zoom_out, keysym, state)) {
 		winwid->old_zoom = winwid->zoom;
@@ -515,7 +518,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
 			winwid->old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.zoom_default, keysym, state)) {
 		winwid->zoom = 1;
@@ -526,18 +529,22 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.zoom_fit, keysym, state)) {
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 		winwidget_center_image(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.render, keysym, state)) {
-		winwidget_render_image(winwid, 0, 1);
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.toggle_actions, keysym, state)) {
 		opt.draw_actions = !opt.draw_actions;
-		winwidget_rerender_all(0, 1);
+		winwidget_rerender_all(0);
+	}
+	else if (feh_is_kp(&keys.toggle_aliasing, keysym, state)) {
+		opt.force_aliasing = !opt.force_aliasing;
+		winwidget_rerender_all(0);
 	}
 	else if (feh_is_kp(&keys.toggle_filenames, keysym, state)) {
 		opt.draw_filename = !opt.draw_filename;
-		winwidget_rerender_all(0, 1);
+		winwidget_rerender_all(0);
 	}
 	else if (feh_is_kp(&keys.toggle_pointer, keysym, state)) {
 		winwidget_set_pointer(winwid, opt.hide_pointer);
@@ -549,7 +556,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.toggle_caption, keysym, state)) {
 		if (opt.caption_path)
 			winwid->caption_entry = 1;
-		winwidget_render_image(winwid, 0, 1);
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.reload_image, keysym, state)) {
 		feh_reload_image(winwid, 0, 0);
@@ -614,7 +621,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwid->full_screen = !winwid->full_screen;
 		winwidget_destroy_xwin(winwid);
 		winwidget_create_window(winwid, winwid->im_w, winwid->im_h);
-		winwidget_render_image(winwid, 1, 1);
+		winwidget_render_image(winwid, 1, 0);
 		winwidget_show(winwid);
 #ifdef HAVE_LIBXINERAMA
 		/* if we have xinerama and we're using it, then full screen the window
