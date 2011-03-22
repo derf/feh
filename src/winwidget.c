@@ -367,7 +367,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 {
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
-	int alias = 0; /* TODO should be called antialias */
+	int antialias = 0;
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -527,19 +527,21 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
 	if ((winwid->zoom != 1.0) && !force_alias && !winwid->force_aliasing)
-		alias = 1;
+		antialias = 1;
 
 	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
 	if (winwid->has_rotated)
 		gib_imlib_render_image_part_on_drawable_at_size_with_rotation
-		    (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh, winwid->im_angle, 1, 1, alias);
+			(winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
+			winwid->im_angle, 1, 1, antialias);
 	else
 		gib_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
 								winwid->im,
 								sx, sy, sw,
 								sh, dx, dy,
 								dw, dh, 1,
-								gib_imlib_image_has_alpha(winwid->im), alias);
+								gib_imlib_image_has_alpha(winwid->im),
+								antialias);
 
 	if (opt.mode == MODE_NORMAL) {
 		if (opt.caption_path)
@@ -550,7 +552,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_actions(winwid);
 		if (opt.info_cmd)
 			feh_draw_info(winwid);
-	} else if ((opt.mode == MODE_ZOOM) && !alias)
+	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);
 
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);

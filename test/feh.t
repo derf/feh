@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 63;
+use Test::Command tests => 60;
 
 $ENV{HOME} = 'test';
 
@@ -39,17 +39,7 @@ my $re_loadable = qr{test/ok/...};
 my $re_unloadable = qr{test/fail/...};
 my $re_list_action = qr{test/ok/... 16x16 \(${feh_name}\)};
 
-my $cmd = Test::Command->new(cmd => $feh);
-
-# Insufficient Arguments -> Usage should return failure
-$cmd->exit_is_num(1, 'missing arguments return 1');
-$cmd->stdout_is_eq('', 'missing arguments print usage (!stdout)');
-$cmd->stderr_is_eq(<<"EOF", 'missing arguments print usage (stderr)');
-${feh_name} - No loadable images specified.
-Use ${feh_name} --help for detailed usage information
-EOF
-
-$cmd = Test::Command->new(cmd => "$feh --version");
+my $cmd = Test::Command->new(cmd => "$feh --version");
 
 $cmd->exit_is_num(0);
 $cmd->stdout_is_eq("${feh_name} version ${feh_version}\n"
