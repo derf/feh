@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 static void check_options(void);
 static void feh_getopt_theme(int argc, char **argv);
-static void feh_parse_option_array(int argc, char **argv);
+static void feh_parse_option_array(int argc, char **argv, int finalrun);
 static void feh_check_theme_options(int arg, char **argv);
 static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
@@ -94,7 +94,7 @@ void init_parse_options(int argc, char **argv)
 
 	D(("About to parse commandline options\n"));
 	/* Parse the cmdline args */
-	feh_parse_option_array(argc, argv);
+	feh_parse_option_array(argc, argv, 1);
 
 	/* If we have a filelist to read, do it now */
 	if (opt.filelistfile) {
@@ -111,10 +111,8 @@ void init_parse_options(int argc, char **argv)
 		return;
 
 	filelist_len = gib_list_length(filelist);
-	if (!filelist_len) {
-		add_file_to_filelist_recursively(".", FILELIST_FIRST);
-		filelist_len = gib_list_length(filelist);
-	}
+	if (!filelist_len)
+		show_mini_usage();
 
 	check_options();
 
@@ -258,7 +256,7 @@ static void feh_parse_options_from_string(char *opts)
 		last = *t;
 	}
 
-	feh_parse_option_array(num, list);
+	feh_parse_option_array(num, list, 0);
 
 	for (i = 0; i < num; i++)
 		if (list[i])
@@ -320,7 +318,7 @@ static void feh_getopt_theme(int argc, char **argv)
 	optind = 0;
 }
 
-static void feh_parse_option_array(int argc, char **argv)
+static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
@@ -789,6 +787,8 @@ static void feh_parse_option_array(int argc, char **argv)
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
 		}
 	}
+	else if (finalrun && !opt.filelistfile)
+		add_file_to_filelist_recursively(".", FILELIST_FIRST);
 
 	/* So that we can safely be called again */
 	optind = 1;
