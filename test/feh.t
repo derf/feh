@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 60;
+use Test::Command tests => 59;
 
 $ENV{HOME} = 'test';
 
@@ -42,8 +42,6 @@ my $re_list_action = qr{test/ok/... 16x16 \(${feh_name}\)};
 my $cmd = Test::Command->new(cmd => "$feh --version");
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_eq("${feh_name} version ${feh_version}\n"
-                 . "Compile-time switches: curl xinerama \n");
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --loadable $images");
