@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "winwidget.h"
+#include "options.h"
 
 void feh_handle_signal(int);
 
@@ -60,12 +61,17 @@ void feh_handle_signal(int signo)
 {
 	winwidget winwid
 		= winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
+	int i;
 
 	if (winwid) {
 		if (signo == SIGUSR1)
 			slideshow_change_image(winwid, SLIDE_NEXT);
 		else if (signo == SIGUSR2)
 			slideshow_change_image(winwid, SLIDE_PREV);
+	} else if (opt.multiwindow) {
+		puts("yo");
+		for (i = window_num - 1; i >= 0; i--)
+			feh_reload_image(windows[i], 0, 0);
 	}
 
 	return;

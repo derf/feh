@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "timers.h"
 #include "filelist.h"
 #include "options.h"
+#include "signals.h"
 
 void init_multiwindow_mode(void)
 {
@@ -63,5 +64,8 @@ void init_multiwindow_mode(void)
 		}
 		free(s);
 	}
+
+	setup_signal_handlers();
+
 	return;
 }

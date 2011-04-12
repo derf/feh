@@ -5,6 +5,7 @@ git HEAD
     * Show images in current directory when invoked without file arguments
     * Disable antialiasing, either globally (--force-aliasing) or per image
       (press 'A' to toggle, keybinding toggle_aliasing)
+    * Use SIGUSR1/SIGUSR2 to reload all images in multiwindow mode
 
 Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
 
