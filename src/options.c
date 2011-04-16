@@ -787,7 +787,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
 		}
 	}
-	else if (finalrun && !opt.filelistfile)
+	else if (finalrun && !opt.filelistfile && !opt.bgmode)
 		add_file_to_filelist_recursively(".", FILELIST_FIRST);
 
 	/* So that we can safely be called again */
