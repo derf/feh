@@ -6,6 +6,7 @@ git HEAD
     * Disable antialiasing, either globally (--force-aliasing) or per image
       (press 'A' to toggle, keybinding toggle_aliasing)
     * Use SIGUSR1/SIGUSR2 to reload all images in multiwindow mode
+    * Fix Imlib2 caching bug in reload (only worked after the second try)
 
 Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
 
