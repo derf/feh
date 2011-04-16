@@ -101,11 +101,14 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	char *title, *new_title;
 	int len;
 	Imlib_Image tmp;
+	int old_w, old_h;
 
 	if (!w->file) {
 		weprintf("couldn't reload, this image has no file associated with it.");
 		return;
 	}
+
+	D(("resize %d, force_new %d\n", resize, force_new));
 
 	free(FEH_FILE(w->file->data)->caption);
 	FEH_FILE(w->file->data)->caption = NULL;
@@ -116,10 +119,11 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	title = estrdup(w->name);
 	winwidget_rename(w, new_title);
 
+	old_w = gib_imlib_image_get_width(w->im);
+	old_h = gib_imlib_image_get_height(w->im);
+
 	/* force imlib2 not to cache */
-	if (force_new) {
-		winwidget_free_image(w);
-	}
+	winwidget_free_image(w);
 
 	/* if the image has changed in dimensions - we gotta resize */
 	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
@@ -134,19 +138,13 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		filelist = feh_file_remove_from_list(filelist, w->file);
 		return;
 	}
-	if (force_new) {
-		w->im = tmp;
+
+	if (!resize && ((old_w != gib_imlib_image_get_width(tmp)) ||
+			(old_h != gib_imlib_image_get_height(tmp))))
 		resize = 1;
-		winwidget_reset_image(w);
-	} else {
-		if ((gib_imlib_image_get_width(w->im) != gib_imlib_image_get_width(tmp))
-		    || (gib_imlib_image_get_height(w->im) != gib_imlib_image_get_height(tmp))) {
-			resize = 1;
-			winwidget_reset_image(w);
-		}
-		winwidget_free_image(w);
-		w->im = tmp;
-	}
+
+	w->im = tmp;
+	winwidget_reset_image(w);
 
 	w->mode = MODE_NORMAL;
 	if ((w->im_w != gib_imlib_image_get_width(w->im))
