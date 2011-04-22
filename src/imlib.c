@@ -316,31 +316,6 @@ char *feh_http_load_image(char *url)
 
 #endif				/* HAVE_LIBCURL */
 
-char *feh_strip_hostname(char *url)
-{
-	char *ret;
-	char *start;
-	char *finish;
-	int len;
-
-	start = strchr(url, '/');
-	if (!start)
-		return(NULL);
-
-	start += 2;
-
-	finish = strchr(start, '/');
-	if (!finish)
-		return(NULL);
-
-	len = finish - start;
-
-	ret = emalloc(len + 1);
-	strncpy(ret, start, len);
-	ret[len] = '\0';
-	return(ret);
-}
-
 void feh_draw_zoom(winwidget w)
 {
 	static Imlib_Font fn = NULL;
