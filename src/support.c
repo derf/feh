@@ -131,7 +131,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		enl_ipc_sync();
 	} else {
 		Atom prop_root, prop_esetroot, type;
-		int format;
+		int format, i;
 		unsigned long length, after;
 		unsigned char *data_root, *data_esetroot;
 		Pixmap pmap_d1, pmap_d2;
@@ -163,12 +163,19 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		filbuf[out++] = 0;
 
 		if (scaled) {
-			w = scr->width;
-			h = scr->height;
+			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
-			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
-			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
-				w, h, 1, 0, !opt.force_aliasing);
+#ifdef HAVE_LIBXINERAMA
+			if (opt.xinerama && xinerama_screens)
+				for (i = 0; i < num_xinerama_screens; i++)
+					gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
+						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+						xinerama_screens[i].width, xinerama_screens[i].height,
+						1, 0, !opt.force_aliasing);
+			else
+#endif			/* HAVE_LIBXINERAMA */
+				gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
+					scr->width, scr->height, 1, 0, !opt.force_aliasing);
 			fehbg = estrjoin(" ", "feh --bg-scale", filbuf, NULL);
 		} else if (centered) {
 			XGCValues gcval;
@@ -178,14 +185,31 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			D(("centering\n"));
 			w = scr->width;
 			h = scr->height;
+			x = (w - gib_imlib_image_get_width(im)) >> 1;
+			y = (h - gib_imlib_image_get_height(im)) >> 1;
 
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
 			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, w, h);
-			x = (w - gib_imlib_image_get_width(im)) >> 1;
-			y = (h - gib_imlib_image_get_height(im)) >> 1;
-			gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
+
+#ifdef HAVE_LIBXINERAMA
+			if (opt.xinerama && xinerama_screens)
+				for (i = 0; i < num_xinerama_screens; i++) {
+					w = xinerama_screens[i].width;
+					h = xinerama_screens[i].height;
+					x = (w - gib_imlib_image_get_width(im)) >> 1;
+					y = (h - gib_imlib_image_get_height(im)) >> 1;
+					gib_imlib_render_image_part_on_drawable_at_size(
+						pmap_d1, im,
+						((x < 0) ? -x : 0) , ((y < 0) ? -y : 0), w, h,
+						xinerama_screens[i].x_org + ((x > 0) ? x : 0),
+						xinerama_screens[i].y_org + ((y > 0) ? y : 0),
+						w, h, 1, 0, 0);
+				}
+			else
+#endif				/* HAVE_LIBXINERAMA */
+				gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
 		} else if (filled == 1) {
@@ -195,17 +219,17 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			int img_h = gib_imlib_image_get_height(im);
 			int render_x = 0;
 			int render_y = 0;
+			int cut_x = (((img_w * scr_h) > (img_h * scr_w)) ? 1 : 0);
+			h = (cut_x ? scr_h : ((scr_w * img_h) / img_w));
+			w = (cut_x ? ((scr_h * img_w) / img_h) : scr_w);
 
-			if ((img_w * scr_h) > (scr_w * img_h)) {
-				h = scr_h;
-				w = (scr_h * img_w) / img_h;
-				render_x = (scr_w - w) / 2;
-			} else {
-				h = (scr_w * img_h) / img_w;
-				w = scr_w;
-				render_y = (scr_h - h) / 2;
-			}
+			if (cut_x)
+				render_x = (scr_w - w) >> 1;
+			else
+				render_y = (scr_h - h) >> 1;
+
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
+
 			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
 					render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
 			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
