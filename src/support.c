@@ -220,8 +220,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			int render_x = 0;
 			int render_y = 0;
 			int cut_x = (((img_w * scr_h) > (img_h * scr_w)) ? 1 : 0);
-			h = (cut_x ? scr_h : ((scr_w * img_h) / img_w));
 			w = (cut_x ? ((scr_h * img_w) / img_h) : scr_w);
+			h = (cut_x ? scr_h : ((scr_w * img_h) / img_w));
 
 			if (cut_x)
 				render_x = (scr_w - w) >> 1;
@@ -230,8 +230,32 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
 
-			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
-					render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
+#ifdef HAVE_LIBXINERAMA
+			if (opt.xinerama && xinerama_screens)
+				for (i = 0; i < num_xinerama_screens; i++) {
+					scr_w = xinerama_screens[i].width;
+					scr_h = xinerama_screens[i].height;
+					cut_x = (((img_w * scr_h) > (img_h * scr_w)) ? 1 : 0);
+					w = (cut_x ? ((img_h * scr_w) / scr_h) : img_w);
+					h = (cut_x ? img_h : ((img_w * scr_h) / scr_w));
+					render_x = (cut_x ? ((img_w - w) >> 1) : 0);
+					render_y = (cut_x ? 0 : ((img_h - h) >> 1));
+
+					D(("cut_x %d w %5d h %5d x %5d y %5d\n",
+							cut_x, w, h, render_x, render_y));
+
+					gib_imlib_render_image_part_on_drawable_at_size(
+						pmap_d1, im,
+						render_x, render_y,
+						w, h,
+						xinerama_screens[i].x_org,
+						xinerama_screens[i].y_org,
+						scr_w, scr_h, 1, 0, !opt.force_aliasing);
+				}
+#endif				/* HAVE_LIBXINERAMA */
+			else
+				gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
+						render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
 			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
 		} else if (filled == 2) {
 			int scr_w = scr->width;
