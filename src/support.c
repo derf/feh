@@ -166,17 +166,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			w = scr->width;
 			h = scr->height;
 
-/* disable xinerama check for setting background */
-#if 0
-/* #ifdef HAVE_LIBXINERAMA */
-			if (opt.xinerama && xinerama_screens) {
-				w = xinerama_screens[xinerama_screen].width;
-				h = xinerama_screens[xinerama_screen].height;
-			}
-#endif				/* HAVE_LIBXINERAMA */
-
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
-			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0, w, h, 1, 0, 1);
+			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
+				w, h, 1, 0, !opt.force_aliasing);
 			fehbg = estrjoin(" ", "feh --bg-scale", filbuf, NULL);
 		} else if (centered) {
 			XGCValues gcval;
@@ -186,15 +178,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			D(("centering\n"));
 			w = scr->width;
 			h = scr->height;
-
-/* disable xinerama check for setting background */
-#if 0
-/* #ifdef HAVE_LIBXINERAMA */
-			if (opt.xinerama && xinerama_screens) {
-				w = xinerama_screens[xinerama_screen].width;
-				h = xinerama_screens[xinerama_screen].height;
-			}
-#endif				/* HAVE_LIBXINERAMA */
 
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
 			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
@@ -224,7 +207,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			}
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
 			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
-					render_x, render_y, w, h, 1, 0, 1);
+					render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
 			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
 		} else if (filled == 2) {
 			int scr_w = scr->width;
@@ -262,7 +245,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr_w, scr_h);
 			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
-					render_x, render_y, w, h, 1, 0, 1);
+					render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh --bg-max", filbuf, NULL);
 		} else {
