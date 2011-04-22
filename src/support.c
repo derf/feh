@@ -139,6 +139,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char *fehbg = NULL;
 		char *home;
 		char filbuf[PATH_MAX];
+		char fehbg_xinerama[] = "--no-xinerama";
+
+		if (opt.xinerama)
+			fehbg_xinerama[0] = '\0';
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -176,7 +180,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #endif			/* HAVE_LIBXINERAMA */
 				gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
 					scr->width, scr->height, 1, 0, !opt.force_aliasing);
-			fehbg = estrjoin(" ", "feh --bg-scale", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
 			XGCValues gcval;
 			GC gc;
@@ -211,7 +215,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #endif				/* HAVE_LIBXINERAMA */
 				gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
 			XFreeGC(disp, gc);
-			fehbg = estrjoin(" ", "feh --bg-center", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-center", filbuf, NULL);
 		} else if (filled == 1) {
 			int scr_w = scr->width;
 			int scr_h = scr->height;
@@ -256,7 +260,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #endif				/* HAVE_LIBXINERAMA */
 				gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
 						render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
-			fehbg = estrjoin(" ", "feh --bg-fill", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-fill", filbuf, NULL);
 		} else if (filled == 2) {
 			int scr_w = scr->width;
 			int scr_h = scr->height;
@@ -305,7 +309,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
 					render_x, render_y, w, h, 1, 0, !opt.force_aliasing);
 			XFreeGC(disp, gc);
-			fehbg = estrjoin(" ", "feh --bg-max", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-max", filbuf, NULL);
 		} else {
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
