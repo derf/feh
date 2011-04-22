@@ -7,6 +7,8 @@ git HEAD
       (press 'A' to toggle, keybinding toggle_aliasing)
     * Use SIGUSR1/SIGUSR2 to reload all images in multiwindow mode
     * Fix Imlib2 caching bug in reload (only worked after the second try)
+    * The --bg options are now Xinerama-aware.  That is, they set the image in
+      the respective mode (scale/fill/max/center) on each Xinerama screen
 
 Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
 

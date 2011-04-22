@@ -569,6 +569,15 @@ so to have your background restored everytime you start X, you can add
 to your X startup script
 .Pq like Pa ~/.xinitrc .
 .Pp
+Note that all options except
+.Cm --bg-tile
+support Xinerama.  So, if you have multiple screens connected and use e.g.
+.Cm --bg-center ,
+.Nm
+will center the image on each screen.  You can use
+.Cm --no-xinerama
+to treat the whole X display as one screen.
+.Pp
 The following options control how exactly the background is set.  Each of them
 takes exactly one file as argument.
 .Bl -tag -width indent
