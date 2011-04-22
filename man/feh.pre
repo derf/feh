@@ -187,6 +187,9 @@ Specify
 as extra directory in which to search for fonts; can be used multiple times to
 add multiple paths.
 .
+.It Cm --force-aliasing
+Disable antialiasing for zooming, background setting etc.
+.
 .It Cm -I , --fullindex
 Same as Index mode, but you also get image size and dimensions printed
 below each thumbnail.
