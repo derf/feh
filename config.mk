@@ -31,7 +31,7 @@ endif
 
 ifeq (${debug},1)
 	CFLAGS += -DDEBUG
-	MAN_DEBUG = This is a debug build.
+	MAN_DEBUG = . This is a debug build.
 else
 	MAN_DEBUG =
 endif

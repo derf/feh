@@ -21,7 +21,7 @@
 This manual documents feh $VERSION$
 .Pp
 Compile-time switches: libcurl support $MAN_CURL$, Xinerama support
-$MAN_XINERAMA$. $MAN_DEBUG$
+$MAN_XINERAMA$$MAN_DEBUG$
 .
 .
 .Sh DESCRIPTION
