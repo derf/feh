@@ -10,7 +10,7 @@ my $feh = "src/feh";
 my $images = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm '
            . 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
 
-my ($feh_name, $feh_version) = @ENV{'PACKAGE', 'VERSION'};
+my $feh_name = $ENV{'PACKAGE'};
 
 # These tests are meant to run non-interactively and without X.
 # make sure they are capable of doing so.
@@ -18,18 +18,17 @@ delete $ENV{'DISPLAY'};
 
 my $err_no_env = <<'EOF';
 
-Unable to determine feh PACKAGE or VERSION.
+Unable to determine feh PACKAGE.
 This is most likely because you ran 'prove test' or 'perl test/feh.t'.
-Sinc this test uses make variables and is therefore designed to be run from
+Since this test uses make variables and is therefore designed to be run from
 the Makefile only, use 'make test' instead.
 
 If you absolutely need to run it the other way, use
-    PACKAGE=feh VERSION=1.5 ${your_command}
-(with the appropiate values, of course).
+    PACKAGE=feh ${your_command}
 
 EOF
 
-if (length($feh_name) == 0 or length($feh_version) == 0) {
+if (length($feh_name) == 0) {
 	die($err_no_env);
 }
 

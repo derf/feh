@@ -9,7 +9,7 @@ build-man:
 	@${MAKE} -C man
 
 test: all
-	@PACKAGE=${PACKAGE} VERSION=${VERSION} prove test
+	@PACKAGE=${PACKAGE} prove test
 
 test-x11: all
 	test/run-interactive
