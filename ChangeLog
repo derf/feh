@@ -1,5 +1,6 @@
-git HEAD
+Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.13
     * Fix segfault upon unloadable images when image-related format specifiers
       (e.g. %h) are used in --title
     * Show images in current directory when invoked without file arguments
