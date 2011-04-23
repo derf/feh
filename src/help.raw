@@ -49,6 +49,7 @@ OPTIONS
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
      --action[1-9]         Extra actions triggered by pressing keys <1>to <9>
  -G, --draw-actions        Show the defined actions in the image window
+     --force-aliasing      Disable antialiasing
  -m, --montage             Enable montage mode
  -c, --collage             Montage mode with randomly distributed thumbnails
  -i, --index               Create an index print of all images
