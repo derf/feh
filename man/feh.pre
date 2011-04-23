@@ -1252,6 +1252,11 @@ to the correct number as a workaround.
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
 .
+.Pp
+.
+There are still some zooming issues when using
+.Cm --scale-down .
+.
 .Ss REPORTING BUGS
 .
 If you find a bug, please report it to
