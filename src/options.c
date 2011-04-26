@@ -166,8 +166,10 @@ static void feh_load_options_for_theme(char *theme)
 	free(rcpath);
 
 	if (!fp && ((fp = fopen(oldrcpath, "r")) != NULL))
-		weprintf("the config is now read from .config/feh/themes, "
-			"please update your path!");
+		weprintf("The theme config file was moved from ~/.fehrc to "
+			"~/.config/feh/themes. Run\n"
+			"    mkdir -p ~/.config/feh; mv ~/.fehrc ~/.config/feh/themes\n"
+			"to fix this.");
 
 	free(oldrcpath);
 
