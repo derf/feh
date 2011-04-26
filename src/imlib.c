@@ -505,7 +505,7 @@ void feh_draw_info(winwidget w)
 	return;
 }
 
-char *build_caption_filename(feh_file * file)
+char *build_caption_filename(feh_file * file, short create_dir)
 {
 	char *caption_filename;
 	char *s, *dir, *caption_dir;
@@ -524,6 +524,8 @@ char *build_caption_filename(feh_file * file)
 	D(("dir %s, cp %s, cdir %s\n", dir, opt.caption_path, caption_dir))
 
 	if (stat(caption_dir, &cdir_stat) == -1) {
+		if (!create_dir)
+			return NULL;
 		if (mkdir(caption_dir, 0755) == -1)
 			eprintf("Failed to create caption directory %s:", caption_dir);
 	} else if (!S_ISDIR(cdir_stat.st_mode))
@@ -559,9 +561,12 @@ void feh_draw_caption(winwidget w)
 
 	if (!file->caption) {
 		char *caption_filename;
-		caption_filename = build_caption_filename(file);
-		/* read caption from file */
-		file->caption = ereadfile(caption_filename);
+		caption_filename = build_caption_filename(file, 0);
+		if (caption_filename)
+			/* read caption from file */
+			file->caption = ereadfile(caption_filename);
+		else
+			file->caption = estrdup("");
 		free(caption_filename);
 	}
 

@@ -377,14 +377,15 @@ void feh_event_handle_keypress(XEvent * ev)
 				/* finish caption entry, write to captions file */
 				FILE *fp;
 				char *caption_filename;
-				caption_filename = build_caption_filename(FEH_FILE(winwid->file->data));
+				caption_filename =
+					build_caption_filename(FEH_FILE(winwid->file->data), 1);
 				winwid->caption_entry = 0;
 				winwidget_render_image_cached(winwid);
 				XFreePixmap(disp, winwid->bg_pmap_cache);
 				winwid->bg_pmap_cache = 0;
 				fp = fopen(caption_filename, "w");
 				if (!fp) {
-					weprintf("couldn't write to captions file %s:", caption_filename);
+					eprintf("couldn't write to captions file %s:", caption_filename);
 					return;
 				}
 				fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);

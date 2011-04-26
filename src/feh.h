@@ -143,7 +143,7 @@ void slideshow_save_image(winwidget win);
 void feh_edit_inplace_orient(winwidget w, int orientation);
 void feh_edit_inplace_lossless_rotate(winwidget w, int orientation);
 gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style * style);
-char *build_caption_filename(feh_file * file);
+char *build_caption_filename(feh_file * file, short create_dir);
 gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num);
 
 /* Imlib stuff */
