@@ -607,6 +607,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case ')':
 			free(opt.menu_bg);
 			opt.menu_bg = estrdup(optarg);
+			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
 		case 'B':
 			free(opt.image_bg);
@@ -688,7 +689,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 204:
 			free(opt.menu_style);
 			opt.menu_style = estrdup(optarg);
-			weprintf("--menu-style is deprecated and will be removed soon");
+			weprintf("The --menu-style option is deprecated and will be removed by 2012");
 			break;
 		case 205:
 			if (!strcmp("fill", optarg))

@@ -311,12 +311,6 @@ size/resolution/type etc.
 Don't display images.  Just print out their names if imlib2 can successfully
 load them.
 .
-.It Cm -) , --menu-bg Ar file
-.
-Use
-.Ar file
-as background image in menus.
-.
 .It Cm -M , --menu-font Ar font
 .
 Use
