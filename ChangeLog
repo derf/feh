@@ -5,6 +5,9 @@ git HEAD
     * The --menu-bg option has been deprecated.  It will be removed along with
       --menu-style by the end of 2012.
       <http://github.com/derf/feh/issues/27>
+    * read directory contents sorted by filename instead of 'randomly'
+      (as returned by readdir) by default. Thanks talisein!
+      <https://github.com/derf/feh/pull/20>
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 
