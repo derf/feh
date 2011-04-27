@@ -291,8 +291,8 @@ char *feh_http_load_image(char *url)
 			return sfn;
 		} else {
 			weprintf("open url: fdopen failed:");
-			free(sfn);
 			unlink(sfn);
+			free(sfn);
 			close(fd);
 		}
 	} else {
