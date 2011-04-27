@@ -144,7 +144,6 @@ void feh_menu_move(feh_menu * m, int x, int y);
 void feh_menu_slide_all_menus_relative(int dx, int dy);
 void feh_menu_init_main(void);
 void feh_menu_init_single_win(void);
-void feh_menu_init_about_win(void);
 void feh_menu_init_common(void);
 void feh_menu_init_thumbnail_viewer(void);
 void feh_menu_init_thumbnail_win(void);
@@ -169,7 +168,6 @@ void feh_menu_select_submenu(feh_menu * selected_menu);
 
 extern feh_menu *menu_root;
 extern feh_menu *menu_single_win;
-extern feh_menu *menu_about_win;
 extern feh_menu *menu_thumbnail_viewer;
 extern feh_menu *menu_thumbnail_win;
 extern Window menu_cover;

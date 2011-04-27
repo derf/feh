@@ -676,10 +676,6 @@ void winwidget_destroy(winwidget winwid)
 	winwidget_destroy_xwin(winwid);
 	if (winwid->name)
 		free(winwid->name);
-	if ((winwid->type == WIN_TYPE_ABOUT) && winwid->file) {
-		feh_file_free(FEH_FILE(winwid->file->data));
-		free(winwid->file);
-	}
 	if (winwid->gc)
 		XFreeGC(disp, winwid->gc);
 	if (winwid->im)
@@ -1058,11 +1054,7 @@ void winwidget_show_menu(winwidget winwid)
 	Window r;
 
 	XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-	if (winwid->type == WIN_TYPE_ABOUT) {
-		if (!menu_about_win)
-			feh_menu_init_about_win();
-		feh_menu_show_at_xy(menu_about_win, winwid, x, y);
-	} else if (winwid->type == WIN_TYPE_SINGLE) {
+	if (winwid->type == WIN_TYPE_SINGLE) {
 		if (!menu_single_win)
 			feh_menu_init_single_win();
 		feh_menu_show_at_xy(menu_single_win, winwid, x, y);

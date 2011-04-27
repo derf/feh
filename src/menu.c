@@ -35,7 +35,6 @@ Window menu_cover = 0;
 feh_menu *menu_root = NULL;
 feh_menu *menu_main = NULL;
 feh_menu *menu_single_win = NULL;
-feh_menu *menu_about_win = NULL;
 feh_menu *menu_thumbnail_viewer = NULL;
 feh_menu *menu_thumbnail_win = NULL;
 feh_menu *menu_bg = NULL;
@@ -50,7 +49,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data);
 void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i);
 
 enum {
-	CB_ABOUT = 1, CB_CLOSE, CB_EXIT, CB_RELOAD, CB_REMOVE, CB_DELETE, CB_RESET,
+	CB_CLOSE = 1, CB_EXIT, CB_RELOAD, CB_REMOVE, CB_DELETE, CB_RESET,
 	CB_REMOVE_THUMB, CB_DELETE_THUMB, CB_BG_TILED, CB_BG_SCALED,
 	CB_BG_CENTERED, CB_BG_FILLED, CB_BG_TILED_NOFILE,
 	CB_BG_SCALED_NOFILE, CB_BG_CENTERED_NOFILE, CB_BG_FILLED_NOFILE,
@@ -955,8 +954,6 @@ void feh_menu_init_main(void)
 	mi = feh_menu_add_entry(menu_main, "Options", NULL, "OPTIONS", 0, NULL, NULL);
 	mi->func_gen_sub = feh_menu_func_gen_options;
 
-	if (!opt.full_screen)
-		feh_menu_add_entry(menu_main, "About " PACKAGE, NULL, NULL, CB_ABOUT, NULL, NULL);
 	if (opt.multiwindow)
 		feh_menu_add_entry(menu_main, "Close", NULL, NULL, CB_CLOSE, NULL, NULL);
 	feh_menu_add_entry(menu_main, "Exit", NULL, NULL, CB_EXIT, NULL, NULL);
@@ -1104,17 +1101,6 @@ void feh_menu_init_common()
 	return;
 }
 
-void feh_menu_init_about_win(void)
-{
-	menu_about_win = feh_menu_new();
-	menu_about_win->name = estrdup("ABOUTWIN");
-
-	feh_menu_add_entry(menu_about_win, "Close", NULL, NULL, CB_CLOSE, NULL, NULL);
-	feh_menu_add_entry(menu_about_win, "Exit", NULL, NULL, CB_EXIT, NULL, NULL);
-
-	return;
-}
-
 void feh_menu_init_single_win(void)
 {
 	feh_menu *m;
@@ -1147,8 +1133,6 @@ void feh_menu_init_single_win(void)
 	feh_menu_add_entry(menu_single_win, NULL, NULL, NULL, 0, NULL, NULL);
 	mi = feh_menu_add_entry(menu_single_win, "Options", NULL, "OPTIONS", 0, NULL, NULL);
 	mi->func_gen_sub = feh_menu_func_gen_options;
-	feh_menu_add_entry(menu_single_win, "About " PACKAGE, NULL, NULL,
-			CB_ABOUT, NULL, NULL);
 	feh_menu_add_entry(menu_single_win, "Close", NULL, NULL, CB_CLOSE, NULL, NULL);
 	feh_menu_add_entry(menu_single_win, "Exit", NULL, NULL, CB_EXIT, NULL, NULL);
 
@@ -1177,8 +1161,6 @@ void feh_menu_init_thumbnail_win(void)
 	feh_menu_add_entry(menu_thumbnail_win, NULL, NULL, NULL, 0, NULL, NULL);
 	mi = feh_menu_add_entry(menu_thumbnail_win, "Options", NULL, "OPTIONS", 0, NULL, NULL);
 	mi->func_gen_sub = feh_menu_func_gen_options;
-	feh_menu_add_entry(menu_thumbnail_win, "About " PACKAGE, NULL, NULL,
-			CB_ABOUT, NULL, NULL);
 	feh_menu_add_entry(menu_thumbnail_win, "Close", NULL, NULL, CB_CLOSE, NULL, NULL);
 	feh_menu_add_entry(menu_thumbnail_win, "Exit", NULL, NULL, CB_EXIT, NULL, NULL);
 	return;
@@ -1216,8 +1198,6 @@ void feh_menu_init_thumbnail_viewer(void)
 	mi = feh_menu_add_entry(menu_thumbnail_viewer, "Options", NULL,
 			"OPTIONS", 0, NULL, NULL);
 	mi->func_gen_sub = feh_menu_func_gen_options;
-	feh_menu_add_entry(menu_thumbnail_viewer, "About " PACKAGE, NULL, NULL,
-			CB_ABOUT, NULL, NULL);
 	feh_menu_add_entry(menu_thumbnail_viewer, "Close", NULL, NULL, CB_CLOSE, NULL, NULL);
 	feh_menu_add_entry(menu_thumbnail_viewer, "Exit", NULL, NULL, CB_EXIT, NULL, NULL);
 	m = feh_menu_new();
@@ -1284,8 +1264,6 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i)
 void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 {
 	char *path;
-	Imlib_Image im;
-	winwidget winwid;
 
 	switch (action) {
 		case CB_BG_TILED:
@@ -1319,16 +1297,6 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 			break;
 		case CB_BG_FILLED_NOFILE:
 			feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, 1, (int) data, 1);
-			break;
-		case CB_ABOUT:
-			if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png")
-					!= 0) {
-				winwid = winwidget_create_from_image(im, "About " PACKAGE,
-						WIN_TYPE_ABOUT);
-				winwid->file = gib_list_add_front(NULL,
-						feh_file_new(PREFIX "/share/feh/images/about.png"));
-				winwidget_show(winwid);
-			}
 			break;
 		case CB_CLOSE:
 			winwidget_destroy(m->fehwin);

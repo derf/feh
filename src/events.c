@@ -510,57 +510,41 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 	} else {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
-		if (winwid != NULL) {
-			if (winwid->type == WIN_TYPE_ABOUT) {
-				Imlib_Image orig_im;
-				int x, y;
+		if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL)) {
+			static feh_thumbnail *last_thumb = NULL;
+			feh_thumbnail *thumbnail;
+			int x, y;
 
-				x = ev->xmotion.x - winwid->im_x;
-				y = ev->xmotion.y - winwid->im_y;
-				orig_im = winwid->im;
-				winwid->im = gib_imlib_clone_image(orig_im);
-				imlib_context_set_image(winwid->im);
-				imlib_apply_filter("bump_map_point(x=[],y=[],map="
-						PREFIX "/share/feh/images/about.png);", &x, &y);
-				winwidget_render_image(winwid, 0, 0);
-				gib_imlib_free_image_and_decache(winwid->im);
-				winwid->im = orig_im;
-			} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
-				static feh_thumbnail *last_thumb = NULL;
-				feh_thumbnail *thumbnail;
-				int x, y;
+			x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
+			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
+			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
+			if (thumbnail != last_thumb) {
+				if (thumbnail) {
+					Imlib_Image origwin;
 
-				x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
-				y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
-				thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
-				if (thumbnail != last_thumb) {
-					if (thumbnail) {
-						Imlib_Image origwin;
-
-						origwin = winwid->im;
-						winwid->im = gib_imlib_clone_image(origwin);
-						gib_imlib_image_fill_rectangle(winwid->im,
-								thumbnail->x, thumbnail->y, thumbnail->w,
-								thumbnail->h, 50, 50, 255, 100);
-						gib_imlib_image_draw_rectangle(winwid->im,
-								thumbnail->x, thumbnail->y, thumbnail->w,
-								thumbnail->h, 255, 255, 255, 255);
-						gib_imlib_image_draw_rectangle(winwid->im,
-								thumbnail->x + 1, thumbnail->y + 1,
-								thumbnail->w - 2, thumbnail->h - 2,
-								0, 0, 0, 255);
-						gib_imlib_image_draw_rectangle(winwid->im,
-								thumbnail->x + 2, thumbnail->y + 2,
-								thumbnail->w - 4, thumbnail->h - 4,
-								255, 255, 255, 255);
-						winwidget_render_image(winwid, 0, 0);
-						gib_imlib_free_image_and_decache(winwid->im);
-						winwid->im = origwin;
-					} else
-						winwidget_render_image(winwid, 0, 0);
-				}
-				last_thumb = thumbnail;
+					origwin = winwid->im;
+					winwid->im = gib_imlib_clone_image(origwin);
+					gib_imlib_image_fill_rectangle(winwid->im,
+							thumbnail->x, thumbnail->y, thumbnail->w,
+							thumbnail->h, 50, 50, 255, 100);
+					gib_imlib_image_draw_rectangle(winwid->im,
+							thumbnail->x, thumbnail->y, thumbnail->w,
+							thumbnail->h, 255, 255, 255, 255);
+					gib_imlib_image_draw_rectangle(winwid->im,
+							thumbnail->x + 1, thumbnail->y + 1,
+							thumbnail->w - 2, thumbnail->h - 2,
+							0, 0, 0, 255);
+					gib_imlib_image_draw_rectangle(winwid->im,
+							thumbnail->x + 2, thumbnail->y + 2,
+							thumbnail->w - 4, thumbnail->h - 4,
+							255, 255, 255, 255);
+					winwidget_render_image(winwid, 0, 0);
+					gib_imlib_free_image_and_decache(winwid->im);
+					winwid->im = origwin;
+				} else
+					winwidget_render_image(winwid, 0, 0);
 			}
+			last_thumb = thumbnail;
 		}
 	}
 	return;
