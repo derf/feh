@@ -862,7 +862,7 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 			weprintf("lossless rotate: Got exitcode %d from jpegtran."
 					" Commandline was:\n"
-					"jpegtran -copy all -rotate %d -outfile %s %s\n",
+					"jpegtran -copy all -rotate %s -outfile %s %s\n",
 					status >> 8, rotate_str, file_str, file_str);
 			return;
 		}
