@@ -663,7 +663,7 @@ can also be used as a background setter.  It will store the command line
 necessary to set the background in
 .Pa ~/.fehbg ,
 so to have your background restored everytime you start X, you can add
-.Qq `cat ~/.fehbg`
+.Qq `eval cat ~/.fehbg`
 to your X startup script
 .Pq like Pa ~/.xinitrc .
 .
