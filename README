@@ -36,6 +36,7 @@ Available flags are:
 
  * curl     (default 1) - use libcurl to view http:// and similar images
  * debug    (default 0) - debug build, enables --debug
+ * help     (default 0) - include help text (refers to the manpage otherwise)
  * xinerama (default 1) - Support Xinerama multiscreen setups
 
 So, by default libcurl and Xinerama are enabled, while debug is disabled.

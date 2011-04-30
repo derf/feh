@@ -882,7 +882,11 @@ void show_mini_usage(void)
 static void show_usage(void)
 {
 	fputs(
+#ifdef INCLUDE_HELP
 #include "help.inc"
+#else
+	"See 'man " PACKAGE "'\n"
+#endif
 	, stdout);
 	exit(0);
 }

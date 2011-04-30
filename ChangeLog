@@ -10,6 +10,9 @@ git HEAD
       <https://github.com/derf/feh/pull/20>
     * Show certain warnings in the image window as well as on the commandline
       <http://github.com/derf/feh/issues/43>
+    * Since the manual is way better structured and more detailed than the
+      --help output, it now simply refers to the manual. To include the old
+      help text, build feh with 'help=1'
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 

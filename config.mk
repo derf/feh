@@ -19,6 +19,7 @@ CFLAGS += -Wall -Wextra -pedantic
 
 curl ?= 1
 debug ?= 0
+help ?= 0
 xinerama ?= 1
 
 ifeq (${curl},1)
@@ -34,6 +35,10 @@ ifeq (${debug},1)
 	MAN_DEBUG = . This is a debug build.
 else
 	MAN_DEBUG =
+endif
+
+ifeq (${help},1)
+	CFLAGS += -DINCLUDE_HELP
 endif
 
 ifeq (${xinerama},1)
