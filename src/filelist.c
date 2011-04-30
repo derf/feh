@@ -256,7 +256,7 @@ gib_list *feh_file_info_preload(gib_list * list)
 	gib_list *remove_list = NULL;
 
 	if (opt.verbose)
-		fprintf(stdout, PACKAGE " - preloading...\n");
+		fputs(PACKAGE " - preloading...\n", stdout);
 
 	for (l = list; l; l = l->next) {
 		file = FEH_FILE(l->data);
@@ -270,7 +270,7 @@ gib_list *feh_file_info_preload(gib_list * list)
 			feh_display_status('.');
 	}
 	if (opt.verbose)
-		fprintf(stdout, "\n");
+		fputs("\n", stdout);
 
 	if (remove_list) {
 		for (l = remove_list; l; l = l->next)

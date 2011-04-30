@@ -376,7 +376,7 @@ void init_thumbnail_mode(void)
 		winwidget_render_image(winwid, 0, 1);
 
 	if (opt.verbose)
-		fprintf(stdout, "\n");
+		putc('\n', stdout);
 
 	if (opt.title_font) {
 		int fw, fh, fx, fy;
@@ -563,19 +563,19 @@ void feh_thumbnail_calculate_geometry(void)
 	if (!opt.limit_w && !opt.limit_h) {
 		if (td.im_bg) {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for index.\n"
 					" You did specify a background however, so the\n"
-					" index size has defaulted to the size of the image\n");
+					" index size has defaulted to the size of the image\n",
+					stdout);
 			opt.limit_w = td.bg_w;
 			opt.limit_h = td.bg_h;
 		} else {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for index.\n"
-					" Using defaults (width limited to 640)\n");
+					" Using defaults (width limited to 640)\n",
+					stdout);
 			opt.limit_w = 640;
 		}
 	}

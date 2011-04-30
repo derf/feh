@@ -314,10 +314,10 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
 			winwidget_destroy(winwid);
-		} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
-			printf("actions from the main thumb window aren't currentl supported!\n");
-			printf("For now, open the image to perform the action on it.\n");
-		}
+		} else if (winwid->type == WIN_TYPE_THUMBNAIL)
+			fputs("actions from the main thumb window aren't currently supported!\n"
+					"For now, open the image to perform the action on it.\n",
+					stdout);
 	}
 	return;
 }
@@ -596,15 +596,8 @@ void feh_event_handle_keypress(XEvent * ev)
 			int i, rect[4];
 
 			winwidget_get_geometry(winwid, rect);
-			/* printf("window: (%d, %d)\n", rect[0], rect[1]);
-			   printf("found %d screens.\n", num_xinerama_screens); */
 			for (i = 0; i < num_xinerama_screens; i++) {
 				xinerama_screen = 0;
-				/* printf("%d: [%d, %d, %d, %d] (%d, %d)\n",
-				   i,
-				   xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-				   xinerama_screens[i].width, xinerama_screens[i].height,
-				   rect[0], rect[1]); */
 				if (XY_IN_RECT(rect[0], rect[1],
 							xinerama_screens[i].x_org,
 							xinerama_screens[i].y_org,

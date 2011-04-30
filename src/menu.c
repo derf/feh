@@ -1221,15 +1221,8 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i)
 		int i, rect[4];
 
 		winwidget_get_geometry(m->fehwin, rect);
-		/* printf("window: (%d, %d)\n", rect[0], rect[1]);
-		   printf("found %d screens.\n", num_xinerama_screens); */
 		for (i = 0; i < num_xinerama_screens; i++) {
 			xinerama_screen = 0;
-			/* printf("%d: [%d, %d, %d, %d] (%d, %d)\n",
-			   i,
-			   xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-			   xinerama_screens[i].width, xinerama_screens[i].height,
-			   rect[0], rect[1]); */
 			if (XY_IN_RECT(rect[0], rect[1],
 				       xinerama_screens[i].x_org,
 				       xinerama_screens[i].y_org,

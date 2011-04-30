@@ -37,7 +37,8 @@ void init_list_mode(void)
 	mode = "list";
 
 	if (!opt.customlist)
-		printf("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
+		fputs("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n",
+				stdout);
 
 	for (l = filelist; l; l = l->next) {
 		file = FEH_FILE(l->data);

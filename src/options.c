@@ -873,8 +873,9 @@ static void show_version(void)
 
 void show_mini_usage(void)
 {
-	fprintf(stderr, PACKAGE " - No loadable images specified.\n"
-			"Use " PACKAGE " --help for detailed usage information\n");
+	fputs(PACKAGE " - No loadable images specified.\n"
+			"Use " PACKAGE " --help for detailed usage information\n",
+			stderr);
 	exit(1);
 }
 

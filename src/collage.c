@@ -62,20 +62,20 @@ void init_collage_mode(void)
 	if (!opt.limit_w || !opt.limit_h) {
 		if (bg_im) {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for collage.\n"
 					" You did specify a background however, so the\n"
-					" collage size has defaulted to the size of the image\n");
+					" collage size has defaulted to the size of the image\n",
+					stdout);
 			opt.limit_w = bg_w;
 			opt.limit_h = bg_h;
 		} else {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for collage.\n"
 					" - For collage mode, you need to specify width and height.\n"
-					" Using defaults (width 800, height 600)\n");
+					" Using defaults (width 800, height 600)\n",
+					stdout);
 			opt.limit_w = 800;
 			opt.limit_h = 600;
 		}
@@ -182,7 +182,7 @@ void init_collage_mode(void)
 		}
 	}
 	if (opt.verbose)
-		fprintf(stdout, "\n");
+		fputs("\n", stdout);
 
 	if (opt.output && opt.output_file) {
 		char output_buf[1024];

@@ -113,19 +113,19 @@ void init_index_mode(void)
 	if (!opt.limit_w && !opt.limit_h) {
 		if (bg_im) {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for index.\n"
 					" You did specify a background however, so the\n"
-					" index size has defaulted to the size of the image\n");
+					" index size has defaulted to the size of the image\n",
+					stdout);
 			opt.limit_w = bg_w;
 			opt.limit_h = bg_h;
 		} else {
 			if (opt.verbose)
-				fprintf(stdout,
-					PACKAGE
+				fputs(PACKAGE
 					" - No size restriction specified for index.\n"
-					" Using defaults (width limited to 800)\n");
+					" Using defaults (width limited to 800)\n",
+					stdout);
 			opt.limit_w = 800;
 		}
 	}
@@ -458,7 +458,7 @@ void init_index_mode(void)
 		}
 	}
 	if (opt.verbose)
-		fprintf(stdout, "\n");
+		putc('\n', stdout);
 
 	if (opt.title_font) {
 		int fw, fh, fx, fy;

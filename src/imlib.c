@@ -162,7 +162,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	if ((err) || (!im)) {
 		if (opt.verbose && !opt.quiet) {
-			fprintf(stdout, "\n");
+			fputs("\n", stdout);
 			reset_output = 1;
 		}
 		/* Check error code */
@@ -753,7 +753,7 @@ void feh_display_status(char stat)
 		if (reset_output) {
 			/* There's just been an error message. Unfortunate ;) */
 			for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 7); j++)
-				fprintf(stdout, " ");
+				putc(' ', stdout);
 		}
 
 		if (!(i % 50)) {
@@ -763,11 +763,11 @@ void feh_display_status(char stat)
 					i, init_len, len, ((int) ((float) i / init_len * 100)));
 
 		} else if ((!(i % 10)) && (!reset_output))
-			fprintf(stdout, " ");
+			putc(' ', stdout);
 
 		reset_output = 0;
 	} else
-		fprintf(stdout, "[  0%%] ");
+		fputs("[  0%] ", stdout);
 
 	fprintf(stdout, "%c", stat);
 	fflush(stdout);
@@ -912,7 +912,7 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 	snprintf(file_str, len, "%s", filename);
 
 	if ((pid = fork()) < 0) {
-		iw_weprintf(w, "lossless rotate: fork failed:");
+		im_weprintf(w, "lossless rotate: fork failed:");
 		return;
 	} else if (pid == 0) {
 
