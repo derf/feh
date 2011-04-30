@@ -36,7 +36,7 @@ void eprintf(char *fmt, ...)
 	va_list args;
 
 	fflush(stdout);
-	fprintf(stderr, "%s ERROR: ", PACKAGE);
+	fputs(PACKAGE " ERROR: ", stderr);
 
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
@@ -44,7 +44,7 @@ void eprintf(char *fmt, ...)
 
 	if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
 		fprintf(stderr, " %s", strerror(errno));
-	fprintf(stderr, "\n");
+	fputs("\n", stderr);
 	exit(2);
 }
 
@@ -54,7 +54,7 @@ void weprintf(char *fmt, ...)
 	va_list args;
 
 	fflush(stdout);
-	fprintf(stderr, "%s WARNING: ", PACKAGE);
+	fputs(PACKAGE " WARNING: ", stderr);
 
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
@@ -62,7 +62,7 @@ void weprintf(char *fmt, ...)
 
 	if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
 		fprintf(stderr, " %s", strerror(errno));
-	fprintf(stderr, "\n");
+	fputs("\n", stderr);
 }
 
 /* estrdup: duplicate a string, report if error */

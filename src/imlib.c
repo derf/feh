@@ -364,6 +364,70 @@ void feh_draw_zoom(winwidget w)
 	return;
 }
 
+void im_weprintf(winwidget w, char *fmt, ...)
+{
+	va_list args;
+	char *errstr = emalloc(1024);
+
+	fflush(stdout);
+	fputs(PACKAGE " WARNING: ", stderr);
+
+	va_start(args, fmt);
+	vsnprintf(errstr, 1024, fmt, args);
+	va_end(args);
+
+	if (w)
+		w->errstr = errstr;
+
+	fputs(errstr, stderr);
+	if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
+		fprintf(stderr, " %s", strerror(errno));
+	fputs("\n", stderr);
+}
+
+
+void feh_draw_errstr(winwidget w)
+{
+	static Imlib_Font fn = NULL;
+	int tw = 0, th = 0;
+	Imlib_Image im = NULL;
+	static DATA8 atab[256];
+
+	if (!w->im)
+		return;
+
+	if (opt.font)
+		fn = gib_imlib_load_font(opt.font);
+
+	if (!fn)
+		fn = gib_imlib_load_font(DEFAULT_FONT);
+
+	if (!fn)
+		eprintf("Unable to draw error message. Dying to be safe.");
+
+	memset(atab, 0, sizeof(atab));
+
+	/* Work out how high the font is */
+	gib_imlib_get_text_size(fn, w->errstr, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+
+	tw += 3;
+	th += 3;
+	im = imlib_create_image(tw, th);
+	if (!im)
+		eprintf("Couldn't create errstr image. Out of memory?");
+
+	gib_imlib_image_set_has_alpha(im, 1);
+	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+
+	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
+	free(w->errstr);
+	w->errstr = NULL;
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
+	gib_imlib_free_image_and_decache(im);
+}
+
 void feh_draw_filename(winwidget w)
 {
 	static Imlib_Font fn = NULL;
@@ -388,7 +452,7 @@ void feh_draw_filename(winwidget w)
 	}
 
 	if (!fn) {
-		weprintf("Couldn't load font for filename printing");
+		eprintf("Couldn't load font for filename printing");
 		return;
 	}
 
@@ -457,7 +521,7 @@ void feh_draw_info(winwidget w)
 	}
 
 	if (!fn) {
-		weprintf("Couldn't load font for filename printing");
+		eprintf("Couldn't load font for filename printing");
 		return;
 	}
 
@@ -602,7 +666,7 @@ void feh_draw_caption(winwidget w)
 	}
 
 	if (!fn) {
-		weprintf("Couldn't load font for caption printing");
+		eprintf("Couldn't load font for caption printing");
 		return;
 	}
 
@@ -731,7 +795,7 @@ void feh_edit_inplace_orient(winwidget w, int orientation)
 		gib_imlib_free_image(old);
 		feh_reload_image(w, 1, 1);
 	} else {
-		weprintf("failed to load image from disk to edit it in place\n");
+		weprintf("failed to load image from disk to edit it in place");
 	}
 
 	return;
@@ -855,14 +919,16 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
 				rotate_str, "-outfile", file_str, file_str, NULL);
 
-		eprintf("lossless rotate: Is 'jpegtran' installed? Failed to exec:");
+		weprintf("lossless rotate: Is 'jpegtran' installed? Failed to exec:");
+		return;
 	} else {
 		waitpid(pid, &status, 0);
 
 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-			weprintf("lossless rotate: Got exitcode %d from jpegtran."
-					" Commandline was:\n"
-					"jpegtran -copy all -rotate %s -outfile %s %s\n",
+			im_weprintf(w,
+					"lossless rotate: Got exitcode %d from jpegtran."
+					" Commandline was: "
+					"jpegtran -copy all -rotate %s -outfile %s %s",
 					status >> 8, rotate_str, file_str, file_str);
 			return;
 		}
@@ -911,7 +977,7 @@ void feh_draw_actions(winwidget w)
 	}
 
 	if (!fn) {
-		weprintf("Couldn't load font for actions printing");
+		eprintf("Couldn't load font for actions printing");
 		return;
 	}
 

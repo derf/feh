@@ -55,6 +55,7 @@ static winwidget winwidget_allocate(void)
 	ret->im = NULL;
 	ret->name = NULL;
 	ret->file = NULL;
+	ret->errstr = NULL;
 	ret->type = WIN_TYPE_UNSET;
 	ret->visible = 0;
 	ret->caption_entry = 0;
@@ -552,6 +553,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_actions(winwid);
 		if (opt.info_cmd)
 			feh_draw_info(winwid);
+		if (winwid->errstr)
+			feh_draw_errstr(winwid);
 	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);
 

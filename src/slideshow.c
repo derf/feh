@@ -104,7 +104,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	int old_w, old_h;
 
 	if (!w->file) {
-		weprintf("couldn't reload, this image has no file associated with it.");
+		im_weprintf(w, "couldn't reload, this image has no file associated with it.");
 		return;
 	}
 
@@ -130,7 +130,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		if (force_new) {
 			eprintf("failed to reload image\n");
 		} else {
-			weprintf("Couldn't reload image. Is it still there?");
+			im_weprintf(w, "Couldn't reload image. Is it still there?");
 		}
 		winwidget_rename(w, title);
 		free(title);
@@ -474,7 +474,7 @@ void slideshow_save_image(winwidget win)
 
 	gib_imlib_save_image_with_error_return(win->im, tmpname, &err);
 	if (err)
-		weprintf("Can't save image %s:", tmpname);
+		im_weprintf(win, "Can't save image %s:", tmpname);
 
 	free(tmpname);
 	return;

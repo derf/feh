@@ -92,6 +92,7 @@ struct __winwidget {
 	char *name;
 	gib_list *file;
 	unsigned char visible;
+	char *errstr;
 
 	/* panning, zooming, etc. */
 	unsigned char mode;
