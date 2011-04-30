@@ -795,7 +795,7 @@ void feh_edit_inplace_orient(winwidget w, int orientation)
 		gib_imlib_free_image(old);
 		feh_reload_image(w, 1, 1);
 	} else {
-		weprintf("failed to load image from disk to edit it in place");
+		im_weprintf(w, "failed to load image from disk to edit it in place");
 	}
 
 	return;
@@ -912,14 +912,14 @@ void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
 	snprintf(file_str, len, "%s", filename);
 
 	if ((pid = fork()) < 0) {
-		weprintf("lossless rotate: fork failed:");
+		iw_weprintf(w, "lossless rotate: fork failed:");
 		return;
 	} else if (pid == 0) {
 
 		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
 				rotate_str, "-outfile", file_str, file_str, NULL);
 
-		weprintf("lossless rotate: Is 'jpegtran' installed? Failed to exec:");
+		im_weprintf(w, "lossless rotate: Is 'jpegtran' installed? Failed to exec:");
 		return;
 	} else {
 		waitpid(pid, &status, 0);
