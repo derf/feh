@@ -901,6 +901,57 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 	return (0);
 }
 
+void feh_thumbnail_show_fullsize(feh_file *thumbfile)
+{
+	winwidget thumbwin = NULL;
+	char *s;
+
+	if (!opt.thumb_title)
+		s = thumbfile->name;
+	else
+		s = feh_printf(opt.thumb_title, thumbfile);
+	
+	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
+	if (!thumbwin) {
+		thumbwin = winwidget_create_from_file(
+				gib_list_add_front(NULL, thumbfile),
+				s, WIN_TYPE_THUMBNAIL_VIEWER);
+		if (thumbwin)
+			winwidget_show(thumbwin);
+	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
+		free(thumbwin->file);
+		thumbwin->file = gib_list_add_front(NULL, thumbfile);
+		winwidget_rename(thumbwin, s);
+		feh_reload_image(thumbwin, 1, 0);
+	}
+}
+
+void feh_thumbnail_mark_selected(winwidget winwid, feh_thumbnail *thumbnail)
+{
+	Imlib_Image origwin;
+	origwin = winwid->im;
+	winwid->im = gib_imlib_clone_image(origwin);
+	gib_imlib_image_fill_rectangle(winwid->im,
+			thumbnail->x, thumbnail->y, thumbnail->w,
+			thumbnail->h, 50, 50, 255, 100);
+	gib_imlib_image_draw_rectangle(winwid->im,
+			thumbnail->x, thumbnail->y, thumbnail->w,
+			thumbnail->h, 255, 255, 255, 255);
+	gib_imlib_image_draw_rectangle(winwid->im,
+			thumbnail->x + 1, thumbnail->y + 1,
+			thumbnail->w - 2, thumbnail->h - 2,
+			0, 0, 0, 255);
+	gib_imlib_image_draw_rectangle(winwid->im,
+			thumbnail->x + 2, thumbnail->y + 2,
+			thumbnail->w - 4, thumbnail->h - 4,
+			255, 255, 255, 255);
+	winwidget_render_image(winwid, 0, 0);
+	gib_imlib_free_image_and_decache(winwid->im);
+	winwid->im = origwin;
+}
+
+
+
 int feh_thumbnail_setup_thumbnail_dir(void)
 {
 	int status = 0;

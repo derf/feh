@@ -195,9 +195,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			} else if ((winwid != NULL)
 					&& (winwid->type == WIN_TYPE_THUMBNAIL)) {
 				feh_file *thumbfile;
-				winwidget thumbwin = NULL;
 				int x, y;
-				char *s;
 
 				x = ev->xbutton.x;
 				y = ev->xbutton.y;
@@ -206,25 +204,8 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				x /= winwid->zoom;
 				y /= winwid->zoom;
 				thumbfile = feh_thumbnail_get_file_from_coords(x, y);
-				if (thumbfile) {
-					if (!opt.thumb_title)
-						s = thumbfile->name;
-					else
-						s = feh_printf(opt.thumb_title, thumbfile);
-					thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
-					if (!thumbwin) {
-						thumbwin = winwidget_create_from_file(
-								gib_list_add_front(NULL, thumbfile),
-								s, WIN_TYPE_THUMBNAIL_VIEWER);
-						if (thumbwin)
-							winwidget_show(thumbwin);
-					} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
-						free(thumbwin->file);
-						thumbwin->file = gib_list_add_front(NULL, thumbfile);
-						winwidget_rename(thumbwin, s);
-						feh_reload_image(thumbwin, 1, 0);
-					}
-				}
+				if (thumbfile)
+					feh_thumbnail_show_fullsize(thumbfile);
 			}
 		} else {
 			if (winwid != NULL) {
@@ -519,29 +500,9 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
 			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
 			if (thumbnail != last_thumb) {
-				if (thumbnail) {
-					Imlib_Image origwin;
-
-					origwin = winwid->im;
-					winwid->im = gib_imlib_clone_image(origwin);
-					gib_imlib_image_fill_rectangle(winwid->im,
-							thumbnail->x, thumbnail->y, thumbnail->w,
-							thumbnail->h, 50, 50, 255, 100);
-					gib_imlib_image_draw_rectangle(winwid->im,
-							thumbnail->x, thumbnail->y, thumbnail->w,
-							thumbnail->h, 255, 255, 255, 255);
-					gib_imlib_image_draw_rectangle(winwid->im,
-							thumbnail->x + 1, thumbnail->y + 1,
-							thumbnail->w - 2, thumbnail->h - 2,
-							0, 0, 0, 255);
-					gib_imlib_image_draw_rectangle(winwid->im,
-							thumbnail->x + 2, thumbnail->y + 2,
-							thumbnail->w - 4, thumbnail->h - 4,
-							255, 255, 255, 255);
-					winwidget_render_image(winwid, 0, 0);
-					gib_imlib_free_image_and_decache(winwid->im);
-					winwid->im = origwin;
-				} else
+				if (thumbnail)
+					feh_thumbnail_mark_selected(winwid, thumbnail);
+				else
 					winwidget_render_image(winwid, 0, 0);
 			}
 			last_thumb = thumbnail;
