@@ -13,6 +13,9 @@ git HEAD
     * Since the manual is way better structured and more detailed than the
       --help output, it now simply refers to the manual. To include the old
       help text, build feh with 'help=1'
+    * You can now use the next/prev/jump keys to navigate thumbnails. Use the
+      render key to open the currently selected thumbnail.
+      <http://github.com/derf/feh/issues/26>
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 

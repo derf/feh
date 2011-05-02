@@ -421,10 +421,14 @@ void feh_event_handle_keypress(XEvent * ev)
 	if (feh_is_kp(&keys.next_img, keysym, state)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT);
+		else if (opt.thumbs)
+			feh_thumbnail_select_next(winwid, 1);
 	}
 	else if (feh_is_kp(&keys.prev_img, keysym, state)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_PREV);
+		else if (opt.thumbs)
+			feh_thumbnail_select_prev(winwid, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_right, keysym, state)) {
 		winwid->im_x -= 20;
@@ -445,10 +449,14 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.jump_back, keysym, state)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_BACK);
+		else if (opt.thumbs)
+			feh_thumbnail_select_prev(winwid, 10);
 	}
 	else if (feh_is_kp(&keys.jump_fwd, keysym, state)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_FWD);
+		else if (opt.thumbs)
+			feh_thumbnail_select_next(winwid, 10);
 	}
 	else if (feh_is_kp(&keys.quit, keysym, state)) {
 		winwidget_destroy_all();
@@ -533,7 +541,10 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.render, keysym, state)) {
-		winwidget_render_image(winwid, 0, 0);
+		if (opt.thumbs)
+			feh_thumbnail_show_selected();
+		else
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.toggle_actions, keysym, state)) {
 		opt.draw_actions = !opt.draw_actions;

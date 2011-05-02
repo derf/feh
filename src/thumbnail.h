@@ -82,7 +82,10 @@ char *feh_thumbnail_get_name(char *uri);
 char *feh_thumbnail_get_name_uri(char *name);
 char *feh_thumbnail_get_name_md5(char *uri);
 void feh_thumbnail_show_fullsize(feh_file *thumbfile);
-void feh_thumbnail_mark_selected(winwidget winwid, feh_thumbnail *thumbnail);
+void feh_thumbnail_select(winwidget winwid, feh_thumbnail *thumbnail);
+void feh_thumbnail_select_next(winwidget winwid, int jump);
+void feh_thumbnail_select_prev(winwidget winwid, int jump);
+void feh_thumbnail_show_selected();
 
 int feh_thumbnail_setup_thumbnail_dir(void);
 

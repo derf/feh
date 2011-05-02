@@ -498,7 +498,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
 			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
 			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
-			feh_thumbnail_mark_selected(winwid, thumbnail);
+			feh_thumbnail_select(winwid, thumbnail);
 		}
 	}
 	return;
