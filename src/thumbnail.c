@@ -929,25 +929,34 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 void feh_thumbnail_mark_selected(winwidget winwid, feh_thumbnail *thumbnail)
 {
 	Imlib_Image origwin;
-	origwin = winwid->im;
-	winwid->im = gib_imlib_clone_image(origwin);
-	gib_imlib_image_fill_rectangle(winwid->im,
-			thumbnail->x, thumbnail->y, thumbnail->w,
-			thumbnail->h, 50, 50, 255, 100);
-	gib_imlib_image_draw_rectangle(winwid->im,
-			thumbnail->x, thumbnail->y, thumbnail->w,
-			thumbnail->h, 255, 255, 255, 255);
-	gib_imlib_image_draw_rectangle(winwid->im,
-			thumbnail->x + 1, thumbnail->y + 1,
-			thumbnail->w - 2, thumbnail->h - 2,
-			0, 0, 0, 255);
-	gib_imlib_image_draw_rectangle(winwid->im,
-			thumbnail->x + 2, thumbnail->y + 2,
-			thumbnail->w - 4, thumbnail->h - 4,
-			255, 255, 255, 255);
-	winwidget_render_image(winwid, 0, 0);
-	gib_imlib_free_image_and_decache(winwid->im);
-	winwid->im = origwin;
+
+	if (thumbnail == td.selected)
+		return;
+
+	if (thumbnail) {
+		origwin = winwid->im;
+		winwid->im = gib_imlib_clone_image(origwin);
+		gib_imlib_image_fill_rectangle(winwid->im,
+				thumbnail->x, thumbnail->y, thumbnail->w,
+				thumbnail->h, 50, 50, 255, 100);
+		gib_imlib_image_draw_rectangle(winwid->im,
+				thumbnail->x, thumbnail->y, thumbnail->w,
+				thumbnail->h, 255, 255, 255, 255);
+		gib_imlib_image_draw_rectangle(winwid->im,
+				thumbnail->x + 1, thumbnail->y + 1,
+				thumbnail->w - 2, thumbnail->h - 2,
+				0, 0, 0, 255);
+		gib_imlib_image_draw_rectangle(winwid->im,
+				thumbnail->x + 2, thumbnail->y + 2,
+				thumbnail->w - 4, thumbnail->h - 4,
+				255, 255, 255, 255);
+		winwidget_render_image(winwid, 0, 0);
+		gib_imlib_free_image_and_decache(winwid->im);
+		winwid->im = origwin;
+	} else
+		winwidget_render_image(winwid, 0, 0);
+
+	td.selected = thumbnail;
 }
 
 

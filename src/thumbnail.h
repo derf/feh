@@ -63,6 +63,7 @@ typedef struct thumbmode_data {
 	int cache_thumbnails;    /* use cached thumbnails from ~/.thumbnails */
 	int cache_dim;           /* 128 = 128x128 ("normal"), 256 = 256x256 ("large") */
 	char *cache_dir;         /* "normal"/"large" (.thumbnails/...) */
+	feh_thumbnail *selected;     /* currently selected thumbnail */
 
 } thumbmode_data;
 

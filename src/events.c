@@ -492,20 +492,13 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL)) {
-			static feh_thumbnail *last_thumb = NULL;
 			feh_thumbnail *thumbnail;
 			int x, y;
 
 			x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
 			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
 			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
-			if (thumbnail != last_thumb) {
-				if (thumbnail)
-					feh_thumbnail_mark_selected(winwid, thumbnail);
-				else
-					winwidget_render_image(winwid, 0, 0);
-			}
-			last_thumb = thumbnail;
+			feh_thumbnail_mark_selected(winwid, thumbnail);
 		}
 	}
 	return;
