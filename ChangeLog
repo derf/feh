@@ -6,16 +6,21 @@ git HEAD
       --menu-style by the end of 2012.
       <http://github.com/derf/feh/issues/27>
     * read directory contents sorted by filename instead of 'randomly'
-      (as returned by readdir) by default. Thanks talisein!
+      (as returned by readdir) by default.  Thanks talisein!
       <https://github.com/derf/feh/pull/20>
     * Show certain warnings in the image window as well as on the commandline
       <http://github.com/derf/feh/issues/43>
     * Since the manual is way better structured and more detailed than the
-      --help output, it now simply refers to the manual. To include the old
+      --help output, it now simply refers to the manual.  To include the old
       help text, build feh with 'help=1'
     * You can now use the next/prev/jump keys to navigate thumbnails. Use the
       render key to open the currently selected thumbnail.
       <http://github.com/derf/feh/issues/26>
+    * Change an pach for NETWM fullscreen support to only apply to fullscreen
+      windows.  This fixes moving windows in fluxbox (since fluxbox doesn't
+      report its window border width).
+      <http://github.com/derf/feh/issues/22>
+      <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=570903>
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 
