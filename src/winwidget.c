@@ -773,7 +773,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 			winwid->w = (w > scr->width) ? scr->width : w;
 			winwid->h = (h > scr->height) ? scr->height : h;
 		}
-		if (winwid->fullscreen) {
+		if (winwid->full_screen) {
 			XGetWindowAttributes(disp, winwid->win, &attributes);
 			XTranslateCoordinates(disp, winwid->win, attributes.root,
 						-attributes.border_width -
