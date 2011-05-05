@@ -1,1 +1,121 @@
-Please see <http://github.com/derf/feh/issues>
+# open issues on derf/feh
+5. Xinerama only works for Xinerama screen 0
+--------------------------------------------
+From TODO:
+On screen 1, it will work if fullscreen is turned off, the window is rendered
+and moved so that its top corner is only on screen 1, and then fullscreen is
+turned on (after that, it'll work for all images in the slideshow).
+    state: open
+     user: derf
+    votes: 0
+  created: 2010/08/21 11:08:12 -0700
+  updated: 2011/04/12 11:48:05 -0700
+ comments: 1
+ 
+9. feh fails for massive images
+-------------------------------
+At first I thought this was a single-band TIFF image problem but when I
+starting playing with resizing things I noticed feh becoming happy.. so I
+started twiddling until I was right between the edge of failing and working:
+
+By massive I mean the original image is:  30691x30661
+
+Playing with resizing to various gets me:
+23325x23302 fails (76%)
+23018x22995  good (75%)
+
+Next phase was to make sure it wasn't just the TIFF libraries.. so converted
+the TIFFs to PNG
+tifftopnm | pnmtopng >
+
+Same behavior - the 76 fails, 75 works.   Trying one more time this time
+converting to JPG for a last sanity check.
+
+Feh blows up with No Imlib2 loader for that file format on the 76 but the 75
+works.   Gimp opens both images (in any of the formats) fine (considering the
+size of the images).  XV opens all sizes fine.
+
+I can't distribute the raw (source TIFF) imagery (licensing issue) but I can
+provide the JPG and PNG files for others to confirm the behavior.
+
+http://beef.gina.alaska.edu/pub/feh-testing/
+
+I put the 75 and 76 as PNG and JPG there along with the original as a PNG.
+
+Running feh 1.9-21-gbeecfaf from github on a FC13 x86_64 machine.
+    state: open
+     user: dayne
+    votes: 1
+  created: 2010/10/06 16:22:25 -0700
+  updated: 2011/04/12 11:48:32 -0700
+ comments: 1
+ 
+12. "Reverse" --scale-down (zoom images to screen size)
+-------------------------------------------------------
+Requested by mail:
+
+Don't go fullscreen, but do make the window as big as possible (either max out
+width or height) and zoom the image in to fit if necessary.
+So, it's like --scale-down, but zooming in, not out.
+
+This can already partially be achieved by combining --auto-zoom and --geometry
+/ the "Freeze Window Size" menu setting.
+    state: open
+     user: derf
+    votes: 0
+  created: 2010/10/14 09:44:25 -0700
+  updated: 2011/04/12 11:48:05 -0700
+ comments: 0
+ 
+14. Reload functionality for directories
+----------------------------------------
+--reload works for single images, but not for directories
+
+With the use of feh I built a simple Info-Screen with a mini-pc and a samba
+share from which feh loads images and displays them as a slideshow.
+
+Feh is able to reload a file after an amount of time. But it doesn't reload the
+content of a folder. I used a script that restarts feh every 10 minutes to make
+it display files that are uploaded to the samba share while feh is running.
+    state: open
+     user: pgassmann
+    votes: 2
+  created: 2010/10/29 16:10:45 -0700
+  updated: 2011/04/25 14:12:59 -0700
+ comments: 1
+ 
+24. maybe: include giblib directly into feh
+-------------------------------------------
+There are only three programs using giblib, one of them is feh. And feh only
+uses a part of giblib. So including those parts into the source and removing
+the dependency might be an idea
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/01/17 11:54:17 -0800
+  updated: 2011/04/12 11:48:05 -0700
+ comments: 0
+ 
+25. Configure buttons via config file
+-------------------------------------
+Right now keys have a config file while buttons use commandline options. Fix
+that.
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/01/18 13:36:27 -0800
+  updated: 2011/04/25 23:53:34 -0700
+ comments: 0
+ 
+41. zooming bugs with --scale-down
+----------------------------------
+When opening a large image with feh --scale-down, zoom keys do not behave
+correctly after pressing the zoom_default key. They instead continue to operate
+from the previous zoom level
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/04/23 01:59:48 -0700
+  updated: 2011/04/25 23:50:23 -0700
+ comments: 0
+ 
