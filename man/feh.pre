@@ -106,11 +106,10 @@ unloadable files.  Useful for preening a directory.
 .
 .It Cm -A , --action Oo Ar flag Oc Ns Ar action
 .
-Specify a string as an action to perform on the image.  In slideshow or
-multiwindow modes, the action will be run when the enter key is pressed, in
-list mode, the action will be run for each file listed.  In
-loadables/unloadables mode, the action will be run for each
-loadable/unloadable file, respectively.
+Specify a shell command as an action to perform on the image.  In slideshow or
+multiwindow mode, the action will be run when the action_0 key is pressed, in
+list mode, it will be run for each file.  In loadable/unloadable mode, it will
+be run for each loadable/unloadable file, respectively.
 .
 .Pp
 .
@@ -146,7 +145,7 @@ Create borderless windows.
 .
 .It Cm -P , --cache-thumbnails
 .
-Enable (experimental) thumbnail caching in
+Enable thumbnail caching in
 .Pa ~/.thumbnails .
 Only works with thumbnails <= 256x256 pixels.
 .
@@ -171,6 +170,8 @@ When using collage mode, you should also specify
 .Cm --limit-width
 and
 .Cm --limit-height .
+See also
+.Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -L , --customlist Ar format
 .
@@ -232,7 +233,8 @@ Disable antialiasing for zooming, background setting etc.
 .It Cm -I , --fullindex
 .
 Same as Index mode, but you also get image size and dimensions printed
-below each thumbnail.
+below each thumbnail. Enables
+.Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -F , --fullscreen
 .
@@ -253,7 +255,7 @@ display help output and exit.
 .It Cm -Y , --hide-pointer
 .
 Hide the pointer
-.Pq useful for slideshows etc .
+.Pq useful for slideshows .
 .
 .It Cm -B , --image-bg Ar style
 .
@@ -265,7 +267,9 @@ Accepted values: white, black, default.
 Enable Index mode.  Index mode is similar to montage mode, and accepts the
 same options.  It creates an index print of thumbails, printing the image
 name beneath each thumbnail.  Index mode enables certain other options, see
-.Sx INDEX MODE OPTIONS .
+.Sx INDEX MODE OPTIONS
+and
+.Sx MONTAGE MODE OPTIONS .
 .
 .It Cm --index-dim Ar bool
 .
@@ -441,6 +445,8 @@ Note that
 .Cm --fullscreen
 does not affect the thumbnail window. It does, however, work for the image
 windows launched from thumbnail mode.
+Also supports
+.Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -~ , --thumb-title Ar string
 .
@@ -453,7 +459,7 @@ for windows opened from thumbnail mode.  See also
 .
 Set window title.  Applies to all windows except those opened from thumbnail
 mode.  See
-.Sx FORMAT SPECIFIERS
+.Sx FORMAT SPECIFIERS .
 .
 .It Cm -u , --unloadable
 .
@@ -551,8 +557,9 @@ Don't require CTRL+Button for blurring - just use the button.
 .
 .Sh MONTAGE MODE OPTIONS
 .
-These additional options can be used for montage, collage and (partially)
-thumbnail modes.
+These additional options can be used for collage, index, montage and
+.Pq partially
+thumbnail mode.
 .
 .Bl -tag -width indent
 .
