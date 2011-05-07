@@ -16,9 +16,9 @@ git HEAD
     * You can now use the next/prev/jump keys to navigate thumbnails. Use the
       render key to open the currently selected thumbnail.
       <http://github.com/derf/feh/issues/26>
-    * Change an pach for NETWM fullscreen support to only apply to fullscreen
-      windows.  This fixes moving windows in fluxbox (since fluxbox doesn't
-      report its window border width).
+    * Change a patch for NETWM fullscreen support to only apply to fullscreen
+      windows.  This fixes the moving windows bug in fluxbox (since fluxbox
+      doesn't report its window border width).
       <http://github.com/derf/feh/issues/22>
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=570903>
     * Minor manpage fixes.
