@@ -487,9 +487,9 @@ Specifying
 is like setting
 .Cm --auto-zoom ,
 using
-.Cm max
+.Cm fill
 makes feh zoom the image like the
-.Cm --bg-max
+.Cm --bg-fill
 mode.
 .
 .El
