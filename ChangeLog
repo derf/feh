@@ -23,6 +23,8 @@ git HEAD
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=570903>
     * Minor manpage fixes.
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=625683>
+    * Fix --auto-zoom / --zoom max/fill documentation, the "Auto-Zoom" menu
+      option is now always checked when these options are used
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 

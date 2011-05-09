@@ -1398,7 +1398,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 		case CB_OPT_AUTO_ZOOM:
 			MENU_ITEM_TOGGLE(i);
 			if (MENU_ITEM_IS_ON(i))
-				opt.zoom_mode = ZOOM_MODE_FILL;
+				opt.zoom_mode = ZOOM_MODE_MAX;
 			else
 				opt.zoom_mode = 0;
 			winwidget_rerender_all(1);
@@ -1452,7 +1452,8 @@ static feh_menu *feh_menu_func_gen_options(feh_menu * m)
 	mm = feh_menu_new();
 	mm->name = estrdup("OPTIONS");
 	mm->fehwin = m->fehwin;
-	feh_menu_add_toggle_entry(mm, "Auto-Zoom", NULL, NULL, CB_OPT_AUTO_ZOOM, NULL, NULL, (opt.zoom_mode == ZOOM_MODE_FILL));
+	feh_menu_add_toggle_entry(mm, "Auto-Zoom", NULL, NULL, CB_OPT_AUTO_ZOOM,
+				NULL, NULL, opt.zoom_mode);
 	feh_menu_add_toggle_entry(mm, "Freeze Window Size", NULL, NULL,
 				CB_OPT_FREEZE_WINDOW, NULL, NULL, opt.geom_flags);
 	feh_menu_add_toggle_entry(mm, "Fullscreen", NULL, NULL,

@@ -483,7 +483,7 @@ when in full screen mode or when window geometry is fixed.  When combined with
 zooming will be limited to the specified
 .Ar percent .
 Specifying
-.Cm fill
+.Cm max
 is like setting
 .Cm --auto-zoom ,
 using
