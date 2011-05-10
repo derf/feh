@@ -29,6 +29,8 @@ git HEAD
       <http://github.com/derf/feh/issues/44>
     * The 'A' key (toggle_aliasing) now actually changes the current window,
       and not just the default for new windows
+    * The zoom_default key now works fine with --scale-down
+      <http://github.com/derf/feh/issues/41>
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 
