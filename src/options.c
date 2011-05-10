@@ -223,7 +223,7 @@ static void feh_load_options_for_theme(char *theme)
 /* FIXME This function is a crufty bitch ;) */
 static void feh_parse_options_from_string(char *opts)
 {
-	char **list = NULL;
+	char *list[sizeof(char *) * 64];
 	int num = 0;
 	char *s;
 	char *t;
@@ -235,21 +235,17 @@ static void feh_parse_options_from_string(char *opts)
 	   getopt_long function to do this parsing as well. This means it has to
 	   look like the real argv ;) */
 
-	list = malloc(sizeof(char *));
-
 	list[num++] = estrdup(PACKAGE);
 
 	for (s = opts, t = opts;; t++) {
 		if ((*t == ' ') && !(inquote)) {
 			*t = '\0';
 			num++;
-			list = erealloc(list, sizeof(char *) * num);
 
 			list[num - 1] = feh_string_normalize(s);
 			s = t + 1;
 		} else if (*t == '\0') {
 			num++;
-			list = erealloc(list, sizeof(char *) * num);
 
 			list[num - 1] = feh_string_normalize(s);
 			break;
@@ -263,8 +259,6 @@ static void feh_parse_options_from_string(char *opts)
 	for (i = 0; i < num; i++)
 		if (list[i])
 			free(list[i]);
-	if (list)
-		free(list);
 	return;
 }
 
@@ -291,7 +285,7 @@ char *feh_string_normalize(char *str)
 
 		last = *s;
 	}
-	if (i && ret[i - 1] == '\"')
+	if (i && (ret[i - 1] == '\"'))
 		ret[i - 1] = '\0';
 	else
 		ret[i] = '\0';
