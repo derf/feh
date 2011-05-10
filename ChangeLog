@@ -27,6 +27,8 @@ git HEAD
       option is now always checked when these options are used
     * Set _NET_WM_NAME and _NET_WM_ICON_NAME properties
       <http://github.com/derf/feh/issues/44>
+    * The 'A' key (toggle_aliasing) now actually changes the current window,
+      and not just the default for new windows
 
 Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
 

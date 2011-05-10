@@ -552,7 +552,8 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.toggle_aliasing, keysym, state)) {
 		opt.force_aliasing = !opt.force_aliasing;
-		winwidget_rerender_all(0);
+		winwid->force_aliasing = !winwid->force_aliasing;
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.toggle_filenames, keysym, state)) {
 		opt.draw_filename = !opt.draw_filename;
