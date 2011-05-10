@@ -302,12 +302,21 @@ void winwidget_create_window(winwidget ret, int w, int h)
 void winwidget_update_title(winwidget ret)
 {
 	char *name;
+	Atom prop_name = XInternAtom(disp, "_NET_WM_NAME", False);
+	Atom prop_icon = XInternAtom(disp, "_NET_WM_ICON_NAME", False);
+	Atom prop_utf8 = XInternAtom(disp, "UTF8_STRING", False);
 
 	D(("winwid->name = %s\n", ret->name));
 	name = ret->name ? ret->name : "feh";
 	XStoreName(disp, ret->win, name);
 	XSetIconName(disp, ret->win, name);
-	/* XFlush(disp); */
+
+	XChangeProperty(disp, ret->win, prop_name, prop_utf8, 8,
+			PropModeReplace, (const unsigned char *)name, strlen(name));
+
+	XChangeProperty(disp, ret->win, prop_icon, prop_utf8, 8,
+			PropModeReplace, (const unsigned char *)name, strlen(name));
+
 	return;
 }
 
