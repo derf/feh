@@ -9,7 +9,7 @@ turned on (after that, it'll work for all images in the slideshow).
      user: derf
     votes: 0
   created: 2010/08/21 11:08:12 -0700
-  updated: 2011/04/12 11:48:05 -0700
+  updated: 2011/05/10 10:06:06 -0700
  comments: 1
  
 9. feh fails for massive images
@@ -81,7 +81,7 @@ it display files that are uploaded to the samba share while feh is running.
      user: pgassmann
     votes: 2
   created: 2010/10/29 16:10:45 -0700
-  updated: 2011/04/25 14:12:59 -0700
+  updated: 2011/05/10 10:06:06 -0700
  comments: 1
  
 24. maybe: include giblib directly into feh
@@ -104,18 +104,6 @@ that.
      user: derf
     votes: 0
   created: 2011/01/18 13:36:27 -0800
-  updated: 2011/04/25 23:53:34 -0700
- comments: 0
- 
-41. zooming bugs with --scale-down
-----------------------------------
-When opening a large image with feh --scale-down, zoom keys do not behave
-correctly after pressing the zoom_default key. They instead continue to operate
-from the previous zoom level
-    state: open
-     user: derf
-    votes: 0
-  created: 2011/04/23 01:59:48 -0700
-  updated: 2011/04/25 23:50:23 -0700
+  updated: 2011/05/10 10:06:06 -0700
  comments: 0
  
