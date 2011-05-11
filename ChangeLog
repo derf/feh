@@ -1,5 +1,6 @@
-git HEAD
+Wed, 11 May 2011 11:37:32 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.14
     * Only create caption directory when actually writing out a caption.
       <http://github.com/derf/feh/issues/42>
     * The --menu-bg option has been deprecated.  It will be removed along with
