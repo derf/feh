@@ -1043,7 +1043,9 @@ Scroll up
 .
 .It Ao keypad down Ac , Ao Ctrl+Down Ac Bq scroll_down
 .
-Scroll down
+Scroll down.
+Note that the scroll keys work without anti-aliasing for performance reasons,
+hit the render key after scrolling to antialias the image.
 .
 .It Ao keypad begin Ac Bq render
 .
