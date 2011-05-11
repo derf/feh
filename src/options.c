@@ -238,6 +238,11 @@ static void feh_parse_options_from_string(char *opts)
 	list[num++] = estrdup(PACKAGE);
 
 	for (s = opts, t = opts;; t++) {
+
+		if (num > 64)
+			eprintf(PACKAGE " does not support more than 64 words per "
+					"theme definition.\n Please shorten your lines.");
+
 		if ((*t == ' ') && !(inquote)) {
 			*t = '\0';
 			num++;
