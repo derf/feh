@@ -34,7 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+
+#ifdef HAVE_LIBCURL
 #include <curl/curl.h>
+#endif
 
 Display *disp = NULL;
 Visual *vis = NULL;
