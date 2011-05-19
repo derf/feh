@@ -964,7 +964,6 @@ void winwidget_center_image(winwidget winwid)
 			winwid->im_y = ((int)opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
 		else
 			winwid->im_y = 0;
-		printf("-> %d %d \n", winwid->im_x, winwid->im_y);
 	}
 }
 
