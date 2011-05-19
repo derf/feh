@@ -957,13 +957,14 @@ void winwidget_center_image(winwidget winwid)
 		winwid->im_y = (scr_height - lround(winwid->im_h * winwid->zoom)) >> 1;
 	} else {
 		if (opt.geom_flags & WidthValue)
-			winwid->im_x = (opt.geom_w - lround(winwid->im_w * winwid->zoom)) >> 1;
+			winwid->im_x = ((int)opt.geom_w - lround(winwid->im_w * winwid->zoom)) >> 1;
 		else
 			winwid->im_x = 0;
 		if (opt.geom_flags & HeightValue)
-			winwid->im_y = (opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
+			winwid->im_y = ((int)opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
 		else
 			winwid->im_y = 0;
+		printf("-> %d %d \n", winwid->im_x, winwid->im_y);
 	}
 }
 

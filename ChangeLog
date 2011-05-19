@@ -1,3 +1,8 @@
+git HEAD
+
+    * Fix compilation with curl=0
+    * Make zoom_default key work properly with --geometry
+
 Wed, 11 May 2011 11:37:32 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.14
