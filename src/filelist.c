@@ -221,8 +221,8 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 					add_file_to_filelist_recursively(newfile, FILELIST_LAST);
 
 				free(newfile);
-				free(de[cnt]);
 			}
+			free(de[cnt]);
 		}
 		free(de);
 		closedir(dir);
