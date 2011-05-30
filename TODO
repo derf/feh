@@ -107,3 +107,28 @@ that.
   updated: 2011/05/10 10:06:06 -0700
  comments: 0
  
+45. --draw-filename: "x of y" cut off by short filename
+-------------------------------------------------------
+The "x of y" line shown below the filename is limited by the filename length
+and may be cut off by short filenames.
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/05/30 14:41:49 -0700
+  updated: 2011/05/30 14:45:14 -0700
+ comments: 0
+ 
+46. --draw-filename: "x of y": wrong y after file deletion
+----------------------------------------------------------
+After deleting a file, feh will still count it when calculating the total shown
+in the next image. This is fixed by any action causing the image window to be
+re-rendered.
+
+Like: "1 of 4" -> delete file -> "2 of 4" -> rerender -> "1 of 3"
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/05/30 14:44:05 -0700
+  updated: 2011/05/30 14:45:14 -0700
+ comments: 0
+ 
