@@ -434,7 +434,7 @@ void feh_draw_errstr(winwidget w)
 void feh_draw_filename(winwidget w)
 {
 	static Imlib_Font fn = NULL;
-	int tw = 0, th = 0;
+	int tw = 0, th = 0, nw = 0;
 	Imlib_Image im = NULL;
 	static DATA8 atab[256];
 	char *s = NULL;
@@ -462,10 +462,22 @@ void feh_draw_filename(winwidget w)
 	memset(atab, 0, sizeof(atab));
 
 	/* Work out how high the font is */
-	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw,
+			&th, IMLIB_TEXT_TO_RIGHT);
 
-	/* tw is no longer correct, if the filename is shorter than
-	 * the string "%d of %d" used below in fullscreen mode */
+	if (gib_list_length(filelist) > 1) {
+		len = snprintf(NULL, 0, "%d of %d",  gib_list_length(filelist),
+				gib_list_length(filelist)) + 1;
+		s = emalloc(len);
+		snprintf(s, len, "%d of %d", gib_list_num(filelist, current_file) +
+				1, gib_list_length(filelist));
+
+		gib_imlib_get_text_size(fn, s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
+
+		if (nw > tw)
+			tw = nw;
+	}
+
 	tw += 3;
 	th += 3;
 	im = imlib_create_image(tw, 2 * th);
@@ -473,20 +485,16 @@ void feh_draw_filename(winwidget w)
 		eprintf("Couldn't create image. Out of memory?");
 
 	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, 2 * th, NULL, NULL, NULL, atab);
+	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, 2 * th, NULL,
+			NULL, NULL, atab);
 	gib_imlib_image_fill_rectangle(im, 0, 0, tw, 2 * th, 0, 0, 0, 0);
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-	/* Print the position in the filelist, if we have >=2 files */
-	if (gib_list_length(filelist) > 1) {
-		/* sic! */
-		len = snprintf(NULL, 0, "%d of %d", gib_list_length(filelist), gib_list_length(filelist)) + 1;
-		s = emalloc(len);
-		snprintf(s, len, "%d of %d", gib_list_num(filelist, current_file) + 1, gib_list_length(filelist));
-		/* This should somehow be right-aligned */
+
+	if (s) {
 		gib_imlib_text_draw(im, fn, NULL, 2, th + 1, s, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 		gib_imlib_text_draw(im, fn, NULL, 1, th, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 		free(s);
