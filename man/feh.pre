@@ -239,6 +239,14 @@ below each thumbnail. Enables
 .It Cm -F , --fullscreen
 .
 Make the window fullscreen.
+Note that in this mode, large images will always be scaled down to fit the
+screen,
+.Cm --zoom Ar zoom
+only affects smaller images and never scales larger than necessary to fit the
+screen size. The only exception is a
+.Ar zoom
+of 100, in which case images will always be shown at 100% zoom, no matter
+their dimensions.
 .
 .It Cm -g , --geometry Ar width No x Ar height
 .

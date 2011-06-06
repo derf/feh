@@ -464,10 +464,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				double old_zoom = winwid->zoom;
 
 				winwid->zoom = 0.01 * opt.default_zoom;
-				if ((winwid->im_h * winwid->zoom) > max_h)
-					winwid->zoom = old_zoom;
-				if ((winwid->im_w * winwid->zoom) > max_w)
-					winwid->zoom = old_zoom;
+				if (winwid->zoom != 1.0) {
+					if ((winwid->im_h * winwid->zoom) > max_h)
+						winwid->zoom = old_zoom;
+					else if ((winwid->im_w * winwid->zoom) > max_w)
+						winwid->zoom = old_zoom;
+				}
 
 				winwid->im_x = ((int)
 						(max_w - (winwid->im_w * winwid->zoom))) >> 1;
