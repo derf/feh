@@ -940,6 +940,11 @@ Pause/Continue the slideshow.  When it is paused, it will not automatically
 change slides based on
 .Cm --slideshow-delay .
 .
+.It i Bq toggle_info
+.
+Toggle info display
+.Pq see Cm --info
+.
 .It m Bq toggle_menu
 .
 Show menu.  Use the arrow keys and return to select items,

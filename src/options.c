@@ -772,6 +772,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);
+			opt.draw_info = 1;
 			break;
 		case 235:
 			opt.force_aliasing = 1;

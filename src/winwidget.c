@@ -562,7 +562,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_filename(winwid);
 		if (opt.draw_actions)
 			feh_draw_actions(winwid);
-		if (opt.info_cmd)
+		if (opt.draw_info && opt.info_cmd)
 			feh_draw_info(winwid);
 		if (winwid->errstr)
 			feh_draw_errstr(winwid);
@@ -589,7 +589,7 @@ void winwidget_render_image_cached(winwidget winwid)
 		feh_draw_filename(winwid);
 	if (opt.draw_actions)
 		feh_draw_actions(winwid);
-	if (opt.info_cmd)
+	if (opt.draw_info && opt.info_cmd)
 		feh_draw_info(winwid);
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);

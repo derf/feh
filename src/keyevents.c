@@ -127,6 +127,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.toggle_actions, 0, XK_a, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
+	feh_set_kb(&keys.toggle_info, 0, XK_i, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pointer, 0, XK_o, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_caption, 0, XK_c, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pause, 0, XK_h, 0, 0, 0, 0);
@@ -250,6 +251,8 @@ void init_keyevents(void) {
 			cur_kb = &keys.toggle_aliasing;
 		else if (!strcmp(action, "toggle_filenames"))
 			cur_kb = &keys.toggle_filenames;
+		else if (!strcmp(action, "toggle_info"))
+			cur_kb = &keys.toggle_info;
 		else if (!strcmp(action, "toggle_pointer"))
 			cur_kb = &keys.toggle_pointer;
 		else if (!strcmp(action, "toggle_caption"))
@@ -562,6 +565,10 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.toggle_filenames, keysym, state)) {
 		opt.draw_filename = !opt.draw_filename;
+		winwidget_rerender_all(0);
+	}
+	else if (feh_is_kp(&keys.toggle_info, keysym, state)) {
+		opt.draw_info = !opt.draw_info;
 		winwidget_rerender_all(0);
 	}
 	else if (feh_is_kp(&keys.toggle_pointer, keysym, state)) {

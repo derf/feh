@@ -68,6 +68,7 @@ struct __fehoptions {
 	unsigned char screen_clip;
 	unsigned char hide_pointer;
 	unsigned char draw_actions;
+	unsigned char draw_info;
 	unsigned char cache_thumbnails;
 	unsigned char cycle_once;
 	unsigned char hold_actions[10];
@@ -175,6 +176,7 @@ struct __fehkb {
 	struct __fehkey render;
 	struct __fehkey toggle_actions;
 	struct __fehkey toggle_filenames;
+	struct __fehkey toggle_info;
 	struct __fehkey toggle_pointer;
 	struct __fehkey toggle_aliasing;
 	struct __fehkey jump_random;
