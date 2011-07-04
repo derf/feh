@@ -1,5 +1,6 @@
-git HEAD
+Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.14.2
     * Fix --draw-filename "x of y" being cut off by short filenames
       <https://github.com/derf/feh/issues/45>
     * Use --zoom 100 to show all images at 100% in --fullscreen mode
