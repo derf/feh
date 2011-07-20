@@ -1,3 +1,7 @@
+git HEAD
+
+    * Respect --image-bg option in full-screen mode
+
 Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.14.2

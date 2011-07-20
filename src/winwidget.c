@@ -350,7 +350,10 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			if (winwid->gc == None) {
 				XGCValues gcval;
 
-				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+				if (!strcmp(opt.image_bg, "white"))
+					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+				else
+					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 				winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
 			}
 			winwid->bg_pmap = XCreatePixmap(disp, winwid->win, scr->width, scr->height, depth);
