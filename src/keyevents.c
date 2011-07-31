@@ -97,6 +97,10 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.scroll_right,0,XK_KP_Right  , 4, XK_Right     , 0, 0);
 	feh_set_kb(&keys.scroll_down,0, XK_KP_Down   , 4, XK_Down      , 0, 0);
 	feh_set_kb(&keys.scroll_up , 0, XK_KP_Up     , 4, XK_Up        , 0, 0);
+	feh_set_kb(&keys.scroll_left_page , 8, XK_Left , 0, 0          , 0, 0);
+	feh_set_kb(&keys.scroll_right_page, 8, XK_Right, 0, 0          , 0, 0);
+	feh_set_kb(&keys.scroll_down_page , 8, XK_Down , 0, 0          , 0, 0);
+	feh_set_kb(&keys.scroll_up_page   , 8, XK_Up   , 0, 0          , 0, 0);
 	feh_set_kb(&keys.prev_img  , 0, XK_Left      , 0, XK_p         , 0, XK_BackSpace);
 	feh_set_kb(&keys.next_img  , 0, XK_Right     , 0, XK_n         , 0, XK_space);
 	feh_set_kb(&keys.jump_back , 0, XK_Page_Up   , 0, XK_KP_Page_Up, 0, 0);
@@ -191,6 +195,14 @@ void init_keyevents(void) {
 			cur_kb = &keys.scroll_up;
 		else if (!strcmp(action, "scroll_down"))
 			cur_kb = &keys.scroll_down;
+		else if (!strcmp(action, "scroll_right_page"))
+			cur_kb = &keys.scroll_right_page;
+		else if (!strcmp(action, "scroll_left_page"))
+			cur_kb = &keys.scroll_left_page;
+		else if (!strcmp(action, "scroll_up_page"))
+			cur_kb = &keys.scroll_up_page;
+		else if (!strcmp(action, "scroll_down_page"))
+			cur_kb = &keys.scroll_down_page;
 		else if (!strcmp(action, "prev_img"))
 			cur_kb = &keys.prev_img;
 		else if (!strcmp(action, "next_img"))
@@ -447,6 +459,22 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.scroll_up, keysym, state)) {
 		winwid->im_y += 20;
+		winwidget_render_image(winwid, 0, 1);
+	}
+	else if (feh_is_kp(&keys.scroll_right_page, keysym, state)) {
+		winwid->im_x -= winwid->w;
+		winwidget_render_image(winwid, 0, 1);
+	}
+	else if (feh_is_kp(&keys.scroll_left_page, keysym, state)) {
+		winwid->im_x += winwid->w;
+		winwidget_render_image(winwid, 0, 1);
+	}
+	else if (feh_is_kp(&keys.scroll_down_page, keysym, state)) {
+		winwid->im_y -= winwid->h;
+		winwidget_render_image(winwid, 0, 1);
+	}
+	else if (feh_is_kp(&keys.scroll_up_page, keysym, state)) {
+		winwid->im_y += winwid->h;
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.jump_back, keysym, state)) {

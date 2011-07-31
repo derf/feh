@@ -152,6 +152,10 @@ struct __fehkb {
 	struct __fehkey next_img;
 	struct __fehkey scroll_up;
 	struct __fehkey scroll_down;
+	struct __fehkey scroll_right_page;
+	struct __fehkey scroll_left_page;
+	struct __fehkey scroll_up_page;
+	struct __fehkey scroll_down_page;
 	struct __fehkey jump_back;
 	struct __fehkey quit;
 	struct __fehkey jump_fwd;
