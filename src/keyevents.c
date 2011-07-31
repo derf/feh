@@ -50,22 +50,22 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 		return;
 	}
 
-	if (ks[1] == '-') {
-		switch (ks[0]) {
+	while (cur[1] == '-') {
+		switch (cur[0]) {
 			case 'C':
-				mod = ControlMask;
+				mod |= ControlMask;
 				break;
 			case '1':
-				mod = Mod1Mask;
+				mod |= Mod1Mask;
 				break;
 			case '4':
-				mod = Mod4Mask;
+				mod |= Mod4Mask;
 				break;
 			default:
-				weprintf("keys: invalid modifier %c in %s", ks[0], ks);
+				weprintf("keys: invalid modifier %c in %s", cur[0], ks);
 				break;
 		}
-		cur = ks + 2;
+		cur += 2;
 	}
 
 	key->keysyms[index] = XStringToKeysym(cur);
