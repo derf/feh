@@ -47,8 +47,8 @@ Running feh 1.9-21-gbeecfaf from github on a FC13 x86_64 machine.
      user: dayne
     votes: 1
   created: 2010/10/06 16:22:25 -0700
-  updated: 2011/04/12 11:48:32 -0700
- comments: 1
+  updated: 2011/08/01 02:45:58 -0700
+ comments: 2
  
 12. "Reverse" --scale-down (zoom images to screen size)
 -------------------------------------------------------
@@ -118,27 +118,6 @@ Like: "1 of 4" -> delete file -> "2 of 4" -> rerender -> "1 of 3"
      user: derf
     votes: 0
   created: 2011/05/30 14:44:05 -0700
-  updated: 2011/05/30 14:45:14 -0700
- comments: 0
- 
-49. separated short options in theme file
------------------------------------------
-if a theme (but not normal commandline) contains multiple separate short
-options (e.g. -x -d instead of -xd), feh gives errors and ignores the first
-argument specified on commandline, or segfaults if no arguments are specified.
-for example:
-theme: feh --scale-down -x -d
-commandline: feh ~/img.jpg
-result: the following errors, and loading all images in . while ignoring
-~/img.jpg
-feh: invalid option -- '�'
-feh: invalid option -- ''
-
-experienced with 1.14.1
-    state: open
-     user: ze-
-    votes: 0
-  created: 2011/06/04 18:15:32 -0700
-  updated: 2011/06/04 23:58:12 -0700
+  updated: 2011/08/01 09:03:40 -0700
  comments: 1
  
