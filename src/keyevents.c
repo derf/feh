@@ -55,6 +55,9 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 			case 'C':
 				mod |= ControlMask;
 				break;
+			case 'S':
+				mod |= ShiftMask;
+				break;
 			case '1':
 				mod |= Mod1Mask;
 				break;
@@ -69,6 +72,8 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 	}
 
 	key->keysyms[index] = XStringToKeysym(cur);
+	if (isascii(key->keysyms[index]))
+		mod &= ~ShiftMask;
 	key->keystates[index] = mod;
 
 	if (key->keysyms[index] == NoSymbol)
@@ -358,7 +363,10 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	kev = (XKeyEvent *) ev;
 	len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
-	state = kev->state & (ControlMask | Mod1Mask | Mod4Mask);
+	state = kev->state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
+
+	if (isascii(keysym))
+		state &= ~ShiftMask;
 
 	/* menus are showing, so this is a menu control keypress */
 	if (ev->xbutton.window == menu_cover) {
