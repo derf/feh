@@ -2,6 +2,15 @@ git HEAD
 
     * Respect --image-bg option in full-screen mode
 
+    [Patches by Yu-Jie Lin]
+
+    * Add scroll by page actions
+    * Allow combination of multiple key modifiers
+    * Fix option pair bug in theme config
+      <https://github.com/derf/feh/issues/49>
+    * Allow Shift modifier in key config
+      <https://github.com/derf/feh/issues/30>
+
 Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.14.2
