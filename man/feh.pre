@@ -873,16 +873,23 @@ is an X11 keysym name as shown by
 .Xr xev 1 ,
 like
 .Qq Delete .
-It may optionally start with a modifier for things like Control, in which case
+It may optionally start with modifiers for things like Control, in which case
 .Ar key
 looks like
 .Ar mod Ns No - Ns Ar keysym
-.Pq for example Qo C-Delete Qc for Ctrl+Delete .
+.Po
+for example
+.Qq C-Delete
+for Ctrl+Delete or
+.Qq C-1-Delete
+for Ctrl+Alt+Delete
+.Pc
 .
 .Pp
 .
 Available modifiers are
-.Ar C No for Control and
+.Ar C No for Control ,
+.Ar S No for Shift and
 .Ar 1 , 4 No for Mod1 and Mod4 .
 .
 .Pp
@@ -1059,6 +1066,22 @@ Scroll up
 Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons,
 hit the render key after scrolling to antialias the image.
+.
+.It Aq Alt+Left
+.
+Scroll to the left by one page
+.
+.It Aq Alt+Right
+.
+Scroll to the right by one page
+.
+.It Aq Alt+Up
+.
+Scroll up by one page
+.
+.It Aq Alt+Down
+.
+Scroll down by one page
 .
 .It Ao keypad begin Ac Bq render
 .
