@@ -42,6 +42,11 @@ supports filelists, various image sorting modes, image captions and more.
 Configurable keyboard shortcuts are used to control it; the mouse is also
 supported, but only required for very few actions.
 .
+.Pp
+.
+.Nm
+can also be used as wallpaper setter.
+.
 .
 .Sh MODES
 .
