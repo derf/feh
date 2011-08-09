@@ -26,6 +26,9 @@ Installation
 $ make
 $ sudo make install
 
+ZSH Completion for feh is available at
+<http://git.finalrewind.org/zsh/plain/etc/completions/_feh>
+
 Make flags
 ----------
 
