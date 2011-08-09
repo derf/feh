@@ -786,7 +786,7 @@ void feh_display_status(char stat)
 	return;
 }
 
-void feh_edit_inplace_orient(winwidget w, int orientation)
+void feh_edit_inplace(winwidget w, int op)
 {
 	int ret;
 	Imlib_Image old;
@@ -794,14 +794,21 @@ void feh_edit_inplace_orient(winwidget w, int orientation)
 		return;
 
 	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
-		feh_edit_inplace_lossless_rotate(w, orientation);
+		feh_edit_inplace_lossless(w, op);
 		feh_reload_image(w, 1, 1);
 		return;
 	}
 
 	ret = feh_load_image(&old, FEH_FILE(w->file->data));
 	if (ret) {
-		gib_imlib_image_orientate(old, orientation);
+		if (op == INPLACE_EDIT_FLIP) {
+			imlib_context_set_image(old);
+			imlib_image_flip_vertical();
+		} else if (op == INPLACE_EDIT_MIRROR) {
+			imlib_context_set_image(old);
+			imlib_image_flip_horizontal();
+		} else
+			gib_imlib_image_orientate(old, op);
 		gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
 		gib_imlib_free_image(old);
 		feh_reload_image(w, 1, 1);
@@ -910,37 +917,47 @@ gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style *
 	return lines;
 }
 
-void feh_edit_inplace_lossless_rotate(winwidget w, int orientation)
+void feh_edit_inplace_lossless(winwidget w, int op)
 {
 	char *filename = FEH_FILE(w->file->data)->filename;
-	char rotate_str[4];
 	int len = strlen(filename) + 1;
 	char *file_str = emalloc(len);
-	int rotatearg = 90 * orientation;
 	int pid, status;
+	char op_name[]  = "rotate";     /* message */
+	char op_op[]    = "-rotate";    /* jpegtran option */
+	char op_value[] = "horizontal"; /* jpegtran option's value */
 
-	snprintf(rotate_str, 4, "%d", rotatearg);
+	if (op == INPLACE_EDIT_FLIP) {
+		sprintf(op_name,  "flip");
+		sprintf(op_op,    "-flip");
+		sprintf(op_value, "vertical");
+	} else if (op == INPLACE_EDIT_MIRROR) {
+		sprintf(op_name,  "mirror");
+		sprintf(op_op,    "-flip");
+	} else
+		snprintf(op_value, 4, "%d", 90 * op);
+
 	snprintf(file_str, len, "%s", filename);
 
 	if ((pid = fork()) < 0) {
-		im_weprintf(w, "lossless rotate: fork failed:");
+		im_weprintf(w, "lossless %s: fork failed:", op_name);
 		return;
 	} else if (pid == 0) {
 
-		execlp("jpegtran", "jpegtran", "-copy", "all", "-rotate",
-				rotate_str, "-outfile", file_str, file_str, NULL);
+		execlp("jpegtran", "jpegtran", "-copy", "all", op_op, op_value,
+				"-outfile", file_str, file_str, NULL);
 
-		im_weprintf(w, "lossless rotate: Is 'jpegtran' installed? Failed to exec:");
+		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
 		return;
 	} else {
 		waitpid(pid, &status, 0);
 
 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 			im_weprintf(w,
-					"lossless rotate: Got exitcode %d from jpegtran."
+					"lossless %s: Got exitcode %d from jpegtran."
 					" Commandline was: "
-					"jpegtran -copy all -rotate %s -outfile %s %s",
-					status >> 8, rotate_str, file_str, file_str);
+					"jpegtran -copy all %s %s -outfile %s %s",
+					op_name, status >> 8, op_op, op_value, file_str, file_str);
 			return;
 		}
 	}

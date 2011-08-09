@@ -290,6 +290,10 @@ void init_keyevents(void) {
 			cur_kb = &keys.orient_1;
 		else if (!strcmp(action, "orient_3"))
 			cur_kb = &keys.orient_3;
+		else if (!strcmp(action, "flip"))
+			cur_kb = &keys.flip;
+		else if (!strcmp(action, "mirror"))
+			cur_kb = &keys.mirror;
 		else if (!strcmp(action, "reload_minus"))
 			cur_kb = &keys.reload_minus;
 		else if (!strcmp(action, "reload_plus"))
@@ -645,10 +649,16 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_destroy(winwid);
 	}
 	else if (feh_is_kp(&keys.orient_1, keysym, state)) {
-		feh_edit_inplace_orient(winwid, 1);
+		feh_edit_inplace(winwid, 1);
 	}
 	else if (feh_is_kp(&keys.orient_3, keysym, state)) {
-		feh_edit_inplace_orient(winwid, 3);
+		feh_edit_inplace(winwid, 3);
+	}
+	else if (feh_is_kp(&keys.flip, keysym, state)) {
+		feh_edit_inplace(winwid, INPLACE_EDIT_FLIP);
+	}
+	else if (feh_is_kp(&keys.mirror, keysym, state)) {
+		feh_edit_inplace(winwid, INPLACE_EDIT_MIRROR);
 	}
 	else if (feh_is_kp(&keys.toggle_fullscreen, keysym, state)) {
 #ifdef HAVE_LIBXINERAMA
