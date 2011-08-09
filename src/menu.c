@@ -1351,7 +1351,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 			winwidget_size_to_image(m->fehwin);
 			break;
 		case CB_EDIT_ROTATE:
-			feh_edit_inplace_orient(m->fehwin, (int) data);
+			feh_edit_inplace(m->fehwin, (int) data);
 			break;
 		case CB_SAVE_IMAGE:
 			slideshow_save_image(m->fehwin);

@@ -194,6 +194,8 @@ struct __fehkb {
 	struct __fehkey close;
 	struct __fehkey orient_1;
 	struct __fehkey orient_3;
+	struct __fehkey flip;
+	struct __fehkey mirror;
 	struct __fehkey toggle_fullscreen;
 	struct __fehkey reload_minus;
 	struct __fehkey reload_plus;

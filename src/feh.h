@@ -98,6 +98,9 @@ enum slide_change { SLIDE_NEXT, SLIDE_PREV, SLIDE_RAND, SLIDE_FIRST, SLIDE_LAST,
 	SLIDE_JUMP_BACK
 };
 
+#define INPLACE_EDIT_FLIP   -1
+#define INPLACE_EDIT_MIRROR -2
+
 typedef void (*sighandler_t) (int);
 
 int feh_main_iteration(int block);
