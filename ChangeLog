@@ -10,6 +10,8 @@ git HEAD
       <https://github.com/derf/feh/issues/49>
     * Allow Shift modifier in key config
       <https://github.com/derf/feh/issues/30>
+    * New actions: lossless flip (key _) and mirror (key |)
+      <https://github.com/derf/feh/issues/53>
 
 Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 

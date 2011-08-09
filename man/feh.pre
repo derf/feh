@@ -1012,6 +1012,17 @@ away.  See
 .Xr jpegtran 1
 for more about lossless JPEG rotation.
 .
+.It _ Bq flip
+.
+In place editing - vertical flip
+.
+.It | Bq mirror
+.
+In place editing - horizontal flip.
+Again, see
+.Xr jpegtran 1
+for more information.
+.
 .It 0 .. 9 Bq action_0 .. action_9
 .
 Execute the corresponding action

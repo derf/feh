@@ -147,6 +147,8 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.save_filelist, 0, XK_f, 0, 0, 0, 0);
 	feh_set_kb(&keys.orient_1, 0, XK_greater, 0, 0, 0, 0);
 	feh_set_kb(&keys.orient_3, 0, XK_less, 0, 0, 0, 0);
+	feh_set_kb(&keys.flip, 0, XK_underscore, 0, 0, 0, 0);
+	feh_set_kb(&keys.mirror, 0, XK_bar, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_minus, 0, XK_minus, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_plus, 0, XK_plus, 0, 0, 0, 0);
 
