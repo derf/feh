@@ -439,14 +439,12 @@ void feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m, feh_menu_item *
 
 void feh_menu_move(feh_menu * m, int x, int y)
 {
-	int dx, dy;
-
 	if (!m)
 		return;
-	dx = x - m->x;
-	dy = y - m->y;
+
 	if (m->visible)
 		XMoveWindow(disp, m->win, x, y);
+
 	m->x = x;
 	m->y = y;
 	return;
@@ -580,7 +578,6 @@ void feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
 	}
 
 	return;
-	m = NULL;
 }
 
 void feh_menu_calc_size(feh_menu * m)
@@ -621,16 +618,14 @@ void feh_menu_calc_size(feh_menu * m)
 
 			im = i->icon;
 			if (im) {
-				int iw, ih, ow, oh;
+				int iw, ih, ow;
 
 				iw = gib_imlib_image_get_width(im);
 				ih = gib_imlib_image_get_height(im);
 				if (ih <= max_h) {
 					ow = iw;
-					oh = ih;
 				} else {
 					ow = (iw * max_h) / ih;
-					oh = max_h;
 				}
 				if (ow > icon_w)
 					icon_w = ow;

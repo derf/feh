@@ -172,7 +172,6 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 
 void slideshow_change_image(winwidget winwid, int change)
 {
-	int success = 0;
 	gib_list *last = NULL;
 	int i = 0;
 	int jmp = 1;
@@ -253,7 +252,6 @@ void slideshow_change_image(winwidget winwid, int change)
 
 		if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
 		    != 0) {
-			success = 1;
 			winwid->mode = MODE_NORMAL;
 			winwid->file = current_file;
 			if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))

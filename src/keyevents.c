@@ -350,7 +350,6 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 
 void feh_event_handle_keypress(XEvent * ev)
 {
-	int len;
 	int state;
 	char kbuf[20];
 	KeySym keysym;
@@ -368,7 +367,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 
 	kev = (XKeyEvent *) ev;
-	len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
+	XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
 	state = kev->state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 
 	if (isascii(keysym))

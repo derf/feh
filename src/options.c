@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static void check_options(void);
 static void feh_getopt_theme(int argc, char **argv);
 static void feh_parse_option_array(int argc, char **argv, int finalrun);
-static void feh_check_theme_options(int arg, char **argv);
+static void feh_check_theme_options(int argc, char **argv);
 static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
 static void show_usage(void);
@@ -120,7 +120,7 @@ void init_parse_options(int argc, char **argv)
 	return;
 }
 
-static void feh_check_theme_options(int arg, char **argv)
+static void feh_check_theme_options(int argc, char **argv)
 {
 	if (!theme) {
 		/* This prevents screw up when running src/feh or ./feh */
@@ -137,7 +137,6 @@ static void feh_check_theme_options(int arg, char **argv)
 
 	free(theme);
 	return;
-	arg = 0;
 }
 
 static void feh_load_options_for_theme(char *theme)
