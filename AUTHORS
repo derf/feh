@@ -44,6 +44,9 @@ JC <jcm314@yahoo.com>
 Ulrich Spoerlein <q@uni.de>
     - fullscreen image count display
 
+Yu-Jie Lin
+    - Various patches
+
 Daniel Friesel <derf@finalrewind.org>
     - Maintenance since 2010
 
@@ -58,4 +61,3 @@ The Rasterman <raster@rasterman.com>
     - Imlib2, initial zooming code example. Enlightenment.
 Stephen Levine
     - Great help debugging under E17
-
