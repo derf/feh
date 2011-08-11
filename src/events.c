@@ -130,12 +130,12 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("Prev Button Press event\n"));
 		if ((winwid != NULL)
 				&& (winwid->type == WIN_TYPE_SLIDESHOW))
-			slideshow_change_image(winwid, SLIDE_PREV);
+			slideshow_change_image(winwid, SLIDE_PREV, 1);
 	} else if (ev->xbutton.button == opt.next_button) {
 		D(("Next Button Press event\n"));
 		if ((winwid != NULL)
 				&& (winwid->type == WIN_TYPE_SLIDESHOW))
-			slideshow_change_image(winwid, SLIDE_NEXT);
+			slideshow_change_image(winwid, SLIDE_NEXT, 1);
 	} else {
 		D(("Received other ButtonPress event\n"));
 	}
@@ -191,7 +191,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				winwid->mode = MODE_NORMAL;
 			if ((winwid != NULL)
 					&& (winwid->type == WIN_TYPE_SLIDESHOW)) {
-				slideshow_change_image(winwid, SLIDE_NEXT);
+				slideshow_change_image(winwid, SLIDE_NEXT, 1);
 			} else if ((winwid != NULL)
 					&& (winwid->type == WIN_TYPE_THUMBNAIL)) {
 				feh_file *thumbfile;

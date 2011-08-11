@@ -334,7 +334,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			winwidget_update_caption(winwid);
 
 			if (! opt.hold_actions[action])
-				slideshow_change_image(winwid, SLIDE_NEXT);
+				slideshow_change_image(winwid, SLIDE_NEXT, 1);
 
 		} else if ((winwid->type == WIN_TYPE_SINGLE)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
@@ -448,13 +448,13 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	if (feh_is_kp(&keys.next_img, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_NEXT);
+			slideshow_change_image(winwid, SLIDE_NEXT, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, 1);
 	}
 	else if (feh_is_kp(&keys.prev_img, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_PREV);
+			slideshow_change_image(winwid, SLIDE_PREV, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_prev(winwid, 1);
 	}
@@ -492,13 +492,13 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.jump_back, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_JUMP_BACK);
+			slideshow_change_image(winwid, SLIDE_JUMP_BACK, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_prev(winwid, 10);
 	}
 	else if (feh_is_kp(&keys.jump_fwd, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_JUMP_FWD);
+			slideshow_change_image(winwid, SLIDE_JUMP_FWD, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, 10);
 	}
@@ -517,11 +517,11 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.jump_first, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_FIRST);
+			slideshow_change_image(winwid, SLIDE_FIRST, 1);
 	}
 	else if (feh_is_kp(&keys.jump_last, keysym, state)) {
 		if (opt.slideshow)
-			slideshow_change_image(winwid, SLIDE_LAST);
+			slideshow_change_image(winwid, SLIDE_LAST, 1);
 	}
 	else if (feh_is_kp(&keys.action_0, keysym, state)) {
 		feh_event_invoke_action(winwid, 0);
@@ -617,7 +617,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		opt.hide_pointer = !opt.hide_pointer;
 	}
 	else if (feh_is_kp(&keys.jump_random, keysym, state)) {
-		slideshow_change_image(winwid, SLIDE_RAND);
+		slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
 	else if (feh_is_kp(&keys.toggle_caption, keysym, state)) {
 		if (opt.caption_path)

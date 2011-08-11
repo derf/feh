@@ -14,6 +14,8 @@ git HEAD
       <https://github.com/derf/feh/issues/53>
     * Fix save_image key for *.JPG and similar filenames
       <https://github.com/derf/feh/issues/51>
+    * Show correct file number after deleting image
+      <https://github.com/derf/feh/issues/46>
 
 Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 

@@ -1321,25 +1321,25 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 		case CB_SORT_FILENAME:
 			filelist = gib_list_sort(filelist, feh_cmp_filename);
 			if (opt.jump_on_resort) {
-				slideshow_change_image(m->fehwin, SLIDE_FIRST);
+				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_IMAGENAME:
 			filelist = gib_list_sort(filelist, feh_cmp_name);
 			if (opt.jump_on_resort) {
-				slideshow_change_image(m->fehwin, SLIDE_FIRST);
+				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_FILESIZE:
 			filelist = gib_list_sort(filelist, feh_cmp_size);
 			if (opt.jump_on_resort) {
-				slideshow_change_image(m->fehwin, SLIDE_FIRST);
+				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_RANDOMIZE:
 			filelist = gib_list_randomize(filelist);
 			if (opt.jump_on_resort) {
-				slideshow_change_image(m->fehwin, SLIDE_FIRST);
+				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_FIT:

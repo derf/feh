@@ -83,7 +83,7 @@ void init_slideshow_mode(void)
 
 void cb_slide_timer(void *data)
 {
-	slideshow_change_image((winwidget) data, SLIDE_NEXT);
+	slideshow_change_image((winwidget) data, SLIDE_NEXT, 1);
 	return;
 }
 
@@ -170,7 +170,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	return;
 }
 
-void slideshow_change_image(winwidget winwid, int change)
+void slideshow_change_image(winwidget winwid, int change, int render)
 {
 	gib_list *last = NULL;
 	int i = 0;
@@ -260,7 +260,8 @@ void slideshow_change_image(winwidget winwid, int change)
 			winwidget_reset_image(winwid);
 			winwid->im_w = gib_imlib_image_get_width(winwid->im);
 			winwid->im_h = gib_imlib_image_get_height(winwid->im);
-			winwidget_render_image(winwid, 1, 0);
+			if (render)
+				winwidget_render_image(winwid, 1, 0);
 
 			s = slideshow_create_name(FEH_FILE(current_file->data));
 			winwidget_rename(winwid, s);
@@ -428,7 +429,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 		gib_list *doomed;
 
 		doomed = current_file;
-		slideshow_change_image(winwid, SLIDE_NEXT);
+		slideshow_change_image(winwid, SLIDE_NEXT, 0);
 		if (do_delete)
 			filelist = feh_file_rm_and_free(filelist, doomed);
 		else
@@ -441,6 +442,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 		s = slideshow_create_name(FEH_FILE(winwid->file->data));
 		winwidget_rename(winwid, s);
 		free(s);
+		winwidget_render_image(winwid, 1, 0);
 	} else if ((winwid->type == WIN_TYPE_SINGLE)
 		   || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
 		if (do_delete)

@@ -121,7 +121,7 @@ void init_unloadables_mode(void);
 void feh_clean_exit(void);
 int feh_load_image(Imlib_Image * im, feh_file * file);
 void show_mini_usage(void);
-void slideshow_change_image(winwidget winwid, int change);
+void slideshow_change_image(winwidget winwid, int change, int render);
 void slideshow_pause_toggle(winwidget w);
 char *slideshow_create_name(feh_file * file);
 void init_keyevents(void);
