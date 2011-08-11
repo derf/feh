@@ -1,6 +1,7 @@
 git HEAD
 
     * Respect --image-bg option in full-screen mode
+    * Disable blur / rotation in thumbnail viewer window
 
     [Patches by Yu-Jie Lin]
 
