@@ -134,7 +134,7 @@ void cb_reload_timer(void *data)
 	winwidget_rename(w, current_filename);
 	free(current_filename);
 
-	feh_reload_image(w, 0, 0);
+	feh_reload_image(w, 1, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
 }
