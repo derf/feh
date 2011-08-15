@@ -135,14 +135,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root, *data_esetroot;
 		Pixmap pmap_d1, pmap_d2;
+
 		/* string for sticking in ~/.fehbg */
 		char *fehbg = NULL;
 		char *home;
 		char filbuf[PATH_MAX];
 		char fehbg_xinerama[] = "--no-xinerama";
-
-		if (opt.xinerama)
-			fehbg_xinerama[0] = '\0';
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -151,6 +149,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		XGCValues gcvalues;
 		GC gc;
 		int in, out, w, h;
+
+		if (opt.xinerama)
+			fehbg_xinerama[0] = '\0';
 
 		D(("Falling back to XSetRootWindowPixmap\n"));
 
@@ -269,9 +270,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			int render_x = 0;
 			int render_y = 0;
 			int border_x = (((img_w * scr_h) > (img_h * scr_w)) ? 0 : 1);
+			XGCValues gcval;
+
 			w = (border_x ? ((scr_h * img_w) / img_h) : scr_w);
 			h = (border_x ? scr_h : ((scr_w * img_h) / img_w));
-			XGCValues gcval;
 
 			if (border_x)
 				render_x = (scr_w - w) >> 1;
