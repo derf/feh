@@ -89,7 +89,50 @@ void cb_slide_timer(void *data)
 
 void cb_reload_timer(void *data)
 {
+	gib_list *l;
+	char *current_filename;
+
 	winwidget w = (winwidget) data;
+
+	// save the current filename for refinding it in new list
+	current_filename = estrdup(FEH_FILE(current_file->data)->filename);
+	gib_list_free_and_data(filelist);
+	filelist = NULL;
+	filelist_len = 0;
+	current_file = NULL;
+
+	// rebuild filelist from original_file_items
+	if (gib_list_length(original_file_items) > 0)
+		for (l = gib_list_last(original_file_items); l; l = l->prev)
+			add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
+	else if (!opt.filelistfile && !opt.bgmode)
+		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+	
+	if (!(filelist_len = gib_list_length(filelist))) {
+		fprintf(stderr, "No files found to reload.\n");
+		exit(1);
+	}
+
+	// find the previously current file
+	for (l = filelist; l; l = l->next)
+		if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
+			current_file = l;
+			break;
+		}
+
+	free(current_filename);
+
+	filelist = gib_list_first(gib_list_reverse(filelist));
+
+	if (!current_file)
+		current_file = filelist;
+	w->file = current_file;
+
+	// reset window name in case of current file order,
+	// filename, or filelist_length has changed.
+	current_filename = slideshow_create_name(FEH_FILE(current_file->data));
+	winwidget_rename(w, current_filename);
+	free(current_filename);
 
 	feh_reload_image(w, 0, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);

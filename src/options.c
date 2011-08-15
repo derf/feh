@@ -784,6 +784,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	/* Now the leftovers, which must be files */
 	if (optind < argc) {
 		while (optind < argc) {
+			if (opt.reload)
+				original_file_items = gib_list_add_front(original_file_items, estrdup(argv[optind]));
 			/* If recursive is NOT set, but the only argument is a directory
 			   name, we grab all the files in there, but not subdirs */
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
