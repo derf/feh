@@ -2,6 +2,8 @@ git HEAD
 
     * Respect --image-bg option in full-screen mode
     * Disable blur / rotation in thumbnail viewer window
+    * Fix --reloaed behaviour when combined with --fullscreen / --geometry
+      <https://github.com/derf/feh/issues/57>
 
     [Patches by Yu-Jie Lin]
 
@@ -17,6 +19,8 @@ git HEAD
       <https://github.com/derf/feh/issues/51>
     * Show correct file number after deleting image
       <https://github.com/derf/feh/issues/46>
+    * Add reload functionality for directories
+      <https://github.com/derf/feh/issues/14>
 
 Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
 

@@ -399,9 +399,10 @@ to the content of those directories, all the way down to the bottom level.
 .
 .It Cm -R , --reload Ar int
 .
-Reload images after
+Reload filelist and current image after
 .Ar int
-seconds.  Mainly useful when viewing webcams via http.
+seconds.  Useful for viewing HTTP webcams or frequently changing directories.
+.Pq Note that the filelist reloading is still experimental.
 .
 .It Cm -n , --reverse
 .
