@@ -1,6 +1,6 @@
 # open issues on derf/feh
-5. Xinerama only works for Xinerama screen 0
---------------------------------------------
+5. various Xinerama issues
+--------------------------
 From TODO:
 On screen 1, it will work if fullscreen is turned off, the window is rendered
 and moved so that its top corner is only on screen 1, and then fullscreen is
@@ -9,8 +9,8 @@ turned on (after that, it'll work for all images in the slideshow).
      user: derf
     votes: 0
   created: 2010/08/21 11:08:12 -0700
-  updated: 2011/05/10 10:06:06 -0700
- comments: 1
+  updated: 2011/08/15 01:24:15 -0700
+ comments: 2
  
 9. feh fails for massive images
 -------------------------------
@@ -67,23 +67,6 @@ This can already partially be achieved by combining --auto-zoom and --geometry
   updated: 2011/04/12 11:48:05 -0700
  comments: 0
  
-14. Reload functionality for directories
-----------------------------------------
---reload works for single images, but not for directories
-
-With the use of feh I built a simple Info-Screen with a mini-pc and a samba
-share from which feh loads images and displays them as a slideshow.
-
-Feh is able to reload a file after an amount of time. But it doesn't reload the
-content of a folder. I used a script that restarts feh every 10 minutes to make
-it display files that are uploaded to the samba share while feh is running.
-    state: open
-     user: pgassmann
-    votes: 2
-  created: 2010/10/29 16:10:45 -0700
-  updated: 2011/05/10 10:06:06 -0700
- comments: 1
- 
 24. maybe: include giblib directly into feh
 -------------------------------------------
 There are only three programs using giblib, one of them is feh. And feh only
@@ -104,20 +87,19 @@ that.
      user: derf
     votes: 0
   created: 2011/01/18 13:36:27 -0800
-  updated: 2011/05/10 10:06:06 -0700
+  updated: 2011/08/08 01:47:12 -0700
  comments: 0
  
-46. --draw-filename: "x of y": wrong y after file deletion
-----------------------------------------------------------
-After deleting a file, feh will still count it when calculating the total shown
-in the next image. This is fixed by any action causing the image window to be
-re-rendered.
-
-Like: "1 of 4" -> delete file -> "2 of 4" -> rerender -> "1 of 3"
+54. center large images [was: zoom to window size]
+--------------------------------------------------
+i frequently use feh with a tiling window manager. it would be great if there
+were a switch that automatically zoomed the image to the window size (like with
+fullscreen, but without actually changing the window size). right now i need to
+specify the exact geometry to get this to work correctly.
     state: open
-     user: derf
+     user: ecraven
     votes: 0
-  created: 2011/05/30 14:44:05 -0700
-  updated: 2011/08/01 09:03:40 -0700
- comments: 1
+  created: 2011/08/11 03:15:38 -0700
+  updated: 2011/08/11 07:59:54 -0700
+ comments: 6
  
