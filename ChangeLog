@@ -1,3 +1,10 @@
+Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
+
+* Release v1.15.1
+    * Fix segfault when selecting menu items (broken by 1.15)
+      <https://github.com/derf/feh/issues/58>,
+      <https://bugs.archlinux.org/task/25612>
+
 Mon, 15 Aug 2011 11:12:34 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.15
