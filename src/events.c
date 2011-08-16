@@ -79,7 +79,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		if (winwid != NULL) {
 			winwidget_show_menu(winwid);
 		}
-	} else if ((ev->xbutton.button == opt.rotate_button)
+	} else if (winwid && (ev->xbutton.button == opt.rotate_button)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)
 		   && ((opt.no_rotate_ctrl_mask)
 		       || (ev->xbutton.state & ControlMask))) {
@@ -88,7 +88,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 			winwid->mode = MODE_ROTATE;
 			D(("rotate starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
 		}
-	} else if ((ev->xbutton.button == opt.blur_button)
+	} else if (winwid && (ev->xbutton.button == opt.blur_button)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)
 		   && ((opt.no_blur_ctrl_mask)
 		       || (ev->xbutton.state & ControlMask))) {
