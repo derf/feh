@@ -1213,7 +1213,8 @@ Switch to previous image
 .
 .Sh USAGE EXAMPLES
 .
-Here are some examples of useful option combinations
+Here are some examples of useful option combinations. See also:
+.Aq http://feh.finalrewind.org/examples/
 .
 .Bl -tag -width indent
 .
