@@ -331,15 +331,20 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 	if (opt.actions[action]) {
 		if (opt.slideshow) {
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
-			winwidget_update_caption(winwid);
 
-			if (! opt.hold_actions[action])
+			if (opt.hold_actions[action])
+				feh_reload_image(winwid, 1, 1);
+			else
 				slideshow_change_image(winwid, SLIDE_NEXT, 1);
 
 		} else if ((winwid->type == WIN_TYPE_SINGLE)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
-			winwidget_destroy(winwid);
+
+			if (opt.hold_actions[action])
+				feh_reload_image(winwid, 1, 1);
+			else
+				winwidget_destroy(winwid);
 		} else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			fputs("actions from the main thumb window aren't currently supported!\n"
 					"For now, open the image to perform the action on it.\n",

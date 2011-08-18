@@ -123,7 +123,8 @@ If
 is
 .Qq \&; ,
 .Nm
-will not switch to the next image after executing the action.
+will reload the current image instead of switching to the next one after
+executing the action.
 .
 .Pp
 .
