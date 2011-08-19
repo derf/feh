@@ -62,6 +62,10 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
 
+	feh_hex_to_color(DEFAULT_TEXT_BG, opt.text_bg);
+	feh_hex_to_color(DEFAULT_TEXT_FG, opt.text_fg);
+	feh_hex_to_color(DEFAULT_TEXT_SHADOW, opt.text_shadow);
+	
 	opt.reload_button = 0;
 	opt.pan_button = 1;
 	opt.zoom_button = 2;
@@ -422,6 +426,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
+		{"text-bg"       , 1, 0, 236},
+		{"text-fg"       , 1, 0, 237},
+		{"text-shadow"   , 1, 0, 238},
 
 		{0, 0, 0, 0}
 	};
@@ -775,6 +782,18 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 235:
 			opt.force_aliasing = 1;
+			break;
+		case 236:
+			if (feh_hex_to_color(optarg, opt.text_bg))
+				weprintf("--text-bg color format is incorrect.");
+			break;
+		case 237:
+			if (feh_hex_to_color(optarg, opt.text_fg))
+				weprintf("--text-fg color format is incorrect");
+			break;
+		case 238:
+			if (feh_hex_to_color(optarg, opt.text_shadow))
+				weprintf("--text-shadow color format is incorrect.");
 			break;
 		default:
 			break;

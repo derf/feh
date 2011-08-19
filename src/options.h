@@ -30,6 +30,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ZOOM_MODE_FILL 1
 #define ZOOM_MODE_MAX  2
 
+#define DEFAULT_TEXT_BG     "00000000"
+#define DEFAULT_TEXT_FG     "FFFFFFFF"
+#define DEFAULT_TEXT_SHADOW "000000FF"
+
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
@@ -107,6 +111,10 @@ struct __fehoptions {
 	unsigned char no_rotate_ctrl_mask;
 	unsigned char no_blur_ctrl_mask;
 	unsigned char no_pan_ctrl_mask;
+
+	DATA8 text_bg[4];
+	DATA8 text_fg[4];
+	DATA8 text_shadow[4];
 
 	int force_aliasing;
 	int thumb_w;
