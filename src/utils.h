@@ -41,6 +41,7 @@ char *feh_unique_filename(char *path, char *basename);
 char *ereadfile(char *path);
 char *feh_get_tmp_dir(void);
 char *feh_get_user_name(void);
+int feh_hex_to_color(char *hex, DATA8 *ret);
 
 #define ESTRAPPEND(a,b) \
   {\
@@ -87,3 +88,5 @@ char *feh_get_user_name(void);
   }
 
 #endif
+
+#define COLOR_TO_RGBA_ARG(color) color[0], color[1], color[2], color[3]

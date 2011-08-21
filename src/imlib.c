@@ -358,10 +358,10 @@ void feh_draw_zoom(winwidget w)
 
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
+	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 	return;
@@ -421,9 +421,9 @@ void feh_draw_errstr(winwidget w)
 
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
 	free(w->errstr);
 	w->errstr = NULL;
@@ -487,16 +487,16 @@ void feh_draw_filename(winwidget w)
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, 2 * th, NULL,
 			NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, 2 * th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, 2 * th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
-			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+			IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
-			IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+			IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 
 	if (s) {
-		gib_imlib_text_draw(im, fn, NULL, 2, th + 1, s, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, th, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		gib_imlib_text_draw(im, fn, NULL, 2, th + 1, s, IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
+		gib_imlib_text_draw(im, fn, NULL, 1, th, s, IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 		free(s);
 	}
 
@@ -550,7 +550,7 @@ void feh_draw_info(winwidget w)
 
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, 290 * tw, 20 * th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, 290 * tw, 20 * th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, 290 * tw, 20 * th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
 	if (!info_pipe) {
 		gib_imlib_text_draw(im, fn, NULL, 2, 2,
@@ -566,16 +566,16 @@ void feh_draw_info(winwidget w)
 				info_buf[strlen(info_buf)-1] = '\0';
 
 			gib_imlib_text_draw(im, fn, NULL, 2, (no_lines*th)+2, info_buf,
-					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+					IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
 			gib_imlib_text_draw(im, fn, NULL, 1, (no_lines*th)+1, info_buf,
-					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+					IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 			no_lines++;
 		}
 		pclose(info_pipe);
 	}
 
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 2,
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
 			w->h - (th * no_lines) - 2, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
@@ -720,7 +720,7 @@ void feh_draw_caption(winwidget w)
 
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
 	l = lines;
 	x = 0;
@@ -737,7 +737,7 @@ void feh_draw_caption(winwidget w)
 				IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
 		else
 			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+				IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 
 		y += hh + 1;	/* line spacing */
 		l = l->next;
@@ -1047,10 +1047,10 @@ void feh_draw_actions(winwidget w)
 
 	gib_imlib_image_set_has_alpha(im, 1);
 	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, COLOR_TO_RGBA_ARG(opt.text_bg));
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:", IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:", IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
+	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 
 	for (i = 0; i < 10; i++) {
 		if (opt.actions[i]) {
@@ -1063,10 +1063,10 @@ void feh_draw_actions(winwidget w)
 
 			gib_imlib_text_draw(im, fn, NULL, 2,
 					(cur_action * line_th) + 2, line,
-					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+					IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_shadow));
 			gib_imlib_text_draw(im, fn, NULL, 1,
 					(cur_action * line_th) + 1, line,
-					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+					IMLIB_TEXT_TO_RIGHT, COLOR_TO_RGBA_ARG(opt.text_fg));
 			free(line);
 		}
 	}

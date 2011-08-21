@@ -234,3 +234,31 @@ char *feh_get_user_name(void)
 	feh_user_name = estrdup(pw->pw_name);
 	return feh_user_name;
 }
+
+/* converts hex string to DATA8[4] color
+ * supported format: RRGGBBAA (case insensitive)
+ * stored as {RR, GG, BB, AA}
+ * returns -1 if string is in not correct format
+ */
+int feh_hex_to_color(char *hex, DATA8 *ret)
+{
+	int i;
+	int c;
+	DATA8 d[4] = {0, 0, 0, 0};
+
+	if (strlen(hex) != 8)
+		return -1;
+	for (i=0; i<8; i++) {
+		c = tolower(hex[i]);
+		if (c >= '0' && c <= '9')
+			c -= '0';
+		else if (c >= 'a' && c <= 'f')
+			c -= 'a' - 10;
+		else
+			return -1;
+
+		d[i/2] += c << (4 * (i % 2 == 0));
+	}
+	memcpy(ret, d, 4);
+	return 0;
+}

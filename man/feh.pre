@@ -438,6 +438,18 @@ Start the filelist at
 See
 .Sx USAGE EXAMPLES .
 .
+.It Cm --text-bg Ar RRGGBBAA
+.
+Set the text background color.
+.
+.It Cm --text-fg Ar RRGGBBAA
+.
+Set the text foreground color.
+.
+.It Cm --text-shadow Ar RRGGBBAA
+.
+Set the text shadow color.
+.
 .It Cm -T , --theme Ar theme
 .
 Load options from config file with name
