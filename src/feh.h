@@ -93,7 +93,7 @@ enum bgmode_type { BG_MODE_NONE = 0, BG_MODE_TILE, BG_MODE_CENTER,
 	BG_MODE_SCALE, BG_MODE_FILL, BG_MODE_MAX
 };
 
-enum zoom_mode { ZOOM_MODE_FILL, ZOOM_MODE_MAX };
+enum zoom_mode { ZOOM_MODE_FILL = 1, ZOOM_MODE_MAX };
 
 enum text_bg { TEXT_BG_CLEAR = 0, TEXT_BG_TINTED };
 
