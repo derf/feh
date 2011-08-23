@@ -510,11 +510,12 @@ void feh_draw_filename(winwidget w)
 void feh_draw_info(winwidget w)
 {
 	static Imlib_Font fn = NULL;
-	int tw = 0, th = 0;
+	int width = 0, height = 0, line_width = 0, line_height = 0;
 	Imlib_Image im = NULL;
-	int no_lines = 0;
+	int no_lines = 0, i;
 	char *info_cmd;
-	char info_buf[256];
+	char info_line[256];
+	char *info_buf[128];
 	FILE *info_pipe;
 
 	if ((!w->file) || (!FEH_FILE(w->file->data))
@@ -538,41 +539,53 @@ void feh_draw_info(winwidget w)
 
 	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data));
 
-	gib_imlib_get_text_size(fn, "w", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-
 	info_pipe = popen(info_cmd, "r");
 
-	im = imlib_create_image(290 * tw, 20 * th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
-
-	feh_imlib_image_fill_text_bg(im, 290 * tw, 20 * th);
-
 	if (!info_pipe) {
-		gib_imlib_text_draw(im, fn, NULL, 2, 2,
-				"Error runnig info command", IMLIB_TEXT_TO_RIGHT,
-				255, 0, 0, 255);
-		gib_imlib_get_text_size(fn, "Error running info command", NULL, &tw, &th,
-				IMLIB_TEXT_TO_RIGHT);
+		info_buf[0] = estrdup("Failed to run info command");
+		gib_imlib_get_text_size(fn, info_buf[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
 	else {
-		while ((no_lines < 20) && fgets(info_buf, 256, info_pipe)) {
-			if (info_buf[strlen(info_buf)-1] == '\n')
-				info_buf[strlen(info_buf)-1] = '\0';
+		while ((no_lines < 128) && fgets(info_line, 256, info_pipe)) {
+			if (info_line[strlen(info_line)-1] == '\n')
+				info_line[strlen(info_line)-1] = '\0';
 
-			gib_imlib_text_draw(im, fn, NULL, 2, (no_lines*th)+2, info_buf,
-					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-			gib_imlib_text_draw(im, fn, NULL, 1, (no_lines*th)+1, info_buf,
-					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
+					&line_height, IMLIB_TEXT_TO_RIGHT);
+
+			if (line_height > height)
+				height = line_height;
+			if (line_width > width)
+				width = line_width;
+
+			info_buf[no_lines] = estrdup(info_line);
+
 			no_lines++;
 		}
 		pclose(info_pipe);
 	}
 
+	height *= no_lines;
+	width += 4;
+
+	im = imlib_create_image(width, height);
+	if (!im)
+		eprintf("Couldn't create image. Out of memory?");
+
+	feh_imlib_image_fill_text_bg(im, width, height);
+
+	for (i = 0; i < no_lines; i++) {
+		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
+				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
+				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+
+		free(info_buf[i]);
+	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
-			w->h - (th * no_lines), 1, 1, 0);
+			w->h - height, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
