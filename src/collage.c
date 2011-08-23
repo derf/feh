@@ -45,6 +45,9 @@ void init_collage_mode(void)
 
 	mode = "collage";
 
+	weprintf("the --collage option (aka collage mode) is deprecated\n"
+			"and will be removed soon\n");
+
 	/* Use bg image dimensions for default size */
 	if (opt.bg && opt.bg_file) {
 		if (!strcmp(opt.bg_file, "trans"))

@@ -70,11 +70,6 @@ viewed or saved, and its size can be limited by height, width or both.
 .
 .Pp
 .
-Collage mode is very similar to montage mode, except the images are distributed
-randomly and may overlap each other.
-.
-.Pp
-.
 Index mode forms an index print from the filelist.  Image thumbnails are shown
 along with the filename, filesize and pixel size, printed using a truetype
 font of your choice.  The resulting image can be viewed or saved, and its size
@@ -167,17 +162,6 @@ and viewing image
 .Qq images/foo.jpg ,
 the caption will be looked for in
 .Qq images/captions/foo.jpg.txt .
-.
-.It Cm -c , --collage
-.
-Enable collage mode.  Collage mode is very similar to montage mode, except
-the images are distributed randomly.
-When using collage mode, you should also specify
-.Cm --limit-width
-and
-.Cm --limit-height .
-See also
-.Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -L , --customlist Ar format
 .
@@ -578,7 +562,7 @@ Don't require CTRL+Button for blurring - just use the button.
 .
 .Sh MONTAGE MODE OPTIONS
 .
-These additional options can be used for collage, index, montage and
+These additional options can be used for index, montage and
 .Pq partially
 thumbnail mode.
 .
