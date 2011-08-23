@@ -362,6 +362,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"no-rotate-ctrl-mask", 0, 0, 226},
 		{"no-blur-ctrl-mask", 0, 0, 227},
 		{"menu-ctrl-mask", 0, 0, 228},
+		{"draw-tinted"   , 0, 0, 229},
 
 		{"output"        , 1, 0, 'o'},
 		{"output-only"   , 1, 0, 'O'},
@@ -756,6 +757,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 228:
 			opt.menu_ctrl_mask = 1;
+			break;
+		case 229:
+			opt.text_bg = TEXT_BG_TINTED;
 			break;
 		case 230:
 			opt.index_show_name = atoi(optarg);

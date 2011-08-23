@@ -27,9 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
-#define ZOOM_MODE_FILL 1
-#define ZOOM_MODE_MAX  2
-
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
@@ -72,6 +69,7 @@ struct __fehoptions {
 	unsigned char cache_thumbnails;
 	unsigned char cycle_once;
 	unsigned char hold_actions[10];
+	unsigned char text_bg;
 
 	char *output_file;
 	char *output_dir;

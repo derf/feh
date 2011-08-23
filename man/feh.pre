@@ -199,6 +199,12 @@ Draw the defined actions and what they do at the top-left of the image.
 .
 Draw the filename at the top-left of the image.
 .
+.It Cm --draw-tinted
+.
+Show overlay texts
+.Pq as created by Cm --draw-filename No et al
+on a semi-transparent background to improve their readability
+.
 .It Cm -f , --filelist Ar file
 .
 This option is similar to the playlists used by music software.  If

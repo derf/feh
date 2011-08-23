@@ -319,13 +319,29 @@ char *feh_http_load_image(char *url)
 
 #endif				/* HAVE_LIBCURL */
 
+void feh_imlib_image_fill_text_bg(Imlib_Image im, int w, int h)
+{
+	static DATA8 atab[256];
+	memset(atab, 0, sizeof(atab));
+
+	gib_imlib_image_set_has_alpha(im, 1);
+
+	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, w, h, NULL, NULL,
+			NULL, atab);
+
+	if (opt.text_bg == TEXT_BG_CLEAR)
+		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
+	else
+		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 127);
+}
+
+
 void feh_draw_zoom(winwidget w)
 {
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
 	char buf[100];
-	static DATA8 atab[256];
 
 	if (!w->im)
 		return;
@@ -342,8 +358,6 @@ void feh_draw_zoom(winwidget w)
 		return;
 	}
 
-	memset(atab, 0, sizeof(atab));
-
 	snprintf(buf, sizeof(buf), "%.0f%%, %dx%d", w->zoom * 100,
 			(int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
 
@@ -356,9 +370,7 @@ void feh_draw_zoom(winwidget w)
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, tw, th);
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
@@ -394,7 +406,6 @@ void feh_draw_errstr(winwidget w)
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
-	static DATA8 atab[256];
 
 	if (!w->im)
 		return;
@@ -408,8 +419,6 @@ void feh_draw_errstr(winwidget w)
 	if (!fn)
 		eprintf("Unable to draw error message. Dying to be safe.");
 
-	memset(atab, 0, sizeof(atab));
-
 	/* Work out how high the font is */
 	gib_imlib_get_text_size(fn, w->errstr, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
@@ -419,9 +428,7 @@ void feh_draw_errstr(winwidget w)
 	if (!im)
 		eprintf("Couldn't create errstr image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, tw, th);
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
@@ -436,7 +443,6 @@ void feh_draw_filename(winwidget w)
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0, nw = 0;
 	Imlib_Image im = NULL;
-	static DATA8 atab[256];
 	char *s = NULL;
 	int len = 0;
 
@@ -458,8 +464,6 @@ void feh_draw_filename(winwidget w)
 		eprintf("Couldn't load font for filename printing");
 		return;
 	}
-
-	memset(atab, 0, sizeof(atab));
 
 	/* Work out how high the font is */
 	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw,
@@ -484,10 +488,7 @@ void feh_draw_filename(winwidget w)
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, 2 * th, NULL,
-			NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, 2 * th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, tw, 2 * th);
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
@@ -511,7 +512,6 @@ void feh_draw_info(winwidget w)
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
-	static DATA8 atab[256];
 	int no_lines = 0;
 	char *info_cmd;
 	char info_buf[256];
@@ -538,8 +538,6 @@ void feh_draw_info(winwidget w)
 
 	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data));
 
-	memset(atab, 0, sizeof(atab));
-
 	gib_imlib_get_text_size(fn, "w", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
 	info_pipe = popen(info_cmd, "r");
@@ -548,9 +546,7 @@ void feh_draw_info(winwidget w)
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, 290 * tw, 20 * th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, 290 * tw, 20 * th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, 290 * tw, 20 * th);
 
 	if (!info_pipe) {
 		gib_imlib_text_draw(im, fn, NULL, 2, 2,
@@ -622,7 +618,6 @@ void feh_draw_caption(winwidget w)
 	int tw = 0, th = 0, ww, hh;
 	int x, y;
 	Imlib_Image im = NULL;
-	static DATA8 atab[256];
 	char *p;
 	gib_list *lines, *l;
 	static gib_style *caption_style = NULL;
@@ -683,8 +678,6 @@ void feh_draw_caption(winwidget w)
 		return;
 	}
 
-	memset(atab, 0, sizeof(atab));
-
 	if (*(file->caption) == '\0') {
 		p = estrdup("Caption entry mode - Hit ESC to cancel");
 		lines = feh_wrap_string(p, w->w, fn, NULL);
@@ -718,9 +711,7 @@ void feh_draw_caption(winwidget w)
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, tw, th);
 
 	l = lines;
 	x = 0;
@@ -973,7 +964,6 @@ void feh_draw_actions(winwidget w)
 	int max_tw = 0;
 	int line_th = 0;
 	Imlib_Image im = NULL;
-	static DATA8 atab[256];
 	int i = 0;
 	int num_actions = 0;
 	int cur_action = 0;
@@ -1011,8 +1001,6 @@ void feh_draw_actions(winwidget w)
 		return;
 	}
 
-	memset(atab, 0, sizeof(atab));
-
 	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 /* Check for the widest line */
 	max_tw = tw;
@@ -1045,9 +1033,7 @@ void feh_draw_actions(winwidget w)
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
-	gib_imlib_image_set_has_alpha(im, 1);
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, tw, th, NULL, NULL, NULL, atab);
-	gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 0);
+	feh_imlib_image_fill_text_bg(im, tw, th);
 
 	gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:", IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);

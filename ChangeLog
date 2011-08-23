@@ -2,6 +2,9 @@ git HEAD
 
     * Reload image after executing an action with the hold-action flag set
       <https://github.com/derf/feh/issues/59>
+    * Add --draw-tinted options to make overlay text (filename, caption etc.)
+      better readable
+      <https://github.com/derf/feh/issues/60>
 
 Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
 
