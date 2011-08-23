@@ -571,8 +571,8 @@ void feh_draw_info(winwidget w)
 	}
 
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 2,
-			w->h - (th * no_lines) - 2, 1, 1, 0);
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
+			w->h - (th * no_lines), 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
