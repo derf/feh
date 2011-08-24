@@ -440,7 +440,7 @@ int feh_write_filelist(gib_list * list, char *filename)
 	FILE *fp;
 	gib_list *l;
 
-	if (!list || !filename)
+	if (!list || !filename || !strcmp(filename, "/dev/stdin"))
 		return(0);
 
 	errno = 0;
@@ -466,19 +466,6 @@ gib_list *feh_read_filelist(char *filename)
 
 	if (!filename)
 		return(NULL);
-
-	/* try and load the given filelist as an image, cowardly refuse to
-	 * overwrite an image with a filelist. (requested by user who did feh -df *
-	 * when he meant feh -dF *, as it overwrote the first image with the
-	 * filelist).
-	 */
-	if (feh_load_image_char(&im1, filename)) {
-		weprintf(
-				"The file you specified as a filelist to read - %s - appears to be an image. Ignoring it (this is a common mistake).\n",
-				filename);
-		opt.filelistfile = NULL;
-		return(NULL);
-	}
 
 	errno = 0;
 	if ((fp = fopen(filename, "r")) == NULL) {

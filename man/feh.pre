@@ -195,12 +195,20 @@ This option is similar to the playlists used by music software.  If
 .Ar file
 exists, it will be read for a list of files to load, in the order they appear.
 The format is a list of image filenames, absolute or relative to the current
-directory, one filename per line.  If
+directory, one filename per line.
+.
+.Pp
+.
+If
 .Ar file
 doesn't exist, it will be created from the internal filelist at the end of a
 viewing session.  This is best used to store the results of complex sorts
 .Pq Cm -Spixels No for example
-for later viewing.  Any changes to the internal filelist
+for later viewing.
+.
+.Pp
+.
+Any changes to the internal filelist
 .Pq such as deleting a file or it being pruned for being unloadable
 will be saved to
 .Ar file
@@ -208,6 +216,15 @@ when
 .Nm
 exits.  You can add files to filelists by specifying them on the commandline
 when also specifying the list.
+.
+.Pp
+.
+If
+.Ar file
+is
+.Qq - ,
+.Nm
+will read the filelist from its standard input.
 .
 .It Cm -e , --font Ar font
 .

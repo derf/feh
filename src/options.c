@@ -627,7 +627,10 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.alpha_level = 255 - atoi(optarg);
 			break;
 		case 'f':
-			opt.filelistfile = estrdup(optarg);
+			if (!strcmp(optarg, "-"))
+				opt.filelistfile = estrdup("/dev/stdin");
+			else
+				opt.filelistfile = estrdup(optarg);
 			break;
 		case '0':
 			opt.reload_button = atoi(optarg);
