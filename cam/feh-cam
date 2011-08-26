@@ -30,6 +30,9 @@ my $DEBUG       = 0;
 # check args
 &print_usage_and_exit unless (@ARGV);
 
+print STDERR "Note: feh-cam will be removed from the feh distribution in 2013.\n";
+print STDERR "Please mail derf\@finalrewind.org if you still use it.\n";
+
 
 # Url, Refresh, and bookmarks
 my $url = "";

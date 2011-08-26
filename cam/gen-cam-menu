@@ -29,6 +29,9 @@ F_MENU=$HOME"/.enlightenment/"$F_MENUFILE;
 cp -f $C_MENU $C_MENU"-cam_menu.backup"
 cp -f $F_MENU $F_MENU"-cam_menu.backup"
 
+echo "Note: gen-cam-menu will be removed from the feh distribution by 2013." > /dev/stderr
+echo "Please mail derf@finalrewind.org if you still use it." > /dev/stderr
+
 # generate cam menu
 echo "Generating \""$C_MENU"\".";
 echo "\"$TITLE\"" > "$C_MENU";

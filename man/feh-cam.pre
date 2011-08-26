@@ -13,6 +13,15 @@
 .Sh VERSION
 This manual documents feh-cam, shipped with feh version $VERSION$
 .
+.Sh DEPRECATION WARNING
+.
+This tool will be removed from the feh distribution by 2013.
+.
+.Pp
+.
+If you still use it, please contact me at
+.Aq derf@finalrewind.org
+.
 .Sh DESCRIPTION
 .Nm
 is a perl wrapper for feh which simplifies viewing webcams using keyed
