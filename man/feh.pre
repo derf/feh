@@ -1092,19 +1092,19 @@ Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons,
 hit the render key after scrolling to antialias the image.
 .
-.It Aq Alt+Left
+.It Aq Alt+Left Bq scroll_left_page
 .
 Scroll to the left by one page
 .
-.It Aq Alt+Right
+.It Aq Alt+Right Bq scroll_right_page
 .
 Scroll to the right by one page
 .
-.It Aq Alt+Up
+.It Aq Alt+Up Bq scroll_up_page
 .
 Scroll up by one page
 .
-.It Aq Alt+Down
+.It Aq Alt+Down Bq scroll_down-page
 .
 Scroll down by one page
 .

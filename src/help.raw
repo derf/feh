@@ -31,6 +31,7 @@ OPTIONS
  -w, --multiwindow         Open all files at once, one window per image
  -x, --borderless          Create borderless windows
  -d, --draw-filename       Show the filename in the image window
+     --draw-tinted         Show overlay texts on semi-transparent background
  -^, --title TITLE         Set window title (see FORMAT SPECIFIERS)
  -D, --slideshow-delay NUM Set delay between automatically changing slides
      --cycle-once          Exit after one loop through the slideshow
