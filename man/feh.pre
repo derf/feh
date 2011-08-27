@@ -1104,7 +1104,7 @@ Scroll to the right by one page
 .
 Scroll up by one page
 .
-.It Aq Alt+Down Bq scroll_down-page
+.It Aq Alt+Down Bq scroll_down_page
 .
 Scroll down by one page
 .
