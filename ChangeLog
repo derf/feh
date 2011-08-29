@@ -7,6 +7,8 @@ git HEAD
       <https://github.com/derf/feh/issues/60>
     * The --collage option (aka collage mode) is now deprecated
     * The --filelist option now supports /dev/stdin (or "-" as shortcut)
+    * Partial fix for too large windows with Xinerama (only works on screen 0)
+      <https://github.com/derf/feh/issues/5>
 
 Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
 
