@@ -775,6 +775,15 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	Window ignored_window;
 	XWindowAttributes attributes;
 	int tc_x, tc_y;
+	int scr_width = scr->width;
+	int scr_height = scr->height;
+
+#ifdef HAVE_LIBXINERAMA
+	if (opt.xinerama && xinerama_screens) {
+		scr_width = xinerama_screens[xinerama_screen].width;
+		scr_height = xinerama_screens[xinerama_screen].height;
+	}
+#endif
 
 	if (opt.geom_flags) {
 		winwid->had_resize = 1;
@@ -784,8 +793,8 @@ void winwidget_resize(winwidget winwid, int w, int h)
 		D(("Really doing a resize\n"));
 		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
-			winwid->w = (w > scr->width) ? scr->width : w;
-			winwid->h = (h > scr->height) ? scr->height : h;
+			winwid->w = (w > scr_width) ? scr_width : w;
+			winwid->h = (h > scr_height) ? scr_height : h;
 		}
 		if (winwid->full_screen) {
 			XGetWindowAttributes(disp, winwid->win, &attributes);
@@ -803,6 +812,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 		XFlush(disp);
 
 #ifdef HAVE_LIBXINERAMA
+		/* TODO this section _might_ no longer be needed */
 		if (opt.xinerama && xinerama_screens) {
 			int i;
 
