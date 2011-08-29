@@ -65,7 +65,7 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 				mod |= Mod4Mask;
 				break;
 			default:
-				weprintf("keys: invalid modifier %c in %s", cur[0], ks);
+				weprintf("keys: invalid modifier %c in \"%s\"", cur[0], ks);
 				break;
 		}
 		cur += 2;

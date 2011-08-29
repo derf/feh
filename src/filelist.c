@@ -462,7 +462,6 @@ gib_list *feh_read_filelist(char *filename)
 	FILE *fp;
 	gib_list *list = NULL;
 	char s[1024], s1[1024];
-	Imlib_Image im1;
 
 	if (!filename)
 		return(NULL);

@@ -70,8 +70,6 @@ void init_parse_options(int argc, char **argv)
 	opt.prev_button = 4;
 	opt.next_button = 5;
 
-	opt.draw_actions = 0;
-
 	opt.rotate_button = 2;
 	opt.no_rotate_ctrl_mask = 0;
 	opt.blur_button = 1;
@@ -80,7 +78,6 @@ void init_parse_options(int argc, char **argv)
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
 
-	opt.xinerama = 0;
 	opt.screen_clip = 1;
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
@@ -823,15 +820,11 @@ static void check_options(void)
 	}
 
 	if (opt.full_screen && opt.multiwindow) {
-		weprintf("you shouldn't combine multiwindow mode with full-screen mode,\n"
-				"   Multiwindow mode has been disabled.");
-		opt.multiwindow = 0;
+		eprintf("You cannot combine --full-screen with --multiwindow");
 	}
 
 	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
-		weprintf("list mode can't be combined with other processing modes,\n"
-				"   list mode disabled.");
-		opt.list = 0;
+		eprintf("You cannot combine --list with other modes");
 	}
 
 	if (opt.sort && opt.randomize) {
@@ -841,10 +834,7 @@ static void check_options(void)
 	}
 
 	if (opt.loadables && opt.unloadables) {
-		weprintf("You cant show loadables AND unloadables...\n"
-				"you might as well use ls ;)\n"
-				"loadables only will be shown\n");
-		opt.unloadables = 0;
+		eprintf("You cannot combine --loadable with --unloadable");
 	}
 
 	if (opt.thumb_title && (!opt.thumbs)) {
