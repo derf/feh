@@ -262,7 +262,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		ev.xclient.display = disp;
 		ev.xclient.window = ret->win;
 		ev.xclient.format = 32;
-		ev.xclient.data.l[0] = (ret->full_screen ? 1 : 0);
+		ev.xclient.data.l[0] = 1;
 		ev.xclient.data.l[1] = prop_fs;
 
 		XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32,
