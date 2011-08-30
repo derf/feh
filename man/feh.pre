@@ -1308,9 +1308,9 @@ section.
 .
 .Sh BUGS
 .
-Xinerama support does not really work on Xinerama screens != 0.  Set
+In a Xinerama setup, fullscreen mode only works properly on screen 0.  Set
 .Ev XINERAMA_SCREEN
-to the correct number as a workaround.
+to the correct screen number or toggle fullscreen off, then on as a workaround.
 .
 .Pp
 .

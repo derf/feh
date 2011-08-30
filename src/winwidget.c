@@ -778,26 +778,45 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	int scr_width = scr->width;
 	int scr_height = scr->height;
 
+	XGetWindowAttributes(disp, winwid->win, &attributes);
+
 #ifdef HAVE_LIBXINERAMA
 	if (opt.xinerama && xinerama_screens) {
+		int i;
+		xinerama_screen = 0;
+		for (i = 0; i < num_xinerama_screens; i++) {
+			if (XY_IN_RECT(attributes.x, attributes.y,
+						xinerama_screens[i].x_org,
+						xinerama_screens[i].y_org,
+						xinerama_screens[i].width, xinerama_screens[i].height)) {
+				xinerama_screen = i;
+				break;
+			}
+
+		}
+		if (getenv("XINERAMA_SCREEN"))
+			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+
 		scr_width = xinerama_screens[xinerama_screen].width;
 		scr_height = xinerama_screens[xinerama_screen].height;
 	}
 #endif
+
+
+	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
+		winwid->h));
 
 	if (opt.geom_flags) {
 		winwid->had_resize = 1;
 		return;
 	}
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		D(("Really doing a resize\n"));
 		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
 			winwid->w = (w > scr_width) ? scr_width : w;
 			winwid->h = (h > scr_height) ? scr_height : h;
 		}
 		if (winwid->full_screen) {
-			XGetWindowAttributes(disp, winwid->win, &attributes);
 			XTranslateCoordinates(disp, winwid->win, attributes.root,
 						-attributes.border_width -
 						attributes.x,
@@ -811,26 +830,8 @@ void winwidget_resize(winwidget winwid, int w, int h)
 		winwid->had_resize = 1;
 		XFlush(disp);
 
-#ifdef HAVE_LIBXINERAMA
-		/* TODO this section _might_ no longer be needed */
-		if (opt.xinerama && xinerama_screens) {
-			int i;
-
-			for (i = 0; i < num_xinerama_screens; i++) {
-				xinerama_screen = 0;
-				if (XY_IN_RECT(winwid->x, winwid->y,
-					       xinerama_screens[i].x_org,
-					       xinerama_screens[i].y_org,
-					       xinerama_screens[i].width, xinerama_screens[i].height)) {
-					xinerama_screen = i;
-					break;
-				}
-
-			}
-			if (getenv("XINERAMA_SCREEN"))
-				xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
-		}
-#endif				/* HAVE_LIBXINERAMA */
+		D(("-> x %d y %d w %d h %d\n", winwid->x, winwid->y, winwid->w,
+			winwid->h));
 
 	} else {
 		D(("No resize actually needed\n"));
