@@ -333,7 +333,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
 
 			if (opt.hold_actions[action])
-				feh_reload_image(winwid, 1, 1);
+				feh_reload_image(winwid, 1);
 			else
 				slideshow_change_image(winwid, SLIDE_NEXT, 1);
 
@@ -342,7 +342,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
 
 			if (opt.hold_actions[action])
-				feh_reload_image(winwid, 1, 1);
+				feh_reload_image(winwid, 1);
 			else
 				winwidget_destroy(winwid);
 		} else if (winwid->type == WIN_TYPE_THUMBNAIL)
@@ -630,7 +630,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.reload_image, keysym, state)) {
-		feh_reload_image(winwid, 0, 0);
+		feh_reload_image(winwid, 0);
 	}
 	else if (feh_is_kp(&keys.toggle_pause, keysym, state)) {
 		slideshow_pause_toggle(winwid);

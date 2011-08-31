@@ -146,7 +146,7 @@ void feh_draw_info(winwidget w);
 void feh_draw_errstr(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
-void feh_reload_image(winwidget w, int resize, int force_new);
+void feh_reload_image(winwidget w, int resize);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
 void slideshow_save_image(winwidget win);
 void feh_edit_inplace(winwidget w, int orientation);

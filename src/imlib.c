@@ -801,7 +801,7 @@ void feh_edit_inplace(winwidget w, int op)
 
 	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
 		feh_edit_inplace_lossless(w, op);
-		feh_reload_image(w, 1, 1);
+		feh_reload_image(w, 1);
 		return;
 	}
 
@@ -817,7 +817,7 @@ void feh_edit_inplace(winwidget w, int op)
 			gib_imlib_image_orientate(old, op);
 		gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
 		gib_imlib_free_image(old);
-		feh_reload_image(w, 1, 1);
+		feh_reload_image(w, 1);
 	} else {
 		im_weprintf(w, "failed to load image from disk to edit it in place");
 	}
