@@ -70,7 +70,7 @@ void feh_handle_signal(int signo)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
 	} else if (opt.multiwindow) {
 		for (i = window_num - 1; i >= 0; i--)
-			feh_reload_image(windows[i], 0);
+			feh_reload_image(windows[i], 0, 0);
 	}
 
 	return;

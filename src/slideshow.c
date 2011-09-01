@@ -135,12 +135,12 @@ void cb_reload_timer(void *data)
 	winwidget_rename(w, current_filename);
 	free(current_filename);
 
-	feh_reload_image(w, 1);
+	feh_reload_image(w, 1, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
 }
 
-void feh_reload_image(winwidget w, int resize)
+void feh_reload_image(winwidget w, int resize, int force_new)
 {
 	char *title, *new_title;
 	int len;
@@ -152,7 +152,7 @@ void feh_reload_image(winwidget w, int resize)
 		return;
 	}
 
-	D(("resize %d\n", resize));
+	D(("resize %d, force_new %d\n", resize, force_new));
 
 	free(FEH_FILE(w->file->data)->caption);
 	FEH_FILE(w->file->data)->caption = NULL;
@@ -169,10 +169,20 @@ void feh_reload_image(winwidget w, int resize)
 	/* force imlib2 not to cache */
 	winwidget_free_image(w);
 
-	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0)
-		eprintf("failed to reload image");
-
 	/* if the image has changed in dimensions - we gotta resize */
+	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
+		if (force_new) {
+			eprintf("failed to reload image\n");
+		} else {
+			im_weprintf(w, "Couldn't reload image. Is it still there?");
+		}
+		winwidget_rename(w, title);
+		free(title);
+		free(new_title);
+		filelist = feh_file_remove_from_list(filelist, w->file);
+		return;
+	}
+
 	if (!resize && ((old_w != gib_imlib_image_get_width(tmp)) ||
 			(old_h != gib_imlib_image_get_height(tmp))))
 		resize = 1;

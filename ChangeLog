@@ -9,7 +9,6 @@ git HEAD
     * The --filelist option now supports /dev/stdin (or "-" as shortcut)
     * Several Xinerama fixes, only --fullscreen on screen != 0 is still broken
       <https://github.com/derf/feh/issues/5>
-    * Fix segfault when trying to reload an image which is no longer loadable
 
 Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
 
