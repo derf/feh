@@ -412,6 +412,12 @@ Reload filelist and current image after
 seconds.  Useful for viewing HTTP webcams or frequently changing directories.
 .Pq Note that the filelist reloading is still experimental.
 .
+.Pp
+.
+If an image is removed, feh will either show the next one or quit.  However,
+if an image still exists, but can no longer be loaded, feh will continue to
+try loading it.
+.
 .It Cm -n , --reverse
 .
 Reverse the sort order.  Use this to invert the order of the filelist.

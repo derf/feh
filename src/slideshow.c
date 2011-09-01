@@ -149,6 +149,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 
 	if (!w->file) {
 		im_weprintf(w, "couldn't reload, this image has no file associated with it.");
+		winwidget_render_image(w, 0, 0);
 		return;
 	}
 
@@ -166,26 +167,26 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	old_w = gib_imlib_image_get_width(w->im);
 	old_h = gib_imlib_image_get_height(w->im);
 
-	/* force imlib2 not to cache */
-	winwidget_free_image(w);
-
 	/* if the image has changed in dimensions - we gotta resize */
 	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
 		if (force_new) {
 			eprintf("failed to reload image\n");
 		} else {
 			im_weprintf(w, "Couldn't reload image. Is it still there?");
+			winwidget_render_image(w, 0, 0);
 		}
 		winwidget_rename(w, title);
 		free(title);
 		free(new_title);
-		filelist = feh_file_remove_from_list(filelist, w->file);
 		return;
 	}
 
 	if (!resize && ((old_w != gib_imlib_image_get_width(tmp)) ||
 			(old_h != gib_imlib_image_get_height(tmp))))
 		resize = 1;
+
+	/* force imlib2 not to cache */
+	winwidget_free_image(w);
 
 	w->im = tmp;
 	winwidget_reset_image(w);
