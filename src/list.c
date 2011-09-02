@@ -85,14 +85,14 @@ void real_loadables_mode(int loadable)
 		if (feh_load_image(&im, file)) {
 			/* loaded ok */
 			if (loadable) {
-				fprintf(stdout, "%s\n", file->filename);
+				puts(file->filename);
 				feh_action_run(file, opt.actions[0]);
 			}
 			gib_imlib_free_image_and_decache(im);
 		} else {
 			/* Oh dear. */
 			if (!loadable) {
-				fprintf(stdout, "%s\n", file->filename);
+				puts(file->filename);
 				feh_action_run(file, opt.actions[0]);
 			}
 		}
