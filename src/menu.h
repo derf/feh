@@ -136,7 +136,7 @@ feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text,
 feh_menu_item *feh_menu_add_toggle_entry(feh_menu * m, char *text,
 					 Imlib_Image icon, char *submenu,
 					 int action, void *data, void (*func_free) (void *data), int setting);
-void feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h);
+void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h);
 void feh_menu_calc_size(feh_menu * m);
 void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy);
 void feh_menu_redraw(feh_menu * m);

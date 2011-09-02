@@ -564,7 +564,7 @@ feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon,
 	return(mi);
 }
 
-void feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
+void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h)
 {
 	int tw, th;
 
@@ -594,7 +594,7 @@ void feh_menu_calc_size(feh_menu * m)
 	for (i = m->items; i; i = i->next) {
 		int w, h;
 
-		feh_menu_entry_get_size(m, i, &w, &h);
+		feh_menu_entry_get_size(i, &w, &h);
 		if (w > max_w)
 			max_w = w;
 		if (h > max_h)
