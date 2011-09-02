@@ -96,6 +96,11 @@ void cb_reload_timer(void *data)
 
 	/* save the current filename for refinding it in new list */
 	current_filename = estrdup(FEH_FILE(current_file->data)->filename);
+
+	for (l = filelist; l; l = l->next) {
+		feh_file_free(l->data);
+		l->data = NULL;
+	}
 	gib_list_free_and_data(filelist);
 	filelist = NULL;
 	filelist_len = 0;
@@ -109,8 +114,7 @@ void cb_reload_timer(void *data)
 		add_file_to_filelist_recursively(".", FILELIST_FIRST);
 	
 	if (!(filelist_len = gib_list_length(filelist))) {
-		fprintf(stderr, "No files found to reload.\n");
-		exit(1);
+		eprintf("No files found to reload.");
 	}
 
 	/* find the previously current file */
