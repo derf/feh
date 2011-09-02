@@ -621,8 +621,6 @@ Pixmap feh_create_checks(void)
 	Imlib_Image checks = NULL;
 
 	if (checks_pmap == None) {
-		int onoff, x, y;
-
 		checks = imlib_create_image(16, 16);
 
 		if (!checks)
@@ -633,18 +631,9 @@ Pixmap feh_create_checks(void)
 		else if (strncmp(opt.image_bg, "black", 5) == 0)
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
 		else {
-			for (y = 0; y < 16; y += 8) {
-				onoff = (y / 8) & 0x1;
-				for (x = 0; x < 16; x += 8) {
-					if (onoff)
-						gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144, 144, 255);
-					else
-						gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100, 100, 255);
-					onoff++;
-					if (onoff == 2)
-						onoff = 0;
-				}
-			}
+			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 144, 144, 144, 255);
+			gib_imlib_image_fill_rectangle(checks, 0, 0,  8,  8, 100, 100, 100, 255);
+			gib_imlib_image_fill_rectangle(checks, 8, 8,  8,  8, 100, 100, 100, 255);
 		}
 
 		checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
