@@ -15,6 +15,8 @@ git HEAD
       feh will now display a warning and try to reload ad infinitum
     * Fix memory leak in reload functionality for directories
       <https://github.com/derf/feh/issues/62>
+    * When using --no-menus and clicking the menu button, feh will now ignore
+      it instead of quitting (which was undocumented behaviour anyways)
 
 Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
 

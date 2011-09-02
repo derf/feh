@@ -70,73 +70,58 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	}
 
 	winwid = winwidget_get_from_window(ev->xbutton.window);
-	if (winwid && winwid->caption_entry) {
+	if (winwid == NULL || winwid->caption_entry) {
 		return;
 	}
 
 	if (!opt.no_menus && EV_IS_MENU_BUTTON(ev)) {
 		D(("Menu Button Press event\n"));
-		if (winwid != NULL) {
-			winwidget_show_menu(winwid);
-		}
-	} else if (winwid && (ev->xbutton.button == opt.rotate_button)
+		winwidget_show_menu(winwid);
+	} else if ((ev->xbutton.button == opt.rotate_button)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)
 		   && ((opt.no_rotate_ctrl_mask)
 		       || (ev->xbutton.state & ControlMask))) {
-		if (winwid != NULL) {
-			opt.mode = MODE_ROTATE;
-			winwid->mode = MODE_ROTATE;
-			D(("rotate starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
-		}
-	} else if (winwid && (ev->xbutton.button == opt.blur_button)
+		opt.mode = MODE_ROTATE;
+		winwid->mode = MODE_ROTATE;
+		D(("rotate starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
+	} else if ((ev->xbutton.button == opt.blur_button)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)
 		   && ((opt.no_blur_ctrl_mask)
 		       || (ev->xbutton.state & ControlMask))) {
-		if (winwid != NULL) {
-			opt.mode = MODE_BLUR;
-			winwid->mode = MODE_BLUR;
-			D(("blur starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
-		}
+		opt.mode = MODE_BLUR;
+		winwid->mode = MODE_BLUR;
+		D(("blur starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
 	} else if (ev->xbutton.button == opt.pan_button) {
-		D(("Pan Button Press event\n"));
-		if (winwid != NULL) {
-			D(("Next button, but could be pan mode\n"));
-			opt.mode = MODE_NEXT;
-			winwid->mode = MODE_NEXT;
-			D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-			winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
-			winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
-		}
+		D(("Next button, but could be pan mode\n"));
+		opt.mode = MODE_NEXT;
+		winwid->mode = MODE_NEXT;
+		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+		winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
 	} else if (ev->xbutton.button == opt.zoom_button) {
 		D(("Zoom Button Press event\n"));
-		if (winwid != NULL) {
-			D(("Zoom mode baby!\n"));
-			opt.mode = MODE_ZOOM;
-			winwid->mode = MODE_ZOOM;
-			D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
-			winwid->click_offset_x = ev->xbutton.x;
-			winwid->click_offset_y = ev->xbutton.y;
-			winwid->old_zoom = winwid->zoom;
+		opt.mode = MODE_ZOOM;
+		winwid->mode = MODE_ZOOM;
+		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->click_offset_x = ev->xbutton.x;
+		winwid->click_offset_y = ev->xbutton.y;
+		winwid->old_zoom = winwid->zoom;
 
-			/* required to adjust the image position in zoom mode */
-			winwid->im_click_offset_x = (winwid->click_offset_x
-					- winwid->im_x) / winwid->old_zoom;
-			winwid->im_click_offset_y = (winwid->click_offset_y
-					- winwid->im_y) / winwid->old_zoom;
-		}
+		/* required to adjust the image position in zoom mode */
+		winwid->im_click_offset_x = (winwid->click_offset_x
+				- winwid->im_x) / winwid->old_zoom;
+		winwid->im_click_offset_y = (winwid->click_offset_y
+				- winwid->im_y) / winwid->old_zoom;
 	} else if (ev->xbutton.button == opt.reload_button) {
 		D(("Reload Button Press event\n"));
-		if (winwid != NULL)
 			feh_reload_image(winwid, 0, 0);
 	} else if (ev->xbutton.button == opt.prev_button) {
 		D(("Prev Button Press event\n"));
-		if ((winwid != NULL)
-				&& (winwid->type == WIN_TYPE_SLIDESHOW))
+		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
 	} else if (ev->xbutton.button == opt.next_button) {
 		D(("Next Button Press event\n"));
-		if ((winwid != NULL)
-				&& (winwid->type == WIN_TYPE_SLIDESHOW))
+		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
 	} else {
 		D(("Received other ButtonPress event\n"));
@@ -167,35 +152,23 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 	}
 
 	winwid = winwidget_get_from_window(ev->xbutton.window);
-	if (winwid && winwid->caption_entry) {
+	if (winwid == NULL || winwid->caption_entry) {
 		return;
 	}
 
-	if ((ev->xbutton.button == opt.menu_button)
-			&& (((!opt.menu_ctrl_mask)
-					&& ((!(ev->xbutton.state & ControlMask))
-						|| ((ev->xbutton.state & ControlMask)
-							&& (opt.menu_ctrl_mask)))))
-			&& (opt.no_menus))
-		winwidget_destroy_all();
-	else if (ev->xbutton.button == opt.pan_button) {
+	if (ev->xbutton.button == opt.pan_button) {
 		if (opt.mode == MODE_PAN) {
-			if (winwid != NULL) {
-				D(("Disabling pan mode\n"));
-				opt.mode = MODE_NORMAL;
-				winwid->mode = MODE_NORMAL;
-				winwidget_sanitise_offsets(winwid);
-				winwidget_render_image(winwid, 0, 0);
-			}
+			D(("Disabling pan mode\n"));
+			opt.mode = MODE_NORMAL;
+			winwid->mode = MODE_NORMAL;
+			winwidget_sanitise_offsets(winwid);
+			winwidget_render_image(winwid, 0, 0);
 		} else if (opt.mode == MODE_NEXT) {
 			opt.mode = MODE_NORMAL;
-			if (winwid != NULL)
-				winwid->mode = MODE_NORMAL;
-			if ((winwid != NULL)
-					&& (winwid->type == WIN_TYPE_SLIDESHOW)) {
+			winwid->mode = MODE_NORMAL;
+			if (winwid->type == WIN_TYPE_SLIDESHOW)
 				slideshow_change_image(winwid, SLIDE_NEXT, 1);
-			} else if ((winwid != NULL)
-					&& (winwid->type == WIN_TYPE_THUMBNAIL)) {
+			else if (winwid->type == WIN_TYPE_THUMBNAIL) {
 				feh_file *thumbfile;
 				int x, y;
 
@@ -210,38 +183,30 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 					feh_thumbnail_show_fullsize(thumbfile);
 			}
 		} else {
-			if (winwid != NULL) {
-				opt.mode = MODE_NORMAL;
-				winwid->mode = MODE_NORMAL;
-			}
+			opt.mode = MODE_NORMAL;
+			winwid->mode = MODE_NORMAL;
 		}
 	} else if ((ev->xbutton.button == opt.rotate_button)
 			|| (ev->xbutton.button == opt.zoom_button)) {
-		D(("Mode-based Button Release event\n"));
-		if (winwid != NULL) {
-			D(("Disabling mode\n"));
-			opt.mode = MODE_NORMAL;
-			winwid->mode = MODE_NORMAL;
+		D(("Disabling mode\n"));
+		opt.mode = MODE_NORMAL;
+		winwid->mode = MODE_NORMAL;
 
-			if ((ev->xbutton.button == opt.zoom_button)
-					&& (ev->xbutton.x == winwid->click_offset_x)
-					&& (ev->xbutton.y == winwid->click_offset_y)) {
-				winwid->zoom = 1.0;
-				winwidget_center_image(winwid);
-			} else
-				winwidget_sanitise_offsets(winwid);
+		if ((ev->xbutton.button == opt.zoom_button)
+				&& (ev->xbutton.x == winwid->click_offset_x)
+				&& (ev->xbutton.y == winwid->click_offset_y)) {
+			winwid->zoom = 1.0;
+			winwidget_center_image(winwid);
+		} else
+			winwidget_sanitise_offsets(winwid);
 
-			winwidget_render_image(winwid, 0, 0);
-		}
+		winwidget_render_image(winwid, 0, 0);
 	} else if ((ev->xbutton.button == opt.blur_button)
 			&& ((opt.no_blur_ctrl_mask)
 				|| (ev->xbutton.state & ControlMask))) {
-		D(("Blur Button Release event\n"));
-		if (winwid != NULL) {
-			D(("Disabling Blur mode\n"));
-			opt.mode = MODE_NORMAL;
-			winwid->mode = MODE_NORMAL;
-		}
+		D(("Disabling Blur mode\n"));
+		opt.mode = MODE_NORMAL;
+		winwid->mode = MODE_NORMAL;
 	}
 	return;
 }
