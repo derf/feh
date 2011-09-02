@@ -321,18 +321,16 @@ char *feh_http_load_image(char *url)
 
 void feh_imlib_image_fill_text_bg(Imlib_Image im, int w, int h)
 {
-	static DATA8 atab[256];
-	memset(atab, 0, sizeof(atab));
-
 	gib_imlib_image_set_has_alpha(im, 1);
 
-	gib_imlib_apply_color_modifier_to_rectangle(im, 0, 0, w, h, NULL, NULL,
-			NULL, atab);
+	imlib_context_set_blend(0);
 
 	if (opt.text_bg == TEXT_BG_CLEAR)
 		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
 	else
 		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 127);
+
+	imlib_context_set_blend(1);
 }
 
 static Imlib_Font feh_load_font(winwidget w)
