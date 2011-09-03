@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "timers.h"
 #include "options.h"
 #include "events.h"
-#include "support.h"
+#include "wallpaper.h"
 
 char **cmdargv = NULL;
 int cmdargc = 0;

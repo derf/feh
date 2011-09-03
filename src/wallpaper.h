@@ -1,4 +1,4 @@
-/* support.h
+/* wallpaper.h
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef SUPPORT_H
-#define SUPPORT_H
+#ifndef WALLPAPER_H
+#define WALLPAPER_H
 
 #include <X11/Xfuncproto.h>
 #include <X11/Intrinsic.h>	/* Xlib, Xutil, Xresource, Xfuncproto */

@@ -1,4 +1,4 @@
-/* support.c
+/* wallpaper.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
-#include "support.h"
+#include "wallpaper.h"
 #include <limits.h>
 Window ipc_win = None;
 Window my_ipc_win = None;
