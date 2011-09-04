@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 42;
+use Test::More tests => 48;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -189,10 +189,31 @@ test_scr('caption_none');
 feh_stop();
 
 feh_start(
+	'--info "echo \'%f\n%wx%h\'"',
+	'test/bg/exact/in'
+);
+test_scr('draw_info');
+feh_stop();
+
+feh_start(
+	'--info "echo \'%f\n%wx%h\'" --draw-tinted',
+	'test/bg/exact/in'
+);
+test_scr('draw_info_tinted');
+feh_stop();
+
+feh_start(
 	'--draw-actions --action8 "nrm \'%f\'"',
 	'test/bg/exact/in'
 );
 test_scr('draw_action');
+feh_stop();
+
+feh_start(
+	'--draw-actions --action8 "nrm \'%f\'" --draw-tinted',
+	'test/bg/exact/in'
+);
+test_scr('draw_action_tinted');
 feh_stop();
 
 feh_start(
@@ -203,10 +224,24 @@ test_scr('draw_filename');
 feh_stop();
 
 feh_start(
+	'--draw-filename --draw-tinted',
+	'test/bg/exact/in'
+);
+test_scr('draw_filename_tinted');
+feh_stop();
+
+feh_start(
 	'--draw-filename --draw-actions --action8 "nrm \'%f\'"',
 	'test/bg/exact/in'
 );
 test_scr('draw_filename_action');
+feh_stop();
+
+feh_start(
+	'--draw-filename --draw-actions --action8 "nrm \'%f\'" --draw-tinted',
+	'test/bg/exact/in'
+);
+test_scr('draw_filename_action_tinted');
 feh_stop();
 
 feh_start(
@@ -227,6 +262,13 @@ test_scr('draw_filename_action');
 SendKeys('da');
 test_scr('draw_nothing');
 
+feh_stop();
+
+feh_start(
+	'--draw-tinted',
+	'test/bg/exact/in'
+);
+test_scr('draw_nothing');
 feh_stop();
 
 feh_start(q{}, 'test/bg/large/h/in');
