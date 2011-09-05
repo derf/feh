@@ -1,8 +1,11 @@
-git HEAD
+Mon, 05 Sep 2011 10:56:58 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v1.16
     * Reload image after executing an action with the hold-action flag set
       <https://github.com/derf/feh/issues/59>
-    * Add --draw-tinted options to make overlay text (filename, caption etc.)
+    * Fix bug in --info (used to swallow the last output character in some
+      cases)
+    * Add --draw-tinted option to make overlay text (filename, caption etc.)
       better readable
       <https://github.com/derf/feh/issues/60>
     * The --collage option (aka collage mode) is now deprecated
