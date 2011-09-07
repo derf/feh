@@ -171,11 +171,19 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	old_w = gib_imlib_image_get_width(w->im);
 	old_h = gib_imlib_image_get_height(w->im);
 
-	/* if the image has changed in dimensions - we gotta resize */
+	/*
+	 * If we don't free the old image before loading the new one, Imlib2's
+	 * caching will get in our way.
+	 * However, if --reload is used (force_new == 0), we want to continue if
+	 * the new image cannot be loaded, so we must not free the old image yet.
+	 */
+	if (force_new)
+		winwidget_free_image(w);
+
 	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
-		if (force_new) {
+		if (force_new)
 			eprintf("failed to reload image\n");
-		} else {
+		else {
 			im_weprintf(w, "Couldn't reload image. Is it still there?");
 			winwidget_render_image(w, 0, 0);
 		}
@@ -189,8 +197,8 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 			(old_h != gib_imlib_image_get_height(tmp))))
 		resize = 1;
 
-	/* force imlib2 not to cache */
-	winwidget_free_image(w);
+	if (!force_new)
+		winwidget_free_image(w);
 
 	w->im = tmp;
 	winwidget_reset_image(w);

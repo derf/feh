@@ -114,7 +114,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- winwid->im_y) / winwid->old_zoom;
 	} else if (ev->xbutton.button == opt.reload_button) {
 		D(("Reload Button Press event\n"));
-			feh_reload_image(winwid, 0, 0);
+			feh_reload_image(winwid, 0, 1);
 	} else if (ev->xbutton.button == opt.prev_button) {
 		D(("Prev Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)

@@ -1302,7 +1302,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, void *data)
 			winwidget_render_image(m->fehwin, 1, 0);
 			break;
 		case CB_RELOAD:
-			feh_reload_image(m->fehwin, 0, 0);
+			feh_reload_image(m->fehwin, 0, 1);
 			break;
 		case CB_REMOVE:
 			feh_filelist_image_remove(m->fehwin, 0);
