@@ -1,3 +1,9 @@
+Sun, 11 Sep 2011 12:46:50 +0200  Daniel Friesel <derf@finalrewind.org>
+
+* Release v1.16.1
+    * Fix reload after image rotation and similar (broken by 1.16)
+      <https://github.com/derf/feh/issues/63>
+
 Mon, 05 Sep 2011 10:56:58 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.16
