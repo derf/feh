@@ -151,13 +151,14 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			/* Http, no reload, slideshow. Let's keep this image on hand... */
 			free(file->filename);
 			file->filename = estrdup(tmpname);
+
+			if (!opt.keep_http)
+				add_file_to_rm_filelist(tmpname);
 		} else {
 			/* Don't cache the image if we're doing reload + http (webcams etc) */
 			if (!opt.keep_http)
 				unlink(tmpname);
 		}
-		if (!opt.keep_http)
-			add_file_to_rm_filelist(tmpname);
 		free(tmpname);
 	} else {
 		*im = imlib_load_image_with_error_return(file->filename, &err);
