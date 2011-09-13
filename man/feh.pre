@@ -137,8 +137,7 @@ Extra actions which can be set and triggered using the appropiate number key.
 .
 .It Cm -Z , --auto-zoom
 .
-Zoom pictures to screen size in fullscreen
-.Pq affected by Cm --stretch No and Cm --ignore-aspect .
+Zoom pictures to screen size in fullscreen / fixed geometry mode.
 .
 .It Cm -x , --borderless
 .
@@ -165,11 +164,10 @@ the caption will be looked for in
 .
 .It Cm -L , --customlist Ar format
 .
-Use
+Don't display images, print image info according to
 .Ar format
-.Pq printf-like string containing image info specifiers
-for list output.  See
-.Sx FORMAT SPECIFIERS .
+instead.  See
+.Sx FORMAT SPECIFIEDRS .
 .
 .It Cm --cycle-once
 .
@@ -261,17 +259,13 @@ screen size. The only exception is a
 of 100, in which case images will always be shown at 100% zoom, no matter
 their dimensions.
 .
-.It Cm -g , --geometry Ar width No x Ar height
+.It Cm -g , --geometry Ar width No x Ar height Op + Ar x No + Ar y
 .
 Limit (and don't change) the window size.  Takes an X-style geometry
 .Ar string
-like 640x480.
-Note that larger images will be zoomed out to fit but you can see them at 1:1
+like 640x480 with optional +x+y window offset.
+Note that larger images will be zoomed out to fit, but you can see them at 1:1
 by clicking the zoom button.
-.
-.It Cm -h , --help
-.
-display help output and exit.
 .
 .It Cm -Y , --hide-pointer
 .
@@ -281,7 +275,7 @@ Hide the pointer
 .It Cm -B , --image-bg Ar style
 .
 Use style as background for transparent image parts and the like.
-Accepted values: white, black, default.
+Accepted values: checks (default), white, black.
 .
 .It Cm -i , --index
 .
