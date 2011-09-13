@@ -350,7 +350,7 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			if (winwid->gc == None) {
 				XGCValues gcval;
 
-				if (!strcmp(opt.image_bg, "white"))
+				if (opt.image_bg == IMAGE_BG_WHITE)
 					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
 				else
 					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
@@ -626,9 +626,9 @@ Pixmap feh_create_checks(void)
 		if (!checks)
 			eprintf("Unable to create a teeny weeny imlib image. I detect problems");
 
-		if (strncmp(opt.image_bg, "white", 5) == 0)
+		if (opt.image_bg == IMAGE_BG_WHITE)
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 255, 255, 255, 255);
-		else if (strncmp(opt.image_bg, "black", 5) == 0)
+		else if (opt.image_bg == IMAGE_BG_BLACK)
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
 		else {
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 144, 144, 144, 255);

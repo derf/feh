@@ -70,6 +70,7 @@ struct __fehoptions {
 	unsigned char cycle_once;
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
+	unsigned char image_bg;
 
 	char *output_file;
 	char *output_dir;
@@ -84,7 +85,6 @@ struct __fehoptions {
 	char *menu_font;
 	char *customlist;
 	char *menu_bg;
-	char *image_bg;
 	char *menu_style;
 	char *caption_path;
 	char *start_list_at;

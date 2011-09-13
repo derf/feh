@@ -312,7 +312,7 @@ feh_start(q{}, 'test/bg/transparency');
 test_scr('feh_ibg_default');
 feh_stop();
 
-feh_start('--image-bg default', 'test/bg/transparency');
+feh_start('--image-bg checks', 'test/bg/transparency');
 test_scr('feh_ibg_default');
 feh_stop();
 

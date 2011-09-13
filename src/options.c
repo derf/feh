@@ -58,7 +58,6 @@ void init_parse_options(int argc, char **argv)
 	opt.thumb_redraw = 10;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
-	opt.image_bg = estrdup("default");
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
 
@@ -606,8 +605,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
 		case 'B':
-			free(opt.image_bg);
-			opt.image_bg = estrdup(optarg);
+			if (!strcmp(optarg, "checks"))
+				opt.image_bg = IMAGE_BG_CHECKS;
+			else if (!strcmp(optarg, "white"))
+				opt.image_bg = IMAGE_BG_WHITE;
+			else if (!strcmp(optarg, "black"))
+				opt.image_bg = IMAGE_BG_BLACK;
+			else
+				weprintf("Unknown argument to --image-bg: %s", optarg);
 			break;
 		case 'D':
 			opt.slideshow_delay = atof(optarg);
