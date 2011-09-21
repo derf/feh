@@ -62,16 +62,10 @@ Overall test status, what's covered / missing
  [ ] create borderless window (need test WM with borders first...)
 
 
---builtin
-
- [ ] View via builtin HTTP client
- [ ] View via wget
-
-
 --cache-thumbnails
 
  [ ] ./thumbnails/normal
- [ ] .thumbnails/large
+ [ ] ./thumbnails/large
 
 
 --caption-path
@@ -141,11 +135,6 @@ Overall test status, what's covered / missing
  [x] correct window dimensions
 
 
---help
-
- [ ] Displays help
-
-
 --hide-pointer
 
  [ ] Hides pointer visibility
@@ -168,7 +157,7 @@ Overall test status, what's covered / missing
 
  [x] executes commands
  [x] correct output
- [ ] format specifiers
+ [x] format specifiers
 
 
 --keep-http
@@ -194,11 +183,6 @@ Overall test status, what's covered / missing
 --loadable
 
  [x] lists loadable images
-
-
---menu-bg
-
- to be deprecated
 
 
 --menu-button
