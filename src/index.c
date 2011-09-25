@@ -470,6 +470,9 @@ void init_index_mode(void)
 		fx = (index_image_width - fw) >> 1;
 		fy = index_image_height - fh - 2;
 		gib_imlib_text_draw(im_main, title_fn, NULL, fx, fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+
+		if (opt.display)
+			winwidget_render_image(winwid, 0, 0);
 	}
 
 	if (opt.output && opt.output_file) {

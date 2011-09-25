@@ -5,6 +5,7 @@ git HEAD
       <https://github.com/derf/feh/issues/62>
     * "--image-bg default" was renamed to "--image-bg checks"
     * Fix --title-font fallback behaviour
+    * Fix delayed title display when using --title-font
 
 Sun, 11 Sep 2011 12:46:50 +0200  Daniel Friesel <derf@finalrewind.org>
 

@@ -392,6 +392,9 @@ void init_thumbnail_mode(void)
 		fy = index_image_height - fh - 2;
 		gib_imlib_text_draw(td.im_main, td.font_title, NULL, fx,
 				fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+
+		if (opt.display)
+			winwidget_render_image(winwid, 0, 1);
 	}
 
 	if (opt.output && opt.output_file) {
