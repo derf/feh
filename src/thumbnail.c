@@ -104,6 +104,9 @@ void init_thumbnail_mode(void)
 		int fh, fw;
 
 		td.font_title = gib_imlib_load_font(opt.title_font);
+		if (!td.font_title)
+			td.font_title = gib_imlib_load_font(DEFAULT_FONT_TITLE);
+
 		gib_imlib_get_text_size(td.font_title, "W", NULL, &fw, &fh,
 				IMLIB_TEXT_TO_RIGHT);
 		title_area_h = fh + 4;

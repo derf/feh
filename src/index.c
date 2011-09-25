@@ -79,8 +79,9 @@ void init_index_mode(void)
 		int fh, fw;
 
 		title_fn = gib_imlib_load_font(opt.title_font);
-		if (!fn)
+		if (!title_fn)
 			title_fn = gib_imlib_load_font(DEFAULT_FONT_TITLE);
+
 		gib_imlib_get_text_size(title_fn, "W", NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 		title_area_h = fh + 4;
 	} else
