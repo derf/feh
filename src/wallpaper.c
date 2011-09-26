@@ -69,41 +69,39 @@ void feh_wm_set_bg_filelist(unsigned char bgmode)
 static void feh_wm_load_next(Imlib_Image *im)
 {
 	static gib_list *wpfile = NULL;
-	Imlib_Image tmp;
 
-	if (wpfile == NULL) {
+	if (wpfile == NULL)
 		wpfile = filelist;
 
-		if (feh_load_image(im, FEH_FILE(wpfile->data)) == 0)
-			eprintf("Unable to load image %s", FEH_FILE(wpfile->data)->filename);
-		if (wpfile->next)
-			wpfile = wpfile->next;
-
-		return;
-	}
-
-	gib_imlib_free_image_and_decache(*im);
-
-	if (feh_load_image(&tmp, FEH_FILE(wpfile->data)) == 0)
+	if (feh_load_image(im, FEH_FILE(wpfile->data)) == 0)
 		eprintf("Unable to load image %s", FEH_FILE(wpfile->data)->filename);
-
-	im = &tmp;
-
 	if (wpfile->next)
 		wpfile = wpfile->next;
 
 	return;
 }
 
-static void feh_wm_set_bg_scaled(Pixmap pmap, Imlib_Image im, int x, int y, int w, int h)
+static void feh_wm_set_bg_scaled(Pixmap pmap, Imlib_Image im, int use_filelist,
+		int x, int y, int w, int h)
 {
+	if (use_filelist)
+		feh_wm_load_next(&im);
+
 	gib_imlib_render_image_on_drawable_at_size(pmap, im, x, y, w, h,
 			1, 0, !opt.force_aliasing);
+
+	if (use_filelist)
+		gib_imlib_free_image_and_decache(im);
+
 	return;
 }
 
-static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int x, int y, int w, int h)
+static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist,
+		int x, int y, int w, int h)
 {
+	if (use_filelist)
+		feh_wm_load_next(&im);
+
 	int offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
 	int offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
 
@@ -118,11 +116,18 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int x, int y, in
 		h,
 		1, 0, 0);
 
+	if (use_filelist)
+		gib_imlib_free_image_and_decache(im);
+
 	return;
 }
 
-static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int x, int y, int w, int h)
+static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int use_filelist,
+		int x, int y, int w, int h)
 {
+	if (use_filelist)
+		feh_wm_load_next(&im);
+
 	int img_w = gib_imlib_image_get_width(im);
 	int img_h = gib_imlib_image_get_height(im);
 
@@ -140,11 +145,18 @@ static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int x, int y, int 
 		x, y, w, h,
 		1, 0, !opt.force_aliasing);
 
+	if (use_filelist)
+		gib_imlib_free_image_and_decache(im);
+
 	return;
 }
 
-static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int x, int y, int w, int h)
+static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
+		int x, int y, int w, int h)
 {
+	if (use_filelist)
+		feh_wm_load_next(&im);
+
 	int img_w = gib_imlib_image_get_width(im);
 	int img_h = gib_imlib_image_get_height(im);
 
@@ -161,6 +173,9 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int x, int y, int w
 		render_w, render_h,
 		x, y, w, h,
 		1, 0, !opt.force_aliasing);
+
+	if (use_filelist)
+		gib_imlib_free_image_and_decache(im);
 
 	return;
 }
@@ -265,16 +280,14 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++) {
-					if (use_filelist)
-						feh_wm_load_next(&im);
-					feh_wm_set_bg_scaled(pmap_d1, im,
+				for (i = 0; i < num_xinerama_screens; i++)
+					feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
 						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 						xinerama_screens[i].width, xinerama_screens[i].height);
-				}
 			else
 #endif			/* HAVE_LIBXINERAMA */
-				feh_wm_set_bg_scaled(pmap_d1, im, 0, 0, scr->width, scr->height);
+				feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
+					0, 0, scr->width, scr->height);
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
 			XGCValues gcval;
@@ -289,16 +302,14 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++) {
-					if (use_filelist)
-						feh_wm_load_next(&im);
-					feh_wm_set_bg_centered(pmap_d1, im,
+				for (i = 0; i < num_xinerama_screens; i++)
+					feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
 						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 						xinerama_screens[i].width, xinerama_screens[i].height);
-				}
 			else
 #endif				/* HAVE_LIBXINERAMA */
-				feh_wm_set_bg_centered(pmap_d1, im, 0, 0, scr->width, scr->height);
+				feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
+					0, 0, scr->width, scr->height);
 
 			XFreeGC(disp, gc);
 
@@ -310,16 +321,14 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++) {
-					if (use_filelist)
-						feh_wm_load_next(&im);
-					feh_wm_set_bg_filled(pmap_d1, im,
+				for (i = 0; i < num_xinerama_screens; i++)
+					feh_wm_set_bg_filled(pmap_d1, im, use_filelist,
 						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 						xinerama_screens[i].width, xinerama_screens[i].height);
-				}
 			else
 #endif				/* HAVE_LIBXINERAMA */
-				feh_wm_set_bg_filled(pmap_d1, im, 0, 0, scr->width, scr->height);
+				feh_wm_set_bg_filled(pmap_d1, im, use_filelist
+					, 0, 0, scr->width, scr->height);
 
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-fill", filbuf, NULL);
 
@@ -333,16 +342,14 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++) {
-					if (use_filelist)
-						feh_wm_load_next(&im);
-					feh_wm_set_bg_maxed(pmap_d1, im,
+				for (i = 0; i < num_xinerama_screens; i++)
+					feh_wm_set_bg_maxed(pmap_d1, im, use_filelist,
 						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 						xinerama_screens[i].width, xinerama_screens[i].height);
-				}
 			else
 #endif				/* HAVE_LIBXINERAMA */
-				feh_wm_set_bg_maxed(pmap_d1, im, 0, 0, scr->width, scr->height);
+				feh_wm_set_bg_maxed(pmap_d1, im, use_filelist,
+					0, 0, scr->width, scr->height);
 
 			XFreeGC(disp, gc);
 
