@@ -165,13 +165,12 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 	int render_w = (  border_x ? ((img_w * h) / img_h) : w);
 	int render_h = ( !border_x ? ((img_h * w) / img_w) : h);
 
-	int render_x = (  border_x ? ((w - render_w) >> 1) : 0);
-	int render_y = ( !border_x ? ((h - render_h) >> 1) : 0);
+	int render_x = x + (  border_x ? ((w - render_w) >> 1) : 0);
+	int render_y = y + ( !border_x ? ((h - render_h) >> 1) : 0);
 
-	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
+	gib_imlib_render_image_on_drawable_at_size(pmap, im,
 		render_x, render_y,
 		render_w, render_h,
-		x, y, w, h,
 		1, 0, !opt.force_aliasing);
 
 	if (use_filelist)
