@@ -1,3 +1,7 @@
+git HEAD
+
+    * The --bg-options now accept multiple filenames, one per Xinerama screen
+
 Mon, 26 Sep 2011 09:35:41 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v1.16.2
