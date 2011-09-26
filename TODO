@@ -9,8 +9,8 @@ turned on (after that, it'll work for all images in the slideshow).
      user: derf
     votes: 0
   created: 2010/08/21 11:08:12 -0700
-  updated: 2011/08/15 01:24:15 -0700
- comments: 2
+  updated: 2011/08/30 00:38:44 -0700
+ comments: 3
  
 9. feh fails for massive images
 -------------------------------
@@ -47,8 +47,8 @@ Running feh 1.9-21-gbeecfaf from github on a FC13 x86_64 machine.
      user: dayne
     votes: 1
   created: 2010/10/06 16:22:25 -0700
-  updated: 2011/08/01 02:45:58 -0700
- comments: 2
+  updated: 2011/08/17 05:42:50 -0700
+ comments: 3
  
 12. "Reverse" --scale-down (zoom images to screen size)
 -------------------------------------------------------
@@ -90,8 +90,8 @@ that.
   updated: 2011/08/08 01:47:12 -0700
  comments: 0
  
-54. center large images [was: zoom to window size]
---------------------------------------------------
+54. proper support for tiling WMs [was: zoom to window size]
+------------------------------------------------------------
 i frequently use feh with a tiling window manager. it would be great if there
 were a switch that automatically zoomed the image to the window size (like with
 fullscreen, but without actually changing the window size). right now i need to
@@ -100,6 +100,21 @@ specify the exact geometry to get this to work correctly.
      user: ecraven
     votes: 0
   created: 2011/08/11 03:15:38 -0700
-  updated: 2011/08/11 07:59:54 -0700
+  updated: 2011/08/28 13:47:58 -0700
  comments: 6
+ 
+64. Xinerama bg-setting: separate images
+----------------------------------------
+Hi. I use feh as a bg-setter and I think it is pretty awesome that it supports
+Xinerama now. However, my feature request would be for feh to be able to set a
+distinct bg-image on each Xinerama screen. I imagine you have already thought
+of that possiblity, but as I did not see it in the TODO list I wanted to make
+the request official. This feature would make feh the perfect bg-setter, and I
+have known other people on the Web looking for the same functionality.
+    state: open
+     user: frozenQueue
+    votes: 0
+  created: 2011/09/22 11:49:52 -0700
+  updated: 2011/09/23 04:46:26 -0700
+ comments: 2
  
