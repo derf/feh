@@ -700,17 +700,21 @@ to your X startup script
 .
 Note that all options except
 .Cm --bg-tile
-support Xinerama.  So, if you have multiple screens connected and use e.g.
+support Xinerama.
+For instance, if you have multiple screens connected and use e.g.
 .Cm --bg-center ,
 .Nm
-will center the image on each screen.  You can use
-.Cm --no-xinerama
-to treat the whole X display as one screen.
+will center the image on each screen.
+You may even specify more than one file, in that case, the first file is set
+on screen 0, the second on screen 1, and so on.
 .
 .Pp
 .
-The following options control how exactly the background is set.  Each of them
-takes exactly one file as argument.
+Use
+.Cm --no-xinerama
+to treat the whole X display as one screen when setting wallpapers.
+.
+.Pp
 .
 .Bl -tag -width indent
 .
