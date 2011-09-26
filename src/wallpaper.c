@@ -102,11 +102,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	int num = (int) rand();
 	char bgfil[4096];
 	char sendbuf[4096];
-	Imlib_Image tmp;
 
 	snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
 
-	if (!fil && !im) {
+	if (!fil && im) {
 		snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
 		imlib_context_set_image(im);
 		imlib_image_set_format("png");
@@ -116,8 +115,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	}
 
 	if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None)) {
-		feh_wm_load_next(&im);
-		fil = FEH_FILE(filelist->data)->filename;
+		if (use_filelist) {
+			feh_wm_load_next(&im);
+			fil = FEH_FILE(filelist->data)->filename;
+		}
 		snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil);
 		enl_ipc_send(sendbuf);
 
@@ -196,8 +197,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			if (opt.xinerama && xinerama_screens)
 				for (i = 0; i < num_xinerama_screens; i++) {
 					if (use_filelist)
-						feh_wm_load_next(&tmp);
-					gib_imlib_render_image_on_drawable_at_size(pmap_d1, tmp,
+						feh_wm_load_next(&im);
+					gib_imlib_render_image_on_drawable_at_size(pmap_d1, im,
 						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 						xinerama_screens[i].width, xinerama_screens[i].height,
 						1, 0, !opt.force_aliasing);
@@ -227,13 +228,13 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			if (opt.xinerama && xinerama_screens)
 				for (i = 0; i < num_xinerama_screens; i++) {
 					if (use_filelist)
-						feh_wm_load_next(&tmp);
+						feh_wm_load_next(&im);
 					w = xinerama_screens[i].width;
 					h = xinerama_screens[i].height;
-					x = (w - gib_imlib_image_get_width(tmp)) >> 1;
-					y = (h - gib_imlib_image_get_height(tmp)) >> 1;
+					x = (w - gib_imlib_image_get_width(im)) >> 1;
+					y = (h - gib_imlib_image_get_height(im)) >> 1;
 					gib_imlib_render_image_part_on_drawable_at_size(
-						pmap_d1, tmp,
+						pmap_d1, im,
 						((x < 0) ? -x : 0) , ((y < 0) ? -y : 0), w, h,
 						xinerama_screens[i].x_org + ((x > 0) ? x : 0),
 						xinerama_screens[i].y_org + ((y > 0) ? y : 0),
@@ -266,7 +267,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			if (opt.xinerama && xinerama_screens)
 				for (i = 0; i < num_xinerama_screens; i++) {
 					if (use_filelist)
-						feh_wm_load_next(&tmp);
+						feh_wm_load_next(&im);
 					scr_w = xinerama_screens[i].width;
 					scr_h = xinerama_screens[i].height;
 					cut_x = (((img_w * scr_h) > (img_h * scr_w)) ? 1 : 0);
@@ -279,7 +280,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 							cut_x, w, h, render_x, render_y));
 
 					gib_imlib_render_image_part_on_drawable_at_size(
-						pmap_d1, tmp,
+						pmap_d1, im,
 						render_x, render_y,
 						w, h,
 						xinerama_screens[i].x_org,
@@ -318,7 +319,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			if (opt.xinerama && xinerama_screens)
 				for (i = 0; i < num_xinerama_screens; i++) {
 					if (use_filelist)
-						feh_wm_load_next(&tmp);
+						feh_wm_load_next(&im);
 					scr_w = xinerama_screens[i].width;
 					scr_h = xinerama_screens[i].height;
 					border_x = (((img_w * scr_h) > (img_h * scr_w)) ? 0 : 1);
@@ -331,7 +332,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 							border_x, w, h, render_x, render_y));
 
 					gib_imlib_render_image_on_drawable_at_size(
-						pmap_d1, tmp,
+						pmap_d1, im,
 						xinerama_screens[i].x_org + render_x,
 						xinerama_screens[i].y_org + render_y,
 						w, h,
@@ -344,6 +345,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XFreeGC(disp, gc);
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-max", filbuf, NULL);
 		} else {
+			if (use_filelist)
+				feh_wm_load_next(&im);
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
