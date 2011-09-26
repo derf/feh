@@ -242,11 +242,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root, *data_esetroot;
 		Pixmap pmap_d1, pmap_d2;
+		gib_list *l;
 
 		/* string for sticking in ~/.fehbg */
 		char *fehbg = NULL;
 		char *home;
-		char filbuf[PATH_MAX];
+		char filbuf[4096];
 		char fehbg_xinerama[] = "--no-xinerama";
 
 		/* local display to set closedownmode on */
@@ -263,17 +264,39 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		D(("Falling back to XSetRootWindowPixmap\n"));
 
 		/* Put the filename in filbuf between ' and escape ' in the filename */
-/*		out = 0;
-		filbuf[out++] = '\'';
-		for (in = 0; fil[in] && out < (PATH_MAX - 4); in++) {
-			if (fil[in] == '\'') {
-				filbuf[out++] = '\\';
+		out = 0;
+
+		if (fil && !use_filelist) {
+			filbuf[out++] = '\'';
+
+			for (in = 0; fil[in] && out < 4092; in++) {
+
+				if (fil[in] == '\'')
+					filbuf[out++] = '\\';
+				filbuf[out++] = fil[in];
 			}
-			filbuf[out++] = fil[in];
+			filbuf[out++] = '\'';
+
+		} else {
+			for (l = filelist; l; l = l->next) {
+				filbuf[out++] = '\'';
+
+				fil = FEH_FILE(l->data)->filename;
+
+				for (in = 0; fil[in] && out < 4092; in++) {
+
+					if (fil[in] == '\'')
+						filbuf[out++] = '\\';
+					filbuf[out++] = fil[in];
+				}
+				filbuf[out++] = '\'';
+				filbuf[out++] = ' ';
+			}
 		}
-		filbuf[out++] = '\'';
+
+
 		filbuf[out++] = 0;
-*/filbuf[0] = '\0';
+
 		if (scaled) {
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
