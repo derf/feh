@@ -103,9 +103,6 @@ void init_parse_options(int argc, char **argv)
 
 	D(("Options parsed\n"));
 
-	if (opt.bgmode)
-		return;
-
 	filelist_len = gib_list_length(filelist);
 	if (!filelist_len)
 		show_mini_usage();
@@ -395,9 +392,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"start-at"      , 1, 0, '|'},
 		{"debug"         , 0, 0, '+'},
 		{"output-dir"    , 1, 0, 'j'},
-		{"bg-tile"       , 1, 0, 200},
-		{"bg-center"     , 1, 0, 201},
-		{"bg-scale"      , 1, 0, 202},
+		{"bg-tile"       , 0, 0, 200},
+		{"bg-center"     , 0, 0, 201},
+		{"bg-scale"      , 0, 0, 202},
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
@@ -411,8 +408,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"action7"       , 1, 0, 215},
 		{"action8"       , 1, 0, 216},
 		{"action9"       , 1, 0, 217},
-		{"bg-fill"       , 1, 0, 218},
-		{"bg-max"        , 1, 0, 219},
+		{"bg-fill"       , 0, 0, 218},
+		{"bg-max"        , 0, 0, 219},
 		{"index-name"    , 1, 0, 230},
 		{"index-size"    , 1, 0, 231},
 		{"index-dim"     , 1, 0, 232},
@@ -672,23 +669,18 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 200:
 			opt.bgmode = BG_MODE_TILE;
-			opt.output_file = estrdup(optarg);
 			break;
 		case 201:
 			opt.bgmode = BG_MODE_CENTER;
-			opt.output_file = estrdup(optarg);
 			break;
 		case 202:
 			opt.bgmode = BG_MODE_SCALE;
-			opt.output_file = estrdup(optarg);
 			break;
 		case 218:
 			opt.bgmode = BG_MODE_FILL;
-			opt.output_file = estrdup(optarg);
 			break;
 		case 219:
 			opt.bgmode = BG_MODE_MAX;
-			opt.output_file = estrdup(optarg);
 			break;
 		case 204:
 			free(opt.menu_style);

@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	else if (opt.thumbs)
 		init_thumbnail_mode();
 	else if (opt.bgmode) {
-		feh_wm_set_bg_file(opt.output_file, opt.bgmode);
+		feh_wm_set_bg_filelist(opt.bgmode);
 		exit(0);
 	}
 	else {
