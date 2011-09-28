@@ -107,6 +107,9 @@ enum image_bg { IMAGE_BG_CHECKS = 0, IMAGE_BG_BLACK, IMAGE_BG_WHITE };
 #define INPLACE_EDIT_FLIP   -1
 #define INPLACE_EDIT_MIRROR -2
 
+#define ZOOM_MIN 0.002
+#define ZOOM_MAX 2000
+
 typedef void (*sighandler_t) (int);
 
 int feh_main_iteration(int block);

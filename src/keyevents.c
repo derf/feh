@@ -561,6 +561,10 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.zoom_in, keysym, state)) {
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 1.25;
+
+		if (winwid->zoom > ZOOM_MAX)
+			winwid->zoom = ZOOM_MAX;
+
 		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
 			winwid->old_zoom * winwid->zoom);
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
@@ -571,6 +575,10 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.zoom_out, keysym, state)) {
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 0.80;
+
+		if (winwid->zoom < ZOOM_MIN)
+			winwid->zoom = ZOOM_MIN;
+
 		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
 			winwid->old_zoom * winwid->zoom);
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /

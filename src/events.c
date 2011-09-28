@@ -336,15 +336,15 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				winwid->zoom = winwid->old_zoom + (
 						((double) ev->xmotion.x - (double) winwid->click_offset_x)
 						/ 128.0);
-						/*/ ((double) (winwid->click_offset_x + 1)));*/
 			else
 				winwid->zoom = winwid->old_zoom - (
 						((double) winwid->click_offset_x - (double) ev->xmotion.x)
 						/ 128.0);
-						/*/ ((double) (winwid->click_offset_x + 1)));*/
 
-			if (winwid->zoom < 0.01)
-				winwid->zoom = 0.01;
+			if (winwid->zoom < ZOOM_MIN)
+				winwid->zoom = ZOOM_MIN;
+			else if (winwid->zoom > ZOOM_MAX)
+				winwid->zoom = ZOOM_MAX;
 
 			/* center around click_offset */
 			winwid->im_x = winwid->click_offset_x
