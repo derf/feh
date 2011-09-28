@@ -543,6 +543,9 @@ void feh_draw_info(winwidget w)
 		pclose(info_pipe);
 	}
 
+	if (no_lines == 0)
+		return;
+
 	height *= no_lines;
 	width += 4;
 
