@@ -278,7 +278,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			filbuf[out++] = '\'';
 
 		} else {
-			for (l = filelist; l; l = l->next) {
+			for (l = filelist; l && out < 4092; l = l->next) {
 				filbuf[out++] = '\'';
 
 				fil = FEH_FILE(l->data)->filename;
