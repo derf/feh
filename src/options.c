@@ -61,19 +61,6 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
 
-	opt.reload_button = 0;
-	opt.pan_button = 1;
-	opt.zoom_button = 2;
-	opt.menu_button = 3;
-	opt.menu_ctrl_mask = 0;
-	opt.prev_button = 4;
-	opt.next_button = 5;
-
-	opt.rotate_button = 2;
-	opt.no_rotate_ctrl_mask = 0;
-	opt.blur_button = 1;
-	opt.no_blur_ctrl_mask = 0;
-
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
 
@@ -315,7 +302,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		"0:1:2:4:5:8:9:.@:^:~:):|:+:";
+		".@:^:~:):|:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
@@ -352,9 +339,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"cache-thumbnails", 0, 0, 'P'},
 		{"cycle-once"    , 0, 0, 224},
 		{"no-xinerama"   , 0, 0, 225},
-		{"no-rotate-ctrl-mask", 0, 0, 226},
-		{"no-blur-ctrl-mask", 0, 0, 227},
-		{"menu-ctrl-mask", 0, 0, 228},
 		{"draw-tinted"   , 0, 0, 229},
 
 		{"output"        , 1, 0, 'o'},
@@ -381,14 +365,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"fontpath"      , 1, 0, 'C'},
 		{"menu-bg"       , 1, 0, ')'},
 		{"image-bg"      , 1, 0, 'B'},
-		{"reload-button" , 1, 0, '0'},
-		{"pan-button"    , 1, 0, '1'},
-		{"zoom-button"   , 1, 0, '2'},
-		{"menu-button"   , 1, 0, '3'},
-		{"prev-button"   , 1, 0, '4'},
-		{"next-button"   , 1, 0, '5'},
-		{"rotate-button" , 1, 0, '8'},
-		{"blur-button"   , 1, 0, '9'},
 		{"start-at"      , 1, 0, '|'},
 		{"debug"         , 0, 0, '+'},
 		{"output-dir"    , 1, 0, 'j'},
@@ -631,30 +607,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			else
 				opt.filelistfile = estrdup(optarg);
 			break;
-		case '0':
-			opt.reload_button = atoi(optarg);
-			break;
-		case '1':
-			opt.pan_button = atoi(optarg);
-			break;
-		case '2':
-			opt.zoom_button = atoi(optarg);
-			break;
-		case '3':
-			opt.menu_button = atoi(optarg);
-			break;
-		case '4':
-			opt.prev_button = atoi(optarg);
-			break;
-		case '5':
-			opt.next_button = atoi(optarg);
-			break;
-		case '8':
-			opt.rotate_button = atoi(optarg);
-			break;
-		case '9':
-			opt.blur_button = atoi(optarg);
-			break;
 		case '|':
 			opt.start_list_at = estrdup(optarg);
 			break;
@@ -745,15 +697,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 225:
 			opt.xinerama = 0;
-			break;
-		case 226:
-			opt.no_rotate_ctrl_mask = 1;
-			break;
-		case 227:
-			opt.no_blur_ctrl_mask = 1;
-			break;
-		case 228:
-			opt.menu_ctrl_mask = 1;
 			break;
 		case 229:
 			opt.text_bg = TEXT_BG_TINTED;

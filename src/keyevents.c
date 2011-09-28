@@ -154,7 +154,7 @@ void init_keyevents(void) {
 
 	home = getenv("HOME");
 	if (!home)
-		eprintf("No HOME in environment\n");
+		eprintf("No HOME in environment");
 
 	confhome = getenv("XDG_CONFIG_HOME");
 

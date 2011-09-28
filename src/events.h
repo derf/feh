@@ -32,6 +32,4 @@ extern feh_event_handler *ev_handler[];
 
 void feh_event_init(void);
 
-#define EV_IS_MENU_BUTTON(ev) ((((ev)->xbutton.button == opt.menu_button) || (opt.menu_button == 0)) && (((!opt.menu_ctrl_mask) && (!((ev)->xbutton.state & ControlMask))) || (((ev)->xbutton.state & ControlMask) && (opt.menu_ctrl_mask))))
-
 #endif

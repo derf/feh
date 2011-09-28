@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 	if (opt.display) {
 		init_x_and_imlib();
 		init_keyevents();
+		init_buttonbindings();
 	}
 
 	feh_event_init();

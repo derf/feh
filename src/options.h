@@ -92,20 +92,6 @@ struct __fehoptions {
 
 	gib_style *menu_style_l;
 
-	unsigned char pan_button;
-	unsigned char zoom_button;
-	unsigned char menu_button;
-	unsigned char menu_ctrl_mask;
-	unsigned char prev_button;
-	unsigned char next_button;
-
-	unsigned char rotate_button;
-	unsigned char blur_button;
-	unsigned char reload_button;
-	unsigned char no_rotate_ctrl_mask;
-	unsigned char no_blur_ctrl_mask;
-	unsigned char no_pan_ctrl_mask;
-
 	int force_aliasing;
 	int thumb_w;
 	int thumb_h;
@@ -197,6 +183,22 @@ struct __fehkb {
 	struct __fehkey toggle_fullscreen;
 	struct __fehkey reload_minus;
 	struct __fehkey reload_plus;
+};
+
+struct __fehbutton {
+	int modifier;
+	char button;
+};
+
+struct __fehbb {
+	struct __fehbutton pan;
+	struct __fehbutton zoom;
+	struct __fehbutton reload;
+	struct __fehbutton prev;
+	struct __fehbutton next;
+	struct __fehbutton menu;
+	struct __fehbutton blur;
+	struct __fehbutton rotate;
 };
 
 void init_parse_options(int argc, char **argv);

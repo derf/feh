@@ -517,66 +517,6 @@ mode.
 .El
 .
 .
-.Sh BUTTON OPTIONS
-.
-.Bl -tag -width indent
-.
-.It Cm -0 , --reload-button Ar int
-.
-Set button to reload the image
-.Pq default: 0 .
-.
-.It Cm -1 , --pan-button Ar int
-.
-Set button to pan the image
-.Pq hold button down and move mouse to move the image .
-When the mouse is not moved, advances to the next image in slideshow mode.
-.Pq default: 1 , usually the left button .
-.
-.It Cm -2 , --zoom-button Ar int
-.
-Set button to enable zoom mode
-.Pq default: 2 , usually the middle button .
-.
-.It Cm -3 , --menu-button Ar int
-.
-Set button to activate the menu.
-.Pq default: 3 , usually the right button .
-.
-.It Cm --menu-ctrl-mask
-.
-Require CTRL+Button for menu activation.
-.
-.It Cm -4 , --prev-button Ar int
-.
-Set button to switch to the previous image in slideshow mode
-.Pq default: 4 , usually Aq mousewheel up .
-.
-.It Cm -5 , --next-button Ar int
-.
-Set button to switch to the next image in slideshow mode
-.Pq default: 5 , usually Aq mousewheel down .
-.
-.It Cm -8 , --rotate-button Ar int
-.
-Use CTRL+Button to rotate the current image
-.Pq default : 2 .
-.
-.It Cm --no-rotate-ctrl-mask
-.
-Don't require CTRL+Button for rotation - just use the button.
-.
-.It Cm -9 , --blur-button Ar int
-.
-Use CTRL+Button for blurring
-.Pq default : 1 .
-.
-.It Cm --no-blur-ctrl-mask
-.
-Don't require CTRL+Button for blurring - just use the button.
-.El
-.
-.
 .Sh MONTAGE MODE OPTIONS
 .
 These additional options can be used for index, montage and
@@ -1163,6 +1103,70 @@ Highlight child menu item
 .It Ao Return Ac , Ao Space Ac Bq menu_select
 .
 Select highlighted menu item
+.
+.El
+.
+.
+.Sh BUTTONS CONFIG SYNTAX
+.
+This works like the keys config file: the entries are of the form
+.Qq Ar action Op Ar binding .
+.
+.Pp
+.
+Each
+.Ar binding
+is a button name.  It may optionally start with modifiers for things like
+Control, in which case
+.Ar binding
+looks like
+.Ar mod Ns No - Ns Ar button
+.Pq for example "C-1" for Ctrl + Left button .
+.
+.Pp
+.
+For the available modifiers, see
+.Sx KEYS CONFIGURATION SYNTAX .
+.
+.
+.Ss BUTTONS
+.
+In an image window, the following buttons may be used
+.Pq The strings in Bo square brackets Bc are the config action names :
+.
+.Bl -tag -width indent
+.
+.It Bq reload
+.
+Reload current image
+.
+.It 1 Ao left mouse button Ac Bq pan
+.
+pan the current image
+.
+.It 2 Ao middle mouse button Ac Bq zoom
+.
+Zoom the current image
+.
+.It 3 Ao right mouse button Ac Bq menu
+.
+Toggle menu
+.
+.It 4 Ao mousewheel down Ac Bq prev
+.
+Show previous image
+.
+.It 5 Ao mousewheel up Ac Bq next
+.
+Show next image
+.
+.It Ctrl+1 Bq blur
+.
+Blur current image
+.
+.It Ctrl+2 Bq rotate
+.
+Rotate current image
 .
 .El
 .
