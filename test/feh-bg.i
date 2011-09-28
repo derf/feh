@@ -42,7 +42,7 @@ sub check_bg {
 }
 
 if (($pid_xnest = fork()) == 0) {
-	exec(qw( Xnest -geometry 500x500 :7 ));
+	exec(qw( Xephyr -screen 500x500 :7 ));
 }
 
 sleep(0.5);
