@@ -419,6 +419,13 @@ char *feh_printf(char *str, feh_file * file)
 					strcat(ret, buf);
 				}
 				break;
+			case 'S':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					snprintf(buf, sizeof(buf),
+							"%.2fkB", ((double)file->info->size / 1000));
+					strcat(ret, buf);
+				}
+				break;
 			case 'p':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
