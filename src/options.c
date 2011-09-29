@@ -386,9 +386,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"action9"       , 1, 0, 217},
 		{"bg-fill"       , 0, 0, 218},
 		{"bg-max"        , 0, 0, 219},
-		{"index-name"    , 1, 0, 230},
-		{"index-size"    , 1, 0, 231},
-		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
@@ -420,6 +417,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'i':
 			opt.index = 1;
+			opt.index_info = estrdup("%n");
 			opt.index_show_name = 1;
 			opt.index_show_size = 0;
 			opt.index_show_dim = 0;
@@ -429,6 +427,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'I':
 			opt.index = 1;
+			opt.index_info = estrdup("%n \n %S \n %wx%h");
 			opt.index_show_name = 1;
 			opt.index_show_size = 1;
 			opt.index_show_dim = 1;
@@ -612,6 +611,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 't':
 			opt.thumbs = 1;
+			opt.index_info = ("%n");
 			opt.index_show_name = 1;
 			opt.index_show_size = 0;
 			opt.index_show_dim = 0;
@@ -700,15 +700,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 229:
 			opt.text_bg = TEXT_BG_TINTED;
-			break;
-		case 230:
-			opt.index_show_name = atoi(optarg);
-			break;
-		case 231:
-			opt.index_show_size = atoi(optarg);
-			break;
-		case 232:
-			opt.index_show_dim = atoi(optarg);
 			break;
 		case 'J':
 			opt.thumb_redraw = atoi(optarg);

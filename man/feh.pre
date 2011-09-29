@@ -286,18 +286,6 @@ name beneath each thumbnail.  Index mode enables certain other options, see
 and
 .Sx MONTAGE MODE OPTIONS .
 .
-.It Cm --index-dim Ar bool
-.
-Toggle showing image dimensions in thumbnail/index mode.
-.
-.It Cm --index-name Ar bool
-.
-Toggle showing the filename in thumbnail/index mode.
-.
-.It Cm --index-size Ar bool
-.
-Toggle showing the filesize in thumbnail/index mode.
-.
 .It Cm --info Ar commandline
 .
 Execute
@@ -725,6 +713,11 @@ Number of image pixels
 .It %s
 .
 Image size in bytes
+.
+.It %S
+.
+Image size in kilobytes
+.Pq with kB postfix
 .
 .It %t
 .
