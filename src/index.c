@@ -438,10 +438,22 @@ void init_index_mode(void)
 
 static int get_index_info_no_lines(void)
 {
-	if (opt.index_info)
-		/* TODO */
-		return 3;
-	return 0;
+	static int no_lines = 0;
+	char *pos = opt.index_info;
+
+	if (no_lines)
+		return no_lines;
+
+	if (!opt.index_info)
+		return 0;
+
+	no_lines = 1;
+	while ((pos = strchr(pos, '\n'))) {
+		no_lines++;
+		pos++;
+	}
+	
+	return no_lines;
 }
 
 static char *create_index_string(feh_file * file)
