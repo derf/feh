@@ -32,7 +32,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static char *create_index_title_string(int num, int w, int h);
 static char *create_index_string(feh_file *file);
 static void get_index_string_dim(feh_file *file, Imlib_Font fn, int *w, int *h);
-static int get_index_info_no_lines(void);
 
 /* TODO Break this up a bit ;) */
 /* TODO s/bit/lot */
@@ -92,8 +91,9 @@ void init_index_mode(void)
 
 	/* Work out how tall the font is */
 	gib_imlib_get_text_size(fn, "W", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	get_index_string_dim(NULL, fn, &fw, &fh);
 	/* For now, allow room for the right number of lines with small gaps */
-	text_area_h = ((th + 2) * get_index_info_no_lines()) + 5;
+	text_area_h = fh + 5;
 
 	/* This includes the text area for index data */
 	tot_thumb_h = opt.thumb_h + text_area_h;
@@ -360,7 +360,7 @@ void init_index_mode(void)
 			lineno = 0;
 			if (opt.index_info) {
 				line = lines = feh_wrap_string(create_index_string(file),
-						opt.thumb_w * 2, fn, NULL);
+						opt.thumb_w * 3, fn, NULL);
 
 				while (line) {
 					gib_imlib_get_text_size(fn, (char *) line->data,
@@ -435,45 +435,16 @@ void init_index_mode(void)
 	return;
 }
 
-static int get_index_info_no_lines(void)
-{
-	static int no_lines = 0;
-	char *pos = opt.index_info;
-
-	if (no_lines)
-		return no_lines;
-
-	if (!opt.index_info)
-		return 0;
-
-	no_lines = 1;
-	while ((pos = strchr(pos, '\n'))) {
-		no_lines++;
-		pos++;
-	}
-	
-	return no_lines;
-}
-
 static void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 {
 	int line_w, line_h;
 	gib_list *line, *lines;
 	static int max_w = 0, total_h = 0;
-	static feh_file *last_file;
-
-	if (last_file == file) {
-		*fw = max_w;
-		*fh = total_h;
-		return;
-	}
-
-	last_file = file;
 
 	if (!opt.index_info)
 		return;
 
-	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 2, fn, NULL);
+	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 3, fn, NULL);
 
 	while (line) {
 		gib_imlib_get_text_size(fn, (char *) line->data,

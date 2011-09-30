@@ -5,6 +5,8 @@ git HEAD
     * The button-options -0 through -9 are no longer supported.
       Use .config/feh/buttons instead (see feh manpage)
     * New format specifier: %S (size in kB)
+    * The --index-{dim,name,size} options are no longer supported.
+      Use --index-info <string> with format specifiers instead
 
 Mon, 26 Sep 2011 09:35:41 +0200  Daniel Friesel <derf@finalrewind.org>
 

@@ -374,6 +374,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
+		{"index-info"    , 1, 0, 207},
 		{"caption-path"  , 1, 0, 'K'},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
@@ -427,7 +428,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'I':
 			opt.index = 1;
-			opt.index_info = estrdup("%n \n %S \n %wx%h");
+			opt.index_info = estrdup("%n\n%S\n%wx%h");
 			opt.index_show_name = 1;
 			opt.index_show_size = 1;
 			opt.index_show_dim = 1;
@@ -649,6 +650,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 206:
 			opt.screen_clip = 0;
+			break;
+		case 207:
+			opt.index_info = estrdup(optarg);
 			break;
 		case 'K':
 			opt.caption_path = estrdup(optarg);
