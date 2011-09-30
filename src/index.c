@@ -457,6 +457,8 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 
 	gib_list_free_and_data(lines);
 
+	printf("dim is %dx%d\n", max_w, total_h);
+
 	*fw = max_w;
 	*fh = total_h;
 	return;

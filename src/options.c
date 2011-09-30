@@ -409,9 +409,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'm':
 			opt.index = 1;
-			opt.index_show_name = 0;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
 			break;
 		case 'c':
 			opt.collage = 1;
@@ -419,9 +416,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'i':
 			opt.index = 1;
 			opt.index_info = estrdup("%n");
-			opt.index_show_name = 1;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
 			break;
 		case '.':
 			opt.scale_down = 1;
@@ -429,9 +423,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'I':
 			opt.index = 1;
 			opt.index_info = estrdup("%n\n%S\n%wx%h");
-			opt.index_show_name = 1;
-			opt.index_show_size = 1;
-			opt.index_show_dim = 1;
 			break;
 		case 'l':
 			opt.list = 1;
@@ -612,10 +603,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 't':
 			opt.thumbs = 1;
-			opt.index_info = ("%n");
-			opt.index_show_name = 1;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
+			opt.index_info = estrdup("%n");
 			break;
 		case 'j':
 			opt.output_dir = estrdup(optarg);
