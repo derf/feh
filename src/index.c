@@ -436,11 +436,21 @@ void init_index_mode(void)
 void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 {
 	int line_w, line_h;
+	char fake_file = 0;
 	gib_list *line, *lines;
 	static int max_w = 0, total_h = 0;
 
 	if (!opt.index_info)
 		return;
+
+	/* called with file = NULL in the setup phase.
+	 * We need a fake file, otherwise feh_printf will remove format specifiers,
+	 * leading e.g. to a 0x0 report for index_dim = "%n".
+	 */
+	if (file == NULL) {
+		file = feh_file_new("foo");
+		file->info = feh_file_info_new();
+	}
 
 	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 3, fn, NULL);
 
@@ -456,8 +466,8 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 	}
 
 	gib_list_free_and_data(lines);
-
-	printf("dim is %dx%d\n", max_w, total_h);
+	if (fake_file)
+		feh_file_free(file);
 
 	*fw = max_w;
 	*fh = total_h;
