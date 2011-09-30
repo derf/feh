@@ -448,6 +448,7 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 	 * leading e.g. to a 0x0 report for index_dim = "%n".
 	 */
 	if (file == NULL) {
+		fake_file = 1;
 		file = feh_file_new("foo");
 		file->info = feh_file_info_new();
 	}

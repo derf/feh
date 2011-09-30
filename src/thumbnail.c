@@ -921,11 +921,14 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 					weprintf("unable to create %s directory", dir_thumbnails);
 			}
 
+			free(dir_thumbnails);
+
 			if (mkdir(dir, 0700) == -1)
 				weprintf("unable to create %s directory", dir);
 			else
 				status = 1;
 		}
+		free(dir);
 	}
 
 	return status;
