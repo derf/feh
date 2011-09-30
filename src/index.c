@@ -28,10 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
+#include "index.h"
 
-static char *create_index_title_string(int num, int w, int h);
-static char *create_index_string(feh_file *file);
-static void get_index_string_dim(feh_file *file, Imlib_Font fn, int *w, int *h);
 
 /* TODO Break this up a bit ;) */
 /* TODO s/bit/lot */
@@ -435,7 +433,7 @@ void init_index_mode(void)
 	return;
 }
 
-static void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
+void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 {
 	int line_w, line_h;
 	gib_list *line, *lines;
@@ -464,12 +462,12 @@ static void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh
 	return;
 }
 
-static char *create_index_string(feh_file * file)
+char *create_index_string(feh_file * file)
 {
 	return feh_printf(opt.index_info, file);
 }
 
-static char *create_index_title_string(int num, int w, int h)
+char *create_index_title_string(int num, int w, int h)
 {
 	static char str[50];
 
