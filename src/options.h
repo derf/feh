@@ -32,9 +32,6 @@ struct __fehoptions {
 	unsigned char montage;
 	unsigned char collage;
 	unsigned char index;
-	unsigned char index_show_name;
-	unsigned char index_show_dim;
-	unsigned char index_show_size;
 	unsigned char thumbs;
 	unsigned char slideshow;
 	unsigned char recursive;
@@ -89,6 +86,7 @@ struct __fehoptions {
 	char *caption_path;
 	char *start_list_at;
 	char *info_cmd;
+	char *index_info;
 
 	gib_style *menu_style_l;
 

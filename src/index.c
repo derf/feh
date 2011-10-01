@@ -28,10 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
+#include "index.h"
 
-static char *create_index_dimension_string(int w, int h);
-static char *create_index_size_string(char *file);
-static char *create_index_title_string(int num, int w, int h);
 
 /* TODO Break this up a bit ;) */
 /* TODO s/bit/lot */
@@ -51,17 +49,17 @@ void init_index_mode(void)
 	Imlib_Font title_fn = NULL;
 	int text_area_w = 0;
 	int tw = 0, th = 0;
-	int fw_name, fw_size, fw_dim, fw, fh;
+	int fw, fh;
 	int vertical = 0;
 	int max_column_w = 0;
 	int thumbnailcount = 0;
 	gib_list *l = NULL, *last = NULL;
 	feh_file *file = NULL;
-	int lines;
+	int lineno;
 	unsigned char trans_bg = 0;
 	int index_image_width, index_image_height;
-	int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 	char *s;
+	gib_list *line, *lines;
 
 	if (opt.montage) {
 		mode = "montage";
@@ -76,7 +74,6 @@ void init_index_mode(void)
 		fn = gib_imlib_load_font(DEFAULT_FONT);
 
 	if (opt.title_font) {
-		int fh, fw;
 
 		title_fn = gib_imlib_load_font(opt.title_font);
 		if (!title_fn)
@@ -92,8 +89,9 @@ void init_index_mode(void)
 
 	/* Work out how tall the font is */
 	gib_imlib_get_text_size(fn, "W", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	get_index_string_dim(NULL, fn, &fw, &fh);
 	/* For now, allow room for the right number of lines with small gaps */
-	text_area_h = ((th + 2) * (opt.index_show_name + opt.index_show_size + opt.index_show_dim)) + 5;
+	text_area_h = fh + 5;
 
 	/* This includes the text area for index data */
 	tot_thumb_h = opt.thumb_h + text_area_h;
@@ -151,24 +149,14 @@ void init_index_mode(void)
 		for (l = filelist; l; l = l->next) {
 			file = FEH_FILE(l->data);
 			text_area_w = opt.thumb_w;
-			if (opt.index_show_name) {
-				gib_imlib_get_text_size(fn, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+			if (opt.index_info) {
+				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
-			}
-			if (opt.index_show_dim) {
-				gib_imlib_get_text_size(fn,
-						create_index_dimension_string
-						(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
-			}
-			if (opt.index_show_size) {
-				gib_imlib_get_text_size(fn,
-						create_index_size_string
-						(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 			if (text_area_w > opt.thumb_w)
 				text_area_w += 5;
@@ -198,24 +186,14 @@ void init_index_mode(void)
 			file = FEH_FILE(l->data);
 			text_area_w = opt.thumb_w;
 			/* Calc width of text */
-			if (opt.index_show_name) {
-				gib_imlib_get_text_size(fn, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+			if (opt.index_info) {
+				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
-			}
-			if (opt.index_show_dim) {
-				gib_imlib_get_text_size(fn,
-							create_index_dimension_string
-							(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
-			}
-			if (opt.index_show_size) {
-				gib_imlib_get_text_size(fn,
-							create_index_size_string
-							(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 			if (text_area_w > opt.thumb_w)
 				text_area_w += 5;
@@ -240,24 +218,14 @@ void init_index_mode(void)
 		for (l = filelist; l; l = l->next) {
 			file = FEH_FILE(l->data);
 			text_area_w = opt.thumb_w;
-			if (opt.index_show_name) {
-				gib_imlib_get_text_size(fn, file->name, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+			if (opt.index_info) {
+				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
-			}
-			if (opt.index_show_dim) {
-				gib_imlib_get_text_size(fn,
-							create_index_dimension_string
-							(1000, 1000), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
-			}
-			if (opt.index_show_size) {
-				gib_imlib_get_text_size(fn,
-							create_index_size_string
-							(file->filename), NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw > text_area_w)
-					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 
 			if (text_area_w > opt.thumb_w)
@@ -356,32 +324,13 @@ void init_index_mode(void)
 
 			text_area_w = opt.thumb_w;
 			/* Now draw on the info text */
-			if (opt.index_show_name) {
-				gib_imlib_get_text_size(fn, file->name, NULL, &fw_name, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw_name > text_area_w)
-					text_area_w = fw_name;
-			}
-			if (opt.index_show_dim) {
-				gib_imlib_get_text_size(fn,
-							create_index_dimension_string
-							(ww, hh), NULL, &fw_dim, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw_dim > text_area_w)
-					text_area_w = fw_dim;
-			}
-			if (opt.index_show_size) {
-				gib_imlib_get_text_size(fn,
-							create_index_size_string
-							(file->filename), NULL, &fw_size, &fh, IMLIB_TEXT_TO_RIGHT);
-				if (fw_size > text_area_w)
-					text_area_w = fw_size;
+			if (opt.index_info) {
+				get_index_string_dim(file, fn, &fw, &fh);
+				if (fw > text_area_w)
+					text_area_w = fw;
 			}
 			if (text_area_w > opt.thumb_w)
 				text_area_w += 5;
-
-			/* offsets for centering text */
-			x_offset_name = (text_area_w - fw_name) / 2;
-			x_offset_dim = (text_area_w - fw_dim) / 2;
-			x_offset_size = (text_area_w - fw_size) / 2;
 
 			if (vertical) {
 				if (text_area_w > max_column_w)
@@ -418,29 +367,23 @@ void init_index_mode(void)
 
 			gib_imlib_free_image_and_decache(im_thumb);
 
-			lines = 0;
-			if (opt.index_show_name)
-				gib_imlib_text_draw(im_main, fn, NULL,
-						    x + x_offset_name,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2, file->name, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-			if (opt.index_show_dim)
-				gib_imlib_text_draw(im_main, fn, NULL,
-						    x + x_offset_dim,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2,
-						    create_index_dimension_string
-						    (ww, hh), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-			if (opt.index_show_size)
-				gib_imlib_text_draw(im_main, fn, NULL,
-						    x + x_offset_size,
-						    y + opt.thumb_h +
-						    (lines++ * (th + 2)) +
-						    2,
-						    create_index_size_string
-						    (file->filename), IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+			lineno = 0;
+			if (opt.index_info) {
+				line = lines = feh_wrap_string(create_index_string(file),
+						opt.thumb_w * 3, fn, NULL);
+
+				while (line) {
+					gib_imlib_get_text_size(fn, (char *) line->data,
+							NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
+					gib_imlib_text_draw(im_main, fn, NULL,
+							x + ((text_area_w - fw) >> 1),
+							y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
+							(char *) line->data,
+							IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+					line = line->next;
+				}
+				gib_list_free_and_data(lines);
+			}
 
 			if (vertical)
 				y += tot_thumb_h;
@@ -502,33 +445,54 @@ void init_index_mode(void)
 	return;
 }
 
-static char *create_index_size_string(char *file)
+void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 {
-	static char str[50];
-	int size = 0;
-	double kbs = 0.0;
-	struct stat st;
+	int line_w, line_h;
+	char fake_file = 0;
+	gib_list *line, *lines;
+	int max_w = 0, total_h = 0;
 
-	if (stat(file, &st))
-		kbs = 0.0;
-	else {
-		size = st.st_size;
-		kbs = (double) size / 1000;
+	if (!opt.index_info)
+		return;
+
+	/* called with file = NULL in the setup phase.
+	 * We need a fake file, otherwise feh_printf will remove format specifiers,
+	 * leading e.g. to a 0x0 report for index_dim = "%n".
+	 */
+	if (file == NULL) {
+		fake_file = 1;
+		file = feh_file_new("foo");
+		file->info = feh_file_info_new();
 	}
 
-	snprintf(str, sizeof(str), "%.2fKb", kbs);
-	return(str);
+	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 3, fn, NULL);
+
+	while (line) {
+		gib_imlib_get_text_size(fn, (char *) line->data,
+			NULL, &line_w, &line_h, IMLIB_TEXT_TO_RIGHT);
+
+		if (line_w > max_w)
+			max_w = line_w;
+		total_h += line_h + 2;
+
+		line = line->next;
+	}
+
+	gib_list_free_and_data(lines);
+	if (fake_file)
+		feh_file_free(file);
+
+	*fw = max_w;
+	*fh = total_h;
+	return;
 }
 
-static char *create_index_dimension_string(int w, int h)
+char *create_index_string(feh_file * file)
 {
-	static char str[50];
-
-	snprintf(str, sizeof(str), "%dx%d", w, h);
-	return(str);
+	return feh_printf(opt.index_info, file);
 }
 
-static char *create_index_title_string(int num, int w, int h)
+char *create_index_title_string(int num, int w, int h)
 {
 	static char str[50];
 

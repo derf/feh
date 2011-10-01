@@ -374,6 +374,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
+		{"index-info"    , 1, 0, 207},
 		{"caption-path"  , 1, 0, 'K'},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
@@ -386,9 +387,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"action9"       , 1, 0, 217},
 		{"bg-fill"       , 0, 0, 218},
 		{"bg-max"        , 0, 0, 219},
-		{"index-name"    , 1, 0, 230},
-		{"index-size"    , 1, 0, 231},
-		{"index-dim"     , 1, 0, 232},
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
@@ -411,27 +409,20 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'm':
 			opt.index = 1;
-			opt.index_show_name = 0;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
 			break;
 		case 'c':
 			opt.collage = 1;
 			break;
 		case 'i':
 			opt.index = 1;
-			opt.index_show_name = 1;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
+			opt.index_info = estrdup("%n");
 			break;
 		case '.':
 			opt.scale_down = 1;
 			break;
 		case 'I':
 			opt.index = 1;
-			opt.index_show_name = 1;
-			opt.index_show_size = 1;
-			opt.index_show_dim = 1;
+			opt.index_info = estrdup("%n\n%S\n%wx%h");
 			break;
 		case 'l':
 			opt.list = 1;
@@ -612,9 +603,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 't':
 			opt.thumbs = 1;
-			opt.index_show_name = 1;
-			opt.index_show_size = 0;
-			opt.index_show_dim = 0;
+			opt.index_info = estrdup("%n");
 			break;
 		case 'j':
 			opt.output_dir = estrdup(optarg);
@@ -649,6 +638,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 206:
 			opt.screen_clip = 0;
+			break;
+		case 207:
+			opt.index_info = estrdup(optarg);
 			break;
 		case 'K':
 			opt.caption_path = estrdup(optarg);
@@ -700,15 +692,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 229:
 			opt.text_bg = TEXT_BG_TINTED;
-			break;
-		case 230:
-			opt.index_show_name = atoi(optarg);
-			break;
-		case 231:
-			opt.index_show_size = atoi(optarg);
-			break;
-		case 232:
-			opt.index_show_dim = atoi(optarg);
 			break;
 		case 'J':
 			opt.thumb_redraw = atoi(optarg);

@@ -243,8 +243,10 @@ Disable antialiasing for zooming, background setting etc.
 .
 .It Cm -I , --fullindex
 .
-Same as Index mode, but you also get image size and dimensions printed
-below each thumbnail. Enables
+Same as index mode, but with additional information below the thumbnails.
+Works just like
+.Qq feh --index --index-info \&"\&%n\en\&%S\en\&%wx\&%h\&" .
+Enables
 .Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -F , --fullscreen
@@ -286,17 +288,13 @@ name beneath each thumbnail.  Index mode enables certain other options, see
 and
 .Sx MONTAGE MODE OPTIONS .
 .
-.It Cm --index-dim Ar bool
+.It Cm --index-info Ar format
 .
-Toggle showing image dimensions in thumbnail/index mode.
-.
-.It Cm --index-name Ar bool
-.
-Toggle showing the filename in thumbnail/index mode.
-.
-.It Cm --index-size Ar bool
-.
-Toggle showing the filesize in thumbnail/index mode.
+Show image information based on
+.Ar format
+below thumbnails in index / thumbnail mode.  See
+.Sx FORMAT SPECIFIERS .
+May contain newlines.
 .
 .It Cm --info Ar commandline
 .
@@ -725,6 +723,11 @@ Number of image pixels
 .It %s
 .
 Image size in bytes
+.
+.It %S
+.
+Image size in kilobytes
+.Pq with kB postfix
 .
 .It %t
 .

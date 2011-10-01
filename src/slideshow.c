@@ -402,41 +402,38 @@ char *feh_printf(char *str, feh_file * file)
 					strcat(ret, file->name);
 				break;
 			case 'w':
-				if (file) {
-					if (!file->info)
-						feh_file_info_load(file, NULL);
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->width);
 					strcat(ret, buf);
 				}
 				break;
 			case 'h':
-				if (file) {
-					if (!file->info)
-						feh_file_info_load(file, NULL);
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->height);
 					strcat(ret, buf);
 				}
 				break;
 			case 's':
-				if (file) {
-					if (!file->info)
-						feh_file_info_load(file, NULL);
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->size);
 					strcat(ret, buf);
 				}
 				break;
+			case 'S':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					snprintf(buf, sizeof(buf),
+							"%.2fkB", ((double)file->info->size / 1000));
+					strcat(ret, buf);
+				}
+				break;
 			case 'p':
-				if (file) {
-					if (!file->info)
-						feh_file_info_load(file, NULL);
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
 					strcat(ret, buf);
 				}
 				break;
 			case 't':
-				if (file) {
-					if (!file->info)
-						feh_file_info_load(file, NULL);
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					strcat(ret, file->info->format);
 				}
 				break;

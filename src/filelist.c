@@ -321,11 +321,11 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	if (im)
 		im1 = im;
-	else if (!feh_load_image(&im1, file))
+	else if (!feh_load_image(&im1, file) || !im1) {
+		if (!opt.quiet)
+			weprintf("couldn't load %s", file->filename);
 		return(1);
-
-	if (!im1)
-		return(1);
+	}
 
 	file->info = feh_file_info_new();
 
@@ -340,7 +340,7 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	file->info->size = st.st_size;
 
-	if (need_free && im1)
+	if (need_free)
 		gib_imlib_free_image_and_decache(im1);
 	return(0);
 }
