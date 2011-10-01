@@ -153,6 +153,10 @@ void init_index_mode(void)
 				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 			if (text_area_w > opt.thumb_w)
 				text_area_w += 5;
@@ -186,6 +190,10 @@ void init_index_mode(void)
 				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 			if (text_area_w > opt.thumb_w)
 				text_area_w += 5;
@@ -214,6 +222,10 @@ void init_index_mode(void)
 				get_index_string_dim(file, fn, &fw, &fh);
 				if (fw > text_area_w)
 					text_area_w = fw;
+				if (fh > text_area_h) {
+					text_area_h = fh + 5;
+					tot_thumb_h = opt.thumb_h + text_area_h;
+				}
 			}
 
 			if (text_area_w > opt.thumb_w)
@@ -438,7 +450,7 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 	int line_w, line_h;
 	char fake_file = 0;
 	gib_list *line, *lines;
-	static int max_w = 0, total_h = 0;
+	int max_w = 0, total_h = 0;
 
 	if (!opt.index_info)
 		return;

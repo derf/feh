@@ -265,6 +265,10 @@ void init_thumbnail_mode(void)
 				get_index_string_dim(file, td.font_main, &fw, &fh);
 				if (fw > td.text_area_w)
 					td.text_area_w = fw;
+				if (fh > td.text_area_h) {
+					td.text_area_h = fh + 5;
+					td.thumb_tot_h = opt.thumb_h + td.text_area_h;
+				}
 			}
 			if (td.text_area_w > opt.thumb_w)
 				td.text_area_w += 5;
