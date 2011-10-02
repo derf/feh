@@ -353,12 +353,11 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			if (thumbfile) {
 				feh_action_run(thumbfile, opt.actions[action]);
 
-				/* so, reload/regenerate the thumbnail here? */
 				if (!opt.hold_actions[action])
-					winwidget_destroy(winwid);
+					feh_thumbnail_mark_removed(thumbfile, 0);
 			}
 			else
-				fputs("no thumbnail selected\n", stderr);
+				weprintf("No thumbnail selected");
 		}
 	}
 	return;
