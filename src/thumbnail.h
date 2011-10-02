@@ -86,6 +86,7 @@ void feh_thumbnail_select(winwidget winwid, feh_thumbnail *thumbnail);
 void feh_thumbnail_select_next(winwidget winwid, int jump);
 void feh_thumbnail_select_prev(winwidget winwid, int jump);
 void feh_thumbnail_show_selected();
+feh_file *feh_thumbnail_get_selected_file();
 
 int feh_thumbnail_setup_thumbnail_dir(void);
 

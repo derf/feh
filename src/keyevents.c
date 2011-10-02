@@ -345,10 +345,21 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 				feh_reload_image(winwid, 1, 1);
 			else
 				winwidget_destroy(winwid);
-		} else if (winwid->type == WIN_TYPE_THUMBNAIL)
-			fputs("actions from the main thumb window aren't currently supported!\n"
-					"For now, open the image to perform the action on it.\n",
-					stdout);
+		} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
+			feh_file *thumbfile;
+			/* also see events.c:306 */
+			thumbfile = feh_thumbnail_get_selected_file();
+
+			if (thumbfile) {
+				feh_action_run(thumbfile, opt.actions[action]);
+
+				/* so, reload/regenerate the thumbnail here? */
+				if (!opt.hold_actions[action])
+					winwidget_destroy(winwid);
+			}
+			else
+				fputs("no thumbnail selected\n", stderr);
+		}
 	}
 	return;
 }
