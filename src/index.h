@@ -29,5 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 char *create_index_string(feh_file *file);
 char *create_index_title_string(int num, int w, int h);
 void get_index_string_dim(feh_file *file, Imlib_Font fn, int *w, int *h);
+void index_calculate_height(Imlib_Font fn, int w, int *h, int *tot_thumb_w);
+void index_calculate_width(Imlib_Font fn, int *w, int h, int *tot_thumb_h);
 
 #endif

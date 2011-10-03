@@ -133,115 +133,27 @@ void init_index_mode(void)
 	   info in the selected font, work out how much space we need, and
 	   calculate the size of the image we will require */
 
-	if (opt.limit_w && opt.limit_h) {
-		int rec_h = 0;
-
+	if (opt.limit_w) {
 		w = opt.limit_w;
-		h = opt.limit_h;
 
-		/* Work out if this is big enough, and give a warning if not */
+		index_calculate_height(fn, w, &h, &tot_thumb_h);
 
-		/* Pretend we are limiting width by that specified, loop through, and
-		   see it we fit in the height specified. If not, continue the loop,
-		   and recommend the final value instead. Carry on and make the index
-		   anyway. */
-
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			text_area_w = opt.thumb_w;
-			if (opt.index_info) {
-				get_index_string_dim(file, fn, &fw, &fh);
-				if (fw > text_area_w)
-					text_area_w = fw;
-				if (fh > text_area_h) {
-					text_area_h = fh + 5;
-					tot_thumb_h = opt.thumb_h + text_area_h;
-				}
-			}
-			if (text_area_w > opt.thumb_w)
-				text_area_w += 5;
-
-			if ((x > w - text_area_w)) {
-				x = 0;
-				y += tot_thumb_h;
-			}
-
-			x += text_area_w;
-		}
-		rec_h = y + tot_thumb_h;
-
-		if (h < rec_h) {
-			weprintf(
-					"The image size you specified (%d by %d) is not large\n"
-					"enough to hold all the thumnails you specified (%d). To fit all\n"
-					"the thumnails, either decrease their size, choose a smaller font,\n"
-					"or use a larger image (may I recommend %d by %d?)",
-					opt.limit_w, opt.limit_h, filelist_len, opt.limit_w, rec_h);
+		if (opt.limit_h) {
+			if (h > opt.limit_h)
+				weprintf(
+					"The image size you specified (%dx%d) is not large\n"
+					"enough to hold all %d thumbnails. To fit all the thumbnails,\n"
+					"either decrease their size, choos e asmaller font,\n"
+					"or use a larger image (like %dx%d)",
+					opt.limit_w, opt.limit_h, filelist_len, w, h);
+			h = opt.limit_h;
 		}
 	} else if (opt.limit_h) {
 		vertical = 1;
 		h = opt.limit_h;
-		/* calc w */
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			text_area_w = opt.thumb_w;
-			/* Calc width of text */
-			if (opt.index_info) {
-				get_index_string_dim(file, fn, &fw, &fh);
-				if (fw > text_area_w)
-					text_area_w = fw;
-				if (fh > text_area_h) {
-					text_area_h = fh + 5;
-					tot_thumb_h = opt.thumb_h + text_area_h;
-				}
-			}
-			if (text_area_w > opt.thumb_w)
-				text_area_w += 5;
 
-			if (text_area_w > max_column_w)
-				max_column_w = text_area_w;
-
-			if ((y > h - tot_thumb_h)) {
-				y = 0;
-				x += max_column_w;
-				max_column_w = 0;
-			}
-
-			y += tot_thumb_h;
-		}
-		w = x + text_area_w;
-		max_column_w = 0;
-	} else if (opt.limit_w) {
-		w = opt.limit_w;
-		/* calc h */
-
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			text_area_w = opt.thumb_w;
-			if (opt.index_info) {
-				get_index_string_dim(file, fn, &fw, &fh);
-				if (fw > text_area_w)
-					text_area_w = fw;
-				if (fh > text_area_h) {
-					text_area_h = fh + 5;
-					tot_thumb_h = opt.thumb_h + text_area_h;
-				}
-			}
-
-			if (text_area_w > opt.thumb_w)
-				text_area_w += 5;
-
-			if ((x > w - text_area_w)) {
-				x = 0;
-				y += tot_thumb_h;
-			}
-
-			x += text_area_w;
-		}
-		h = y + tot_thumb_h;
+		index_calculate_width(fn, &w, h, &tot_thumb_h);
 	}
-
-	x = y = 0;
 
 	index_image_width = w;
 	index_image_height = h + title_area_h;
@@ -443,6 +355,79 @@ void init_index_mode(void)
 
 	free(s);
 	return;
+}
+
+void index_calculate_height(Imlib_Font fn, int w, int *h, int *tot_thumb_h)
+{
+	gib_list *l;
+	feh_file *file = NULL;
+	int x = 0, y = 0;
+	int fw = 0, fh = 0;
+	int text_area_w = 0, text_area_h = 0;
+
+	for (l = filelist; l; l = l->next) {
+		file = FEH_FILE(l->data);
+		text_area_w = opt.thumb_w;
+		if (opt.index_info) {
+			get_index_string_dim(file, fn, &fw, &fh);
+			if (fw > text_area_w)
+				text_area_w = fw;
+			if (fh > text_area_h) {
+				text_area_h = fh + 5;
+				*tot_thumb_h = opt.thumb_h + text_area_h;
+			}
+		}
+
+		if (text_area_w > opt.thumb_w)
+			text_area_w += 5;
+
+		if ((x > w - text_area_w)) {
+			x = 0;
+			y += *tot_thumb_h;
+		}
+
+		x += text_area_w;
+	}
+	*h = y + *tot_thumb_h;
+}
+
+void index_calculate_width(Imlib_Font fn, int *w, int h, int *tot_thumb_h)
+{
+	gib_list *l;
+	feh_file *file = NULL;
+	int x = 0, y = 0;
+	int fw = 0, fh = 0;
+	int text_area_w = 0, text_area_h = 0;
+	int max_column_w = 0;
+
+	for (l = filelist; l; l = l->next) {
+		file = FEH_FILE(l->data);
+		text_area_w = opt.thumb_w;
+		/* Calc width of text */
+		if (opt.index_info) {
+			get_index_string_dim(file, fn, &fw, &fh);
+			if (fw > text_area_w)
+				text_area_w = fw;
+			if (fh > text_area_h) {
+				text_area_h = fh + 5;
+				*tot_thumb_h = opt.thumb_h + text_area_h;
+			}
+		}
+		if (text_area_w > opt.thumb_w)
+			text_area_w += 5;
+
+		if (text_area_w > max_column_w)
+			max_column_w = text_area_w;
+
+		if ((y > h - *tot_thumb_h)) {
+			y = 0;
+			x += max_column_w;
+			max_column_w = 0;
+		}
+
+		y += *tot_thumb_h;
+	}
+	*w = x + text_area_w;
 }
 
 void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)

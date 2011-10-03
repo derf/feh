@@ -522,9 +522,9 @@ void feh_thumbnail_calculate_geometry(void)
 			if (opt.verbose)
 				fputs(PACKAGE
 					" - No size restriction specified for index.\n"
-					" Using defaults (width limited to 640)\n",
+					" Using defaults (width limited to 800)\n",
 					stdout);
-			opt.limit_w = 640;
+			opt.limit_w = 800;
 		}
 	}
 
@@ -532,100 +532,26 @@ void feh_thumbnail_calculate_geometry(void)
 	   info in the selected font, work out how much space we need, and
 	   calculate the size of the image we will require */
 
-	if (opt.limit_w && opt.limit_h) {
-		int rec_h = 0;
-
+	if (opt.limit_w) {
 		td.w = opt.limit_w;
-		td.h = opt.limit_h;
 
-		/* Work out if this is big enough, and give a warning if not */
+		index_calculate_height(td.font_main, td.w, &td.h, &td.thumb_tot_h);
 
-		/* Pretend we are limiting width by that specified, loop through, and
-		   see it we fit in the height specified. If not, continue the loop,
-		   and recommend the final value instead. Carry on and make the index
-		   anyway. */
-
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			td.text_area_w = opt.thumb_w;
-			if (opt.index_info) {
-				get_index_string_dim(file, td.font_main, &fw, &fh);
-				if (fw > td.text_area_w)
-					td.text_area_w = fw;
-			}
-			if (td.text_area_w > opt.thumb_w)
-				td.text_area_w += 5;
-
-			if ((x > td.w - td.text_area_w)) {
-				x = 0;
-				y += td.thumb_tot_h;
-			}
-
-			x += td.text_area_w;
-		}
-		rec_h = y + td.thumb_tot_h;
-
-		if (td.h < rec_h) {
-			weprintf
-			    ("The image size you specified (%d by %d) is not large\n"
-			     "enough to hold all the thumnails you specified (%d). To fit all\n"
-			     "the thumnails, either decrease their size, choose a smaller font,\n"
-			     "or use a larger image (may I recommend %d by %d?)",
-			     opt.limit_w, opt.limit_h, filelist_len, opt.limit_w, rec_h);
+		if (opt.limit_h) {
+			if (td.h> opt.limit_h)
+				weprintf(
+					"The image size you specified (%dx%d) is not large\n"
+					"enough to hold all %d thumbnails. To fit all\n"
+					"the thumnails, either decrease their size, choose a smaller font,\n"
+					"or use a larger image (like %dx%d)",
+					opt.limit_w, opt.limit_h, filelist_len, opt.limit_w, td.h);
+			td.h = opt.limit_h;
 		}
 	} else if (opt.limit_h) {
 		td.vertical = 1;
 		td.h = opt.limit_h;
-		/* calc w */
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			td.text_area_w = opt.thumb_w;
-			/* Calc width of text */
-			if (opt.index_info) {
-				get_index_string_dim(file, td.font_main, &fw, &fh);
-				if (fw > td.text_area_w)
-					td.text_area_w = fw;
-			}
-			if (td.text_area_w > opt.thumb_w)
-				td.text_area_w += 5;
 
-			if (td.text_area_w > td.max_column_w)
-				td.max_column_w = td.text_area_w;
-
-			if ((y > td.h - td.thumb_tot_h)) {
-				y = 0;
-				x += td.max_column_w;
-				td.max_column_w = 0;
-			}
-
-			y += td.thumb_tot_h;
-		}
-		td.w = x + td.text_area_w;
-		td.max_column_w = 0;
-	} else if (opt.limit_w) {
-		td.w = opt.limit_w;
-		/* calc h */
-
-		for (l = filelist; l; l = l->next) {
-			file = FEH_FILE(l->data);
-			td.text_area_w = opt.thumb_w;
-			if (opt.index_info) {
-				get_index_string_dim(file, td.font_main, &fw, &fh);
-				if (fw > td.text_area_w)
-					td.text_area_w = fw;
-			}
-
-			if (td.text_area_w > opt.thumb_w)
-				td.text_area_w += 5;
-
-			if ((x > td.w - td.text_area_w)) {
-				x = 0;
-				y += td.thumb_tot_h;
-			}
-
-			x += td.text_area_w;
-		}
-		td.h = y + td.thumb_tot_h;
+		index_calculate_width(td.font_main, &td.w, td.h, &td.thumb_tot_h);
 	}
 }
 

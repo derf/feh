@@ -260,7 +260,7 @@ Note: This option needs to load all images to calculate the dimensions of the
 window, so when using it with many files it will ake a while before a
 .Nm
 window is visible.  Use
-.Ar --preload
+.Cm --preload
 to get a progress bar.
 .
 .It Cm -F , --fullscreen
@@ -319,7 +319,7 @@ needs to load all images to calculate the dimensions of its own window.
 So when using them with many files, it will take a while before a
 .Nm
 window becomes visible.  Use
-.Ar --preload
+.Cm --preload
 to get a progress bar.
 .
 .It Cm --info Ar commandline
@@ -585,15 +585,21 @@ This will prevent any empty space in the final montage.
 .
 .It Cm -H , --limit-height Ar pixels
 .
-Limit the height of the montage.  These options can be used together to define
-the image size exactly, or separately.  If only one is specified, the other is
-calculated from the number of files specified and the size of the thumbnails.
-The default is to limit width to 800 pixels and calculate the height as
-necessary.
+Limit the height of the montage, defaults to 800 pixels.
 .
 .It Cm -W , --limit-width Ar pixels
 .
 Limit the width of the montage.
+.
+.Pp
+.
+If both
+.Cm --limit-width No and Cm --limit-height
+are specified, the montage will be exactly
+.Ar width
+pixels wide and up to
+.Ar height
+pixels high.
 .
 .It Cm -o , --output Ar file
 .
