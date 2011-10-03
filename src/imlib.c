@@ -730,6 +730,13 @@ void feh_display_status(char stat)
 
 	D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
+	if (!stat) {
+		putc('\n', stdout);
+		init_len = 0;
+		i = 0;
+		return;
+	}
+
 	if (!init_len)
 		init_len = gib_list_length(filelist);
 

@@ -271,7 +271,7 @@ gib_list *feh_file_info_preload(gib_list * list)
 			feh_display_status('.');
 	}
 	if (opt.verbose)
-		fputs("\n", stdout);
+		feh_display_status(0);
 
 	if (remove_list) {
 		for (l = remove_list; l; l = l->next)
