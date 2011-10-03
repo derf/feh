@@ -18,7 +18,9 @@
 .
 .Sh VERSION
 .
-This manual documents feh $VERSION$
+This manual documents
+.Nm
+$VERSION$
 .
 .Pp
 .
@@ -171,7 +173,9 @@ instead.  See
 .
 .It Cm --cycle-once
 .
-Exit feh after one loop through the slideshow.
+Exit
+.Nm
+after one loop through the slideshow.
 .
 .It Cm -G , --draw-actions
 .
@@ -249,6 +253,16 @@ Works just like
 Enables
 .Sx MONTAGE MODE OPTIONS .
 .
+.Pp
+.
+Note: This option needs to load all images to calculate the dimensions of the
+.Nm
+window, so when using it with many files it will ake a while before a
+.Nm
+window is visible.  Use
+.Ar --preload
+to get a progress bar.
+.
 .It Cm -F , --fullscreen
 .
 Make the window fullscreen.
@@ -295,6 +309,18 @@ Show image information based on
 below thumbnails in index / thumbnail mode.  See
 .Sx FORMAT SPECIFIERS .
 May contain newlines.
+.
+.Pp
+.
+Note: If you specify image-related formats
+.Pq such as \&%w or \&%s ,
+.Nm
+needs to load all images to calculate the dimensions of its own window.
+So when using them with many files, it will take a while before a
+.Nm
+window becomes visible.  Use
+.Ar --preload
+to get a progress bar.
 .
 .It Cm --info Ar commandline
 .
@@ -406,9 +432,12 @@ seconds.  Useful for viewing HTTP webcams or frequently changing directories.
 .
 .Pp
 .
-If an image is removed, feh will either show the next one or quit.  However,
-if an image still exists, but can no longer be loaded, feh will continue to
-try loading it.
+If an image is removed,
+.Nm
+will either show the next one or quit.  However, if an image still exists, but
+can no longer be loaded,
+.Nm
+will continue to try loading it.
 .
 .It Cm -n , --reverse
 .
@@ -427,7 +456,9 @@ For slideshow mode, wait
 seconds between automatically changing slides.  Useful for presentations.
 Specify a negative number to set the delay
 .Pq which will then be Ar float No * (-1) ,
-but start feh in paused mode.
+but start
+.Nm
+in paused mode.
 .
 .It Cm -S , --sort Ar sort_type
 .
@@ -508,7 +539,9 @@ is like setting
 .Cm --auto-zoom ,
 using
 .Cm fill
-makes feh zoom the image like the
+makes
+.Nm
+zoom the image like the
 .Cm --bg-fill
 mode.
 .
@@ -933,7 +966,8 @@ Show previous image
 .
 .It q , Ao Escape Ac Bq quit
 .
-Quit feh
+Quit
+.Nm
 .
 .It r Bq reload_image
 .
@@ -1079,7 +1113,9 @@ Zoom to fit the window size
 .
 .Ss MENU KEYS
 .
-The following keys bindings are used for the feh menu:
+The following keys bindings are used for the
+.Nm
+menu:
 .
 .Bl -tag -width indent
 .
