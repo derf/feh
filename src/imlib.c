@@ -169,65 +169,52 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			fputs("\n", stdout);
 			reset_output = 1;
 		}
-		/* Check error code */
-		switch (err) {
-		case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-			if (!opt.quiet)
-				weprintf("%s - File does not exist", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-			if (!opt.quiet)
-				weprintf("%s - Directory specified for image filename", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-			if (!opt.quiet)
-				weprintf("%s - No read access to directory", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_UNKNOWN:
-		case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-			if (!opt.quiet)
-				weprintf("%s - No Imlib2 loader for that file format", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-			if (!opt.quiet)
-				weprintf("%s - Path specified is too long", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-			if (!opt.quiet)
-				weprintf("%s - Path component does not exist", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-			if (!opt.quiet)
-				weprintf("%s - Path component is not a directory", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-			if (!opt.quiet)
-				weprintf("%s - Path points outside address space", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-			if (!opt.quiet)
-				weprintf("%s - Too many levels of symbolic links", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-			if (!opt.quiet)
-				weprintf("While loading %s - Out of memory", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
+		if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
 			eprintf("While loading %s - Out of file descriptors", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-			if (!opt.quiet)
+		else if (!opt.quiet) {
+			switch (err) {
+			case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
+				weprintf("%s - File does not exist", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
+				weprintf("%s - Directory specified for image filename", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
+				weprintf("%s - No read access to directory", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_UNKNOWN:
+			case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
+				weprintf("%s - No Imlib2 loader for that file format", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
+				weprintf("%s - Path specified is too long", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
+				weprintf("%s - Path component does not exist", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
+				weprintf("%s - Path component is not a directory", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
+				weprintf("%s - Path points outside address space", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
+				weprintf("%s - Too many levels of symbolic links", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
+				weprintf("While loading %s - Out of memory", file->filename);
+				break;
+			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
 				weprintf("%s - Cannot write to directory", file->filename);
-			break;
-		case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-			if (!opt.quiet)
+				break;
+			case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
 				weprintf("%s - Cannot write - out of disk space", file->filename);
-			break;
-		default:
-			if (!opt.quiet)
-				weprintf("While loading %s - Unknown error (%d). Attempting to continue",
+				break;
+			default:
+				weprintf("While loading %s - Unknown error (%d)",
 						file->filename, err);
-			break;
+				break;
+			}
 		}
 		D(("Load *failed*\n"));
 		return(0);

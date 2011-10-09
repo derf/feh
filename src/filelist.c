@@ -157,29 +157,26 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 
 	errno = 0;
 	if (stat(path, &st)) {
-		/* Display useful error message */
-		switch (errno) {
-		case ENOENT:
-		case ENOTDIR:
-			if (!opt.quiet)
+		if (!opt.quiet) {
+			switch (errno) {
+			case ENOENT:
+			case ENOTDIR:
 				weprintf("%s does not exist - skipping", path);
-			break;
-		case ELOOP:
-			if (!opt.quiet)
+				break;
+			case ELOOP:
 				weprintf("%s - too many levels of symbolic links - skipping", path);
-			break;
-		case EACCES:
-			if (!opt.quiet)
+				break;
+			case EACCES:
 				weprintf("you don't have permission to open %s - skipping", path);
-			break;
-		case EOVERFLOW:
-			weprintf("Cannot open %s - EOVERFLOW.\n"
-				"Recompile with stat64=1 to fix this");
-			break;
-		default:
-			if (!opt.quiet)
+				break;
+			case EOVERFLOW:
+				weprintf("Cannot open %s - EOVERFLOW.\n"
+					"Recompile with stat64=1 to fix this");
+				break;
+			default:
 				weprintf("couldn't open %s", path);
-			break;
+				break;
+			}
 		}
 		free(path);
 		return;
@@ -300,25 +297,22 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	errno = 0;
 	if (stat(file->filename, &st)) {
-		/* Display useful error message */
-		switch (errno) {
-		case ENOENT:
-		case ENOTDIR:
-			if (!opt.quiet)
+		if (!opt.quiet) {
+			switch (errno) {
+			case ENOENT:
+			case ENOTDIR:
 				weprintf("%s does not exist - skipping", file->filename);
-			break;
-		case ELOOP:
-			if (!opt.quiet)
+				break;
+			case ELOOP:
 				weprintf("%s - too many levels of symbolic links - skipping", file->filename);
-			break;
-		case EACCES:
-			if (!opt.quiet)
+				break;
+			case EACCES:
 				weprintf("you don't have permission to open %s - skipping", file->filename);
-			break;
-		default:
-			if (!opt.quiet)
+				break;
+			default:
 				weprintf("couldn't open %s ", file->filename);
-			break;
+				break;
+			}
 		}
 		return(1);
 	}
