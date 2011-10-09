@@ -111,22 +111,10 @@ void init_index_mode(void)
 
 	if (!opt.limit_w && !opt.limit_h) {
 		if (bg_im) {
-			if (opt.verbose)
-				fputs(PACKAGE
-					" - No size restriction specified for index.\n"
-					" You did specify a background however, so the\n"
-					" index size has defaulted to the size of the image\n",
-					stdout);
 			opt.limit_w = bg_w;
 			opt.limit_h = bg_h;
-		} else {
-			if (opt.verbose)
-				fputs(PACKAGE
-					" - No size restriction specified for index.\n"
-					" Using defaults (width limited to 800)\n",
-					stdout);
+		} else
 			opt.limit_w = 800;
-		}
 	}
 
 	/* Here we need to whiz through the files, and look at the filenames and
