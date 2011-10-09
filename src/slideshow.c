@@ -390,7 +390,7 @@ char *feh_printf(char *str, feh_file * file)
 	ret[0] = '\0';
 
 	for (c = str; *c != '\0'; c++) {
-		if (*c == '%') {
+		if ((*c == '%') && (*(c+1) != '\0')) {
 			c++;
 			switch (*c) {
 			case 'f':
@@ -456,18 +456,22 @@ char *feh_printf(char *str, feh_file * file)
 					 + 1 : 0);
 				strcat(ret, buf);
 				break;
+			case '%':
+				strcat(ret, "%");
+				break;
 			default:
-				strncat(ret, c, 1);
+				weprintf("Unrecognized format specifier %%%c", *c);
+				strncat(ret, c - 1, 2);
 				break;
 			}
-		} else if (*c == '\\') {
+		} else if ((*c == '\\') && (*(c+1) != '\0')) {
 			c++;
 			switch (*c) {
 			case 'n':
 				strcat(ret, "\n");
 				break;
 			default:
-				strncat(ret, c, 1);
+				strncat(ret, c - 1, 2);
 				break;
 			}
 		} else
