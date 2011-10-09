@@ -585,21 +585,19 @@ This will prevent any empty space in the final montage.
 .
 .It Cm -H , --limit-height Ar pixels
 .
-Limit the height of the montage, defaults to 800 pixels.
+Limit the height of the montage.
 .
 .It Cm -W , --limit-width Ar pixels
 .
-Limit the width of the montage.
+Limit the width of the montage, defaults to 800 pixels.
 .
 .Pp
 .
 If both
 .Cm --limit-width No and Cm --limit-height
 are specified, the montage will be exactly
-.Ar width
-pixels wide and up to
-.Ar height
-pixels high.
+.Ar width No x Ar height
+pixels in dimensions.
 .
 .It Cm -o , --output Ar file
 .
