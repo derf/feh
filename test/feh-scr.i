@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 48;
+use Test::More tests => 53;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -157,6 +157,41 @@ feh_start(
 	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
 );
 test_scr('thumbnail_default');
+feh_stop();
+
+feh_start(
+	'--index --limit-width 400',
+	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
+);
+test_scr('index_w400');
+feh_stop();
+
+feh_start(
+	'--fullindex --limit-width 400',
+	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
+);
+test_scr('index_full_w400');
+feh_stop();
+
+feh_start(
+	'--index --limit-width 400 --index-info "%n\n%S\n%wx%h"',
+	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
+);
+test_scr('index_full_w400');
+feh_stop();
+
+feh_start(
+	'--index --limit-height 400',
+	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
+);
+test_scr('index_h400');
+feh_stop();
+
+feh_start(
+	'--fullindex --limit-height 400',
+	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
+);
+test_scr('index_full_h400');
 feh_stop();
 
 feh_start(
