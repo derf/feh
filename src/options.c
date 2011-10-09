@@ -783,6 +783,10 @@ static void show_version(void)
 		"debug "
 #endif
 
+#if _FILE_OFFSET_BITS == 64
+		"stat64 "
+#endif
+
 #ifdef HAVE_LIBXINERAMA
 		"xinerama "
 #endif
