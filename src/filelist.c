@@ -172,6 +172,10 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			if (!opt.quiet)
 				weprintf("you don't have permission to open %s - skipping", path);
 			break;
+		case EOVERFLOW:
+			weprintf("Cannot open %s - EOVERFLOW.\n"
+				"Recompile with stat64=1 to fix this");
+			break;
 		default:
 			if (!opt.quiet)
 				weprintf("couldn't open %s", path);

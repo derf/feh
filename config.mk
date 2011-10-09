@@ -41,6 +41,10 @@ ifeq (${help},1)
 	CFLAGS += -DINCLUDE_HELP
 endif
 
+ifeq (${stat64},1)
+	CFLAGS += -D_FILE_OFFSET_BITS=64
+endif
+
 ifeq (${xinerama},1)
 	CFLAGS += -DHAVE_LIBXINERAMA
 	LDLIBS += -lXinerama
