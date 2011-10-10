@@ -347,7 +347,6 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 				winwidget_destroy(winwid);
 		} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
 			feh_file *thumbfile;
-			/* also see events.c:306 */
 			thumbfile = feh_thumbnail_get_selected_file();
 
 			if (thumbfile) {
@@ -356,8 +355,6 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 				if (!opt.hold_actions[action])
 					feh_thumbnail_mark_removed(thumbfile, 0);
 			}
-			else
-				weprintf("No thumbnail selected");
 		}
 	}
 	return;

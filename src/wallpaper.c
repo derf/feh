@@ -99,11 +99,13 @@ static void feh_wm_set_bg_scaled(Pixmap pmap, Imlib_Image im, int use_filelist,
 static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist,
 		int x, int y, int w, int h)
 {
+	int offset_x, offset_y;
+
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
-	int offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
-	int offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
+	offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
+	offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
 
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		((offset_x < 0) ? -offset_x : 0),
@@ -125,19 +127,22 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int use_filelist,
 		int x, int y, int w, int h)
 {
+	int img_w, img_h, cut_x;
+	int render_w, render_h, render_x, render_y;
+
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
-	int img_w = gib_imlib_image_get_width(im);
-	int img_h = gib_imlib_image_get_height(im);
+	img_w = gib_imlib_image_get_width(im);
+	img_h = gib_imlib_image_get_height(im);
 
-	int cut_x = (((img_w * h) > (img_h * w)) ? 1 : 0);
+	cut_x = (((img_w * h) > (img_h * w)) ? 1 : 0);
 
-	int render_w = (  cut_x ? ((img_h * w) / h) : img_w);
-	int render_h = ( !cut_x ? ((img_w * h) / w) : img_h);
+	render_w = (  cut_x ? ((img_h * w) / h) : img_w);
+	render_h = ( !cut_x ? ((img_w * h) / w) : img_h);
 
-	int render_x = (  cut_x ? ((img_w - render_w) >> 1) : 0);
-	int render_y = ( !cut_x ? ((img_h - render_h) >> 1) : 0);
+	render_x = (  cut_x ? ((img_w - render_w) >> 1) : 0);
+	render_y = ( !cut_x ? ((img_h - render_h) >> 1) : 0);
 
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		render_x, render_y,
@@ -154,19 +159,22 @@ static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int use_filelist,
 static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 		int x, int y, int w, int h)
 {
+	int img_w, img_h, border_x;
+	int render_w, render_h, render_x, render_y;
+
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
-	int img_w = gib_imlib_image_get_width(im);
-	int img_h = gib_imlib_image_get_height(im);
+	img_w = gib_imlib_image_get_width(im);
+	img_h = gib_imlib_image_get_height(im);
 
-	int border_x = (((img_w * h) > (img_h * w)) ? 0 : 1);
+	border_x = (((img_w * h) > (img_h * w)) ? 0 : 1);
 
-	int render_w = (  border_x ? ((img_w * h) / img_h) : w);
-	int render_h = ( !border_x ? ((img_h * w) / img_w) : h);
+	render_w = (  border_x ? ((img_w * h) / img_h) : w);
+	render_h = ( !border_x ? ((img_h * w) / img_w) : h);
 
-	int render_x = x + (  border_x ? ((w - render_w) >> 1) : 0);
-	int render_y = y + ( !border_x ? ((h - render_h) >> 1) : 0);
+	render_x = x + (  border_x ? ((w - render_w) >> 1) : 0);
+	render_y = y + ( !border_x ? ((h - render_h) >> 1) : 0);
 
 	gib_imlib_render_image_on_drawable_at_size(pmap, im,
 		render_x, render_y,
@@ -394,7 +402,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				char *path;
 				path = estrjoin("/", home, ".fehbg", NULL);
 				if ((fp = fopen(path, "w")) == NULL) {
-					weprintf("Can't open %s for write", path);
+					weprintf("Can't write to %s", path);
 				} else {
 					fprintf(fp, "%s\n", fehbg);
 					fclose(fp);
@@ -445,7 +453,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", False);
 
 		if (prop_root == None || prop_esetroot == None)
-			weprintf("creation of pixmap property failed.");
+			eprintf("creation of pixmap property failed.");
 
 		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32, PropModeReplace, (unsigned char *) &pmap_d2, 1);
 		XChangeProperty(disp2, root2, prop_esetroot, XA_PIXMAP, 32,

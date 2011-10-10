@@ -743,7 +743,7 @@ static void check_options(void)
 	}
 
 	if (opt.full_screen && opt.multiwindow) {
-		eprintf("You cannot combine --full-screen with --multiwindow");
+		eprintf("You cannot combine --fullscreen with --multiwindow");
 	}
 
 	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
@@ -758,13 +758,6 @@ static void check_options(void)
 
 	if (opt.loadables && opt.unloadables) {
 		eprintf("You cannot combine --loadable with --unloadable");
-	}
-
-	if (opt.thumb_title && (!opt.thumbs)) {
-		weprintf("Doesn't make sense to set thumbnail title when not in\n"
-				"thumbnail mode.\n");
-		free(opt.thumb_title);
-		opt.thumb_title = NULL;
 	}
 
 	return;

@@ -475,24 +475,20 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 	if (thumb) {
 		w = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL);
 		if (w) {
-			td.font_main = imlib_load_font(DEFAULT_FONT_TITLE);
+			int tw, th;
 			if (deleted)
 				gib_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
 						thumb->w, thumb->h, 255, 0, 0, 150);
 			else
 				gib_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
 						thumb->w, thumb->h, 0, 0, 255, 150);
-			if (td.font_main) {
-				int tw, th;
 
-				gib_imlib_get_text_size(td.font_main, "X", NULL, &tw, &th,
-						IMLIB_TEXT_TO_RIGHT);
-				gib_imlib_text_draw(w->im, td.font_main, NULL,
-						thumb->x + ((thumb->w - tw) / 2),
-						thumb->y + ((thumb->h - th) / 2), "X",
-						IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
-			} else
-				weprintf(DEFAULT_FONT_TITLE);
+			gib_imlib_get_text_size(td.font_main, "X", NULL, &tw, &th,
+					IMLIB_TEXT_TO_RIGHT);
+			gib_imlib_text_draw(w->im, td.font_main, NULL,
+					thumb->x + ((thumb->w - tw) / 2),
+					thumb->y + ((thumb->h - th) / 2), "X",
+					IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
 			winwidget_render_image(w, 0, 1);
 		}
 		thumb->exists = 0;
@@ -502,12 +498,6 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 
 void feh_thumbnail_calculate_geometry(void)
 {
-	gib_list *l;
-	feh_file *file;
-
-	int x = 0, y = 0;
-	int fw, fh;
-
 	if (!opt.limit_w && !opt.limit_h) {
 		if (td.im_bg) {
 			opt.limit_w = td.bg_w;
@@ -843,13 +833,13 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 
 			if (stat(dir_thumbnails, &sb) != 0) {
 				if (mkdir(dir_thumbnails, 0700) == -1)
-					weprintf("unable to create %s directory", dir_thumbnails);
+					weprintf("unable to create directory %s", dir_thumbnails);
 			}
 
 			free(dir_thumbnails);
 
 			if (mkdir(dir, 0700) == -1)
-				weprintf("unable to create %s directory", dir);
+				weprintf("unable to create directory %s", dir);
 			else
 				status = 1;
 		}
