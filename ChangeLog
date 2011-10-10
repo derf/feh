@@ -1,5 +1,6 @@
-git HEAD
+Mon, 10 Oct 2011 12:25:00 +0200  Daniel Friesel <derf@finalrewind.org>
 
+* Release v2.0
     * The --bg-options now accept multiple filenames, one per Xinerama screen
     * Fix --info bug when the command wrote no lines to stdout
     * The button-options -0 through -9 are no longer supported.
@@ -9,8 +10,9 @@ git HEAD
       Use --index-info <string> with format specifiers instead
     * The thumbnail index now supports actions on the currently selected
       thumbnail  (patch by Olof-Joachim Frahm)
-    * feh now supports 'make stat64=1' to access 64bit CIFS shares from 32bit
-      hosts (for 32 <-> 32 or 64 <-> 64 bit, this works anyways)
+    * feh now supports 'make stat64=1' to access CIFS shares mounted from 64bit
+      hosts if the local system is 32bit (for 32<->32 and 64<->64, this works
+      anyways)
 
 Mon, 26 Sep 2011 09:35:41 +0200  Daniel Friesel <derf@finalrewind.org>
 
