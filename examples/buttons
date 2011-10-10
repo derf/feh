@@ -1,0 +1,13 @@
+# feh button configuration.
+# Comments start with a # sign, do not use them mid-line.
+# Each line must be blank, a comment, or a button definition.
+#
+# button definition: <action name> <button>
+#
+# A <button> is a button number with optional modifier.
+# For instance, C-1 would be Ctrl + Left click, 4-2 Mod4 + Middle click,
+# et cetera.
+
+# Switch menu and zoom keys, useful for two-button touchpads
+menu 2
+zoom 3
