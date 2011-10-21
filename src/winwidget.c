@@ -381,6 +381,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
 	int antialias = 0;
+	int need_center = winwid->had_resize;
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
@@ -502,6 +503,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			winwid->im_x = (int) (max_w - (winwid->im_w * winwid->zoom)) >> 1;
 			winwid->im_y = (int) (max_h - (winwid->im_h * winwid->zoom)) >> 1;
 		}
+	}
+	else if (need_center && !winwid->full_screen && opt.scale_down) {
+		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
+		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
 
 	/* Now we ensure only to render the area we're looking at */
