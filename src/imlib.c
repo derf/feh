@@ -254,9 +254,13 @@ char *feh_http_load_image(char *url)
 		weprintf("open url: libcurl initialization failure");
 		return NULL;
 	}
+
+	if (strlen(tmpname) > (NAME_MAX-6))
+		tmpname[NAME_MAX-7] = '\0';
 	
 	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
 	free(tmpname);
+
 	fd = mkstemp(sfn);
 	if (fd != -1) {
 		sfp = fdopen(fd, "w+");
