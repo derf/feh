@@ -449,6 +449,10 @@ E.g. to sort in reverse width order, use
 .
 When not in fullscreen: Scale images to screen size if they are too big.
 .
+.Pp
+.
+In tiling environments, this also causes the image to be centered in the window.
+.
 .It Cm -D , --slideshow-delay Ar float
 .
 For slideshow mode, wait
@@ -1337,6 +1341,27 @@ Same as above
 Show some EXIF information, extracted by exifprobe/exifgrep
 .
 .El
+.
+.
+.Sh TILING WINDOW MANAGERS
+.
+.Nm
+was created with a floating window layout in mind.  However, as of 2.0.1, it
+has limited support for tiling window managers.
+.
+.Pp
+.
+Specifically, the
+.Ar --scale-down No and Ar --auto-zoom
+options will detect a tiling environment and scale the image up / down to the
+current window size.  Unfortunately, this causes every image to be rendered
+twice: First in a normal fashion, and then
+.Pq after noticing that the window is being tiled
+again with the correct zoom level.
+.
+.Pp
+.
+This is a known bug and will hopefully get fixed some time.
 .
 .
 .Sh DEPENDENCIES
