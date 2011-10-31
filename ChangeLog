@@ -1,6 +1,6 @@
 git HEAD
 
-    * Experimental --scale-down tiling support (see #54)
+    * Experimental --scale-down and --auto-zoom tiling support (see #54)
     * Fix http image load for long image names (closes debian #646421)
 
 Mon, 10 Oct 2011 12:25:00 +0200  Daniel Friesel <derf@finalrewind.org>

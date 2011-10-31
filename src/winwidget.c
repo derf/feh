@@ -416,6 +416,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
 
+	if (!winwid->full_screen && opt.zoom_mode
+				     && (winwid->zoom == 1.0) && !opt.geom_flags
+				     && (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
+		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+
+
 	if (resize && (winwid->full_screen || opt.geom_flags)) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
