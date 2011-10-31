@@ -1352,7 +1352,7 @@ has limited support for tiling window managers.
 .Pp
 .
 Specifically, the
-.Ar --scale-down No and Ar --auto-zoom
+.Cm --scale-down No and Cm --auto-zoom
 options will detect a tiling environment and scale the image up / down to the
 current window size.  Unfortunately, this causes every image to be rendered
 twice: First in a normal fashion, and then
@@ -1361,7 +1361,12 @@ again with the correct zoom level.
 .
 .Pp
 .
-This is a known bug and will hopefully get fixed some time.
+This is a known bug and will hopefully get fixed some time. For now, it can be
+avoided by using
+.Cm --geometry 500x500 No Pq or any other geometry .
+This will have the same behaviour as
+.Cm --scale-down ,
+but without the flickering.
 .
 .
 .Sh DEPENDENCIES
