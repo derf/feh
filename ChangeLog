@@ -1,7 +1,11 @@
-git HEAD
+Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 
-    * Experimental --scale-down and --auto-zoom tiling support (see #54)
-    * Fix http image load for long image names (closes debian #646421)
+* Release v2.1
+    * Experimental --scale-down and --auto-zoom tiling support
+      (--scale-down is now re-applied every time the image is resized)
+      <https://github.com/derf/feh/issues/54>
+    * Fix http image load for long image names
+      <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=646421>
 
 Mon, 10 Oct 2011 12:25:00 +0200  Daniel Friesel <derf@finalrewind.org>
 
