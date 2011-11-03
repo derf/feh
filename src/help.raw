@@ -74,6 +74,7 @@ OPTIONS
                            fill the whole background, but the images' aspect
                            ratio may not be preserved
      --bg-tile FILE        Set FILE as tiled desktop background
+     --bg-no-bgfile        Do not write a ~/.fehbg file
  -C, --fontpath PATH       Specify an extra directory to look in for fonts,
                            can be used multiple times to add multiple paths.
  -M, --menu-font FONT      Use FONT for the font in menus.

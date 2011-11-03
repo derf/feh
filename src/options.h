@@ -68,6 +68,7 @@ struct __fehoptions {
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
 	unsigned char image_bg;
+	unsigned char no_bgfile;
 
 	char *output_file;
 	char *output_dir;

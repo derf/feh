@@ -390,6 +390,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"thumb-redraw"  , 1, 0, 'J'},
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
+		{"bg-no-bgfile"  , 0, 0, 236},
 
 		{0, 0, 0, 0}
 	};
@@ -703,6 +704,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 235:
 			opt.force_aliasing = 1;
 			break;
+		case 236:
+			opt.no_bgfile = 1;
+			break;
 		default:
 			break;
 		}
@@ -758,6 +762,12 @@ static void check_options(void)
 
 	if (opt.loadables && opt.unloadables) {
 		eprintf("You cannot combine --loadable with --unloadable");
+	}
+
+	if (opt.no_bgfile && !opt.bgmode) {
+		weprintf("The --no-bg-file option is meaningless unless you\n"
+				"are setting a background wallpaper image.\n"
+				"It is being ignored.");
 	}
 
 	return;

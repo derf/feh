@@ -395,7 +395,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			fehbg = estrjoin(" ", "feh --bg-tile", filbuf, NULL);
 		}
 
-		if (fehbg) {
+		if (fehbg && !opt.no_bgfile) {
 			home = getenv("HOME");
 			if (home) {
 				FILE *fp;

@@ -667,8 +667,8 @@ be printed.
 .Sh BACKGROUND SETTING
 .
 .Nm
-can also be used as a background setter.  It will store the command line
-necessary to set the background in
+can also be used as a background setter.  Unless you pass the --bg-no-bgfile
+option, it will store the command line necessary to set the background in
 .Pa ~/.fehbg ,
 so to have your background restored everytime you start X, you can add
 .Qq eval $(cat ~/.fehbg)
@@ -725,6 +725,12 @@ using borders.  But the aspect ratio is not preserved either
 Tile
 .Pq repeat
 the image in case it is too small for the screen
+.
+.It Cm --bg-no-bgfile
+.
+Do not write a
+.Pa ~/.fehbg
+file
 .
 .El
 .
