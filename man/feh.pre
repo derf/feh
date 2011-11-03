@@ -1363,7 +1363,7 @@ again with the correct zoom level.
 .
 This is a known bug and will hopefully get fixed some time. For now, it can be
 avoided by using
-.Cm --geometry 500x500 No Pq or any other geometry .
+.Cm --geometry 500x500 Pq or any other geometry .
 This will have the same behaviour as
 .Cm --scale-down ,
 but without the flickering.
