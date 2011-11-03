@@ -764,12 +764,6 @@ static void check_options(void)
 		eprintf("You cannot combine --loadable with --unloadable");
 	}
 
-	if (opt.no_fehbg && !opt.bgmode) {
-		weprintf("The --no-fehbg option is meaningless unless you\n"
-				"are setting a background wallpaper image.\n"
-				"It is being ignored.");
-	}
-
 	return;
 }
 

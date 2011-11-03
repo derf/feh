@@ -667,7 +667,8 @@ be printed.
 .Sh BACKGROUND SETTING
 .
 .Nm
-can also be used as a background setter.  Unless you pass the --no-fehbg
+can also be used as a background setter.  Unless you pass the
+.Cm --no-fehbg
 option, it will store the command line necessary to set the background in
 .Pa ~/.fehbg ,
 so to have your background restored everytime you start X, you can add

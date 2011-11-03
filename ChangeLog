@@ -1,3 +1,7 @@
+git HEAD
+
+    * Add --no-fehbg option to disable ~/.fehbg creation (patch by Felix Crux)
+
 Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 
 * Release v2.1
