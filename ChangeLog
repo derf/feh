@@ -1,6 +1,7 @@
 git HEAD
 
     * Add --no-fehbg option to disable ~/.fehbg creation (patch by Felix Crux)
+    * Pause slideshow when editing captions
 
 Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 

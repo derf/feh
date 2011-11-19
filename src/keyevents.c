@@ -640,8 +640,14 @@ void feh_event_handle_keypress(XEvent * ev)
 		slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
 	else if (feh_is_kp(&keys.toggle_caption, keysym, state)) {
-		if (opt.caption_path)
+		if (opt.caption_path) {
+			/*
+			 * editing captions in slideshow mode does not make any sense
+			 * at all; this is just in case someone accidentally does it...
+			 */
+			opt.paused = 1;
 			winwid->caption_entry = 1;
+		}
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.reload_image, keysym, state)) {
