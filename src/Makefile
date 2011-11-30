@@ -19,7 +19,7 @@ help.inc: help.raw
 
 
 deps.mk: ${TARGETS} ${I_DSTS}
-	${CC} -MM ${TARGETS} > $@
+	${CC} ${CPPFLAGS} -MM ${TARGETS} > $@
 
 clean:
 	rm -f feh *.o *.inc
