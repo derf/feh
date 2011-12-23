@@ -4,6 +4,8 @@ git HEAD
     * Pause slideshow when editing captions
     * Makefile: Respect CPPFLAGS when creating deps.mk
       <https://github.com/derf/feh/issues/74>
+    * Fix --montage mode
+      <https://github.com/derf/feh/issues/76>
 
 Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 

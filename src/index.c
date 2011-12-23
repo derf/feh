@@ -425,8 +425,11 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 	gib_list *line, *lines;
 	int max_w = 0, total_h = 0;
 
-	if (!opt.index_info)
+	if (!opt.index_info) {
+		*fw = 0;
+		*fh = 0;
 		return;
+	}
 
 	/* called with file = NULL in the setup phase.
 	 * We need a fake file, otherwise feh_printf will remove format specifiers,
