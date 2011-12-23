@@ -2,6 +2,8 @@ git HEAD
 
     * Add --no-fehbg option to disable ~/.fehbg creation (patch by Felix Crux)
     * Pause slideshow when editing captions
+    * Makefile: Respect CPPFLAGS when creating deps.mk
+      <https://github.com/derf/feh/issues/74>
 
 Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 
