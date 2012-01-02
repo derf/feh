@@ -270,6 +270,7 @@ char *feh_http_load_image(char *url)
 			ebuff = emalloc(CURL_ERROR_SIZE);
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 
 			res = curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
