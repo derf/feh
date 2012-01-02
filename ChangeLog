@@ -1,11 +1,14 @@
-git HEAD
+Mon, 02 Jan 2012 11:54:01 +0100  Daniel Friesel <derf@finalrewind.org>
 
+* Release v2.2
     * Add --no-fehbg option to disable ~/.fehbg creation (patch by Felix Crux)
     * Pause slideshow when editing captions
     * Makefile: Respect CPPFLAGS when creating deps.mk
       <https://github.com/derf/feh/issues/74>
     * Fix --montage mode
       <https://github.com/derf/feh/issues/76>
+    * Follow HTTP redirects
+      <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=653689>
 
 Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
 
