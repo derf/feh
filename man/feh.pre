@@ -694,8 +694,6 @@ Use
 .Cm --no-xinerama
 to treat the whole X display as one screen when setting wallpapers.
 .
-.Pp
-.
 .Bl -tag -width indent
 .
 .It Cm --bg-center
