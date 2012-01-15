@@ -744,6 +744,11 @@ file
 .
 Image path/filename
 .
+.It %F
+.
+Escaped image path/filename
+.Pq for use in shell commands
+.
 .It %h
 .
 Image height
@@ -759,6 +764,10 @@ Current mode
 .It %n
 .
 Image name
+.
+.It \&%N
+.
+Escaped image name
 .
 .It %p
 .
@@ -1329,7 +1338,7 @@ Open each image in /opt/images/holidays in its own window
 Show the images in .../presentation, sorted by name, in fullscreen,
 automatically change to the next image after 5 seconds
 .
-.It feh -rSwidth -A Qo mv '%f' ~/images/'%n' Qc /opt/images
+.It feh -rSwidth -A Qo mv %F ~/images/\&%N Qc /opt/images
 .
 View all images in /opt/images and below, sorted by width, move an image to
 ~/image/image_name when enter is pressed
@@ -1343,7 +1352,7 @@ images are still in the slideshow and can be viewed normally
 .
 Same as above
 .
-.It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' '%f' \&| cut -d \&. -f 4-\&" \&.
+.It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' %F \&| cut -d \&. -f 4-\&" \&.
 .
 Show some EXIF information, extracted by exifprobe/exifgrep
 .

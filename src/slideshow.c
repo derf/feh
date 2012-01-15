@@ -381,6 +381,29 @@ void feh_action_run(feh_file * file, char *action)
 	return;
 }
 
+char *shell_escape(char *input)
+{
+	static char ret[1024];
+	unsigned int out = 0, in = 0;
+
+	ret[out++] = '\'';
+	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
+		if (input[in] == '\'') {
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+		}
+		else
+			ret[out++] = input[in];
+	}
+	ret[out++] = '\'';
+	ret[out++] = '\0';
+
+	return ret;
+}
+
 char *feh_printf(char *str, feh_file * file)
 {
 	char *c;
@@ -397,9 +420,17 @@ char *feh_printf(char *str, feh_file * file)
 				if (file)
 					strcat(ret, file->filename);
 				break;
+			case 'F':
+				if (file)
+					strcat(ret, shell_escape(file->filename));
+				break;
 			case 'n':
 				if (file)
 					strcat(ret, file->name);
+				break;
+			case 'N':
+				if (file)
+					strcat(ret, shell_escape(file->name));
 				break;
 			case 'w':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
