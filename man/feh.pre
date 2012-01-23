@@ -1330,6 +1330,11 @@ a running X server
 .
 Print all unloadable images in /opt/images, recursively
 .
+.It feh -f by_width -S width --reverse --list \&.
+.
+Write a list of all images in the directory to by_width, sorted by width
+.Pq widest images first
+.
 .It feh -w /opt/images/holidays
 .
 Open each image in /opt/images/holidays in its own window
