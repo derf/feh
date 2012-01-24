@@ -796,8 +796,12 @@ static void show_version(void)
 void show_mini_usage(void)
 {
 	fputs(PACKAGE " - No loadable images specified.\n"
-			"Use " PACKAGE " --help for detailed usage information\n",
-			stderr);
+#ifdef INCLUDE_HELP
+		"See '" PACKAGE " --help' or 'man " PACKAGE "' for detailed usage information\n",
+#else
+		"See 'man " PACKAGE "' for detailed usage information\n",
+#endif
+		stderr);
 	exit(1);
 }
 
