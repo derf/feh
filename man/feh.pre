@@ -13,7 +13,7 @@
 .
 .Nm
 .Op Ar options
-.Ar files or directories ...
+.Ar files or directories or URLs ...
 .
 .
 .Sh VERSION
@@ -40,7 +40,7 @@ file managers to view an image.
 .Pp
 .
 .Nm
-supports filelists, various image sorting modes, image captions and more.
+supports filelists, various image sorting modes, image captions, HTTP and more.
 Configurable keyboard shortcuts are used to control it; the mouse is also
 supported, but only required for very few actions.
 .

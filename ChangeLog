@@ -3,6 +3,8 @@ git HEAD
     * Add %F and %N format specifiers, containing an escaped version of %f/%n.
       Example: %F for foo'bar".jpg will return 'foo'"'"'bar".jpg'
       <https://github.com/derf/feh/issues/77>
+    * Mention URL support in the SYNOPSIS
+      <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=655431>
 
 Mon, 02 Jan 2012 11:54:01 +0100  Daniel Friesel <derf@finalrewind.org>
 
