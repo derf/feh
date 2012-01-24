@@ -795,7 +795,7 @@ static void show_version(void)
 
 void show_mini_usage(void)
 {
-	fputs(PACKAGE " - No loadable images specified.\n"
+	fputs(PACKAGE ": No loadable images specified.\n"
 #ifdef INCLUDE_HELP
 		"See '" PACKAGE " --help' or 'man " PACKAGE "' for detailed usage information\n",
 #else

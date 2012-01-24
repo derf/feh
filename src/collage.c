@@ -66,7 +66,7 @@ void init_collage_mode(void)
 		if (bg_im) {
 			if (opt.verbose)
 				fputs(PACKAGE
-					" - No size restriction specified for collage.\n"
+					": No size restriction specified for collage.\n"
 					" You did specify a background however, so the\n"
 					" collage size has defaulted to the size of the image\n",
 					stdout);
@@ -75,7 +75,7 @@ void init_collage_mode(void)
 		} else {
 			if (opt.verbose)
 				fputs(PACKAGE
-					" - No size restriction specified for collage.\n"
+					": No size restriction specified for collage.\n"
 					" - For collage mode, you need to specify width and height.\n"
 					" Using defaults (width 800, height 600)\n",
 					stdout);
@@ -199,7 +199,7 @@ void init_collage_mode(void)
 
 			tw = gib_imlib_image_get_width(im_main);
 			th = gib_imlib_image_get_height(im_main);
-			fprintf(stdout, PACKAGE " - File saved as %s\n", output_buf);
+			fprintf(stdout, PACKAGE ": File saved as %s\n", output_buf);
 			fprintf(stdout,
 				"    - Image is %dx%d pixels and contains %d thumbnails\n",
 				tw, th, (tw / opt.thumb_w) * (th / opt.thumb_h));
