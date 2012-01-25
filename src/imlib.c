@@ -265,6 +265,9 @@ char *feh_http_load_image(char *url)
 	if (fd != -1) {
 		sfp = fdopen(fd, "w+");
 		if (sfp != NULL) {
+#ifdef DEBUG
+			curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+#endif
 			curl_easy_setopt(curl, CURLOPT_URL, url);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
 			ebuff = emalloc(CURL_ERROR_SIZE);
