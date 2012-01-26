@@ -460,9 +460,22 @@ gib_list *feh_read_filelist(char *filename)
 	FILE *fp;
 	gib_list *list = NULL;
 	char s[1024], s1[1024];
+	Imlib_Image tmp_im;
+	struct stat st;
 
 	if (!filename)
 		return(NULL);
+
+	/*
+	 * feh_load_image will fail horribly if filename is not seekable
+	 */
+	if (!stat(filename, &st) && S_ISREG(st.st_mode) &&
+			feh_load_image_char(&tmp_im, filename)) {
+		weprintf("Filelist file %s is an image, refusing to use it.\n"
+			"Did you mix up -f and -F?", filename);
+		opt.filelistfile = NULL;
+		return NULL;
+	}
 
 	errno = 0;
 	if ((fp = fopen(filename, "r")) == NULL) {

@@ -7,6 +7,9 @@ git HEAD
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=655431>
     * Do not refer to --help unless help is compiled in
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=657171>
+    * Do not overwrite filelist file if it actually is an image
+      (-f and -F may get mixed up)
+      <https://github.com/derf/feh/issues/79>
 
 Mon, 02 Jan 2012 11:54:01 +0100  Daniel Friesel <derf@finalrewind.org>
 
