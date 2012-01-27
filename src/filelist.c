@@ -118,6 +118,33 @@ int file_selector_all(const struct dirent *unused __attribute__((unused)))
   return 1;
 }
 
+static void feh_print_stat_error(char *path)
+{
+	if (opt.quiet)
+		return;
+
+	switch (errno) {
+	case ENOENT:
+	case ENOTDIR:
+		weprintf("%s does not exist - skipping", path);
+		break;
+	case ELOOP:
+		weprintf("%s - too many levels of symbolic links - skipping", path);
+		break;
+	case EACCES:
+		weprintf("you don't have permission to open %s - skipping", path);
+		break;
+	case EOVERFLOW:
+		weprintf("Cannot open %s - EOVERFLOW.\n"
+			"Recompile with stat64=1 to fix this", path);
+		break;
+	default:
+		weprintf("couldn't open %s", path);
+		break;
+	}
+}
+
+
 /* Recursive */
 void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 {
@@ -157,27 +184,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 
 	errno = 0;
 	if (stat(path, &st)) {
-		if (!opt.quiet) {
-			switch (errno) {
-			case ENOENT:
-			case ENOTDIR:
-				weprintf("%s does not exist - skipping", path);
-				break;
-			case ELOOP:
-				weprintf("%s - too many levels of symbolic links - skipping", path);
-				break;
-			case EACCES:
-				weprintf("you don't have permission to open %s - skipping", path);
-				break;
-			case EOVERFLOW:
-				weprintf("Cannot open %s - EOVERFLOW.\n"
-					"Recompile with stat64=1 to fix this");
-				break;
-			default:
-				weprintf("couldn't open %s", path);
-				break;
-			}
-		}
+		feh_print_stat_error(path);
 		free(path);
 		return;
 	}
@@ -297,23 +304,7 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	errno = 0;
 	if (stat(file->filename, &st)) {
-		if (!opt.quiet) {
-			switch (errno) {
-			case ENOENT:
-			case ENOTDIR:
-				weprintf("%s does not exist - skipping", file->filename);
-				break;
-			case ELOOP:
-				weprintf("%s - too many levels of symbolic links - skipping", file->filename);
-				break;
-			case EACCES:
-				weprintf("you don't have permission to open %s - skipping", file->filename);
-				break;
-			default:
-				weprintf("couldn't open %s ", file->filename);
-				break;
-			}
-		}
+		feh_print_stat_error(file->filename);
 		return(1);
 	}
 
