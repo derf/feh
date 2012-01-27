@@ -25,7 +25,7 @@ $VERSION$
 .Pp
 .
 Compile-time switches: libcurl support $MAN_CURL$, Xinerama support
-$MAN_XINERAMA$$MAN_DEBUG$
+$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
 .
 .
 .Sh DESCRIPTION

@@ -792,6 +792,10 @@ static void show_version(void)
 		"debug "
 #endif
 
+#ifdef HAVE_LIBEXIF
+		"exif "
+#endif
+
 #if _FILE_OFFSET_BITS == 64
 		"stat64 "
 #endif

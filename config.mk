@@ -57,6 +57,9 @@ endif
 ifeq (${exif},1)
 	CFLAGS += -DHAVE_LIBEXIF
 	LDLIBS += -lexif
+	MAN_EXIF = enabled
+else
+	MAN_EXIF = disabled
 endif
 
 
