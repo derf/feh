@@ -319,11 +319,8 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 
 	if (im)
 		im1 = im;
-	else if (!feh_load_image(&im1, file) || !im1) {
-		if (!opt.quiet)
-			weprintf("couldn't load %s", file->filename);
+	else if (!feh_load_image(&im1, file) || !im1)
 		return(1);
-	}
 
 	file->info = feh_file_info_new();
 
