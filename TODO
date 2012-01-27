@@ -47,8 +47,8 @@ Running feh 1.9-21-gbeecfaf from github on a FC13 x86_64 machine.
      user: dayne
     votes: 1
   created: 2010/10/06 16:22:25 -0700
-  updated: 2011/08/17 05:42:50 -0700
- comments: 3
+  updated: 2011/11/14 00:50:59 -0800
+ comments: 4
  
 12. "Reverse" --scale-down (zoom images to screen size)
 -------------------------------------------------------
@@ -76,19 +76,8 @@ the dependency might be an idea
      user: derf
     votes: 0
   created: 2011/01/17 11:54:17 -0800
-  updated: 2011/04/12 11:48:05 -0700
- comments: 0
- 
-25. Configure buttons via config file
--------------------------------------
-Right now keys have a config file while buttons use commandline options. Fix
-that.
-    state: open
-     user: derf
-    votes: 0
-  created: 2011/01/18 13:36:27 -0800
-  updated: 2011/08/08 01:47:12 -0700
- comments: 0
+  updated: 2011/11/29 13:34:35 -0800
+ comments: 2
  
 54. proper support for tiling WMs [was: zoom to window size]
 ------------------------------------------------------------
@@ -100,21 +89,105 @@ specify the exact geometry to get this to work correctly.
      user: ecraven
     votes: 0
   created: 2011/08/11 03:15:38 -0700
-  updated: 2011/08/28 13:47:58 -0700
- comments: 6
+  updated: 2011/10/31 02:20:16 -0700
+ comments: 8
  
-64. Xinerama bg-setting: separate images
-----------------------------------------
-Hi. I use feh as a bg-setter and I think it is pretty awesome that it supports
-Xinerama now. However, my feature request would be for feh to be able to set a
-distinct bg-image on each Xinerama screen. I imagine you have already thought
-of that possiblity, but as I did not see it in the TODO list I wanted to make
-the request official. This feature would make feh the perfect bg-setter, and I
-have known other people on the Web looking for the same functionality.
+67. receive commands from the terminal that started feh
+-------------------------------------------------------
+I am running feh on a remote machine by starting it from a ssh terminal. I
+expected to be able to use the shortcuts in the terminal  just as I would when
+feh is running localy. Feh does output to the terminal (e.g. when a filetype
+isn't supported) but it doesn't react to input from the terminal. Apparently I
+can use SIGUSR1 and SIGUSR2 to go back and forth between images but it would be
+much easier if feh would just react to keyboard input from the terminal.
     state: open
-     user: frozenQueue
+     user: tinus
     votes: 0
-  created: 2011/09/22 11:49:52 -0700
-  updated: 2011/09/23 04:46:26 -0700
+  created: 2011/10/05 04:51:59 -0700
+  updated: 2011/11/27 18:52:11 -0800
+ comments: 5
+ 
+72. --scale-down: account for window decorations
+------------------------------------------------
+Reported by mail: Apparently, --scale-down does not take window decorations
+into consideration when calculating the maximum
+window size. Gotta fix that.
+    state: open
+     user: derf
+    votes: 0
+  created: 2011/11/17 12:47:32 -0800
+  updated: 2011/11/27 18:59:58 -0800
+ comments: 1
+ 
+73. Position and Maximum Size of feh window
+-------------------------------------------
+The --geometry lets you specify a fixed size and location for the window
+
+BUG: specifying just a location is positioned right but produces a checkerboard
+display!
+   feh --geometry +50+5 vary_large_image.jpg
+No image gets displayed
+
+
+
+Full screen also does not take into account things like a bottom panel.  and
+Window Decorations.
+I wouldn't expect it to, as it is not always something that can be determined.
+Instead allowing the user
+to specify display limits (placement and the size for --scale-down) would seem
+a better method.
+Especially when you do not want checkerboard.
+
+An option to center the window in that area would also work well but not
+nessary!
+    state: open
+     user: antofthy
+    votes: 0
+  created: 2011/11/23 00:07:41 -0800
+  updated: 2011/11/26 03:52:45 -0800
+ comments: 0
+ 
+75. image opened by thumbnail mode is in position 0 of the filelist
+-------------------------------------------------------------------
+1.
+$ feh -tSsize  /path/to/images/
+
+2.
+click on an image
+
+what i expected:
+the image opens in slideshow mode, in filelist specified by command(
+/path/to/images/ ), in order specified by command (-Ssize, sort by size)
+
+what happened:
+the image opens in slideshow mode,
+press d, that's what it draws:
+/path/to/images/someimage.jpg
+0 of number_of_file_in_filelist
+press n
+nothing happens
+press p
+nothing happens
+press home/end/....etc
+nothing
+    state: open
+     user: lolnameless
+    votes: 0
+  created: 2011/12/07 11:34:11 -0800
+  updated: 2011/12/08 14:35:24 -0800
+ comments: 1
+ 
+78. toggle_fullscreen action assigned to mouse button not working
+-----------------------------------------------------------------
+Is it possible to assign keys actions to mouse buttons? Installed newest
+source, compiled on Fedora 14, tried toggle_fullscreen 1 in mouse
+configuration, disables keyboard v key and no actions for mouse button. Urgent
+feature for touchscreen implementations to configure all key actions for 1st
+and 3rd mouse buttons.
+    state: open
+     user: rolandas
+    votes: 0
+  created: 2012/01/25 07:45:04 -0800
+  updated: 2012/01/27 00:53:05 -0800
  comments: 2
  
