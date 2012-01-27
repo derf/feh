@@ -136,6 +136,9 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.toggle_actions, 0, XK_a, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
+#ifdef HAVE_LIBEXIF
+	feh_set_kb(&keys.toggle_exif, 0, XK_e, 0, 0, 0, 0);	
+#endif
 	feh_set_kb(&keys.toggle_info, 0, XK_i, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pointer, 0, XK_o, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_caption, 0, XK_c, 0, 0, 0, 0);
@@ -270,6 +273,10 @@ void init_keyevents(void) {
 			cur_kb = &keys.toggle_aliasing;
 		else if (!strcmp(action, "toggle_filenames"))
 			cur_kb = &keys.toggle_filenames;
+#ifdef HAVE_LIBEXIF
+		else if (!strcmp(action, "toggle_exif"))
+			cur_kb = &keys.toggle_exif;			
+#endif
 		else if (!strcmp(action, "toggle_info"))
 			cur_kb = &keys.toggle_info;
 		else if (!strcmp(action, "toggle_pointer"))
@@ -628,6 +635,12 @@ void feh_event_handle_keypress(XEvent * ev)
 		opt.draw_filename = !opt.draw_filename;
 		winwidget_rerender_all(0);
 	}
+#ifdef HAVE_LIBEXIF
+	else if (feh_is_kp(&keys.toggle_exif, keysym, state)) {
+		opt.draw_exif = !opt.draw_exif;
+		winwidget_rerender_all(0);
+	}
+#endif		
 	else if (feh_is_kp(&keys.toggle_info, keysym, state)) {
 		opt.draw_info = !opt.draw_info;
 		winwidget_rerender_all(0);

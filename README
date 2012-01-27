@@ -15,6 +15,11 @@ Dependencies
  * libX11
  * libXinerama (disable with make xinerama=0)
 
+If built with exif=1:
+
+ * libexif-dev
+ * libexif12
+
 Recommended
 -----------
 
@@ -42,8 +47,9 @@ Available flags are:
  * help     (default 0) - include help text (refers to the manpage otherwise)
  * stat64   (default 0) - Support CIFS shares from 64bit hosts on 32bit machines
  * xinerama (default 1) - Support Xinerama/XRandR multiscreen setups
+ * exif     (default 0) - Builtin EXIF tag display support
 
-So, by default libcurl and Xinerama are enabled, while debug is disabled.
+So, by default libcurl and Xinerama are enabled, the rest is disabled.
 
 Note: config.mk is designed so that in most cases, you can set environment
 variables instead of editing it. E.g.:

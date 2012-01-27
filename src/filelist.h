@@ -26,6 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FILELIST_H
 #define FILELIST_H
 
+#ifdef HAVE_LIBEXIF
+#include <libexif/exif-data.h>
+#endif
+
 struct __feh_file {
 	char *filename;
 	char *caption;
@@ -33,6 +37,9 @@ struct __feh_file {
 
 	/* info stuff */
 	feh_file_info *info;	/* only set when needed */
+#ifdef HAVE_LIBEXIF
+	ExifData *ed;
+#endif
 };
 
 struct __feh_file_info {

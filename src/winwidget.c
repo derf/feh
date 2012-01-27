@@ -574,6 +574,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			winwidget_update_caption(winwid);
 		if (opt.draw_filename)
 			feh_draw_filename(winwid);
+#ifdef HAVE_LIBEXIF
+		if (opt.draw_exif)
+			feh_draw_exif(winwid);
+#endif
 		if (opt.draw_actions)
 			feh_draw_actions(winwid);
 		if (opt.draw_info && opt.info_cmd)

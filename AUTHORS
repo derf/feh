@@ -47,6 +47,9 @@ Ulrich Spoerlein <q@uni.de>
 Yu-Jie Lin
     - Various patches
 
+Dennis Real
+    - patch for builtin exif support (exif=1)
+
 Daniel Friesel <derf@finalrewind.org>
     - Maintenance since 2010
 

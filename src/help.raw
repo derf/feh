@@ -32,6 +32,7 @@ OPTIONS
  -x, --borderless          Create borderless windows
  -d, --draw-filename       Show the filename in the image window
      --draw-tinted         Show overlay texts on semi-transparent background
+ -Q, --draw-exif           Show some Exif information
  -^, --title TITLE         Set window title (see FORMAT SPECIFIERS)
  -D, --slideshow-delay NUM Set delay between automatically changing slides
      --cycle-once          Exit after one loop through the slideshow

@@ -49,6 +49,9 @@ struct __fehoptions {
 	unsigned char jump_on_resort;
 	unsigned char full_screen;
 	unsigned char draw_filename;
+#ifdef HAVE_LIBEXIF
+	unsigned char draw_exif;
+#endif
 	unsigned char list;
 	unsigned char quiet;
 	unsigned char preload;
@@ -163,6 +166,9 @@ struct __fehkb {
 	struct __fehkey render;
 	struct __fehkey toggle_actions;
 	struct __fehkey toggle_filenames;
+#ifdef HAVE_LIBEXIF
+	struct __fehkey toggle_exif;
+#endif
 	struct __fehkey toggle_info;
 	struct __fehkey toggle_pointer;
 	struct __fehkey toggle_aliasing;

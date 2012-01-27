@@ -146,6 +146,9 @@ void cb_reload_timer(void *data);
 char *feh_http_load_image(char *url);
 int feh_load_image_char(Imlib_Image * im, char *filename);
 void feh_draw_filename(winwidget w);
+#ifdef HAVE_LIBEXIF
+void feh_draw_exif(winwidget w);
+#endif
 void feh_draw_actions(winwidget w);
 void feh_draw_caption(winwidget w);
 void feh_draw_info(winwidget w);

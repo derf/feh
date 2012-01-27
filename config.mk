@@ -21,6 +21,7 @@ curl ?= 1
 debug ?= 0
 help ?= 0
 xinerama ?= 1
+exif ?= 0
 
 ifeq (${curl},1)
 	CFLAGS += -DHAVE_LIBCURL
@@ -52,6 +53,12 @@ ifeq (${xinerama},1)
 else
 	MAN_XINERAMA = disabled
 endif
+
+ifeq (${exif},1)
+	CFLAGS += -DHAVE_LIBEXIF
+	LDLIBS += -lexif
+endif
+
 
 # Uncomment this to use dmalloc
 #CFLAGS += -DWITH_DMALLOC

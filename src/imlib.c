@@ -39,6 +39,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <curl/curl.h>
 #endif
 
+#ifdef HAVE_LIBEXIF
+#include "exif.h"
+#endif
+
 Display *disp = NULL;
 Visual *vis = NULL;
 Screen *scr = NULL;
@@ -146,6 +150,9 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->filename = tmpname;
 			feh_file_info_load(file, *im);
 			file->filename = tempcpy;
+#ifdef HAVE_LIBEXIF
+			file->ed = exif_get_data(tmpname);
+#endif		
 		}
 		if ((opt.slideshow) && (opt.reload == 0)) {
 			/* Http, no reload, slideshow. Let's keep this image on hand... */
@@ -219,6 +226,10 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		D(("Load *failed*\n"));
 		return(0);
 	}
+
+#ifdef HAVE_LIBEXIF
+	file->ed = exif_get_data(file->filename);
+#endif		
 
 	D(("Loaded ok\n"));
 	return(1);
@@ -491,6 +502,110 @@ void feh_draw_filename(winwidget w)
 	gib_imlib_free_image_and_decache(im);
 	return;
 }
+
+#ifdef HAVE_LIBEXIF  
+void feh_draw_exif(winwidget w)
+{
+	static Imlib_Font fn = NULL;
+	int width = 0, height = 0, line_width = 0, line_height = 0;
+	Imlib_Image im = NULL;
+	int no_lines = 0, i;
+	int pos = 0;
+	int pos2 = 0;
+	char info_line[256];
+	char *info_buf[128];
+	char buffer[MAX_EXIF_DATA];
+
+	if ( (!w->file) || (!FEH_FILE(w->file->data))
+			 || (!FEH_FILE(w->file->data)->filename) )
+	{
+		return;
+	}
+
+	exif_get_info(FEH_FILE(w->file->data)->ed, buffer, MAX_EXIF_DATA);
+
+	fn = feh_load_font(w);
+
+	if (buffer == NULL) 
+	{
+		snprintf(buffer, MAX_EXIF_DATA, "%s", estrdup("Failed to run exif command"));
+		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+		no_lines = 1;
+	}
+	else 
+	{
+
+		while ( (no_lines < 128) && (pos < MAX_EXIF_DATA) )
+		{
+			/* max 128 lines */
+			pos2 = 0;
+			while ( pos2 < 256 ) /* max 256 chars per line */
+			{
+				if ( (buffer[pos] != '\n')
+				      && (buffer[pos] != '\0') )
+				{
+			    info_line[pos2] = buffer[pos];
+			  }
+			  else if ( buffer[pos] == '\0' )
+			  {
+			    pos = MAX_EXIF_DATA; /* all data seen */
+			    info_line[pos2] = '\0';
+				}
+			  else
+			  {
+			  	info_line[pos2] = '\0'; /* line finished, continue with next line*/
+
+			    pos++;
+			    break;
+			  }
+			        
+			   pos++;
+			   pos2++;  
+			}
+
+			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
+                              &line_height, IMLIB_TEXT_TO_RIGHT);
+
+			if (line_height > height)
+				height = line_height;
+			if (line_width > width)
+				width = line_width;
+			info_buf[no_lines] = estrdup(info_line);
+
+			no_lines++;
+		}
+	}
+
+	if (no_lines == 0)
+		return;
+
+	height *= no_lines;
+	width += 4;
+
+	im = imlib_create_image(width, height);
+	if (!im)
+	{
+		eprintf("Couldn't create image. Out of memory?");
+	}
+
+	feh_imlib_image_fill_text_bg(im, width, height);
+
+	for (i = 0; i < no_lines; i++) 
+	{
+		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
+				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
+				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+
+	}
+
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - height, 1, 1, 0);
+
+	gib_imlib_free_image_and_decache(im);
+	return;
+
+}
+#endif
 
 void feh_draw_info(winwidget w)
 {

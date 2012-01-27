@@ -24,6 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifdef HAVE_LIBEXIF
+#include <libexif/exif-data.h>
+#endif
+
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
@@ -65,6 +69,10 @@ void feh_file_free(feh_file * file)
 		free(file->caption);
 	if (file->info)
 		feh_file_info_free(file->info);
+#ifdef HAVE_LIBEXIF
+	if (file->info)
+		exif_data_unref(file->ed);
+#endif		
 	free(file);
 	return;
 }
