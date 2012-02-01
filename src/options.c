@@ -301,11 +301,7 @@ static void feh_getopt_theme(int argc, char **argv)
 static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
 	static char stropts[] =
-#ifdef HAVE_LIBEXIF
-		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPQqrR:sS:tT:uUvVwW:xXy:YzZ"
-#else		
-		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"		
-#endif
+		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
 		".@:^:~:):|:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
@@ -333,9 +329,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"auto-zoom"     , 0, 0, 'Z'},
 		{"ignore-aspect" , 0, 0, 'X'},
 		{"draw-filename" , 0, 0, 'd'},
-#ifdef HAVE_LIBEXIF
-		{"draw-exif"     , 0, 0, 'Q'},
-#endif
 		{"preload"       , 0, 0, 'p'},
 		{"reverse"       , 0, 0, 'n'},
 		{"thumbnails"    , 0, 0, 't'},
@@ -347,6 +340,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"cycle-once"    , 0, 0, 224},
 		{"no-xinerama"   , 0, 0, 225},
 		{"draw-tinted"   , 0, 0, 229},
+#ifdef HAVE_LIBEXIF
+		{"draw-exif"     , 0, 0, 223},
+#endif
 
 		{"output"        , 1, 0, 'o'},
 		{"output-only"   , 1, 0, 'O'},
@@ -483,11 +479,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'd':
 			opt.draw_filename = 1;
 			break;
-#ifdef HAVE_LIBEXIF
-		case 'Q':
-			opt.draw_exif = 1;
-			break;
-#endif
 		case 'F':
 			opt.full_screen = 1;
 			break;
@@ -697,6 +688,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'P':
 			opt.cache_thumbnails = 1;
 			break;
+#ifdef HAVE_LIBEXIF
+		case 223:
+			opt.draw_exif = 1;
+			break;
+#endif
 		case 224:
 			opt.cycle_once = 1;
 			break;
