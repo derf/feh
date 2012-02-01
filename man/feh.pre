@@ -1454,7 +1454,7 @@ on irc.oftc.net.
 .
 Please include the feh version
 .Aq the output of Qq feh --version ,
-steps to reproduce the bug and (if necessary), images to reproduce it.
+steps to reproduce the bug and, if necessary, images to reproduce it.
 .
 .
 .Sh FUTURE PLANS
