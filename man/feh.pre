@@ -189,6 +189,13 @@ after one loop through the slideshow.
 .
 Draw the defined actions and what they do at the top-left of the image.
 .
+.It Cm --draw-exif
+.
+.Pq only if compiled with exif=1
+display some EXIF information in the bottom left corner, similar to using
+.Cm --info
+with exiv2 / exifgrep .
+.
 .It Cm -d , --draw-filename
 .
 Draw the filename at the top-left of the image.
@@ -958,6 +965,11 @@ bottom of the screen will turn yellow and can be edited.  Hit return to confirm
 and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
 .Aq CTRL+return .
+.
+.It e Bq toggle_exif
+.
+.Pq only if compiled with exif=1
+Toggle EXIF tag display
 .
 .It d Bq toggle_filenames
 .
