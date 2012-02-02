@@ -6,7 +6,7 @@ use autodie qw/:all/;
 
 use Cwd;
 use GD qw/:DEFAULT :cmp/;
-use Test::More tests => 53;
+use Test::More tests => 54;
 use Time::HiRes qw/sleep/;
 use X11::GUITest qw/:ALL/;
 
@@ -192,6 +192,13 @@ feh_start(
 	'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm'
 );
 test_scr('index_full_h400');
+feh_stop();
+
+feh_start(
+	'--geometry +10+20',
+	'test/ok/png'
+);
+test_scr('geometry_offset_only');
 feh_stop();
 
 feh_start(

@@ -290,7 +290,7 @@ screen size. The only exception is a
 of 100, in which case images will always be shown at 100% zoom, no matter
 their dimensions.
 .
-.It Cm -g , --geometry Ar width No x Ar height Op + Ar x No + Ar y
+.It Cm -g , --geometry Oo Ar width No x Ar height Oc Op + Ar x No + Ar y
 .
 Limit (and don't change) the window size.  Takes an X-style geometry
 .Ar string

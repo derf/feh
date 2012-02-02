@@ -410,19 +410,20 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
 	}
 
-	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im)) || (opt.geom_flags)
+	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
+				     || (opt.geom_flags & (WidthValue | HeightValue))
 				     || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
 				     || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
 
 	if (!winwid->full_screen && opt.zoom_mode
-				     && (winwid->zoom == 1.0) && !opt.geom_flags
+				     && (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
 				     && (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
-	if (resize && (winwid->full_screen || opt.geom_flags)) {
+	if (resize && (winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
 
@@ -810,7 +811,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-	if (opt.geom_flags) {
+	if (opt.geom_flags & (WidthValue | HeightValue)) {
 		winwid->had_resize = 1;
 		return;
 	}
