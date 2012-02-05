@@ -522,6 +522,8 @@ void feh_draw_exif(winwidget w)
 		return;
 	}
 
+
+	buffer[0] = '\0';
 	exif_get_info(FEH_FILE(w->file->data)->ed, buffer, MAX_EXIF_DATA);
 
 	fn = feh_load_font(w);
