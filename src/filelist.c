@@ -54,6 +54,9 @@ feh_file *feh_file_new(char *filename)
 	else
 		newfile->name = estrdup(filename);
 	newfile->info = NULL;
+#ifdef HAVE_LIBEXIF
+	newfile->ed = NULL;
+#endif
 	return(newfile);
 }
 
@@ -70,7 +73,7 @@ void feh_file_free(feh_file * file)
 	if (file->info)
 		feh_file_info_free(file->info);
 #ifdef HAVE_LIBEXIF
-	if (file->info)
+	if (file->ed)
 		exif_data_unref(file->ed);
 #endif		
 	free(file);
