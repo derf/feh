@@ -45,10 +45,10 @@ static void exif_trim_spaces(char *str)
   {
     if (*str != ' ')
     {
-      end = str;
+      end = str+1;
     }
   }
-  *++end = '\0';
+  *end = '\0';
 }
 
 
@@ -146,7 +146,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
   {
     return;
   }
-  else if (ed == NULL )
+  else if (ed == NULL)
   {
     snprintf(buffer, (size_t)maxsize, "%s\n", "No Exif data in file.");
     return;
@@ -187,6 +187,8 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
         {
           /* Digital Vari-Program */
           exif_get_mnote_tag(ed, 171, buffer + strlen(buffer), maxsize - strlen(buffer));
+          /* Lens */
+          exif_get_mnote_tag(ed, 132, buffer + strlen(buffer), maxsize - strlen(buffer));
         }
 
       }
