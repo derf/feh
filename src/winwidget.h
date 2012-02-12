@@ -108,7 +108,6 @@ struct __winwidget {
 	 */
 	double zoom;
 	double old_zoom;
-	unsigned char has_manual_zoom;
 
 	int click_offset_x;
 	int click_offset_y;

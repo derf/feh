@@ -573,9 +573,6 @@ void feh_event_handle_keypress(XEvent * ev)
 		feh_event_invoke_action(winwid, 9);
 	}
 	else if (feh_is_kp(&keys.zoom_in, keysym, state)) {
-		if (!winwid->has_manual_zoom)
-			winwid->has_manual_zoom = 1;
-
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 1.25;
 
@@ -590,9 +587,6 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.zoom_out, keysym, state)) {
-		if (!winwid->has_manual_zoom)
-			winwid->has_manual_zoom = 1;
-
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 0.80;
 
@@ -607,17 +601,17 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.zoom_default, keysym, state)) {
-		if (!winwid->has_manual_zoom)
-			winwid->has_manual_zoom = 1;
-
 		winwid->zoom = 1.0;
+		/* --scale-down will revert our operation if old_zoom == 1.0 */
+		if (opt.scale_down)
+			winwid->old_zoom = 1.001;
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
+		/* --scale-down will also do weird stuff if zoom is 1.0 */
+		if (opt.scale_down)
+			winwid->zoom = 1.001;
 	}
 	else if (feh_is_kp(&keys.zoom_fit, keysym, state)) {
-		if (!winwid->has_manual_zoom)
-			winwid->has_manual_zoom = 1;
-
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
