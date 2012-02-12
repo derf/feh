@@ -235,6 +235,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
 		winwid->old_zoom = winwid->zoom;
+		winwid->has_manual_zoom = 1;
 
 		/* required to adjust the image position in zoom mode */
 		winwid->im_click_offset_x = (winwid->click_offset_x
@@ -332,6 +333,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				&& (ev->xbutton.x == winwid->click_offset_x)
 				&& (ev->xbutton.y == winwid->click_offset_y)) {
 			winwid->zoom = 1.0;
+			winwid->has_manual_zoom = 0;
 			winwidget_center_image(winwid);
 		} else
 			winwidget_sanitise_offsets(winwid);

@@ -71,6 +71,7 @@ static winwidget winwidget_allocate(void)
 	ret->im_y = 0;
 	ret->zoom = 1.0;
 	ret->old_zoom = 1.0;
+	ret->has_manual_zoom = 0;
 
 	ret->click_offset_x = 0;
 	ret->click_offset_y = 0;
@@ -394,6 +395,9 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	if (winwid->im_y > winwid->h)
 		winwid->im_y = winwid->h;
 
+	if (!winwid->has_manual_zoom && winwid->zoom < 1.0)
+		winwid->zoom = 1.0;
+
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
 	      resize, force_alias, winwid->im_w, winwid->im_h));
 
@@ -401,7 +405,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
 						       || (winwid->h < winwid->im_h)) &&
-							  (winwid->old_zoom == 1.0)) {
+							  (!winwid->has_manual_zoom)) {
 		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
 
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -950,6 +954,7 @@ void feh_debug_print_winwid(winwidget w)
 
 void winwidget_reset_image(winwidget winwid)
 {
+	winwid->has_manual_zoom = 0;
 	winwid->zoom = 1.0;
 	winwid->old_zoom = 1.0;
 	winwid->im_x = 0;
