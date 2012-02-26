@@ -56,6 +56,9 @@ variables instead of editing it. E.g.:
 CFLAGS='-g -Os' make
 export DESTDIR=/tmp/feh PREFIX=/usr; make && make install
 
+Builtin EXIF support is maintained by Dennis Real, see
+<https://github.com/reald/feh>.
+
 
 Testing (non-X)
 ---------------
