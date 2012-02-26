@@ -230,7 +230,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
           exif_get_mnote_tag(ed, 132, buffer + strlen(buffer), maxsize - strlen(buffer));
           /* Digital Vari-Program */
           exif_get_mnote_tag(ed, 171, buffer + strlen(buffer), maxsize - strlen(buffer));
-          
+
         }
 
       }

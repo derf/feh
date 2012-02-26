@@ -137,6 +137,7 @@ void init_keyevents(void);
 void init_buttonbindings(void);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_action_run(feh_file * file, char *action);
+char *format_size(int size);
 char *feh_printf(char *str, feh_file * file);
 void im_weprintf(winwidget w, char *fmt, ...);
 void feh_draw_zoom(winwidget w);

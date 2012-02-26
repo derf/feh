@@ -404,6 +404,19 @@ char *shell_escape(char *input)
 	return ret;
 }
 
+char *format_size(int size)
+{
+	static char ret[5];
+	char units[] = {' ', 'k', 'M', 'G', 'T'};
+	unsigned char postfix = 0;
+	while (size >= 1000) {
+		size /= 1000;
+		postfix++;
+	}
+	snprintf(ret, 5, "%3d%c", size, units[postfix]);
+	return ret;
+}
+
 char *feh_printf(char *str, feh_file * file)
 {
 	char *c;
@@ -452,9 +465,7 @@ char *feh_printf(char *str, feh_file * file)
 				break;
 			case 'S':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf),
-							"%.2fkB", ((double)file->info->size / 1000));
-					strcat(ret, buf);
+					strcat(ret, format_size(file->info->size));
 				}
 				break;
 			case 'p':
@@ -463,13 +474,15 @@ char *feh_printf(char *str, feh_file * file)
 					strcat(ret, buf);
 				}
 				break;
+			case 'P':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					strcat(ret, format_size(file->info->pixels));
+				}
+				break;
 			case 't':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					strcat(ret, file->info->format);
 				}
-				break;
-			case 'P':
-				strcat(ret, PACKAGE);
 				break;
 			case 'v':
 				strcat(ret, VERSION);

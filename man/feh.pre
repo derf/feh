@@ -791,7 +791,8 @@ Number of image pixels
 .
 .It \&%P
 .
-.Nm
+Numbor of image pixels
+.Pq kilopixels / megapixels
 .
 .It %s
 .
@@ -799,8 +800,8 @@ Image size in bytes
 .
 .It %S
 .
-Image size in kilobytes
-.Pq with kB postfix
+Human-readable image size
+.Pq kB / MB
 .
 .It %t
 .
