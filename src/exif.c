@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "debug.h"
 #include "exif.h"
-
+#include "exif_nikon.h"
 
 
 /* remove all spaces on the right end of a string */
@@ -140,7 +140,10 @@ ExifData * exif_get_data(char *path)
 void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
 {
   ExifEntry *entry = NULL;
-  char buf[64];
+  char buf[128];
+  unsigned int exn_fcm = (EXN_FLASH_CONTROL_MODES_MAX-1); /* default to N/A */
+  unsigned int version = 0;
+  unsigned int length = 0;
 
   if ( (buffer == NULL) || (maxsize == 0) )
   {
@@ -151,7 +154,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
     snprintf(buffer, (size_t)maxsize, "%s\n", "No Exif data in file.");
     return;
   }
-  else if ( ed != NULL )
+  else
   {
     /* normal exif tags */
     exif_get_tag(ed, EXIF_IFD_0, EXIF_TAG_MAKE, buffer, maxsize);
@@ -185,10 +188,49 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
         /* Nikon */                                    
         if ( strcmp(buf, "Nikon") != 0 )
         {
-          /* Digital Vari-Program */
-          exif_get_mnote_tag(ed, 171, buffer + strlen(buffer), maxsize - strlen(buffer));
+          /* this is a nikon camera */
+          
+          buf[0] = '\0';
+          exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
+          exif_trim_spaces(buf);
+
+          if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
+          {
+            /* extended flash info if it was fired */
+  
+            /* Flash Setting */
+            exif_get_mnote_tag(ed, 8, buffer + strlen(buffer), maxsize - strlen(buffer));
+            /* Flash Mode */
+            exif_get_mnote_tag(ed, 9, buffer + strlen(buffer), maxsize - strlen(buffer));
+            /* flash exposure bracket value */
+            exif_get_mnote_tag(ed, 24, buffer + strlen(buffer), maxsize - strlen(buffer));
+            /* Flash used */
+            exif_get_mnote_tag(ed, 135, buffer + strlen(buffer), maxsize - strlen(buffer));
+
+            /* Flash info: control mode. */
+            /* libexif does not support flash info 168 yet. so we have to parse the debug data :-( */
+            buf[0] = '\0';
+            exif_get_mnote_tag(ed, 168, buf, sizeof(buf));
+            sscanf(buf, "(null): %u bytes unknown data: 303130%02X%*10s%02X", &length, &version, &exn_fcm);
+            exn_fcm = exn_fcm & EXN_FLASH_CONTROL_MODE_MASK;
+
+            if ( (exn_fcm < EXN_FLASH_CONTROL_MODES_MAX)
+                 && ( ((length == 22) && (version == '3'))      /* Nikon FlashInfo0103 */
+                      || ((length == 22) && (version == '4'))   /* Nikon FlashInfo0104 */
+                      || ((length == 21) && (version == '2'))   /* Nikon FlashInfo0102 */
+                      || ((length == 19) && (version == '0'))   /* Nikon FlashInfo0100 */
+                    )
+               )
+            {
+              snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "NikonFlashControlMode: %s\n", 
+                EXN_NikonFlashControlModeValues[exn_fcm]);
+            }
+          }
           /* Lens */
           exif_get_mnote_tag(ed, 132, buffer + strlen(buffer), maxsize - strlen(buffer));
+          /* Digital Vari-Program */
+          exif_get_mnote_tag(ed, 171, buffer + strlen(buffer), maxsize - strlen(buffer));
+          
         }
 
       }
