@@ -36,7 +36,7 @@ my $re_warning =
 	qr{${feh_name} WARNING: test/fail/... \- No Imlib2 loader for that file format\n};
 my $re_loadable = qr{test/ok/...};
 my $re_unloadable = qr{test/fail/...};
-my $re_list_action = qr{test/ok/... 16x16 \(${feh_name}\)};
+my $re_list_action = qr{test/ok/... 16x16};
 
 my $cmd = Test::Command->new(cmd => "$feh --version");
 
@@ -128,7 +128,7 @@ $cmd->stdout_is_file('test/list/default');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd =>
-	"$feh --quiet --list --action 'echo \"%f %wx%h (%P)\" >&2' $images");
+	"$feh --quiet --list --action 'echo \"%f %wx%h\" >&2' $images");
 
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file('test/list/default');

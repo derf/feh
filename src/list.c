@@ -44,7 +44,7 @@ void init_list_mode(void)
 		file = FEH_FILE(l->data);
 		if (opt.customlist)
 			printf("%s\n", feh_printf(opt.customlist, file));
-		else
+		else {
 			printf("%d\t%s\t%d\t%d\t%s", ++j,
 					file->info->format, file->info->width,
 					file->info->height,
@@ -52,6 +52,7 @@ void init_list_mode(void)
 			printf("\t%s\t%c\t%s\n",
 					format_size(file->info->size),
 					file->info->has_alpha ? 'X' : '-', file->filename);
+		}
 
 		feh_action_run(file, opt.actions[0]);
 	}
