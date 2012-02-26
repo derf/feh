@@ -37,7 +37,7 @@ void init_list_mode(void)
 	mode = "list";
 
 	if (!opt.customlist)
-		fputs("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n",
+		fputs("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE\tALPHA\tFILENAME\n",
 				stdout);
 
 	for (l = filelist; l; l = l->next) {
@@ -45,10 +45,12 @@ void init_list_mode(void)
 		if (opt.customlist)
 			printf("%s\n", feh_printf(opt.customlist, file));
 		else
-			printf("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j,
+			printf("%d\t%s\t%d\t%d\t%s", ++j,
 					file->info->format, file->info->width,
-					file->info->height, file->info->pixels,
-					file->info->size,
+					file->info->height,
+					format_size(file->info->pixels));
+			printf("\t%s\t\t%c\t%s\n",
+					format_size(file->info->size),
 					file->info->has_alpha ? 'X' : '-', file->filename);
 
 		feh_action_run(file, opt.actions[0]);
