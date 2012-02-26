@@ -49,7 +49,7 @@ void init_list_mode(void)
 					file->info->format, file->info->width,
 					file->info->height,
 					format_size(file->info->pixels));
-			printf("\t%s\t\t%c\t%s\n",
+			printf("\t%s\t%c\t%s\n",
 					format_size(file->info->size),
 					file->info->has_alpha ? 'X' : '-', file->filename);
 
