@@ -826,11 +826,13 @@ version
 .Sh CONFIGURATION
 .
 .Nm
-has two config files:
+has three config files:
 .Pa themes
-for theme definitions and
+for theme definitions,
 .Pa keys
-for key bindings.
+for key bindings and
+.Pa buttons
+for mouse button bindings.
 It will try to read them from
 .Pa $XDG_CONFIG_HOME/feh/ ,
 which
@@ -848,7 +850,8 @@ Note that mid-line comments are not supported.
 .
 .Sh THEMES CONFIG SYNTAX
 .
-This file allows the naming of option groups, called themes.
+.Pa .config/feh/themes
+allows the naming of option groups, called themes.
 .
 .Pp
 .
@@ -891,13 +894,14 @@ the end of a line, like in the shell.
 .
 .Pp
 .
-You can combine these themes with commandline options.  An example fehrc is
-provided with a couple of cool example themes.
+You can combine these themes with commandline options.
 .
 .
 .Sh KEYS CONFIG SYNTAX
 .
-This file defines the key bindings. It has entries of the form
+.Pa .config/feh/keys
+defines key bindings.
+It has entries of the form
 .Qq Ar action Op Ar key1 Op Ar key2 Op Ar key3 .
 .
 .Pp
@@ -1194,6 +1198,7 @@ Select highlighted menu item
 .
 .Sh BUTTONS CONFIG SYNTAX
 .
+.Pa .config/feh/buttons .
 This works like the keys config file: the entries are of the form
 .Qq Ar action Op Ar binding .
 .
