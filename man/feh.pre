@@ -826,11 +826,13 @@ version
 .Sh CONFIGURATION
 .
 .Nm
-has two config files:
+has three config files:
 .Pa themes
-for theme definitions and
+for theme definitions,
 .Pa keys
-for key bindings.
+for key bindings and
+.Pa buttons
+for mouse button bindings.
 It will try to read them from
 .Pa $XDG_CONFIG_HOME/feh/ ,
 which
@@ -891,8 +893,7 @@ the end of a line, like in the shell.
 .
 .Pp
 .
-You can combine these themes with commandline options.  An example fehrc is
-provided with a couple of cool example themes.
+You can combine these themes with commandline options.
 .
 .
 .Sh KEYS CONFIG SYNTAX
