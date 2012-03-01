@@ -571,7 +571,7 @@ void slideshow_save_image(winwidget win)
 		tmpname = feh_unique_filename("", "noname.png");
 	}
 
-	if (!opt.quiet)
+	if (opt.verbose)
 		printf("saving image to filename '%s'\n", tmpname);
 
 	/* XXX gib_imlib_save_image_with_error_return breaks with *.XXX and

@@ -215,15 +215,13 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		}
 		n = scandir(path, &de, file_selector_all, alphasort);
 		if (n < 0) {
-		  switch (errno) {
-		  case ENOMEM:
-		    if (!opt.quiet)
-		      weprintf("Insufficient memory to scan directory %s:", path);
-		    break;
-		  default:
-		    if (!opt.quiet)
-		      weprintf("Failed to scan directory %s:", path);
-		  }
+			switch (errno) {
+			case ENOMEM:
+				weprintf("Insufficient memory to scan directory %s:", path);
+				break;
+			default:
+				weprintf("Failed to scan directory %s:", path);
+			}
 		}
 
 		for (cnt = 0; cnt < n; cnt++) {
@@ -274,9 +272,6 @@ gib_list *feh_file_info_preload(gib_list * list)
 	gib_list *l;
 	feh_file *file = NULL;
 	gib_list *remove_list = NULL;
-
-	if (opt.verbose)
-		fputs(PACKAGE " - preloading...\n", stdout);
 
 	for (l = list; l; l = l->next) {
 		file = FEH_FILE(l->data);
@@ -533,7 +528,7 @@ void feh_save_filelist()
 
 	tmpname = feh_unique_filename("", "filelist");
 
-	if (!opt.quiet)
+	if (opt.verbose)
 		printf("saving filelist to filename '%s'\n", tmpname);
 
 	feh_write_filelist(filelist, tmpname);

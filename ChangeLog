@@ -7,6 +7,8 @@ git HEAD
     * feh --list now uses %S/%P to print image size and amount of pixels
     * Fix zoom_default key (caused blurry images in some cases due to a bad
       workaround)
+    * make --quiet and --verbose behave more like their documented way, never
+      ignore out of memory errors
 
 Thu, 02 Feb 2012 21:04:06 +0100  Daniel Friesel <derf@finalrewind.org>
 
