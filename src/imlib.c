@@ -169,11 +169,11 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((opt.slideshow) && (opt.reload == 0)) {
+		if ((opt.slideshow) && (opt.reload == 0) && (image_source != SRC_MAGICK)) {
 			free(file->filename);
 			file->filename = estrdup(tmpname);
 
-			if ((image_source == SRC_MAGICK) || !opt.keep_http)
+			if (!opt.keep_http)
 				add_file_to_rm_filelist(tmpname);
 		}
 		else if ((image_source == SRC_MAGICK) || !opt.keep_http)
