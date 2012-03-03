@@ -59,6 +59,9 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
+static char *feh_http_load_image(char *url);
+static char *feh_magick_load_image(char *filename);
+
 #ifdef HAVE_LIBXINERAMA
 void init_xinerama(void)
 {
@@ -127,48 +130,56 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
+	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source = SRC_IMLIB;
+	char *tmpname = NULL;
+	char *real_filename = NULL;
 
 	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
-		return(0);
+		return 0;
 
 	/* Handle URLs */
 	if ((!strncmp(file->filename, "http://", 7)) || (!strncmp(file->filename, "https://", 8))
 			|| (!strncmp(file->filename, "ftp://", 6))) {
-		char *tmpname = NULL;
-		char *tempcpy;
+		image_source = SRC_HTTP;
 
 		tmpname = feh_http_load_image(file->filename);
+	}
+	else
+		*im = imlib_load_image_with_error_return(file->filename, &err);
+
+	if ((err == IMLIB_LOAD_ERROR_UNKNOWN)
+			|| (err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT)) {
+		image_source = SRC_MAGICK;
+		tmpname = feh_magick_load_image(file->filename);
+	}
+
+	if (image_source != SRC_IMLIB) {
 		if (tmpname == NULL)
-			return(0);
+			return 0;
+
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (im) {
-			/* load the info now, in case it's needed after we delete the
-			   temporary image file */
-			tempcpy = file->filename;
+			real_filename = file->filename;
 			file->filename = tmpname;
 			feh_file_info_load(file, *im);
-			file->filename = tempcpy;
+			file->filename = real_filename;
 #ifdef HAVE_LIBEXIF
 			file->ed = exif_get_data(tmpname);
-#endif		
+#endif
 		}
 		if ((opt.slideshow) && (opt.reload == 0)) {
-			/* Http, no reload, slideshow. Let's keep this image on hand... */
 			free(file->filename);
 			file->filename = estrdup(tmpname);
 
-			if (!opt.keep_http)
+			if ((image_source == SRC_MAGICK) || !opt.keep_http)
 				add_file_to_rm_filelist(tmpname);
-		} else {
-			/* Don't cache the image if we're doing reload + http (webcams etc) */
-			if (!opt.keep_http)
-				unlink(tmpname);
 		}
+		else if ((image_source == SRC_MAGICK) || !opt.keep_http)
+			unlink(tmpname);
+
 		free(tmpname);
-	} else {
-		*im = imlib_load_image_with_error_return(file->filename, &err);
 	}
 
 	if ((err) || (!im)) {
@@ -177,7 +188,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			reset_output = 1;
 		}
 		if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
-			eprintf("While loading %s - Out of file descriptors", file->filename);
+			eprintf("%s - Out of file descriptors while loading", file->filename);
 		else if (!opt.quiet) {
 			switch (err) {
 			case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
@@ -187,7 +198,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 				weprintf("%s - Directory specified for image filename", file->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-				weprintf("%s - No read access to directory", file->filename);
+				weprintf("%s - No read access", file->filename);
 				break;
 			case IMLIB_LOAD_ERROR_UNKNOWN:
 			case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
@@ -235,9 +246,66 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	return(1);
 }
 
+static char *feh_magick_load_image(char *filename)
+{
+	char argv_fd[12];
+	char *basename;
+	char *tmpname;
+	char *sfn;
+	int fd = -1, devnull = -1;
+	int pid, status;
+
+	basename = strrchr(filename, '/');
+
+	if (basename == NULL)
+		basename = filename;
+	else
+		basename++;
+
+	tmpname = feh_unique_filename("/tmp/", basename);
+
+	if (strlen(tmpname) > (NAME_MAX-6))
+		tmpname[NAME_MAX-7] = '\0';
+
+	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
+	free(tmpname);
+
+	fd = mkstemp(sfn);
+
+	if (fd == -1)
+		return NULL;
+
+	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
+
+
+	if ((pid = fork()) == 0) {
+
+		/* discard convert output */
+		devnull = open("/dev/null", O_WRONLY);
+		dup2(devnull, 1);
+		dup2(devnull, 2);
+
+		execlp("convert", "convert", filename, argv_fd, NULL);
+		exit(1);
+	}
+	else {
+		waitpid(pid, &status, 0);
+		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
+			close(fd);
+			unlink(sfn);
+			sfn = NULL;
+
+			if (!opt.quiet)
+				weprintf("%s - No loader for that file format", filename);
+		}
+	}
+
+	return sfn;
+}
+
 #ifdef HAVE_LIBCURL
 
-char *feh_http_load_image(char *url)
+static char *feh_http_load_image(char *url)
 {
 	CURL *curl;
 	CURLcode res;
@@ -257,14 +325,14 @@ char *feh_http_load_image(char *url)
 	} else
 		path = "/tmp/";
 
-	basename = strrchr(url, '/') + 1;
-	tmpname = feh_unique_filename(path, basename);
-
 	curl = curl_easy_init();
 	if (!curl) {
 		weprintf("open url: libcurl initialization failure");
 		return NULL;
 	}
+
+	basename = strrchr(url, '/') + 1;
+	tmpname = feh_unique_filename(path, basename);
 
 	if (strlen(tmpname) > (NAME_MAX-6))
 		tmpname[NAME_MAX-7] = '\0';
@@ -1033,7 +1101,7 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 
 	if ((pid = fork()) < 0) {
 		im_weprintf(w, "lossless %s: fork failed:", op_name);
-		return;
+		exit(1);
 	} else if (pid == 0) {
 
 		execlp("jpegtran", "jpegtran", "-copy", "all", op_op, op_value,

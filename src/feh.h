@@ -144,7 +144,6 @@ void feh_draw_zoom(winwidget w);
 void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
-char *feh_http_load_image(char *url);
 int feh_load_image_char(Imlib_Image * im, char *filename);
 void feh_draw_filename(winwidget w);
 #ifdef HAVE_LIBEXIF
