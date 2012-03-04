@@ -110,6 +110,18 @@ can also list either all the loadable files in a filelist or all the
 unloadable files.  Useful for preening a directory.
 .
 .
+.Sh SUPPORTED FORMATS
+.
+.Nm
+can open any format supported by Imlib2, most notably jpeg and png.
+.
+If the convert binary
+.Pq supplied by ImageMagick
+is available, it also has limited support for many other filetypes, such as
+svg, xcf and otf.
+.
+For animated images, only the first frame is shown.
+.
 .Sh OPTIONS
 .
 .Bl -tag -width indent
