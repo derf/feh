@@ -55,7 +55,7 @@ A little note about EXIF support: The recommended way to display EXIF data is
 using exiv2 / exifgrep via
 .Cm --info
 .Pq see the Sx USAGE EXAMPLES No section .
-However, if you compile feh with exif=1, you can also view them directly.
+However, if you compile feh with exif=1, you can also display it directly.
 .
 .
 .Sh MODES
