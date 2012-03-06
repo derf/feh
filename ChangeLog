@@ -5,8 +5,6 @@ git HEAD
     * format specifier %P now prints the number of pixels with k/M suffix,
       like %S. Printing the program name ("feh") is no longer supported
     * feh --list now uses %S/%P to print image size and amount of pixels
-    * Fix zoom_default key (caused blurry images in some cases due to a bad
-      workaround)
     * make --quiet and --verbose behave more like their documented way, never
       ignore out of memory errors
     * Use ImageMagick (convert) as loader for unsupported file formats
