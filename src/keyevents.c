@@ -607,11 +607,9 @@ void feh_event_handle_keypress(XEvent * ev)
 			winwid->old_zoom = 1.001;
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
-		/*
-		 * --scale-down used to do weird stuff for zoom = 1.0, but setting
-		 * it to another value here is not the way to go. Also, couldn't
-		 * reproduce the issue -- 2012-02-16
-		 */
+		/* --scale-down will also do weird stuff if zoom is 1.0 */
+		if (opt.scale_down)
+			winwid->zoom = 1.001;
 	}
 	else if (feh_is_kp(&keys.zoom_fit, keysym, state)) {
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);

@@ -24,6 +24,7 @@ Recommended
 -----------
 
  * jpegtran  (supplied by the jpeg library, for lossless image rotation)
+ * convert  (supplied by ImageMagick, can be used to load unsuppoted formats)
 
 Installation
 ------------
@@ -44,10 +45,10 @@ Available flags are:
 
  * curl     (default 1) - use libcurl to view http:// and similar images
  * debug    (default 0) - debug build, enables --debug
+ * exif     (default 0) - Builtin EXIF tag display support
  * help     (default 0) - include help text (refers to the manpage otherwise)
  * stat64   (default 0) - Support CIFS shares from 64bit hosts on 32bit machines
  * xinerama (default 1) - Support Xinerama/XRandR multiscreen setups
- * exif     (default 0) - Builtin EXIF tag display support
 
 So, by default libcurl and Xinerama are enabled, the rest is disabled.
 

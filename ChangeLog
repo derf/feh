@@ -1,12 +1,11 @@
-git HEAD
+Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
 
+* Release v2.4
     * exif-support fixes by Dennis Real
     * format specifier %S now uses the appropriate suffix (B/kB/MB)
     * format specifier %P now prints the number of pixels with k/M suffix,
       like %S. Printing the program name ("feh") is no longer supported
     * feh --list now uses %S/%P to print image size and amount of pixels
-    * Fix zoom_default key (caused blurry images in some cases due to a bad
-      workaround)
     * make --quiet and --verbose behave more like their documented way, never
       ignore out of memory errors
     * Use ImageMagick (convert) as loader for unsupported file formats
