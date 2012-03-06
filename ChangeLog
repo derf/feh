@@ -1,5 +1,6 @@
-git HEAD
+Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
 
+* Release v2.4
     * exif-support fixes by Dennis Real
     * format specifier %S now uses the appropriate suffix (B/kB/MB)
     * format specifier %P now prints the number of pixels with k/M suffix,
