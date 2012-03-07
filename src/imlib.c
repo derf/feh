@@ -1108,7 +1108,7 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 				"-outfile", file_str, file_str, NULL);
 
 		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
-		return;
+		exit(1);
 	} else {
 		waitpid(pid, &status, 0);
 
@@ -1118,9 +1118,11 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 					" Commandline was: "
 					"jpegtran -copy all %s %s -outfile %s %s",
 					op_name, status >> 8, op_op, op_value, file_str, file_str);
+			free(file_str);
 			return;
 		}
 	}
+	free(file_str);
 }
 
 void feh_draw_actions(winwidget w)

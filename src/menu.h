@@ -86,12 +86,11 @@ struct _feh_menu_list {
 
 struct _feh_menu_item {
 	int state;
-	Imlib_Image icon;
 	char *text;
 	char *submenu;
 	int action;
 	void (*func_free) (void *data);
-	void *data;
+	unsigned short data;
 	feh_menu_item *next;
 	feh_menu_item *prev;
 	unsigned char is_toggle;
@@ -131,11 +130,11 @@ void feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m, feh_menu_item *
 void feh_menu_hide(feh_menu * m, int func_free);
 void feh_menu_show(feh_menu * m);
 feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text,
-				  Imlib_Image icon, char *submenu,
-				  int action, void *data, void (*func_free) (void *data));
+	char *submenu,
+	int action, unsigned short data, void (*func_free) (void *data));
 feh_menu_item *feh_menu_add_toggle_entry(feh_menu * m, char *text,
-					 Imlib_Image icon, char *submenu,
-					 int action, void *data, void (*func_free) (void *data), int setting);
+	char *submenu,
+	int action, unsigned short data, void (*func_free) (void *data), int setting);
 void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h);
 void feh_menu_calc_size(feh_menu * m);
 void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy);
