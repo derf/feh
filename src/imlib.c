@@ -59,6 +59,8 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
+int childpid;
+
 static char *feh_http_load_image(char *url);
 static char *feh_magick_load_image(char *filename);
 
@@ -253,7 +255,10 @@ static char *feh_magick_load_image(char *filename)
 	char *tmpname;
 	char *sfn;
 	int fd = -1, devnull = -1;
-	int pid, status;
+	int status;
+
+	if (opt.magick_timeout < 0)
+		return NULL;
 
 	basename = strrchr(filename, '/');
 
@@ -277,26 +282,39 @@ static char *feh_magick_load_image(char *filename)
 
 	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
 
-
-	if ((pid = fork()) == 0) {
+	if ((childpid = fork()) == 0) {
 
 		/* discard convert output */
 		devnull = open("/dev/null", O_WRONLY);
 		dup2(devnull, 1);
 		dup2(devnull, 2);
 
+		/*
+		 * convert only accepts SIGINT via killpg, a normal kill doesn't work
+		 */
+		if (opt.magick_timeout)
+			setpgid(0, 0);
+
 		execlp("convert", "convert", filename, argv_fd, NULL);
 		exit(1);
 	}
 	else {
-		waitpid(pid, &status, 0);
+		alarm(opt.magick_timeout);
+		waitpid(childpid, &status, 0);
+		alarm(0);
 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
 			close(fd);
 			unlink(sfn);
 			sfn = NULL;
 
-			if (!opt.quiet)
-				weprintf("%s - No loader for that file format", filename);
+			if (!opt.quiet) {
+				if (WIFSIGNALED(status))
+					weprintf("%s - Conversion took too long, skipping",
+						filename);
+				else
+					weprintf("%s - No loader for that file format",
+						filename);
+			}
 		}
 	}
 

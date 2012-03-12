@@ -76,8 +76,6 @@ void init_slideshow_mode(void)
 	if (!success)
 		show_mini_usage();
 
-	setup_signal_handlers();
-
 	return;
 }
 

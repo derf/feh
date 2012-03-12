@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "timers.h"
 #include "options.h"
 #include "events.h"
+#include "signals.h"
 #include "wallpaper.h"
 
 char **cmdargv = NULL;
@@ -48,6 +49,7 @@ int main(int argc, char **argv)
 		init_x_and_imlib();
 		init_keyevents();
 		init_buttonbindings();
+		setup_signal_handlers();
 	}
 
 	feh_event_init();

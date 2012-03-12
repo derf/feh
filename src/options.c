@@ -53,6 +53,7 @@ void init_parse_options(int argc, char **argv)
 	opt.display = 1;
 	opt.aspect = 1;
 	opt.slideshow_delay = 0.0;
+	opt.magick_timeout = 10;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
@@ -378,6 +379,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
 		{"index-info"    , 1, 0, 207},
+		{"magick-timeout", 1, 0, 208},
 		{"caption-path"  , 1, 0, 'K'},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
@@ -645,6 +647,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 207:
 			opt.index_info = estrdup(optarg);
+			break;
+		case 208:
+			opt.magick_timeout = atoi(optarg);
 			break;
 		case 'K':
 			opt.caption_path = estrdup(optarg);

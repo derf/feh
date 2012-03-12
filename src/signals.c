@@ -36,9 +36,10 @@ void setup_signal_handlers()
 	if (
 		(sigemptyset(&feh_ss) == -1) ||
 		(sigaddset(&feh_ss, SIGUSR1) == -1) ||
-		(sigaddset(&feh_ss, SIGUSR2) == -1))
+		(sigaddset(&feh_ss, SIGUSR2) == -1) ||
+		(sigaddset(&feh_ss, SIGALRM) == -1))
 	{
-		weprintf("Failed to set up signal mask, SIGUSR1/2 won't work");
+		weprintf("Failed to set up signal masks");
 		return;
 	}
 
@@ -48,9 +49,10 @@ void setup_signal_handlers()
 
 	if (
 		(sigaction(SIGUSR1, &feh_sh, NULL) == -1) ||
-		(sigaction(SIGUSR2, &feh_sh, NULL) == -1))
+		(sigaction(SIGUSR2, &feh_sh, NULL) == -1) ||
+		(sigaction(SIGALRM, &feh_sh, NULL) == -1))
 	{
-		weprintf("Failed to set up signal handler, SIGUSR1/2 won't work");
+		weprintf("Failed to set up signal handler");
 		return;
 	}
 
@@ -59,9 +61,15 @@ void setup_signal_handlers()
 
 void feh_handle_signal(int signo)
 {
-	winwidget winwid
-		= winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
+	winwidget winwid;
 	int i;
+
+	if (signo == SIGALRM) {
+		killpg(childpid, SIGINT);
+		kill(childpid, SIGINT);
+		return;
+	}
+	winwid = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
 
 	if (winwid) {
 		if (signo == SIGUSR1)
