@@ -1151,7 +1151,7 @@ Scroll up by one page
 .
 Scroll down by one page
 .
-.It Ao keypad begin Ac Bq render
+.It R, Ao keypad begin Ac Bq render
 .
 Antialias the image
 .
@@ -1163,11 +1163,11 @@ Zoom in
 .
 Zoom out
 .
-.It Ao keypad * Ac Bq zoom_default
+.It *, Ao keypad * Ac Bq zoom_default
 .
 Zoom to 100%
 .
-.It Ao keypad / Ac Bq zoom_fit
+.It /, Ao keypad / Ac Bq zoom_fit
 .
 Zoom to fit the window size
 .
