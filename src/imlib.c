@@ -315,6 +315,17 @@ static char *feh_magick_load_image(char *filename)
 					weprintf("%s - No loader for that file format",
 						filename);
 			}
+
+			/*
+			 * Reap child.  The previous waitpid call was interrupted by
+			 * alarm, but convert doesn't terminate immediately.
+			 * XXX
+			 * normally, if (WIFSIGNALED(status)) waitpid(childpid, &status, 0);
+			 * would suffice. However, as soon as feh has its own window,
+			 * this doesn't work anymore and the following workaround is
+			 * required. Hm.
+			 */
+			waitpid(-1, &status, 0);
 		}
 	}
 
