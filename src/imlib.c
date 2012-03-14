@@ -59,7 +59,7 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
-int childpid;
+int childpid = 0;
 
 static char *feh_http_load_image(char *url);
 static char *feh_magick_load_image(char *filename);
@@ -327,6 +327,7 @@ static char *feh_magick_load_image(char *filename)
 			 */
 			waitpid(-1, &status, 0);
 		}
+		childpid = 0;
 	}
 
 	return sfn;
