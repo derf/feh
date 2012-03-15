@@ -44,12 +44,12 @@ int main(int argc, char **argv)
 	init_parse_options(argc, argv);
 
 	init_imlib_fonts();
+	setup_signal_handlers();
 
 	if (opt.display) {
 		init_x_and_imlib();
 		init_keyevents();
 		init_buttonbindings();
-		setup_signal_handlers();
 	}
 
 	feh_event_init();

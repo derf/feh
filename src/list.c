@@ -77,6 +77,7 @@ void real_loadables_mode(int loadable)
 {
 	feh_file *file;
 	gib_list *l;
+	char ret = 0;
 
 	opt.quiet = 1;
 
@@ -91,6 +92,8 @@ void real_loadables_mode(int loadable)
 				puts(file->filename);
 				feh_action_run(file, opt.actions[0]);
 			}
+			else
+				ret = 1;
 			gib_imlib_free_image_and_decache(im);
 		} else {
 			/* Oh dear. */
@@ -98,7 +101,9 @@ void real_loadables_mode(int loadable)
 				puts(file->filename);
 				feh_action_run(file, opt.actions[0]);
 			}
+			else
+				ret = 1;
 		}
 	}
-	exit(0);
+	exit(ret);
 }
