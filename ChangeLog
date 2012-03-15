@@ -5,6 +5,7 @@ git HEAD
     * Add --magick-timeout option to set imagemagick conversion timeout or
       disable it altogether
     * Clean up temporary / to-delete files when receiveng SIG{INT,TERM,QUIT}
+    * Do not scroll past image borders when using key bindings
 
 Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
 
