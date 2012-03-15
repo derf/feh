@@ -286,14 +286,14 @@ static char *feh_magick_load_image(char *filename)
 
 		/* discard convert output */
 		devnull = open("/dev/null", O_WRONLY);
+		dup2(devnull, 0);
 		dup2(devnull, 1);
 		dup2(devnull, 2);
 
 		/*
 		 * convert only accepts SIGINT via killpg, a normal kill doesn't work
 		 */
-		if (opt.magick_timeout)
-			setpgid(0, 0);
+		setpgid(0, 0);
 
 		execlp("convert", "convert", filename, argv_fd, NULL);
 		exit(1);
