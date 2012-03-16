@@ -385,6 +385,15 @@ Don't display images.  Just print out their names if imlib2 can successfully
 load them.
 Returns false if at least one image failed to load.
 .
+.It Cm --magick-timeout Ar timeout
+.
+Stop trying to convert unloadable files after
+.Ar timeout
+seconds. A negative value disables covert / magick support altogether, a value
+of zero causes
+.Nm
+to try indefinitely. Default timeout is 5 seconds.
+.
 .It Cm -M , --menu-font Ar font
 .
 Use
