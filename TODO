@@ -79,19 +79,6 @@ the dependency might be an idea
   updated: 2011/11/29 13:34:35 -0800
  comments: 2
  
-54. proper support for tiling WMs [was: zoom to window size]
-------------------------------------------------------------
-i frequently use feh with a tiling window manager. it would be great if there
-were a switch that automatically zoomed the image to the window size (like with
-fullscreen, but without actually changing the window size). right now i need to
-specify the exact geometry to get this to work correctly.
-    state: open
-     user: ecraven
-    votes: 0
-  created: 2011/08/11 03:15:38 -0700
-  updated: 2011/10/31 02:20:16 -0700
- comments: 8
- 
 67. receive commands from the terminal that started feh
 -------------------------------------------------------
 I am running feh on a remote machine by starting it from a ssh terminal. I
@@ -118,34 +105,6 @@ window size. Gotta fix that.
   created: 2011/11/17 12:47:32 -0800
   updated: 2011/11/27 18:59:58 -0800
  comments: 1
- 
-73. Position and Maximum Size of feh window
--------------------------------------------
-The --geometry lets you specify a fixed size and location for the window
-
-BUG: specifying just a location is positioned right but produces a checkerboard
-display!
-   feh --geometry +50+5 vary_large_image.jpg
-No image gets displayed
-
-
-
-Full screen also does not take into account things like a bottom panel.  and
-Window Decorations.
-I wouldn't expect it to, as it is not always something that can be determined.
-Instead allowing the user
-to specify display limits (placement and the size for --scale-down) would seem
-a better method.
-Especially when you do not want checkerboard.
-
-An option to center the window in that area would also work well but not
-nessary!
-    state: open
-     user: antofthy
-    votes: 0
-  created: 2011/11/23 00:07:41 -0800
-  updated: 2011/11/26 03:52:45 -0800
- comments: 0
  
 75. image opened by thumbnail mode is in position 0 of the filelist
 -------------------------------------------------------------------
@@ -190,4 +149,43 @@ and 3rd mouse buttons.
   created: 2012/01/25 07:45:04 -0800
   updated: 2012/01/27 00:53:05 -0800
  comments: 2
+ 
+81. zoom, scale-down etc. are a huge mess
+-----------------------------------------
+* when using feh --scale-down, the middle button toggles between zoom 100% and
+zoom to fit. It should only set zoom to 100%
+* --scale-down: removing the zoom = 1.001 workaround from keyevents.c, zoom
+100% -> zoom in / out breaks
+* same for events.c, except there's no workaround in place
+    state: open
+     user: derf
+    votes: 0
+  created: 2012/03/06 04:12:09 -0800
+ comments: 0
+ 
+82. feh loads movies with convert
+---------------------------------
+feh loads movies with convert. That takes a very long time, because I only have
+5 gigabytes of RAM. (pun intended) That is probably an unintended "feature"
+introduced by commit ba08d4b25fcbcd4e16388673184cf4d179dbd420.
+
+For my needs it would be best if I could disable the call to convert by default
+(maybe a new config file?), while providing a command line argument reenabling
+the convert feature. (for the rare occasions when I use really obscure file
+formats)
+    state: open
+     user: pyropeter
+    votes: 0
+  created: 2012/03/07 13:25:32 -0800
+  updated: 2012/03/10 06:49:16 -0800
+ comments: 3
+ 
+83. add keybindings for brightness / contrast adjustment
+--------------------------------------------------------
+Requested by mail: for example, b/B for brightness and k/K for contrast.
+    state: open
+     user: derf
+    votes: 0
+  created: 2012/03/10 05:40:36 -0800
+ comments: 0
  

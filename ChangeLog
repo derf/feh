@@ -1,3 +1,13 @@
+git HEAD
+
+    * Add R, * and / aliases for <keypad begin>, <keypad *> and <keypad />
+    * Try to convert unloadable files with imagemagick for up to 6 seconds
+    * Add --magick-timeout option to set imagemagick conversion timeout or
+      disable it altogether
+    * Clean up temporary / to-delete files when receiveng SIG{INT,TERM,QUIT}
+    * Do not scroll past image borders when using key bindings
+    * --loadable / --unloadable: indicate result in exit status
+
 Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
 
 * Release v2.4

@@ -76,8 +76,6 @@ void init_slideshow_mode(void)
 	if (!success)
 		show_mini_usage();
 
-	setup_signal_handlers();
-
 	return;
 }
 
@@ -266,8 +264,11 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			current_file = feh_list_jump(filelist, current_file, BACK, 1);
 			break;
 		case SLIDE_RAND:
-			current_file = feh_list_jump(filelist, current_file, FORWARD, rand() % filelist_len);
-			change = SLIDE_NEXT;
+			if (filelist_len > 1) {
+				current_file = feh_list_jump(filelist, current_file, FORWARD,
+					(rand() % (filelist_len - 1)) + 1);
+				change = SLIDE_NEXT;
+			}
 			break;
 		case SLIDE_JUMP_FWD:
 			if (filelist_len < 5)

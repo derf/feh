@@ -45,7 +45,7 @@ $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --loadable $images");
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_like($re_loadable);
 $cmd->stderr_is_eq('');
 
@@ -53,7 +53,7 @@ $cmd = Test::Command->new(
 	cmd => "$feh --loadable --action 'echo touch %f' $images"
 );
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/loadable_action');
 $cmd->stderr_is_eq('');
 
@@ -61,7 +61,7 @@ $cmd = Test::Command->new(
 	cmd => "$feh --loadable --action ';echo touch %f' $images"
 );
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/loadable_naction');
 $cmd->stderr_is_eq('');
 
@@ -69,7 +69,7 @@ $cmd = Test::Command->new(
 	cmd => "$feh --unloadable --action 'echo rm %f' $images"
 );
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/unloadable_action');
 $cmd->stderr_is_eq('');
 
@@ -77,13 +77,13 @@ $cmd = Test::Command->new(
 	cmd => "$feh --unloadable --action ';echo rm %f' $images"
 );
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/unloadable_naction');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(cmd => "$feh --unloadable $images");
 
-$cmd->exit_is_num(0);
+$cmd->exit_is_num(1);
 $cmd->stdout_like($re_unloadable);
 $cmd->stderr_is_eq('');
 

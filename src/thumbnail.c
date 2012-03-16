@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "md5.h"
 #include "feh_png.h"
 #include "index.h"
+#include "signals.h"
 
 static gib_list *thumbnails = NULL;
 

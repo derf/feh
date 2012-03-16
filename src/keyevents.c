@@ -129,10 +129,10 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.action_9  , 0, XK_9         , 0, XK_KP_9      , 0, 0);
 	feh_set_kb(&keys.zoom_in   , 0, XK_Up        , 0, XK_KP_Add    , 0, 0);
 	feh_set_kb(&keys.zoom_out  , 0, XK_Down      , 0, XK_KP_Subtract,0, 0);
-	feh_set_kb(&keys.zoom_default, 0, XK_KP_Multiply, 0, 0         , 0, 0);
-	feh_set_kb(&keys.zoom_fit  , 0, XK_KP_Divide , 0, 0            , 0, 0);
+	feh_set_kb(&keys.zoom_default, 0, XK_KP_Multiply, 0, XK_asterisk, 0, 0);
+	feh_set_kb(&keys.zoom_fit  , 0, XK_KP_Divide , 0, XK_slash     , 0, 0);
 	feh_set_kb(&keys.size_to_image, 0, XK_w      , 0, 0            , 0, 0);
-	feh_set_kb(&keys.render    , 0, XK_KP_Begin  , 0, 0            , 0, 0);
+	feh_set_kb(&keys.render    , 0, XK_KP_Begin  , 0, XK_R         , 0, 0);
 	feh_set_kb(&keys.toggle_actions, 0, XK_a, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
@@ -479,34 +479,42 @@ void feh_event_handle_keypress(XEvent * ev)
 	}
 	else if (feh_is_kp(&keys.scroll_right, keysym, state)) {
 		winwid->im_x -= 20;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_left, keysym, state)) {
 		winwid->im_x += 20;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_down, keysym, state)) {
 		winwid->im_y -= 20;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_up, keysym, state)) {
 		winwid->im_y += 20;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_right_page, keysym, state)) {
 		winwid->im_x -= winwid->w;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_left_page, keysym, state)) {
 		winwid->im_x += winwid->w;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_down_page, keysym, state)) {
 		winwid->im_y -= winwid->h;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.scroll_up_page, keysym, state)) {
 		winwid->im_y += winwid->h;
+		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(&keys.jump_back, keysym, state)) {

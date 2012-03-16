@@ -188,4 +188,7 @@ extern feh_menu *menu_main;
 extern feh_menu *menu_close;
 extern char *mode;		/* label for the current mode */
 
+/* to terminate long-running children with SIGALRM */
+extern int childpid;
+
 #endif

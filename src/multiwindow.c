@@ -65,7 +65,5 @@ void init_multiwindow_mode(void)
 		free(s);
 	}
 
-	setup_signal_handlers();
-
 	return;
 }
