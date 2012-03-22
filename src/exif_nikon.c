@@ -100,6 +100,7 @@ static void exn_get_prim_af_pt(unsigned int phasedetectaf,
                                unsigned int primafpt,
                                char * buffer,
                                unsigned int maxsize);
+static void exn_get_mnote_nikon_34(ExifData *ed, char * buffer, unsigned int maxsize);
 static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int maxsize);
 static void exn_get_mnote_nikon_183(ExifData *ed, char * buffer, unsigned int maxsize);
 
@@ -160,6 +161,63 @@ static void exn_get_prim_af_pt(unsigned int phasedetectaf,
   
   }
    
+}
+
+
+
+/* get ActiveD-Lighting (34) info */
+static void exn_get_mnote_nikon_34(ExifData *ed, char * buffer, unsigned int maxsize)
+{
+  char buf[EXIF_STD_BUF_LEN];
+  unsigned int data = 0;
+  char *answer;
+
+  buf[0] = '\0';
+  exif_get_mnote_tag(ed, 34, buf, sizeof(buf));
+  sscanf(buf, "(null): %u", &data);
+  
+  switch(data)
+  {
+    case 0:
+    {
+      answer = "Off";
+    }
+    break;
+    case 1:
+    {
+      answer = "Low";
+    }
+    break;
+    case 3:
+    {
+      answer = "Normal";
+    }
+    break;
+    case 5:
+    {
+      answer = "High";
+    }
+    break;
+    case 7:
+    {
+      answer = "Extra High";
+    }
+    break;
+    case 65535:
+    {
+      answer = "Auto";
+    }
+    break;
+    default:
+    {
+      answer = "N/A"; /* this is not a nikon value */
+    }
+
+  }
+
+  snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "Active D-Lightning: %s\n", 
+           answer);
+  
 }
 
 
@@ -272,6 +330,13 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
         /* show extended flash info only if flash was fired */
         exif_get_mnote_tag(ed, tag, buffer + strlen(buffer), maxsize - strlen(buffer));
       }
+    }
+    break;
+
+    case 34:
+    {
+      /* ActiveD-Lighting */
+      exn_get_mnote_nikon_34(ed, buffer + strlen(buffer), maxsize - strlen(buffer));      
     }
     break;
     

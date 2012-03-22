@@ -72,6 +72,7 @@ const unsigned int Exif_makernote_nikon_tag_list [] =
   
   132, /* Lens */
   171, /* Digital Vari-Program */
+  34,  /* ActiveD-Lighting */
   183, /* AFInfo2 */
 
   EXIF_NIKON_MAKERNOTE_END   /* end marker */
