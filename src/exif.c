@@ -279,7 +279,16 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
            )
         {
           /* this is a nikon camera */
-          exn_get_mnote_nikon_tags(ed, buffer + strlen(buffer), maxsize - strlen(buffer));
+
+          /* show nikon makernote exif tags. list must be defined in exif_cfg.h  */
+          i=0;
+          while ( (Exif_makernote_nikon_tag_list[i] != EXIF_NIKON_MAKERNOTE_END) && (i < USHRT_MAX) )
+          {
+            exn_get_mnote_nikon_tags(ed, Exif_makernote_nikon_tag_list[i], 
+                                     buffer + strlen(buffer), maxsize - strlen(buffer));
+            i++; 
+          }
+
         }
 
       }

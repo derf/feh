@@ -34,8 +34,8 @@ typedef struct
   ExifTag tag;  /* tag */
 } t_EXIF_INFO;
 
+
 /* show these standard tags. section must be given first, than the tag itself */
-/* note: maker note specific tags are handled directly in exif.c up to now */
 const t_EXIF_INFO Exif_tag_list [] =
 {
   {EXIF_IFD_0, EXIF_TAG_MAKE},
@@ -56,6 +56,25 @@ const t_EXIF_INFO Exif_tag_list [] =
   {EXIF_IFD_EXIF, EXIF_TAG_FLASH},
   
   {EXIF_IFD_COUNT, 0}	/* end marker */
+};
+
+
+#define EXIF_NIKON_MAKERNOTE_END 0  /* end marker: if 0 used as a tag we must find something else */
+
+/* show these nikon makernote tags */
+const unsigned int Exif_makernote_nikon_tag_list [] =
+{
+  8,   /* Flash Setting */
+  9,   /* Flash Mode */
+  24,  /* Flash exposure bracket value */
+  135, /* Flash used */
+  168, /* Flash info: control mode */
+  
+  132, /* Lens */
+  171, /* Digital Vari-Program */
+  183, /* AFInfo2 */
+
+  EXIF_NIKON_MAKERNOTE_END   /* end marker */
 };
 
 #endif

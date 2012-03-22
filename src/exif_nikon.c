@@ -100,10 +100,12 @@ static void exn_get_prim_af_pt(unsigned int phasedetectaf,
                                unsigned int primafpt,
                                char * buffer,
                                unsigned int maxsize);
-                               
-                               
-                               
+static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int maxsize);
+static void exn_get_mnote_nikon_183(ExifData *ed, char * buffer, unsigned int maxsize);
 
+
+
+/* get primary AF point */
 static void exn_get_prim_af_pt(unsigned int phasedetectaf,
                                unsigned int primafpt,
                                char * buffer,
@@ -162,59 +164,46 @@ static void exn_get_prim_af_pt(unsigned int phasedetectaf,
 
 
 
-/* get interesting nikon maker note tags in readable form */
-void exn_get_mnote_nikon_tags(ExifData *ed, char * buffer, unsigned int maxsize)
+/* get nikon Flash info: control mode (168) info */
+static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int maxsize)
 {
   char buf[EXIF_STD_BUF_LEN];
-  unsigned int exn_fcm = (EXN_FLASH_CONTROL_MODES_MAX-1); /* default to N/A */
   unsigned int version = 0;
   unsigned int length = 0;
+  unsigned int exn_fcm = (EXN_FLASH_CONTROL_MODES_MAX-1); /* default to N/A */
+
+  /* libexif does not support flash info 168 yet. so we have to parse the debug data :-( */
+  buf[0] = '\0';
+  exif_get_mnote_tag(ed, 168, buf, sizeof(buf));
+  sscanf(buf, "(null): %u bytes unknown data: 303130%02X%*10s%02X", &length, &version, &exn_fcm);
+  exn_fcm = exn_fcm & EXN_FLASH_CONTROL_MODE_MASK;
+
+  if ( (exn_fcm < EXN_FLASH_CONTROL_MODES_MAX)
+       && ( ((length == 22) && (version == '3'))      /* Nikon FlashInfo0103 */
+            || ((length == 22) && (version == '4'))   /* Nikon FlashInfo0104 */
+            || ((length == 21) && (version == '2'))   /* Nikon FlashInfo0102 */
+            || ((length == 19) && (version == '0'))   /* Nikon FlashInfo0100 */
+          )
+     )
+  {
+    snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "NikonFlashControlMode: %s\n", 
+             EXN_NikonFlashControlModeValues[exn_fcm]);
+  }
+
+}
+
+
+
+/* get nikon AFInfo2 (183) info */
+static void exn_get_mnote_nikon_183(ExifData *ed, char * buffer, unsigned int maxsize)
+{
+  char buf[EXIF_STD_BUF_LEN];
   unsigned int contrastdetectaf = 0;
   unsigned int afareamode = 0;
   unsigned int phasedetectaf = 0;
   unsigned int primaryafpoint = 0;
-
-  buf[0] = '\0';
-  exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
-  exif_trim_spaces(buf);
-
-  if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
-  {
-    /* show extended flash info if flash was fired */
-  
-    /* Flash Setting */
-    exif_get_mnote_tag(ed, 8, buffer + strlen(buffer), maxsize - strlen(buffer));
-    /* Flash Mode */
-    exif_get_mnote_tag(ed, 9, buffer + strlen(buffer), maxsize - strlen(buffer));
-    /* flash exposure bracket value */
-    exif_get_mnote_tag(ed, 24, buffer + strlen(buffer), maxsize - strlen(buffer));
-    /* Flash used */
-    exif_get_mnote_tag(ed, 135, buffer + strlen(buffer), maxsize - strlen(buffer));
-
-    /* Flash info: control mode. */
-    /* libexif does not support flash info 168 yet. so we have to parse the debug data :-( */
-    buf[0] = '\0';
-    exif_get_mnote_tag(ed, 168, buf, sizeof(buf));
-    sscanf(buf, "(null): %u bytes unknown data: 303130%02X%*10s%02X", &length, &version, &exn_fcm);
-    exn_fcm = exn_fcm & EXN_FLASH_CONTROL_MODE_MASK;
-
-    if ( (exn_fcm < EXN_FLASH_CONTROL_MODES_MAX)
-         && ( ((length == 22) && (version == '3'))      /* Nikon FlashInfo0103 */
-              || ((length == 22) && (version == '4'))   /* Nikon FlashInfo0104 */
-              || ((length == 21) && (version == '2'))   /* Nikon FlashInfo0102 */
-              || ((length == 19) && (version == '0'))   /* Nikon FlashInfo0100 */
-            )
-       )
-    {
-      snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "NikonFlashControlMode: %s\n", 
-        EXN_NikonFlashControlModeValues[exn_fcm]);
-    }
-  }
-
-  /* Lens */
-  exif_get_mnote_tag(ed, 132, buffer + strlen(buffer), maxsize - strlen(buffer));
-  /* Digital Vari-Program */
-  exif_get_mnote_tag(ed, 171, buffer + strlen(buffer), maxsize - strlen(buffer));
+  unsigned int version = 0;
+  unsigned int length = 0;
 
   /* AFInfo2 */
   /* libexif does not support AFInfo2 183 yet. so we have to parse the debug data :-( */
@@ -231,33 +220,87 @@ void exn_get_mnote_nikon_tags(ExifData *ed, char * buffer, unsigned int maxsize)
   if ( ((length == 30) && (version == '0'))
        && (contrastdetectaf < EXN_CONTRAST_DETECT_AF_MAX)
        && (phasedetectaf < EXN_PHASE_DETECT_AF_MAX)
-       
-     )
+       )
   {
     if ( (contrastdetectaf != 0) && (afareamode < EXN_AF_AREA_MODE_C_MAX) )
     {
       /* Contrast AF (live view) */
       snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), 
-        "ContrastDetectAF: %s; AFAreaMode: %s\n", 
-        EXN_NikonContrastDetectAF[contrastdetectaf],
-        EXN_NikonAFAreaModeContr[afareamode]);
-      
+               "ContrastDetectAF: %s; AFAreaMode: %s\n", 
+               EXN_NikonContrastDetectAF[contrastdetectaf],
+               EXN_NikonAFAreaModeContr[afareamode]);
+
     }
     else if ( (phasedetectaf != 0) && (afareamode < EXN_AF_AREA_MODE_P_MAX) )
     {
       /* Phase AF */
       buf[0] = '\0';
       exn_get_prim_af_pt(phasedetectaf, primaryafpoint, buf, EXIF_STD_BUF_LEN);
-
-      snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), 
-        "PhaseDetectAF: %s; AreaMode: %s; PrimaryAFPoint: %s\n", 
-        EXN_NikonPhaseDetectAF[phasedetectaf],
-        EXN_NikonAFAreaModePhase[afareamode],
-        buf
-        );
-    }
     
+      snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), 
+               "PhaseDetectAF: %s; AreaMode: %s; PrimaryAFPoint: %s\n", 
+               EXN_NikonPhaseDetectAF[phasedetectaf],
+               EXN_NikonAFAreaModePhase[afareamode],
+               buf
+               );
+    }
+
   }
+}
+
+
+
+/* get interesting nikon maker note tags in readable form */
+void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize)
+{
+  char buf[EXIF_STD_BUF_LEN];
+
+  buf[0] = '\0';
+  exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
+  exif_trim_spaces(buf);
+
+  switch(tag)
+  {
+    /* show only if flash was used */
+    case 8:   /* Flash Setting */
+    case 9:   /* Flash Mode */
+    case 24:  /* Flash exposure bracket value */
+    case 135: /* Flash used */
+    {
+      if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
+      {
+        /* show extended flash info only if flash was fired */
+        exif_get_mnote_tag(ed, tag, buffer + strlen(buffer), maxsize - strlen(buffer));
+      }
+    }
+    break;
+    
+    case 168:
+    {
+      /* Flash info: control mode */
+      if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
+      {
+        /* show extended flash info only if flash was fired */
+        exn_get_mnote_nikon_168(ed, buffer + strlen(buffer), maxsize - strlen(buffer));
+      }
+    }
+    break;
+
+    case 183:
+    {
+      /* AFInfo 2 */
+      exn_get_mnote_nikon_183(ed, buffer + strlen(buffer), maxsize - strlen(buffer));
+    }
+    break;
+    
+    default:
+    {
+      /* normal makernote tags without special treatment */
+      exif_get_mnote_tag(ed, tag, buffer + strlen(buffer), maxsize - strlen(buffer));
+    }
+    break;
+  }
+
 
   return;
 }
