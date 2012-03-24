@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "debug.h"
 #include "exif.h"
+#include "exif_canon.h"
 #include "exif_nikon.h"
 #include "exif_cfg.h"
 
@@ -239,7 +240,7 @@ ExifData * exif_get_data(char *path)
 
 
 
-/* get exif data in readable form */
+/* get all exif data in readable form */
 void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
 {
   ExifEntry *entry = NULL;
@@ -272,14 +273,12 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
       if (exif_entry_get_value(entry, buf, sizeof(buf))) 
       {
         exif_trim_spaces(buf);
-        
+
         if ( (strcmp(buf, "NIKON CORPORATION") == 0)
              || (strcmp(buf, "Nikon") == 0) 
              || (strcmp(buf, "NIKON") == 0)
            )
         {
-          /* this is a nikon camera */
-
           /* show nikon makernote exif tags. list must be defined in exif_cfg.h  */
           i=0;
           while ( (Exif_makernote_nikon_tag_list[i] != EXIF_NIKON_MAKERNOTE_END) && (i < USHRT_MAX) )
@@ -290,7 +289,21 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
           }
 
         }
-
+        else if ( (strcmp(buf, "Canon") == 0) )
+        {
+          /* show canon makernote exif tags. list must be defined in exif_cfg.h  */
+          i=0;
+          while ( (Exif_makernote_canon_tag_list[i] != EXIF_CANON_MAKERNOTE_END) && (i < USHRT_MAX) )
+          {
+            exc_get_mnote_canon_tags(ed, Exif_makernote_canon_tag_list[i], 
+                                     buffer + strlen(buffer), maxsize - strlen(buffer));
+            i++; 
+          }
+        
+        }
+        else
+        {
+        }
       }
       
     }

@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef HAVE_LIBEXIF
 
 #include <stdio.h>
-#include <string.h>
 #include <libexif/exif-data.h>
 
 #include "feh.h"
@@ -174,7 +173,7 @@ static void exn_get_mnote_nikon_34(ExifData *ed, char * buffer, unsigned int max
 
   buf[0] = '\0';
   exif_get_mnote_tag(ed, 34, buf, sizeof(buf));
-  sscanf(buf, "(null): %u", &data);
+  sscanf(buf, "(null): %u", &data); 	/* not directly supported by libexif yet */
   
   switch(data)
   {
@@ -215,8 +214,7 @@ static void exn_get_mnote_nikon_34(ExifData *ed, char * buffer, unsigned int max
 
   }
 
-  snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "Active D-Lightning: %s\n", 
-           answer);
+  snprintf(buffer, maxsize, "Active D-Lightning: %s\n", answer);
   
 }
 
@@ -244,8 +242,7 @@ static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int ma
           )
      )
   {
-    snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), "NikonFlashControlMode: %s\n", 
-             EXN_NikonFlashControlModeValues[exn_fcm]);
+    snprintf(buffer, maxsize, "NikonFlashControlMode: %s\n", EXN_NikonFlashControlModeValues[exn_fcm]);
   }
 
 }
@@ -283,7 +280,7 @@ static void exn_get_mnote_nikon_183(ExifData *ed, char * buffer, unsigned int ma
     if ( (contrastdetectaf != 0) && (afareamode < EXN_AF_AREA_MODE_C_MAX) )
     {
       /* Contrast AF (live view) */
-      snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), 
+      snprintf(buffer, maxsize, 
                "ContrastDetectAF: %s; AFAreaMode: %s\n", 
                EXN_NikonContrastDetectAF[contrastdetectaf],
                EXN_NikonAFAreaModeContr[afareamode]);
@@ -295,7 +292,7 @@ static void exn_get_mnote_nikon_183(ExifData *ed, char * buffer, unsigned int ma
       buf[0] = '\0';
       exn_get_prim_af_pt(phasedetectaf, primaryafpoint, buf, EXIF_STD_BUF_LEN);
     
-      snprintf(buffer + strlen(buffer), maxsize - strlen(buffer), 
+      snprintf(buffer, maxsize, 
                "PhaseDetectAF: %s; AreaMode: %s; PrimaryAFPoint: %s\n", 
                EXN_NikonPhaseDetectAF[phasedetectaf],
                EXN_NikonAFAreaModePhase[afareamode],
@@ -328,7 +325,7 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
       if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
       {
         /* show extended flash info only if flash was fired */
-        exif_get_mnote_tag(ed, tag, buffer + strlen(buffer), maxsize - strlen(buffer));
+        exif_get_mnote_tag(ed, tag, buffer, maxsize);
       }
     }
     break;
@@ -336,7 +333,7 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
     case 34:
     {
       /* ActiveD-Lighting */
-      exn_get_mnote_nikon_34(ed, buffer + strlen(buffer), maxsize - strlen(buffer));      
+      exn_get_mnote_nikon_34(ed, buffer, maxsize);
     }
     break;
     
@@ -346,7 +343,7 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
       if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
       {
         /* show extended flash info only if flash was fired */
-        exn_get_mnote_nikon_168(ed, buffer + strlen(buffer), maxsize - strlen(buffer));
+        exn_get_mnote_nikon_168(ed, buffer, maxsize);
       }
     }
     break;
@@ -354,14 +351,14 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
     case 183:
     {
       /* AFInfo 2 */
-      exn_get_mnote_nikon_183(ed, buffer + strlen(buffer), maxsize - strlen(buffer));
+      exn_get_mnote_nikon_183(ed, buffer, maxsize);
     }
     break;
     
     default:
     {
       /* normal makernote tags without special treatment */
-      exif_get_mnote_tag(ed, tag, buffer + strlen(buffer), maxsize - strlen(buffer));
+      exif_get_mnote_tag(ed, tag, buffer, maxsize);
     }
     break;
   }

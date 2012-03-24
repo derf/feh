@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct
 {
-  ExifIfd ifd; /* section */
+  ExifIfd ifd;  /* section */
   ExifTag tag;  /* tag */
 } t_EXIF_INFO;
 
@@ -59,6 +59,9 @@ const t_EXIF_INFO Exif_tag_list [] =
 };
 
 
+
+/* Nikon */
+
 #define EXIF_NIKON_MAKERNOTE_END 0  /* end marker: if 0 used as a tag we must find something else */
 
 /* show these nikon makernote tags */
@@ -77,5 +80,20 @@ const unsigned int Exif_makernote_nikon_tag_list [] =
 
   EXIF_NIKON_MAKERNOTE_END   /* end marker */
 };
+
+
+
+/* Canon */
+#define EXIF_CANON_MAKERNOTE_END 0xFFFF  /* end marker: if this is used as a tag we must find something else */
+
+/* show these canon makernote tags */
+const unsigned int Exif_makernote_canon_tag_list [] =
+{
+  8,  /* Image Number */
+  9,  /* Owner Name */
+  
+  EXIF_CANON_MAKERNOTE_END   /* end marker */
+};
+
 
 #endif
