@@ -41,10 +41,10 @@ int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
 
+	setup_signal_handlers();
 	init_parse_options(argc, argv);
 
 	init_imlib_fonts();
-	setup_signal_handlers();
 
 	if (opt.display) {
 		init_x_and_imlib();
