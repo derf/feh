@@ -42,6 +42,7 @@ static winwidget winwidget_allocate(void)
 	winwidget ret = NULL;
 
 	ret = emalloc(sizeof(_winwidget));
+	memset(ret, 0, sizeof(_winwidget));
 
 	ret->win = 0;
 	ret->w = 0;
