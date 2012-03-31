@@ -305,6 +305,7 @@ static char *feh_magick_load_image(char *filename)
 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
 			close(fd);
 			unlink(sfn);
+			free(sfn);
 			sfn = NULL;
 
 			if (!opt.quiet) {
