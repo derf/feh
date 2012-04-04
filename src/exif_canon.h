@@ -1,4 +1,4 @@
-/* exif_nikon.h
+/* exif_canon.h
 
 Copyright (C) 2012      Dennis Real.
 
@@ -23,11 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef EXIF_NIKON_H
-#define EXIF_NIKON_H
+#ifndef EXIF_CANON_H
+#define EXIF_CANON_H
 
 #include <libexif/exif-data.h>
 
-extern void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize);
+extern void exc_get_mnote_canon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize);
 
 #endif
