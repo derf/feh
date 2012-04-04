@@ -1,4 +1,4 @@
-/* exif_nikon.h
+/* exif_canon.c
 
 Copyright (C) 2012      Dennis Real.
 
@@ -23,11 +23,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef EXIF_NIKON_H
-#define EXIF_NIKON_H
+#ifdef HAVE_LIBEXIF
 
+#include <stdio.h>
 #include <libexif/exif-data.h>
 
-extern void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize);
+#include "feh.h"
+#include "debug.h"
+#include "exif.h"
+#include "exif_canon.h"
+
+
+
+/* get interesting canon maker note tags in readable form */
+void exc_get_mnote_canon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize)
+{
+  /* char buf[EXIF_STD_BUF_LEN];
+
+  buf[0] = '\0';
+  exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
+  exif_trim_spaces(buf); */
+
+  switch(tag)
+  {
+    default:
+    {
+      /* normal makernote tags without special treatment */
+      exif_get_mnote_tag(ed, tag, buffer, maxsize);
+    }
+    break;
+  }
+
+
+  return;
+}
 
 #endif

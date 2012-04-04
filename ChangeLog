@@ -1,3 +1,7 @@
+git HEAD
+
+    * Dennis Real: EXIF mode fixes, support for more camera models
+
 Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
 
 * Release v2.5
