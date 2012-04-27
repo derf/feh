@@ -1123,11 +1123,11 @@ Go backward ~5% of the filelist
 .
 .It + Bq reload_plus
 .
-Increase reload delay
+Increase reload delay by 1 second
 .
 .It - Bq reload_minus
 .
-Decrease reload delay
+Decrease reload delay by 1 second
 .
 .It Ao delete Ac Bq remove
 .
