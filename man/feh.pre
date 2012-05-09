@@ -962,12 +962,28 @@ Available modifiers are
 .Ar C No for Control ,
 .Ar S No for Shift and
 .Ar 1 , 4 No for Mod1 and Mod4 .
+To match an uppercase letter like
+.Qq S
+instead of
+.Qq s ,
+the Shift modifier is not required.
 .
 .Pp
 .
 Specifying an
 .Ar action
 without any keys unbinds it (i.e. the default bindings are removed).
+.
+.Pp
+.
+.Em Note :
+Do not use the same keybinding for multiple actions.
+.Nm
+does not check for conflicting bindings, so their behaviour is undefined.
+.
+Either unbind the unwanted action, or bind it to another unused key.
+.
+The order in which you bind / unbind does not matter, though.
 .
 .Pp
 .
@@ -1244,6 +1260,17 @@ Control, in which case
 looks like
 .Ar mod Ns No - Ns Ar button
 .Pq for example "C-1" for Ctrl + Left button .
+.
+.Pp
+.
+.Em Note :
+Do not use the same button for multiple actions.
+.Nm
+does not check for conflicting bindings, so their behaviour is undefined.
+.
+Either unbind the unwanted action, or bind it to another unused button.
+.
+The order in which you bind / unbind does not matter, though.
 .
 .Pp
 .
