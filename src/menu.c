@@ -805,14 +805,6 @@ void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 	y -= oy;
 
 	imlib_context_set_image(dst);
-	poly = imlib_polygon_new();
-	imlib_polygon_add_point(poly, x + 2, y + 5);
-	imlib_polygon_add_point(poly, x + 5, y + 7);
-	imlib_polygon_add_point(poly, x + 2, y + 11);
-	imlib_context_set_color(0, 0, 0, 60);
-	imlib_image_fill_polygon(poly);
-	imlib_polygon_free(poly);
-
 
 	poly = imlib_polygon_new();
 	imlib_polygon_add_point(poly, x, y + 3);
@@ -835,7 +827,7 @@ void feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox, 
 {
 	imlib_context_set_image(dst);
 	if (selected)
-		gib_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 255, 255, 255, 178);
+		gib_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 127, 127, 127, 178);
 	return;
 }
 
