@@ -566,7 +566,7 @@ void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h)
 	int tw, th;
 
 	if (i->text) {
-		gib_imlib_get_text_size(opt.menu_fn, i->text, opt.menu_style_l, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(opt.menu_fn, i->text, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 		*w = tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT;
 		*h = th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM;
 	} else {
@@ -675,7 +675,7 @@ void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 		}
 
 		/* draw text */
-		gib_imlib_text_draw(im, opt.menu_fn, opt.menu_style_l,
+		gib_imlib_text_draw(im, opt.menu_fn, NULL,
 				i->x - ox + i->text_x, i->y - oy + FEH_MENUITEM_PAD_TOP,
 				i->text, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 		if (i->submenu) {
@@ -917,14 +917,6 @@ void feh_menu_init_common()
 			eprintf
 			    ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
 			     opt.menu_font);
-	}
-	if (!opt.menu_style_l) {
-		opt.menu_style_l = gib_style_new_from_ascii(opt.menu_style);
-		if (!opt.menu_style_l) {
-			weprintf
-			    ("couldn't load style file for menu fonts, (%s).\nDid you make install? Menus will look boring without the style file.",
-			     opt.menu_style);
-		}
 	}
 
 	m = feh_menu_new();

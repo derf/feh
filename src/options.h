@@ -86,13 +86,10 @@ struct __fehoptions {
 	char *menu_font;
 	char *customlist;
 	char *menu_bg;
-	char *menu_style;
 	char *caption_path;
 	char *start_list_at;
 	char *info_cmd;
 	char *index_info;
-
-	gib_style *menu_style_l;
 
 	int force_aliasing;
 	int thumb_w;

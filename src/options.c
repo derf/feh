@@ -60,7 +60,6 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
-	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
@@ -375,7 +374,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-tile"       , 0, 0, 200},
 		{"bg-center"     , 0, 0, 201},
 		{"bg-scale"      , 0, 0, 202},
-		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
 		{"index-info"    , 1, 0, 207},
@@ -628,11 +626,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 219:
 			opt.bgmode = BG_MODE_MAX;
-			break;
-		case 204:
-			free(opt.menu_style);
-			opt.menu_style = estrdup(optarg);
-			weprintf("The --menu-style option is deprecated and will be removed by 2012");
 			break;
 		case 205:
 			if (!strcmp("fill", optarg))
