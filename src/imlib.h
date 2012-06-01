@@ -67,29 +67,17 @@ void gib_imlib_render_image_part_on_drawable_at_size(Drawable d,
                                                      int dh, char dither,
 
                                                      char blend, char alias);
-void gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
-                                                                   Imlib_Image
+void gib_imlib_render_image_part_on_drawable_at_size_with_rotation(
+      Drawable d, Imlib_Image im, int sx, int sy, int sw, int sh,
+      int dx, int dy, int dw, int dh, double angle, char dither,
+      char blend, char alias);
 
-                                                                   im, int sx,
-                                                                   int sy,
-                                                                   int sw,
-                                                                   int sh,
-                                                                   int dx,
-                                                                   int dy,
-                                                                   int dw,
-                                                                   int dh,
-                                                                   double
-                                                                   angle,
-                                                                   char
-                                                                   dither,
-                                                                   char blend,
-                                                                   char
-                                                                   alias);
 void gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w,
                                     int h, int r, int g, int b, int a);
-void gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style * s, int x,
-                         int y, char *text, Imlib_Text_Direction dir, int r,
-                         int g, int b, int a);
+
+void feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s,
+                      int x, int y, char *text, Imlib_Text_Direction dir );
+
 void gib_imlib_get_text_size(Imlib_Font fn, char *text, feh_style * s, int *w,
                              int *h, Imlib_Text_Direction dir);
 Imlib_Image gib_imlib_clone_image(Imlib_Image im);

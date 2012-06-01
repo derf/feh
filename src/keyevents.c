@@ -364,6 +364,8 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			}
 		}
 	}
+
+
 	return;
 }
 

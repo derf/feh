@@ -58,6 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 
 #include <Imlib2.h>
+/* #include <giblib/giblib.h> As of May 2012, use imlib.h instead */
 
 #include "structs.h"
 #include "imlib.h"
@@ -199,6 +200,7 @@ ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w );
 extern LLMD *feh_md, *ofi_md, *rm_md;          /* three global linkedList metaData containers */
 
 #define FEH_LL_ROOT(md)               (( md->rn ))
+#define FEH_LL_ROOT_ND(md)            (( md->rn->nd ))
 #define FEH_LL_LEN(md)                (( md->rn->nd.cnt ))
 #define FEH_LL_FIRST(md)              (( md->rn->next ))
 #define FEH_LL_LAST(md)               (( md->rn->prev ))
@@ -206,6 +208,7 @@ extern LLMD *feh_md, *ofi_md, *rm_md;          /* three global linkedList metaDa
 #define FEH_LL_TAGGED(md)             (( md->rn->nd.tagged ))
 
 #define FEH_LL_CUR(md)                (( md->cn ))
+#define FEH_LL_CUR_ND(md)             (( md->cn->nd ))
 #define FEH_LL_CUR_NTH(md)            (( md->cn->nd.cnt ))
 #define FEH_LL_CUR_TAGGED(md)         (( md->cn->nd.tagged ))
 #define FEH_LL_CUR_NEXT(md)           (( md->cn->next ))

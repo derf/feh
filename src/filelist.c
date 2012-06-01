@@ -427,7 +427,6 @@ void feh_prepare_filelist( LLMD *md ) {
 			|| opt.preload) {
 		/* For these sort options, we have to preload images */
 		feh_file_info_preload( md );
-		/* if (!gib_list_length(filelist))    ****  I think this old code was wrong!  */
     if ( feh_md->rn->nd.cnt == 0 )
 			show_mini_usage();
 	}

@@ -336,10 +336,10 @@ void init_thumbnail_mode(void)
               /* null term this substring b4 the call ...*/
               last1 = end[0];  end[0]   = '\0';
 
-              gib_imlib_text_draw(td.im_main, td.font_main, NULL,
+              feh_imlib_text_draw(td.im_main, td.font_main, &opt.style[ STYLE_WHITE ],
                                   x + ((td.text_area_w - fw) >> 1),
                                   y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
-                                  start,	IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+                                  start,	IMLIB_TEXT_TO_RIGHT );
               /* ... then restore that last char afterwards */
               end[0] = last1;
           }
@@ -381,8 +381,8 @@ void init_thumbnail_mode(void)
 				IMLIB_TEXT_TO_RIGHT);
 		fx = (index_image_width - fw) >> 1;
 		fy = index_image_height - fh - 2;
-		gib_imlib_text_draw(td.im_main, td.font_title, NULL, fx,
-				fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		feh_imlib_text_draw(td.im_main, td.font_title, &opt.style[ STYLE_WHITE ],
+                  fx, fy, s, IMLIB_TEXT_TO_RIGHT );
 
 		if (opt.display)
 			winwidget_render_image(winwid, 0, 1);
@@ -500,10 +500,9 @@ void feh_thumbnail_mark_removed(feh_file * file, int deleted)
 
 			gib_imlib_get_text_size(td.font_main, "X", NULL, &tw, &th,
 					IMLIB_TEXT_TO_RIGHT);
-			gib_imlib_text_draw(w->im, td.font_main, NULL,
+			feh_imlib_text_draw(w->im, td.font_main, &opt.style[ STYLE_YELLOW ],
 					thumb->x + ((thumb->w - tw) / 2),
-					thumb->y + ((thumb->h - th) / 2), "X",
-					IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
+					thumb->y + ((thumb->h - th) / 2), "X", IMLIB_TEXT_TO_RIGHT );
 			winwidget_render_image(w, 0, 1);
 		}
 		thumb->exists = 0;

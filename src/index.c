@@ -286,10 +286,10 @@ void init_index_mode(void)
               /* null term this substring b4 the call ...*/
               last1 = end[0];  end[0]   = '\0';
 
-              gib_imlib_text_draw(im_main, fn, NULL,
+              feh_imlib_text_draw(im_main, fn, &opt.style[ STYLE_WHITE ],
                                   x + ((text_area_w - fw) >> 1),
                                   y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
-                                  start,	IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+                                  start,	IMLIB_TEXT_TO_RIGHT );
               /* ... then restore that last char afterwards */
               end[0] = last1;
           }
@@ -322,7 +322,8 @@ void init_index_mode(void)
 		gib_imlib_get_text_size(title_fn, s, NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
 		fx = (index_image_width - fw) >> 1;
 		fy = index_image_height - fh - 2;
-		gib_imlib_text_draw(im_main, title_fn, NULL, fx, fy, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		feh_imlib_text_draw(im_main, title_fn, &opt.style[ STYLE_WHITE ],
+                        fx, fy, s, IMLIB_TEXT_TO_RIGHT );
 
 		if (opt.display)
 			winwidget_render_image(winwid, 0, 0);

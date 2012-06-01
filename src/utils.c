@@ -438,8 +438,7 @@ void bhs_hash_rpt( bhs_node **a , int addit, int ret_code ) {
 
 void feh_style_new_from_ascii(char *file, feh_style *s) {
     /* This is only called once in feh to load the menu_style file.
-     * There are only TWO styles in feh, caption_style and menu_style,
-     * both of which are now burried inside the __fehoptions struct.
+     * All styles are now burried inside the __fehoptions struct.
      */
 
    int r = 0, g = 0, b = 0, a = 0, x_off = 0, y_off = 0;
@@ -537,12 +536,12 @@ void feh_style_new_from_ascii(char *file, feh_style *s) {
          }
       }
       if (once ) {
-          s->fg.x_off=x_off; s->fg.y_off=y_off;
-          s->fg.r=r; s->fg.g=g; s->fg.b=b; s->fg.a=a;
+          s->bg.r=r; s->bg.g=g; s->bg.b=b; s->bg.a=a;
+          s->bg.x_off=x_off; s->bg.y_off=y_off;
           once=0;
       } else {
-          s->bg.x_off=x_off; s->bg.y_off=y_off;
-          s->bg.r=r; s->bg.g=g; s->bg.b=b; s->bg.a=a;
+          s->fg.r=r; s->fg.g=g; s->fg.b=b; s->fg.a=a;
+          s->fg.x_off=x_off; s->fg.y_off=y_off;
       }
    }
 
@@ -588,4 +587,4 @@ int is_filelist(  char *filename ){
 
     return ret;
 
-}
+}   /* end of is_filelist() */

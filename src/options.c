@@ -37,60 +37,63 @@ static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
 static void show_usage(void);
 static void show_version(void);
+void init_all_styles( feh_style (*s)[] );
 static char *theme;
 
 fehoptions opt;
 /*  extern LLMD *ofi_md;        replaces the old original_file_items */
 
-void init_style( feh_style *s, int a[] ){
-    /* loads the default settings for menu and caption styles */
-  s->fg.x_off = a[0];
-  s->fg.y_off = a[1];
-  s->fg.r     = a[2];
-  s->fg.g     = a[3];
-  s->fg.b     = a[4];
-  s->fg.a     = a[5];
+void init_all_styles( feh_style (*s)[] ){
+    /* loads the set of default sytle settings used in feh.
+     * Historically, menu and caption styles were only two, but
+     * HRABAK added several more to encapsulate the five diff ways
+     * that feh called the feh_imlib_text_draw() function.
+     * See the style[] array stored inside fehoptions.
+     * See the style_type enum in structs.h.  That enum  IS the index to
+     * this styles array, so DON'T screw up the order.
+     * This internal order matches the external menu.style file like ...
+     * #Style
+     * #NAME Menu
+     * 0 0 0 64 1 1                 #bg, r g b x_off y_off
+     * 127 0 0 255 0 0              #fg, r g b x_off y_off
+     */
 
-  s->bg.x_off = a[6];
-  s->bg.y_off = a[7];
-  s->bg.r     = a[8];
-  s->bg.g     = a[9];
-  s->bg.b     = a[10];
-  s->bg.a     = a[11];
+
+  /* cheatin way to load defaults into the many style structs */
+  int a[ STYLE_CNT ][12]={
+        /* bg r,g,b,a     fg r,g,b,a                   enum name    */
+        {0,0,0,64 ,1,1,   127,0,    0,255,0,0} ,      /* STYLE_MENU */
+        {0,0,0,255,1,1,   255,255,255,255,0,0} ,      /* STYLE_CAPTION */
+        {0,0,0,255,1,1,   255,255,255,255,0,0} ,      /* STYLE_WHITE */
+        {0,0,0,255,1,1,   255,0,    0,255,0,0} ,      /* STYLE_RED */
+        {0,0,0,255,1,1,   205,205, 50,255,0,0 }  };   /* STYLE_YELLOW */
+
+  int i;
+
+  for (i=0; i<STYLE_CNT  ; i++ ){
+    (*s)[i].bg.r     = a[i][0];
+    (*s)[i].bg.g     = a[i][1];
+    (*s)[i].bg.b     = a[i][2];
+    (*s)[i].bg.a     = a[i][3];
+    (*s)[i].bg.x_off = a[i][4];
+    (*s)[i].bg.y_off = a[i][5];
+
+    (*s)[i].fg.r     = a[i][6];
+    (*s)[i].fg.g     = a[i][7];
+    (*s)[i].fg.b     = a[i][8];
+    (*s)[i].fg.a     = a[i][9];
+    (*s)[i].fg.x_off = a[i][10];
+    (*s)[i].fg.y_off = a[i][11];
+
+  }
 
   return;
 
-}     /* end of init_style() */
+}     /* end of init_all_styles() */
 
-void  max_min_style( feh_style *s ){
-  /* store the max/mins once so we don't have to recalc EVERY time */
-  s->max_x_off = s->min_x_off = s->max_y_off = s->min_y_off = 0;
-
-  if (s->bg.x_off > s->max_x_off )
-      s->max_x_off = s->bg.x_off;
-  if (s->fg.x_off > s->max_x_off )
-      s->max_x_off = s->fg.x_off;
-  if (s->bg.x_off < s->min_x_off )
-      s->min_x_off = s->bg.x_off;
-  if (s->fg.x_off < s->min_x_off )
-      s->min_x_off = s->fg.x_off;
-
-  if (s->bg.y_off > s->max_y_off )
-      s->max_y_off = s->bg.y_off;
-  if (s->fg.y_off > s->max_y_off )
-      s->max_y_off = s->fg.y_off;
-  if (s->bg.y_off < s->min_y_off )
-      s->min_y_off = s->bg.y_off;
-  if (s->fg.y_off < s->min_y_off )
-      s->min_y_off = s->fg.y_off;
-  return;
-}   /* end of max_min_style() */
 
 void init_parse_options(int argc, char **argv)
 {
-  /* cheatin way to load defaults into the two style structs */
-  int ms[]={2,2,0,0,0,64,0,0,0,0,0,0};
-  int cs[]={0,0,0,0,0,0 ,1,1,0,0,0,255};
 
 	/* TODO: sort these to match declaration of __fehoptions */
 
@@ -113,10 +116,7 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
   opt.write_filelist = 1;       /* write filelist on exit? Yes=1 */
 
-  init_style( &opt.menu_style_l,  ms );
-  init_style( &opt.caption_style, cs );
-  max_min_style( &opt.menu_style_l );
-  max_min_style( &opt.caption_style );
+  init_all_styles( &opt.style );
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;

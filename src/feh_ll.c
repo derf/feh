@@ -373,8 +373,8 @@ void feh_ll_randomize( LLMD *md ){
      * a mask to apply to a pair of node addresses during a qsort() compare.
      */
 
-  /* pick a random node */
-  feh_ll_nth( md, ( (unsigned) ( time(NULL) % md->rn->nd.cnt) +1 ));  /* gives a pos between and rn.cnt */
+  /* pick a random node between 1 and rn.cnt */
+  feh_ll_nth( md, ( (unsigned) ( time(NULL) % md->rn->nd.cnt) +1 ));
 
   /* use that feh_node address (md->cn) to make a two's-compliment mask */
   mask = ~(unsigned) md->cn ;             /* mask is a global variable */
@@ -388,6 +388,7 @@ void feh_ll_randomize( LLMD *md ){
 
 }   /* end of feh_ll_randomize() */
 
+#define FEH_NODE_NUM( n )       ((unsigned )(*(feh_node**)n))
 
 int feh_cmp_random( const void *node1, const void *node2) {
     /* rather that use the rand() logic to randomize the pics (who cares how
@@ -396,6 +397,6 @@ int feh_cmp_random( const void *node1, const void *node2) {
      * Note:  mask is a global var (see above) with a very short scope.
      */
 
-	return(( (((unsigned) node1) ^ mask ) - (((unsigned) node2) ^ mask ) ));
+	return( ( FEH_NODE_NUM( node1 ) ^ mask ) - ( FEH_NODE_NUM( node2 ) ^ mask ) );
 }
 

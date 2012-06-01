@@ -53,21 +53,25 @@ struct __feh_node  {
                                    * support the --draw-filename param
                                    */
   struct{
-    unsigned flag01   : 1;           /*  user definable flags */
+    unsigned flag01   : 1;            /*  user definable flags */
     unsigned flag02   : 1;
-    unsigned flag03   : 1;
-    unsigned flag04   : 1;
-    unsigned flag05   : 1;
-    unsigned flag06   : 1;
-    unsigned flag07   : 1;
-    unsigned flag08   : 1;
+    unsigned list0    : 1;            /* list numbers 0-9 for the default       */
+    unsigned list1    : 1;            /* action keys 0-9.  If no other actions  */
+    unsigned list2    : 1;            /* are defined, then pressing the 0-9     */
+    unsigned list3    : 1;            /* keys will add this pic to that list    */
+    unsigned list4    : 1;            /* number.  Any lists tagged this way     */
+    unsigned list5    : 1;            /* will be written at the end,            */
+    unsigned list6    : 1;            /* regardless of the --nowrite-filelist   */
+    unsigned list7    : 1;            /* option.                                */
+    unsigned list8    : 1;
+    unsigned list9    : 1;
     unsigned lchange  : 1;            /* has the LL list changed? if so, write it out */
     unsigned tagged   : 1;            /* has one pic been tagged for move?*/
     unsigned flipped  : 1;            /* is the move_list to be flipped, back-front?*/
     unsigned dirty    : 1;            /* do we need to recnt()?*/
     unsigned wide     : 16;           /* pic width in pixels */
     unsigned high     : 16;           /* pic height in pixels */
-    unsigned cnt      : 20;           /* stores the (1 of 56) relative position cnts of each node*/
+    unsigned cnt      : 16;           /* stores the (1 of 56) relative position cnts of each node*/
   } nd;                               /* nd stands for node_data */
 
   feh_node *prev;
@@ -84,28 +88,31 @@ struct __llMetaData{
 
 
 /* As of May 2012, HRABAK cut out ALL the gib_style stuff and replaced it
- * with two instances of a feh_style struct inside __fehoptions.
+ * with an array of 5 styles (feh_style struct) inside __fehoptions.
  */
 typedef struct _style feh_style;
 
 struct _style {
   struct {
+      short r,g,b,a;
       short x_off;
       short y_off;
-      short r,g,b,a;
-  } fg;
-  struct {
-      short x_off;
-      short y_off;
-      short r,g,b,a;
   } bg;
+  struct {
+      short r,g,b,a;
+      short x_off;
+      short y_off;
+  } fg;
   /* store the max/mins so we don't have to recalc EVERY time */
-  short max_x_off;
+/*  short max_x_off;
   short min_x_off;
   short max_y_off;
-  short min_y_off;
+  short min_y_off; */
 } ;
 
+/* enums to support the array of feh_style structs stored inside fehoptions */
+enum style_type { STYLE_MENU =0, STYLE_CAPTION, STYLE_WHITE,
+                   STYLE_RED, STYLE_YELLOW, STYLE_CNT };
 
 
 #endif      /* STRUCTS_H */

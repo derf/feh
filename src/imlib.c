@@ -491,8 +491,7 @@ void feh_draw_zoom(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1, 1, buf, IMLIB_TEXT_TO_RIGHT);
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 	return;
@@ -542,38 +541,34 @@ void feh_draw_errstr(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
+	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_RED ], 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT);
 	free(w->errstr);
 	w->errstr = NULL;
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 }
 
+#define MAX_PRINT_WIDTH 64
 void feh_draw_filename(winwidget w)
 {
+  static char s[MAX_PRINT_WIDTH];
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0, nw = 0;
 	Imlib_Image im = NULL;
-	char *s = NULL;
-	int len = 0;
 
-	if ((!w->file)
-        || (!FEH_FILE(w->file->data))
-        || (!FEH_FILE(w->file->data)->filename))
+	if ((!w->file) || (!FEH_FILE(w->file->data))
+                 || (!FEH_FILE(w->file->data)->filename))
 		return;
 
 	fn = feh_load_font(w);
 
 	/* Work out how high the font is */
-	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw,
-			&th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename,
+        NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
+  s[0]='\0';
 	if ( FEH_LL_LEN(feh_md) > 1) {
-		len = snprintf(NULL, 0, "%d of %d", FEH_LL_LEN(feh_md),FEH_LL_LEN(feh_md)) + 1;
-		s = emalloc(len);
-		snprintf(s, len, "%d of %d", FEH_LL_CUR_NTH(feh_md), FEH_LL_LEN(feh_md) );
-
+		snprintf(s, MAX_PRINT_WIDTH, "%d of %d", FEH_LL_CUR_NTH(feh_md), FEH_LL_LEN(feh_md) );
 		gib_imlib_get_text_size(fn, s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
 
 		if (nw > tw)
@@ -588,20 +583,17 @@ void feh_draw_filename(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, 2 * th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
-			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
-			IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1, 1,
+      FEH_FILE(w->file->data)->filename, IMLIB_TEXT_TO_RIGHT);
 
-	if (s) {
-		gib_imlib_text_draw(im, fn, NULL, 2, th + 1, s, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, th, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-		free(s);
+	if (s[0] != '\0' ) {
+		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ],
+                        1, th , s, IMLIB_TEXT_TO_RIGHT);
 	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
-
 	gib_imlib_free_image_and_decache(im);
+
 	return;
 }
 
@@ -696,11 +688,8 @@ void feh_draw_exif(winwidget w)
 
 	for (i = 0; i < no_lines; i++)
 	{
-		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
-				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
-				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-
+		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ] ,
+        1, (i * line_height) + 1,	info_buf[i], IMLIB_TEXT_TO_RIGHT);
 	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - height, 1, 1, 0);
@@ -771,10 +760,8 @@ void feh_draw_info(winwidget w)
 	feh_imlib_image_fill_text_bg(im, width, height);
 
 	for (i = 0; i < no_lines; i++) {
-		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
-				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
-				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1,
+        (i * line_height) + 1, info_buf[i], IMLIB_TEXT_TO_RIGHT );
 
 		free(info_buf[i]);
 	}
@@ -885,8 +872,8 @@ void feh_draw_caption(winwidget w)
 		return;
 
 	/* we don't want the caption overlay larger than our window */
-  th = alp[0].L0.tot_lines;         /* not really, but feh did it this way */
-  tw = alp[0].L0.maxwide;
+  th = alp[0].L0.tothigh + alp[0].L0.tot_lines + 2;
+  tw = alp[0].L0.maxwide +1 ;
 	if (th > w->h)
 		th = w->h;
 	if (tw > w->w)
@@ -898,11 +885,11 @@ void feh_draw_caption(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-  b = 255 ;           /* only the b == blue component changes */
+  b = opt.style[ STYLE_CAPTION ].fg.b;           /* save the orig bg.b component */
 	if (w->caption_entry && (*(file->caption) == '\0'))
-		b=127;
+		opt.style[ STYLE_CAPTION ].fg.b=127;             /* b=127; */
 	else if (w->caption_entry)
-    b=0;
+    opt.style[ STYLE_CAPTION ].fg.b=0;               /* b=0; */
 
 	x = 0;
 	y = 0;
@@ -916,11 +903,13 @@ void feh_draw_caption(winwidget w)
     end   = alp[i].L1.line + alp[i].L1.len;
     /* null term this substring b4 the call ...*/
     last1 = end[0];  end[0]   = '\0';
-    gib_imlib_text_draw(im, fn, &opt.caption_style, x, y, start, IMLIB_TEXT_TO_RIGHT, 255, 255, b, 255);
+    feh_imlib_text_draw(im, fn, &opt.style[ STYLE_CAPTION ], x, y, start, IMLIB_TEXT_TO_RIGHT);
     /* ... then restore that last char afterwards */
     end[0] = last1;
-		y += alp[i].L1.high + 1;	/* line spacing */
+		y += alp[i].L1.high + 2;	/* line spacing */
 	}
+
+  opt.style[ STYLE_CAPTION ].fg.b=b;           /* restore the orig bg.b component */
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
@@ -1016,7 +1005,7 @@ ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w ){
     /* takes a (possibly) multi-line text and breaks it into lines that will
      * fit inside the image w(idth) constraint, for a given font and style.
      * The wide and high calcs for each line are saved with the line so the
-     * caller can just gib_imlib_text_draw() without have to recalc those
+     * caller can just feh_imlib_text_draw() without have to recalc those
      * values again.  Returns an array of the lines (alp[]) to the caller.
      * alp[0] element holds the metadata for all the lines in this text.
      * Note:  When I pass a substring to get_text_size(), I just jam in a
@@ -1222,8 +1211,7 @@ void feh_draw_actions(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:", IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_YELLOW ], 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT);
 
 	for (i = 0; i < 10; i++) {
 		if (opt.actions[i]) {
@@ -1234,12 +1222,8 @@ void feh_draw_actions(winwidget w)
 			strcat(line, ": ");
 			strcat(line, opt.actions[i]);
 
-			gib_imlib_text_draw(im, fn, NULL, 2,
-					(cur_action * line_th) + 2, line,
-					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-			gib_imlib_text_draw(im, fn, NULL, 1,
-					(cur_action * line_th) + 1, line,
-					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+			feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1,
+					(cur_action * line_th) + 1, line,	IMLIB_TEXT_TO_RIGHT );
 			free(line);
 		}
 	}
@@ -1384,44 +1368,29 @@ gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
 
 
 void
-gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
-                    char *text, Imlib_Text_Direction dir, int r, int g,
-                    int b, int a)
+feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
+                    char *text, Imlib_Text_Direction dir )
 {
-    /* HRABAKs rewrite now assumes any feh_style s pass to this will have
-     * both s.fg and s.bg values defined.
+    /* HRABAK's rewrite now requires each call to supply a feh_style,
+     * making the old EXTRA r,b,g,a params superfluous.
+     * Also assumes that the off_sets are in a small range (+/-5)
+     * as no longer do I calc max/min offsets.
      */
 
-   imlib_context_set_image(im);
-   imlib_context_set_font(fn);
-   imlib_context_set_direction(dir);
-   if (s) {
-      /* here we shift the draw to accomodate bits with negative offsets,
-       * which would be drawn at negative coords otherwise */
-      if ( s->min_x_off < 0 )
-          x -= s->min_x_off;
-      if ( s->min_y_off < 0 )
-          y -= s->min_y_off;
+    imlib_context_set_image(im);
+    imlib_context_set_font(fn);
+    imlib_context_set_direction(dir);
 
-      /* Now draw the bits */
-      if ((s->fg.r + s->fg.g + s->fg.b + s->fg.a) == 0)
-         imlib_context_set_color(r, g, b, a);
-      else
-         imlib_context_set_color(s->fg.r, s->fg.g, s->fg.b, s->fg.a);
-      imlib_text_draw(x + s->fg.x_off, y + s->fg.y_off, text);
+    /* draw the text first with the background setting ... */
+    imlib_context_set_color(s->bg.r, s->bg.g, s->bg.b, s->bg.a);
+    imlib_text_draw(x + s->bg.x_off, y + s->bg.y_off, text);
+    /* ... then write the fg over the top of that */
+    imlib_context_set_color(s->fg.r, s->fg.g, s->fg.b, s->fg.a);
+    imlib_text_draw(x + s->fg.x_off, y + s->fg.y_off, text);
 
-      if ((s->bg.r + s->bg.g + s->bg.b + s->bg.a) == 0)
-         imlib_context_set_color(r, g, b, a);
-      else
-         imlib_context_set_color(s->bg.r, s->bg.g, s->bg.b, s->bg.a);
-      imlib_text_draw(x + s->bg.x_off, y + s->bg.y_off, text);
-   }
-   else
-   {
-      imlib_context_set_color(r, g, b, a);
-      imlib_text_draw(x, y, text);
-   }
-}
+  return;
+
+}       /* end of feh_imlib_text_draw() */
 
 
 
@@ -1433,15 +1402,11 @@ gib_imlib_get_text_size(Imlib_Font fn, char *text, feh_style *s, int *w,
    imlib_context_set_font(fn);
    imlib_context_set_direction(dir);
    imlib_get_text_size(text, w, h);
-   if (s) {
-      if (h) {
-         *h += s->max_y_off;
-         *h -= s->min_y_off;
-      }
-      if (w) {
-         *w += s->max_x_off;
-         *w -= s->min_x_off;
-      }
+   if (s) {     /* I think I can kill this whole thing */
+      if (h)
+         *h += s->bg.y_off;
+      if (w)
+         *w += s->bg.x_off;
    }
 }
 
@@ -1597,3 +1562,5 @@ void gib_imlib_image_orientate(Imlib_Image im, int orientation)
   imlib_context_set_image(im);
   imlib_image_orientate(orientation);
 }
+
+/*  end of the old gib_imlib.c code */

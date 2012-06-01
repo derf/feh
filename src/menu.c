@@ -568,7 +568,7 @@ void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h)
 	int tw, th;
 
 	if (i->text) {
-		gib_imlib_get_text_size(opt.menu_fn, i->text, &opt.menu_style_l, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(opt.menu_fn, i->text, &opt.style[ STYLE_MENU ], &tw, &th, IMLIB_TEXT_TO_RIGHT);
 		*w = tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT;
 		*h = th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM;
 	} else {
@@ -677,9 +677,9 @@ void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 		}
 
 		/* draw text */
-		gib_imlib_text_draw(im, opt.menu_fn, &opt.menu_style_l,
+		feh_imlib_text_draw(im, opt.menu_fn, &opt.style[ STYLE_MENU ],
 				i->x - ox + i->text_x, i->y - oy + FEH_MENUITEM_PAD_TOP,
-				i->text, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+				i->text, IMLIB_TEXT_TO_RIGHT);
 		if (i->submenu) {
 			D(("submenu item\n"));
 			feh_menu_draw_submenu_at(i->x + i->sub_x,
@@ -929,8 +929,7 @@ void feh_menu_init_common()
 			     opt.menu_font);
 	}
 	if ( opt.menu_style ) {     /* have a style file */
-		feh_style_new_from_ascii(opt.menu_style, &opt.menu_style_l );
-    max_min_style( &opt.menu_style_l );
+		feh_style_new_from_ascii(opt.menu_style, &opt.style[ STYLE_MENU ] );
     /* don't care it it got loaded cause I have the default already loaded */
   	opt.menu_style = NULL ;     /* flag to only load it ONCE */
 	}
