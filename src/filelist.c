@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -22,6 +23,8 @@ THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+May 5, 2012 HRABAK conv'd gib_list stuff to feh_node stuff.
+
 */
 
 #ifdef HAVE_LIBEXIF
@@ -30,15 +33,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "filelist.h"
+#include "feh_ll.h"
 #include "options.h"
 
-gib_list *filelist = NULL;
-gib_list *original_file_items = NULL; /* original file items from argv */
-int filelist_len = 0;
-gib_list *current_file = NULL;
+
 extern int errno;
 
-static gib_list *rm_filelist = NULL;
+LLMD * init_LLMD( void ){
+    /* Creates the linkedList container (LLMD), returning ptr to same.
+     * sets up the 0th rn (root_node) for it.
+     * Do I need to clear out all the flags?
+     */
+
+  LLMD *md = (LLMD *) emalloc(sizeof( LLMD ));
+
+  /* all new feh_nodes have next and prev linked to itself
+   * so there are NO NULL ptrs to deal with.
+   */
+  md->rn = feh_ll_new();      /* sets md->nd.cnt=0 */
+  md->cn = md->rn;            /* safely signals it is empty */
+
+  return md;
+}
+
 
 feh_file *feh_file_new(char *filename)
 {
@@ -58,7 +75,8 @@ feh_file *feh_file_new(char *filename)
 	newfile->ed = NULL;
 #endif
 	return(newfile);
-}
+
+}     /* end of feh_file_new() */
 
 void feh_file_free(feh_file * file)
 {
@@ -75,10 +93,38 @@ void feh_file_free(feh_file * file)
 #ifdef HAVE_LIBEXIF
 	if (file->ed)
 		exif_data_unref(file->ed);
-#endif		
+#endif
 	free(file);
 	return;
-}
+
+}     /* end of feh_file_free() */
+
+void feh_file_free_md( LLMD *md ) {
+    /* This is a combination of feh_file_free() and   feh_ll_free()
+     * that loops thru the entire list once, freeing everything.
+     * Returns with a completely purged list and an empty rn (root_node)
+     * Start at the back of the list and free toward the start.
+     */
+  feh_node *l;
+
+	for (l = md->rn->prev ; l != md->rn ; l = l->prev ) {
+		feh_file_free(l->data);
+    free(l);
+	}
+
+  /* all done so clear out cnts and flags ... */
+  md->rn->nd.cnt = 0;
+  md->rn->nd.dirty = 0;
+  md->rn->nd.tagged = 0;
+
+  /* and make everything point to the rn */
+  md->rn->next = md->rn;
+  md->rn->prev = md->rn;
+  md->cn = md->rn;
+
+  return;
+
+}     /*end of feh_file_free_md() */
 
 feh_file_info *feh_file_info_new(void)
 {
@@ -110,18 +156,18 @@ void feh_file_info_free(feh_file_info * info)
 	return;
 }
 
-gib_list *feh_file_rm_and_free(gib_list * list, gib_list * l)
+void feh_file_rm_and_free( LLMD *md )
 {
-	unlink(FEH_FILE(l->data)->filename);
-	return(feh_file_remove_from_list(list, l));
+	unlink(FEH_FILE(md->cn->data)->filename);
+	feh_file_remove_from_list( md );
+  return;
 }
 
-gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l)
+void feh_file_remove_from_list( LLMD *md )
 {
-	feh_file_free(FEH_FILE(l->data));
-	D(("filelist_len %d -> %d\n", filelist_len, filelist_len - 1));
-	filelist_len--;
-	return(gib_list_remove(list, l));
+	feh_file_free(FEH_FILE(md->cn->data));
+  feh_ll_remove( md );
+	return;
 }
 
 int file_selector_all(const struct dirent *unused __attribute__((unused)))
@@ -153,7 +199,7 @@ static void feh_print_stat_error(char *path)
 		weprintf("couldn't open %s", path);
 		break;
 	}
-}
+}     /* end of file_selector_all() */
 
 
 /* Recursive */
@@ -181,7 +227,8 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 				|| (!strncmp(path, "ftp://", 6))) {
 			/* Its a url */
 			D(("Adding url %s to filelist\n", path));
-			filelist = gib_list_add_front(filelist, feh_file_new(path));
+			/* filelist = gib_list_add_front(filelist, feh_file_new(path)); */
+      feh_ll_add_end( feh_md, feh_file_new(path));
 			/* We'll download it later... */
 			free(path);
 			return;
@@ -246,39 +293,27 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		closedir(dir);
 	} else if (S_ISREG(st.st_mode)) {
 		D(("Adding regular file %s to filelist\n", path));
-		filelist = gib_list_add_front(filelist, feh_file_new(path));
+		/* filelist = gib_list_add_front(filelist, feh_file_new(path)); */
+		feh_ll_add_end( feh_md, feh_file_new(path));
 	}
 	free(path);
 	return;
 }
 
-void add_file_to_rm_filelist(char *file)
-{
-	rm_filelist = gib_list_add_front(rm_filelist, feh_file_new(file));
-	return;
-}
-
-void delete_rm_files(void)
-{
-	gib_list *l;
-
-	for (l = rm_filelist; l; l = l->next)
-		unlink(FEH_FILE(l->data)->filename);
-	return;
-}
-
-gib_list *feh_file_info_preload(gib_list * list)
-{
-	gib_list *l;
+void feh_file_info_preload( LLMD *md ) {
+    /* Run thru the whole list and toss out any that cannot be loaded. */
+	feh_node *l;
 	feh_file *file = NULL;
-	gib_list *remove_list = NULL;
 
-	for (l = list; l; l = l->next) {
+	md->rn->nd.tagged=0;            /* to know if any were tagged */
+
+	for ( l = md->rn->next ; l != md->rn ; l = l->next) {
 		file = FEH_FILE(l->data);
 		D(("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
 		if (feh_file_info_load(file, NULL)) {
 			D(("Failed to load file %p\n", file));
-			remove_list = gib_list_add_front(remove_list, l);
+			l->nd.tagged=1;             /* this one is tagged for remove */
+			md->rn->nd.tagged=1;        /* to know if any were tagged */
 			if (opt.verbose)
 				feh_display_status('x');
 		} else if (opt.verbose)
@@ -287,15 +322,21 @@ gib_list *feh_file_info_preload(gib_list * list)
 	if (opt.verbose)
 		feh_display_status(0);
 
-	if (remove_list) {
-		for (l = remove_list; l; l = l->next)
-			filelist = list = gib_list_remove(list, (gib_list *) l->data);
-
-		gib_list_free(remove_list);
+	if ( md->rn->nd.tagged ) {
+		for ( l = md->rn->next ; l != md->rn ; l = l->next)
+        if ( l->nd.tagged ) {
+            md->cn = l;
+            /* does NOT free data cause failed load never made a data member */
+            feh_ll_remove( md );
+        }
+    /* turn off the tagging flag and recnt everything */
+    md->rn->nd.tagged=0;
+    feh_ll_recnt( md );
 	}
 
-	return(list);
-}
+	return;
+
+}   /* end of feh_file_info_preload() */
 
 int feh_file_info_load(feh_file * file, Imlib_Image im)
 {
@@ -319,66 +360,75 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 	else if (!feh_load_image(&im1, file) || !im1)
 		return(1);
 
-	file->info = feh_file_info_new();
-
-	file->info->width = gib_imlib_image_get_width(im1);
-	file->info->height = gib_imlib_image_get_height(im1);
-
+	file->info            = feh_file_info_new();
+	file->info->width     = gib_imlib_image_get_width(im1);
+	file->info->height    = gib_imlib_image_get_height(im1);
 	file->info->has_alpha = gib_imlib_image_has_alpha(im1);
-
-	file->info->pixels = file->info->width * file->info->height;
-
-	file->info->format = estrdup(gib_imlib_image_format(im1));
-
-	file->info->size = st.st_size;
+	file->info->pixels    = file->info->width * file->info->height;
+	file->info->format    = estrdup(gib_imlib_image_format(im1));
+	file->info->size      = st.st_size;
 
 	if (need_free)
 		gib_imlib_free_image_and_decache(im1);
+
 	return(0);
+
+}     /* end of feh_file_info_load() */
+
+/*      This works, but yuck to read...
+int feh_cmp_filename(const void *node1, const void *node2)
+{
+	return(strcmp( ((feh_file*)(**(feh_node**)node1).data)->filename,
+                 ((feh_file*)(**(feh_node**)node2).data)->filename ) );
+}
+*/
+#define FEH_NODE_DATA( n )    ((feh_file*)(**(feh_node**)n ).data)
+int feh_cmp_filename(const void *node1, const void *node2)
+{
+	return(strcmp( FEH_NODE_DATA( node1 )->filename,
+                 FEH_NODE_DATA( node2 )->filename ) );
 }
 
-int feh_cmp_filename(void *file1, void *file2)
+int feh_cmp_name(const void *node1, const void *node2)
 {
-	return(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+	return(strcmp( FEH_NODE_DATA( node1 )->name,
+                 FEH_NODE_DATA( node2 )->name ) );
 }
 
-int feh_cmp_name(void *file1, void *file2)
+int feh_cmp_width(const void *node1, const void *node2)
 {
-	return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+	return( FEH_NODE_DATA(node1)->info->width - FEH_NODE_DATA(node2)->info->width );
 }
 
-int feh_cmp_width(void *file1, void *file2)
+int feh_cmp_height(const void *file1, const void *file2)
 {
-	return((FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
+	return( FEH_NODE_DATA(file1)->info->height - FEH_NODE_DATA(file2)->info->height );
 }
 
-int feh_cmp_height(void *file1, void *file2)
+int feh_cmp_pixels(const void *node1, const void *node2)
 {
-	return((FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
+	return( FEH_NODE_DATA(node1)->info->pixels - FEH_NODE_DATA(node2)->info->pixels );
 }
 
-int feh_cmp_pixels(void *file1, void *file2)
+int feh_cmp_size(const void *node1, const void *node2)
 {
-	return((FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
+	return( FEH_NODE_DATA(node1)->info->size - FEH_NODE_DATA(node2)->info->size );
 }
 
-int feh_cmp_size(void *file1, void *file2)
+int feh_cmp_format(const void *node1, const void *node2)
 {
-	return((FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
+	return(strcmp(FEH_NODE_DATA(node1)->info->format, FEH_NODE_DATA(node2)->info->format));
 }
 
-int feh_cmp_format(void *file1, void *file2)
-{
-	return(strcmp(FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
-}
-
-void feh_prepare_filelist(void)
-{
+void feh_prepare_filelist( LLMD *md ) {
+    /* load the initial list of pics, with or without a sort order.
+     */
 	if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
 			|| opt.preload) {
 		/* For these sort options, we have to preload images */
-		filelist = feh_file_info_preload(filelist);
-		if (!gib_list_length(filelist))
+		feh_file_info_preload( md );
+		/* if (!gib_list_length(filelist))    ****  I think this old code was wrong!  */
+    if ( feh_md->rn->nd.cnt == 0 )
 			show_mini_usage();
 	}
 
@@ -387,52 +437,52 @@ void feh_prepare_filelist(void)
 	case SORT_NONE:
 		if (opt.randomize) {
 			/* Randomize the filename order */
-			filelist = gib_list_randomize(filelist);
-		} else if (!opt.reverse) {
-			/* Let's reverse the list. Its back-to-front right now ;) */
-			filelist = gib_list_reverse(filelist);
+			feh_ll_randomize( md );
+		  opt.reverse = 0;                  /* regardless.  No sense in reversing a random */
 		}
 		break;
 	case SORT_NAME:
-		filelist = gib_list_sort(filelist, feh_cmp_name);
+		feh_ll_qsort( md , feh_cmp_name);
 		break;
 	case SORT_FILENAME:
-		filelist = gib_list_sort(filelist, feh_cmp_filename);
+		feh_ll_qsort( md , feh_cmp_filename);
 		break;
 	case SORT_WIDTH:
-		filelist = gib_list_sort(filelist, feh_cmp_width);
+		feh_ll_qsort( md , feh_cmp_width);
 		break;
 	case SORT_HEIGHT:
-		filelist = gib_list_sort(filelist, feh_cmp_height);
+		feh_ll_qsort( md , feh_cmp_height);
 		break;
 	case SORT_PIXELS:
-		filelist = gib_list_sort(filelist, feh_cmp_pixels);
+		feh_ll_qsort( md , feh_cmp_pixels);
 		break;
 	case SORT_SIZE:
-		filelist = gib_list_sort(filelist, feh_cmp_size);
+		feh_ll_qsort( md , feh_cmp_size);
 		break;
 	case SORT_FORMAT:
-		filelist = gib_list_sort(filelist, feh_cmp_format);
+		feh_ll_qsort( md , feh_cmp_format);
 		break;
 	default:
 		break;
 	}
 
-	/* no point reversing a random list */
-	if (opt.reverse && (opt.sort != SORT_NONE)) {
+	/* if randomize() was done, then the rev flag is OFF */
+	if ( opt.reverse ) {
 		D(("Reversing filelist as requested\n"));
-		filelist = gib_list_reverse(filelist);
+    feh_ll_reverse( md );
 	}
 
 	return;
 }
 
-int feh_write_filelist(gib_list * list, char *filename)
-{
-	FILE *fp;
-	gib_list *l;
+int feh_write_filelist( LLMD * md, char *filename) {
+    /* write out the whole linked list to the user supplied filename
+     */
 
-	if (!list || !filename || !strcmp(filename, "/dev/stdin"))
+	FILE *fp;
+	feh_node *l;
+
+	if ( (md->rn->next == md->rn) || !filename || !strcmp(filename, "/dev/stdin"))
 		return(0);
 
 	errno = 0;
@@ -441,41 +491,46 @@ int feh_write_filelist(gib_list * list, char *filename)
 		return(0);
 	}
 
-	for (l = list; l; l = l->next)
+	for ( l = md->rn->next ; l != md->rn ; l = l->next)
 		fprintf(fp, "%s\n", (FEH_FILE(l->data)->filename));
 
 	fclose(fp);
 
 	return(1);
-}
+}     /* end of feh_write_filelist() */
 
-gib_list *feh_read_filelist(char *filename)
-{
+void feh_read_filelist( LLMD *md , char *filename) {
+    /* this is a change to the old code.  This one just tacks on any new list
+     * found in filename (if any) onto the tail of the existing list (md->rn)
+     */
+
 	FILE *fp;
-	gib_list *list = NULL;
 	char s[1024], s1[1024];
-	Imlib_Image tmp_im;
+	/* Imlib_Image tmp_im;      removed May 2012 */
 	struct stat st;
 
 	if (!filename)
-		return(NULL);
+		return;
 
 	/*
 	 * feh_load_image will fail horribly if filename is not seekable
 	 */
-	if (!stat(filename, &st) && S_ISREG(st.st_mode) &&
-			feh_load_image_char(&tmp_im, filename)) {
-		weprintf("Filelist file %s is an image, refusing to use it.\n"
+  /* && feh_load_image_char(&tmp_im, filename)) ;;; code replaced May 2012 */
+	if (!stat(filename, &st)
+        && S_ISREG(st.st_mode)
+        && ( is_filelist( filename ) != 0 ) ) {
+
+      weprintf("Filelist file %s is NOT a list!  Refusing to use it.\n"
 			"Did you mix up -f and -F?", filename);
 		opt.filelistfile = NULL;
-		return NULL;
+		return;
 	}
 
 	errno = 0;
 	if ((fp = fopen(filename, "r")) == NULL) {
 		/* return quietly, as it's okay to specify a filelist file that doesn't
 		   exist. In that case we create it on exit. */
-		return(NULL);
+		return;
 	}
 
 	for (; fgets(s, sizeof(s), fp);) {
@@ -485,13 +540,17 @@ gib_list *feh_read_filelist(char *filename)
 		if (!(*s1) || (*s1 == '\n'))
 			continue;
 		D(("Got filename %s from filelist file\n", s1));
-		/* Add it to the new list */
-		list = gib_list_add_front(list, feh_file_new(s1));
+		/* Add it to the tail end of the existing list */
+		feh_ll_add_end( md , feh_file_new(s1));
 	}
 	fclose(fp);
 
-	return(list);
-}
+  /* whether we got a new list or not, recnt() */
+  feh_ll_recnt( md );
+
+	return;
+
+}     /* end of feh_read_filelist() */
 
 char *feh_absolute_path(char *path)
 {
@@ -508,11 +567,11 @@ char *feh_absolute_path(char *path)
 	   filelist file can be saved anywhere and feh will still find the
 	   images */
 	D(("Need to convert %s to an absolute form\n", path));
-	/* I SHOULD be able to just use a simple realpath() here, but dumb * 
+	/* I SHOULD be able to just use a simple realpath() here, but dumb *
 	   old Solaris's realpath doesn't return an absolute path if the
 	   path you give it is relative. Linux and BSD get this right... */
-	getcwd(cwd, sizeof(cwd));
-	snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
+	if ( getcwd(cwd, sizeof(cwd)) )
+      snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
 	if (realpath(temp, fullpath) != NULL) {
 		ret = estrdup(fullpath);
 	} else {
@@ -522,7 +581,7 @@ char *feh_absolute_path(char *path)
 	return(ret);
 }
 
-void feh_save_filelist()
+void feh_save_filelist( void )
 {
 	char *tmpname;
 
@@ -531,7 +590,114 @@ void feh_save_filelist()
 	if (opt.verbose)
 		printf("saving filelist to filename '%s'\n", tmpname);
 
-	feh_write_filelist(filelist, tmpname);
+	feh_write_filelist( feh_md , tmpname);
 	free(tmpname);
+	return;
+}
+
+/*
+ * ****************************************************************
+ * May 5, 2012 HRABAK combined list.c into this filelist.c module *
+ ******************************************************************
+ */
+
+
+void init_list_mode(void)
+{
+	feh_node *l;
+	feh_file *file = NULL;
+	int j = 0;
+
+	mode = "list";
+
+	if (!opt.customlist)
+		fputs("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE\tALPHA\tFILENAME\n",
+				stdout);
+
+	for ( l = feh_md->rn->next ; l != feh_md->rn ; l = l->next) {
+		file = FEH_FILE(l->data);
+		if (opt.customlist)
+			printf("%s\n", feh_printf(opt.customlist, file));
+		else {
+			printf("%d\t%s\t%d\t%d\t%s",
+          ++j,
+					file->info->format,
+          file->info->width,
+					file->info->height,
+					format_size(file->info->pixels));
+			printf("\t%s\t%c\t%s\n",
+					format_size(file->info->size),
+					file->info->has_alpha ? 'X' : '-',
+          file->filename);
+		}
+
+		feh_action_run(file, opt.actions[0]);
+	}
+	exit(0);
+}
+
+void real_loadables_mode( int loadable ){
+    /* HRABAK killed the init_[un]loadables() and brought that logic here.
+     */
+
+  extern char *mode;
+	feh_file *file;
+	feh_node *l;
+	char ret = 0;
+
+	opt.quiet = 1;
+
+  if ( loadable )
+      mode = "loadables";
+  else
+      mode = "unloadables";
+
+
+	for (l = feh_md->rn->next ; l != feh_md->rn ; l = l->next) {
+		Imlib_Image im = NULL;
+
+		file = FEH_FILE(l->data);
+
+		if (feh_load_image(&im, file)) {
+			/* loaded ok */
+			if (loadable) {
+				puts(file->filename);
+				feh_action_run(file, opt.actions[0]);
+			}
+			else ret = 1;
+
+			gib_imlib_free_image_and_decache(im);
+		} else {
+			/* Oh dear. */
+			if (!loadable) {
+				puts(file->filename);
+				feh_action_run(file, opt.actions[0]);
+			}
+			else ret = 1;
+		}
+	}
+	exit(ret);
+}
+
+
+void add_file_to_rm_filelist( LLMD *md, char *file, int delete_flag ) {
+    /* HRABAK combined the delete_rm_files() here too.
+     * just to encapsulate all rm logic.
+     */
+  if ( md == NULL )
+      return;
+
+  if ( delete_flag == RM_LIST_ADDTO)
+      feh_ll_add_end( md, feh_file_new(file));
+  else {
+      /* shouldn't we free the rm_md list ?  Yes, but it is ONLY called at
+      * the end of main() at feh_clean_exit() so it does not matter.
+      */
+      feh_node *l;
+
+      for ( l = md->rn->next ; l != md->rn ; l = l->next)
+          unlink(FEH_FILE(l->data)->filename);
+	}
+
 	return;
 }

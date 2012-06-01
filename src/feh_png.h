@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <stdarg.h>
 
-gib_hash *feh_png_read_comments(char *file);
+int feh_png_read_comments( char *file, bhs_node **aHash);
 int feh_png_write_png(Imlib_Image image, char *file, ...);
 
 int feh_png_file_is_png(FILE * fp);

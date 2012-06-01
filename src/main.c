@@ -36,10 +36,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 char **cmdargv = NULL;
 int cmdargc = 0;
 char *mode = NULL;
+LLMD *feh_md, *ofi_md, *rm_md;          /* set up three global linkedList metaData containers */
+
 
 int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
+
+  /* set up the rn (root_node) in each list */
+  feh_md = init_LLMD();           /* replaces the old filelist */
+  ofi_md = init_LLMD();           /* replaces the old original_file_items */
+  rm_md  = init_LLMD();           /* replaces the old rm_filelist */
 
 	setup_signal_handlers();
 	init_parse_options(argc, argv);
@@ -63,9 +70,9 @@ int main(int argc, char **argv)
 	else if (opt.list || opt.customlist)
 		init_list_mode();
 	else if (opt.loadables)
-		init_loadables_mode();
+    real_loadables_mode( IS_LOADABLE );
 	else if (opt.unloadables)
-		init_unloadables_mode();
+    real_loadables_mode( IS_UNLOADABLE );
 	else if (opt.thumbs)
 		init_thumbnail_mode();
 	else if (opt.bgmode) {
@@ -185,16 +192,16 @@ int feh_main_iteration(int block)
 	}
 	if (window_num == 0)
 		return(0);
-	
+
 	return(1);
 }
 
 void feh_clean_exit(void)
 {
-	delete_rm_files();
+  add_file_to_rm_filelist( rm_md , NULL, RM_LIST_DELETE );      /* was delete_rm_files() */
 
-	if (opt.filelistfile)
-		feh_write_filelist(filelist, opt.filelistfile);
+	if (opt.filelistfile && opt.write_filelist)
+		feh_write_filelist( feh_md , opt.filelistfile);
 
 	return;
 }

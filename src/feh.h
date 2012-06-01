@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -57,9 +58,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 
 #include <Imlib2.h>
-#include <giblib/giblib.h>
 
 #include "structs.h"
+#include "imlib.h"
 #include "menu.h"
 
 #include "utils.h"
@@ -98,11 +99,12 @@ enum zoom_mode { ZOOM_MODE_FILL = 1, ZOOM_MODE_MAX };
 enum text_bg { TEXT_BG_CLEAR = 0, TEXT_BG_TINTED };
 
 enum slide_change { SLIDE_NEXT, SLIDE_PREV, SLIDE_RAND, SLIDE_FIRST, SLIDE_LAST,
-	SLIDE_JUMP_FWD,
-	SLIDE_JUMP_BACK
-};
+                     SLIDE_JUMP_FWD, SLIDE_JUMP_BACK };
 
 enum image_bg { IMAGE_BG_CHECKS = 0, IMAGE_BG_BLACK, IMAGE_BG_WHITE };
+
+enum loadables { IS_UNLOADABLE = 0 , IS_LOADABLE };
+enum remove_list {RM_LIST_ADDTO = 0, RM_LIST_DELETE };
 
 #define INPLACE_EDIT_FLIP   -1
 #define INPLACE_EDIT_MIRROR -2
@@ -128,7 +130,7 @@ void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
 void feh_clean_exit(void);
-int feh_load_image(Imlib_Image * im, feh_file * file);
+int  feh_load_image(Imlib_Image * im, feh_file * file);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change, int render);
 void slideshow_pause_toggle(winwidget w);
@@ -144,7 +146,7 @@ void feh_draw_zoom(winwidget w);
 void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
-int feh_load_image_char(Imlib_Image * im, char *filename);
+int  feh_load_image_char(Imlib_Image * im, char *filename);
 void feh_draw_filename(winwidget w);
 #ifdef HAVE_LIBEXIF
 void feh_draw_exif(winwidget w);
@@ -160,9 +162,8 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete);
 void slideshow_save_image(winwidget win);
 void feh_edit_inplace(winwidget w, int orientation);
 void feh_edit_inplace_lossless(winwidget w, int orientation);
-gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style * style);
 char *build_caption_filename(feh_file * file, short create_dir);
-gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num);
+void feh_list_jump( LLMD *md , int direction_code );
 
 /* Imlib stuff */
 extern Display *disp;
@@ -190,5 +191,29 @@ extern char *mode;		/* label for the current mode */
 
 /* to terminate long-running children with SIGALRM */
 extern int childpid;
+
+/* May 2012 HRABAK robbed from gib_style.c */
+ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w );
+
+/* define a suite of macros to make access to the LLMD members more readable */
+extern LLMD *feh_md, *ofi_md, *rm_md;          /* three global linkedList metaData containers */
+
+#define FEH_LL_ROOT(md)               (( md->rn ))
+#define FEH_LL_LEN(md)                (( md->rn->nd.cnt ))
+#define FEH_LL_FIRST(md)              (( md->rn->next ))
+#define FEH_LL_LAST(md)               (( md->rn->prev ))
+#define FEH_LL_DIRTY(md)              (( md->rn->nd.dirty ))
+#define FEH_LL_TAGGED(md)             (( md->rn->nd.tagged ))
+
+#define FEH_LL_CUR(md)                (( md->cn ))
+#define FEH_LL_CUR_NTH(md)            (( md->cn->nd.cnt ))
+#define FEH_LL_CUR_TAGGED(md)         (( md->cn->nd.tagged ))
+#define FEH_LL_CUR_NEXT(md)           (( md->cn->next ))
+#define FEH_LL_CUR_PREV(md)           (( md->cn->prev ))
+#define FEH_LL_CUR_DATA(md)           (( md->cn->data ))
+#define DECREMENT_CUR_NTH(md)         (( md->cn->nd.cnt-- ))
+#define INCREMENT_CUR_NTH(md)         (( md->cn->nd.cnt++ ))
+
+
 
 #endif

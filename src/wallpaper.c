@@ -44,7 +44,7 @@ static char e17_fake_ipc = 0;
 
 void feh_wm_set_bg_filelist(unsigned char bgmode)
 {
-	if (filelist_len == 0)
+	if ( FEH_LL_LEN( feh_md ) == 0)
 		eprintf("No files specified for background setting");
 
 	switch (bgmode) {
@@ -68,14 +68,14 @@ void feh_wm_set_bg_filelist(unsigned char bgmode)
 
 static void feh_wm_load_next(Imlib_Image *im)
 {
-	static gib_list *wpfile = NULL;
+	static feh_node *wpfile = NULL;
 
 	if (wpfile == NULL)
-		wpfile = filelist;
+		wpfile = feh_md->rn->next;
 
 	if (feh_load_image(im, FEH_FILE(wpfile->data)) == 0)
 		eprintf("Unable to load image %s", FEH_FILE(wpfile->data)->filename);
-	if (wpfile->next)
+	if (wpfile->next != feh_md->rn )
 		wpfile = wpfile->next;
 
 	return;
@@ -209,7 +209,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None)) {
 		if (use_filelist) {
 			feh_wm_load_next(&im);
-			fil = FEH_FILE(filelist->data)->filename;
+			fil = FEH_FILE(FEH_LL_CUR_DATA(feh_md))->filename;
 		}
 		snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil);
 		enl_ipc_send(sendbuf);
@@ -250,7 +250,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root, *data_esetroot;
 		Pixmap pmap_d1, pmap_d2;
-		gib_list *l;
+		feh_node *l;
 
 		/* string for sticking in ~/.fehbg */
 		char *fehbg = NULL;
@@ -286,7 +286,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			filbuf[out++] = '\'';
 
 		} else {
-			for (l = filelist; l && out < 4092; l = l->next) {
+      for (l = feh_md->rn->next ;  (l != feh_md->rn) && out < 4092; l = l->next) {
 				filbuf[out++] = '\'';
 
 				fil = FEH_FILE(l->data)->filename;
@@ -317,7 +317,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			else
 #endif			/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
-					0, 0, scr->width, scr->height);
+                              0, 0, scr->width, scr->height);
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
 			XGCValues gcval;

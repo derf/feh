@@ -35,6 +35,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* TODO s/bit/lot */
 void init_index_mode(void)
 {
+  static char *start, *end;        /* substr markers in alp[] */
+  static char last1;               /* save the final char */
+  static ld *alp;                  /* alp stands for Array(of)LinePointers */
+  int i = 0;                       /* index to walk thru alp[] array */
+
 	Imlib_Image im_main;
 	Imlib_Image im_temp;
 	int w = 800, h = 600, ww = 0, hh = 0, www, hhh, xxx, yyy;
@@ -53,13 +58,12 @@ void init_index_mode(void)
 	int vertical = 0;
 	int max_column_w = 0;
 	int thumbnailcount = 0;
-	gib_list *l = NULL, *last = NULL;
+	feh_node *l = NULL, *last = NULL;
 	feh_file *file = NULL;
-	int lineno;
+	int lineno;                 /* FIXME I thing this can be alp[].linenum */
 	unsigned char trans_bg = 0;
 	int index_image_width, index_image_height;
 	char *s;
-	gib_list *line, *lines;
 
 	if (opt.montage) {
 		mode = "montage";
@@ -133,7 +137,7 @@ void init_index_mode(void)
 					"enough to hold all %d thumbnails. To fit all the thumbnails,\n"
 					"either decrease their size, choos e asmaller font,\n"
 					"or use a larger image (like %dx%d)",
-					opt.limit_w, opt.limit_h, filelist_len, w, h);
+					opt.limit_w, opt.limit_h, FEH_LL_LEN( feh_md ), w, h);
 			h = opt.limit_h;
 		}
 	} else if (opt.limit_h) {
@@ -174,10 +178,11 @@ void init_index_mode(void)
 		winwidget_show(winwid);
 	}
 
-	for (l = filelist; l; l = l->next) {
+  for (l = feh_md->rn->next ;  l != feh_md->rn ; l = l->next) {
 		file = FEH_FILE(l->data);
 		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
+      feh_md->cn = last;
+			feh_file_remove_from_list( feh_md );
 			last = NULL;
 		}
 		D(("About to load image %s\n", file->filename));
@@ -268,21 +273,26 @@ void init_index_mode(void)
 			gib_imlib_free_image_and_decache(im_thumb);
 
 			lineno = 0;
-			if (opt.index_info) {
-				line = lines = feh_wrap_string(create_index_string(file),
-						opt.thumb_w * 3, fn, NULL);
 
-				while (line) {
-					gib_imlib_get_text_size(fn, (char *) line->data,
-							NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-					gib_imlib_text_draw(im_main, fn, NULL,
-							x + ((text_area_w - fw) >> 1),
-							y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
-							(char *) line->data,
-							IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-					line = line->next;
-				}
-				gib_list_free_and_data(lines);
+ 			if (opt.index_info) {
+          alp = feh_wrap_string( fn, create_index_string(file),
+                                 NULL, opt.thumb_w * 3 );
+
+          for (i=1; i<= alp[0].L0.tot_lines ; i++ ) {
+              fw = alp[i].L1.wide;
+              fh = alp[i].L1.high;
+           		start = alp[i].L1.line;
+              end   = alp[i].L1.line + alp[i].L1.len;
+              /* null term this substring b4 the call ...*/
+              last1 = end[0];  end[0]   = '\0';
+
+              gib_imlib_text_draw(im_main, fn, NULL,
+                                  x + ((text_area_w - fw) >> 1),
+                                  y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
+                                  start,	IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+              /* ... then restore that last char afterwards */
+              end[0] = last1;
+          }
 			}
 
 			if (vertical)
@@ -347,13 +357,13 @@ void init_index_mode(void)
 
 void index_calculate_height(Imlib_Font fn, int w, int *h, int *tot_thumb_h)
 {
-	gib_list *l;
+	feh_node *l;
 	feh_file *file = NULL;
 	int x = 0, y = 0;
 	int fw = 0, fh = 0;
 	int text_area_w = 0, text_area_h = 0;
 
-	for (l = filelist; l; l = l->next) {
+  for (l = feh_md->rn->next ;  l != feh_md->rn ; l = l->next) {
 		file = FEH_FILE(l->data);
 		text_area_w = opt.thumb_w;
 		if (opt.index_info) {
@@ -381,14 +391,14 @@ void index_calculate_height(Imlib_Font fn, int w, int *h, int *tot_thumb_h)
 
 void index_calculate_width(Imlib_Font fn, int *w, int h, int *tot_thumb_h)
 {
-	gib_list *l;
+	feh_node *l;
 	feh_file *file = NULL;
 	int x = 0, y = 0;
 	int fw = 0, fh = 0;
 	int text_area_w = 0, text_area_h = 0;
 	int max_column_w = 0;
 
-	for (l = filelist; l; l = l->next) {
+  for (l = feh_md->rn->next ;  l != feh_md->rn ; l = l->next) {
 		file = FEH_FILE(l->data);
 		text_area_w = opt.thumb_w;
 		/* Calc width of text */
@@ -420,16 +430,14 @@ void index_calculate_width(Imlib_Font fn, int *w, int h, int *tot_thumb_h)
 
 void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 {
-	int line_w, line_h;
 	char fake_file = 0;
-	gib_list *line, *lines;
-	int max_w = 0, total_h = 0;
+  static ld *alp;                  /* alp stands for Array(of)LinePointers */
 
-	if (!opt.index_info) {
 		*fw = 0;
 		*fh = 0;
+
+	if (!opt.index_info)
 		return;
-	}
 
 	/* called with file = NULL in the setup phase.
 	 * We need a fake file, otherwise feh_printf will remove format specifiers,
@@ -441,26 +449,18 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 		file->info = feh_file_info_new();
 	}
 
-	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 3, fn, NULL);
+	alp = feh_wrap_string(fn, create_index_string(file), NULL, opt.thumb_w * 3);
 
-	while (line) {
-		gib_imlib_get_text_size(fn, (char *) line->data,
-			NULL, &line_w, &line_h, IMLIB_TEXT_TO_RIGHT);
+  if ( alp[0].L0.tot_lines ){
+			*fw = alp[0].L0.maxwide;
+      *fh = alp[0].L0.tothigh + ( 2 * alp[0].L0.tot_lines );
+  }
 
-		if (line_w > max_w)
-			max_w = line_w;
-		total_h += line_h + 2;
-
-		line = line->next;
-	}
-
-	gib_list_free_and_data(lines);
 	if (fake_file)
 		feh_file_free(file);
 
-	*fw = max_w;
-	*fh = total_h;
 	return;
+
 }
 
 char *create_index_string(feh_file * file)

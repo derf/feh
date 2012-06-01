@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -36,13 +37,12 @@ void init_slideshow_mode(void)
 	winwidget w = NULL;
 	int success = 0;
 	char *s = NULL;
-	gib_list *l = filelist, *last = NULL;
-	feh_file *file = NULL;
+	feh_node *l;
 
-	for (l = filelist; l && opt.start_list_at; l = l->next) {
+	for (l = feh_md->rn->next ; ( l != feh_md->rn ) && opt.start_list_at ; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
-			opt.start_list_at = NULL;
-			break;
+        opt.start_list_at = NULL;       /* found it */
+        break;
 		}
 	}
 
@@ -50,16 +50,18 @@ void init_slideshow_mode(void)
 		eprintf("--start-at %s: File not found in filelist",
 				opt.start_list_at);
 
+
 	mode = "slideshow";
-	for (; l; l = l->next) {
-		file = FEH_FILE(l->data);
-		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
-			last = NULL;
-		}
-		current_file = l;
-		s = slideshow_create_name(file);
-		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL) {
+
+	for (; l != feh_md->rn ; l = l->next) {
+    /* make sure this one can be loaded, else find the next one that can be */
+    feh_md->cn = l;          /* 	current_file = l */
+		s = slideshow_create_name( FEH_FILE(l->data) );
+
+		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) == NULL) {
+    	free(s);
+ 			feh_file_remove_from_list( feh_md );     /* l failed so remove it */
+		} else {
 			free(s);
 			success = 1;
 			winwidget_show(w);
@@ -68,16 +70,15 @@ void init_slideshow_mode(void)
 			else if (opt.reload > 0)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 			break;
-		} else {
-			free(s);
-			last = l;
 		}
 	}
+
 	if (!success)
 		show_mini_usage();
 
 	return;
-}
+
+}     /* end of init_slideshow_mode() */
 
 void cb_slide_timer(void *data)
 {
@@ -87,60 +88,54 @@ void cb_slide_timer(void *data)
 
 void cb_reload_timer(void *data)
 {
-	gib_list *l;
+	feh_node *l;
 	char *current_filename;
 
 	winwidget w = (winwidget) data;
 
 	/* save the current filename for refinding it in new list */
-	current_filename = estrdup(FEH_FILE(current_file->data)->filename);
+	current_filename = estrdup(FEH_FILE(feh_md->cn->data)->filename);
 
-	for (l = filelist; l; l = l->next) {
-		feh_file_free(l->data);
-		l->data = NULL;
-	}
-	gib_list_free_and_data(filelist);
-	filelist = NULL;
-	filelist_len = 0;
-	current_file = NULL;
+  feh_file_free_md( feh_md );          /* cleans the whole list in one shot */
 
 	/* rebuild filelist from original_file_items */
-	if (gib_list_length(original_file_items) > 0)
-		for (l = gib_list_last(original_file_items); l; l = l->prev)
-			add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
+	if ( ofi_md->rn->nd.cnt > 0)
+      for (l = ofi_md->rn->next ; l != ofi_md->rn ; l = l->next )
+        add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
 	else if (!opt.filelistfile && !opt.bgmode)
-		add_file_to_filelist_recursively(".", FILELIST_FIRST);
-	
-	if (!(filelist_len = gib_list_length(filelist))) {
-		eprintf("No files found to reload.");
-	}
+      add_file_to_filelist_recursively(".", FILELIST_FIRST);
+
+	if ( feh_md->rn->nd.cnt == 0  )
+      eprintf("No files found to reload.");
+
 
 	/* find the previously current file */
-	for (l = filelist; l; l = l->next)
+  for (l = ofi_md->rn->next ; l != ofi_md->rn ; l = l->next )
 		if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
-			current_file = l;
+			feh_md->cn = l;          /* current_file = l; */
 			break;
 		}
 
 	free(current_filename);
 
-	filelist = gib_list_first(gib_list_reverse(filelist));
+	/* old code had to reverse the list here.  Not necessary anymore.*/
 
-	if (!current_file)
-		current_file = filelist;
-	w->file = current_file;
+	if ( feh_md->cn == feh_md->rn )
+      feh_md->cn = feh_md->rn->next;
+	w->file = feh_md->cn ;
 
 	/* reset window name in case of current file order,
 	 * filename, or filelist_length has changed.
 	 */
-	current_filename = slideshow_create_name(FEH_FILE(current_file->data));
+	current_filename = slideshow_create_name(FEH_FILE(FEH_LL_CUR_DATA(feh_md)));
 	winwidget_rename(w, current_filename);
 	free(current_filename);
 
 	feh_reload_image(w, 1, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
-}
+
+}     /* end of cb_reload_timer() */
 
 void feh_reload_image(winwidget w, int resize, int force_new)
 {
@@ -227,18 +222,18 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
-	gib_list *last = NULL;
+	feh_node *last = NULL;
 	int i = 0;
-	int jmp = 1;
+
 	/* We can't use filelist_len in the for loop, since that changes when we
 	 * encounter invalid images.
 	 */
-	int our_filelist_len = filelist_len;
+	int our_filelist_len = FEH_LL_LEN( feh_md );
 	char *s;
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
-	if (filelist_len < 2 && opt.cycle_once == 0)
+	if (our_filelist_len < 2 && opt.cycle_once == 0)
 		return;
 
 	/* Ok. I do this in such an odd way to ensure that if the last or first *
@@ -246,10 +241,10 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	   find the correct one. Otherwise SLIDE_LAST would try the last file, *
 	   then loop forward to find a loadable one. */
 	if (change == SLIDE_FIRST) {
-		current_file = gib_list_last(filelist);
+		feh_md->cn = feh_md->rn->prev;
 		change = SLIDE_NEXT;
 	} else if (change == SLIDE_LAST) {
-		current_file = filelist;
+		feh_md->cn = feh_md->rn->next;
 		change = SLIDE_PREV;
 	}
 
@@ -258,45 +253,28 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		winwidget_free_image(winwid);
 		switch (change) {
 		case SLIDE_NEXT:
-			current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+			feh_list_jump( feh_md , SLIDE_NEXT );
 			break;
 		case SLIDE_PREV:
-			current_file = feh_list_jump(filelist, current_file, BACK, 1);
+			feh_list_jump( feh_md , SLIDE_PREV );
 			break;
 		case SLIDE_RAND:
-			if (filelist_len > 1) {
-				current_file = feh_list_jump(filelist, current_file, FORWARD,
-					(rand() % (filelist_len - 1)) + 1);
+			if ( feh_md->rn->nd.cnt > 1) {
+        feh_list_jump( feh_md , SLIDE_RAND );
 				change = SLIDE_NEXT;
 			}
 			break;
 		case SLIDE_JUMP_FWD:
-			if (filelist_len < 5)
-				jmp = 1;
-			else if (filelist_len < 40)
-				jmp = 2;
-			else
-				jmp = filelist_len / 20;
-			if (!jmp)
-				jmp = 2;
-			current_file = feh_list_jump(filelist, current_file, FORWARD, jmp);
-			/* important. if the load fails, we only want to step on ONCE to
+			feh_list_jump( feh_md , SLIDE_JUMP_FWD);
+			/* important. if the load fails, we only want to step fwd ONCE to
 			   try the next file, not another jmp */
 			change = SLIDE_NEXT;
 			break;
 		case SLIDE_JUMP_BACK:
-			if (filelist_len < 5)
-				jmp = 1;
-			else if (filelist_len < 40)
-				jmp = 2;
-			else
-				jmp = filelist_len / 20;
-			if (!jmp)
-				jmp = 2;
-			current_file = feh_list_jump(filelist, current_file, BACK, jmp);
+			feh_list_jump( feh_md , SLIDE_JUMP_BACK );
 			/* important. if the load fails, we only want to step back ONCE to
 			   try the previous file, not another jmp */
-			change = SLIDE_NEXT;
+			change = SLIDE_PREV;
 			break;
 		default:
 			eprintf("BUG!\n");
@@ -304,14 +282,15 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		}
 
 		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
+      feh_md->cn = last;
+			feh_file_remove_from_list( feh_md );
 			last = NULL;
 		}
 
-		if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
+		if ((winwidget_loadimage(winwid, FEH_FILE(feh_md->cn->data)))
 		    != 0) {
 			winwid->mode = MODE_NORMAL;
-			winwid->file = current_file;
+			winwid->file = feh_md->cn;
 			if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))
 			    || (winwid->im_h != gib_imlib_image_get_height(winwid->im)))
 				winwid->had_resize = 1;
@@ -321,24 +300,28 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			if (render)
 				winwidget_render_image(winwid, 1, 0);
 
-			s = slideshow_create_name(FEH_FILE(current_file->data));
+			s = slideshow_create_name(FEH_FILE(feh_md->cn->data));
 			winwidget_rename(winwid, s);
 			free(s);
 
 			break;
 		} else
-			last = current_file;
+			last = feh_md->cn ;
 	}
-	if (last)
-		filelist = feh_file_remove_from_list(filelist, last);
+	if (last) {
+      feh_md->cn = last;
+			feh_file_remove_from_list( feh_md );
+			last = NULL;
+  }
 
-	if (filelist_len == 0)
+	if ( feh_md->rn->nd.cnt == 0)
 		eprintf("No more slides in show");
 
 	if (opt.slideshow_delay > 0.0)
 		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
 	return;
-}
+
+}     /* end of slideshow_change_image() */
 
 void slideshow_pause_toggle(winwidget w)
 {
@@ -360,7 +343,9 @@ char *slideshow_create_name(feh_file * file)
 		len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
 		s = emalloc(len);
 		snprintf(s, len, PACKAGE " [%d of %d] - %s",
-			gib_list_num(filelist, current_file) + 1, gib_list_length(filelist), file->filename);
+              feh_md->cn->nd.cnt,
+              feh_md->rn->nd.cnt,
+              file->filename);
 	} else {
 		s = estrdup(feh_printf(opt.title, file));
 	}
@@ -377,6 +362,7 @@ void feh_action_run(feh_file * file, char *action)
 
 		if (opt.verbose && !opt.list && !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
+
 		system(sys);
 	}
 	return;
@@ -395,8 +381,7 @@ char *shell_escape(char *input)
 			ret[out++] = '\'';
 			ret[out++] = '"';
 			ret[out++] = '\'';
-		}
-		else
+		}	else
 			ret[out++] = input[in];
 	}
 	ret[out++] = '\'';
@@ -492,13 +477,11 @@ char *feh_printf(char *str, feh_file * file)
 				strcat(ret, mode);
 				break;
 			case 'l':
-				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
+				snprintf(buf, sizeof(buf), "%d", feh_md->rn->nd.cnt );
 				strcat(ret, buf);
 				break;
 			case 'u':
-				snprintf(buf, sizeof(buf), "%d",
-					 current_file != NULL ? gib_list_num(filelist, current_file)
-					 + 1 : 0);
+				snprintf(buf, sizeof(buf), "%d", feh_md->cn->nd.cnt );
 				strcat(ret, buf);
 				break;
 			case '%':
@@ -525,19 +508,20 @@ char *feh_printf(char *str, feh_file * file)
 	return(ret);
 }
 
-void feh_filelist_image_remove(winwidget winwid, char do_delete)
-{
+void feh_filelist_image_remove(winwidget winwid, char do_delete) {
+    /* deals only with the feh_md->cn node (picture)
+     * But then what is cn set to once it gets deleted here???
+     */
+
 	if (winwid->type == WIN_TYPE_SLIDESHOW) {
 		char *s;
-		gib_list *doomed;
 
-		doomed = current_file;
 		slideshow_change_image(winwid, SLIDE_NEXT, 0);
-		if (do_delete)
-			filelist = feh_file_rm_and_free(filelist, doomed);
+		if (do_delete ==  DELETE_YES )
+			feh_file_rm_and_free( feh_md );        /* rm the md->cn */
 		else
-			filelist = feh_file_remove_from_list(filelist, doomed);
-		if (!filelist) {
+			feh_file_remove_from_list( feh_md );   /* just take md->cn out of the list */
+		if ( FEH_LL_LEN(feh_md) == 0 ) {
 			/* No more images. Game over ;-) */
 			winwidget_destroy(winwid);
 			return;
@@ -548,10 +532,10 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 		winwidget_render_image(winwid, 1, 0);
 	} else if ((winwid->type == WIN_TYPE_SINGLE)
 		   || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
-		if (do_delete)
-			filelist = feh_file_rm_and_free(filelist, winwid->file);
+ 		if (do_delete ==  DELETE_YES )
+			feh_file_rm_and_free( feh_md );
 		else
-			filelist = feh_file_remove_from_list(filelist, winwid->file);
+			feh_file_remove_from_list( feh_md );
 		winwidget_destroy(winwid);
 	}
 }
@@ -590,34 +574,54 @@ void slideshow_save_image(winwidget win)
 	return;
 }
 
-gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
-{
-	int i;
-	gib_list *ret = NULL;
+void  feh_list_jump( LLMD *md , int direction_code ){
+    /* always sets the md->cn (current_node) to the jumped-to slide.
+     */
 
-	if (!root)
-		return (NULL);
-	if (!l)
-		return (root);
+	int i, num=1;
+	feh_node *l;
 
-	ret = l;
+	if ( md->cn == md->rn )
+      md->cn = md->rn->next;           /* this should never happen */
 
-	for (i = 0; i < num; i++) {
-		if (direction == FORWARD) {
-			if (ret->next) {
-				ret = ret->next;
-			} else {
-				if (opt.cycle_once) {
-					exit(0);
-				}
-				ret = root;
-			}
-		} else {
-			if (ret->prev)
-				ret = ret->prev;
+  l = md->cn;
+
+  /* calc which way and how much */
+  if ( direction_code > SLIDE_RAND ) {
+      /* a 20% jump request */
+			if ( md->rn->nd.cnt < 5)
+				num = 1;
+			else if ( md->rn->nd.cnt < 40)
+				num = 2;
 			else
-				ret = gib_list_last(ret);
-		}
+				num = md->rn->nd.cnt / 20;
+			if ( num == 0 )
+				num = 2;
+  } else if ( direction_code == SLIDE_RAND ) {
+				num = ( rand() % ( md->rn->nd.cnt - 1)) + 1;
+        direction_code = SLIDE_NEXT;
+  }
+
+	if ( direction_code == SLIDE_NEXT || direction_code == SLIDE_JUMP_FWD ) {
+      for (i = 0; i < num; i++) {
+          if ( l->next != md->rn ) {
+            l = l->next;
+          } else {
+            if (opt.cycle_once) { exit(0); }
+            l = md->rn->next;
+          }
+      }
+  } else {
+      for (i = 0; i < num; i++) {
+          if ( l->prev != md->rn )
+            l = l->prev;
+          else
+            l = md->rn->prev;
+      }
 	}
-	return (ret);
-}
+
+  md->cn = l;
+
+	return ;
+
+}     /* end of feh_list_jump() */

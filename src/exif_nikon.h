@@ -26,8 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef EXIF_NIKON_H
 #define EXIF_NIKON_H
 
-#include <libexif/exif-data.h>
+/* Flash control mode */
+/* http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/Nikon.html#FlashControlMode */
+#define EXN_FLASH_CONTROL_MODES_MAX 9
+char *EXN_NikonFlashControlModeValues[EXN_FLASH_CONTROL_MODES_MAX] = {"Off", 
+                                       "iTTL-BL", "iTTL", "Auto Aperture", 
+                                       "Automatic", "GN (distance priority)", 
+                                       "Manual", "Repeating Flash", 
+                                       "N/A" /* "N/A" is not a nikon setting */
+                                       };
 
-extern void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize);
+#define EXN_FLASH_CONTROL_MODE_MASK 0x7F
 
 #endif

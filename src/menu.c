@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -29,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "wallpaper.h"
 #include "winwidget.h"
 #include "filelist.h"
+#include "feh_ll.h"
 #include "options.h"
 
 Window menu_cover = 0;
@@ -566,7 +568,7 @@ void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h)
 	int tw, th;
 
 	if (i->text) {
-		gib_imlib_get_text_size(opt.menu_fn, i->text, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(opt.menu_fn, i->text, &opt.menu_style_l, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 		*w = tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT;
 		*h = th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM;
 	} else {
@@ -675,7 +677,7 @@ void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 		}
 
 		/* draw text */
-		gib_imlib_text_draw(im, opt.menu_fn, NULL,
+		gib_imlib_text_draw(im, opt.menu_fn, &opt.menu_style_l,
 				i->x - ox + i->text_x, i->y - oy + FEH_MENUITEM_PAD_TOP,
 				i->text, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 		if (i->submenu) {
@@ -805,6 +807,14 @@ void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 	y -= oy;
 
 	imlib_context_set_image(dst);
+	poly = imlib_polygon_new();
+	imlib_polygon_add_point(poly, x + 2, y + 5);
+	imlib_polygon_add_point(poly, x + 5, y + 7);
+	imlib_polygon_add_point(poly, x + 2, y + 11);
+	imlib_context_set_color(0, 0, 0, 60);
+	imlib_image_fill_polygon(poly);
+	imlib_polygon_free(poly);
+
 
 	poly = imlib_polygon_new();
 	imlib_polygon_add_point(poly, x, y + 3);
@@ -827,7 +837,7 @@ void feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox, 
 {
 	imlib_context_set_image(dst);
 	if (selected)
-		gib_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 127, 127, 127, 178);
+		gib_imlib_image_fill_rectangle(dst, x - ox, y - oy, w, h, 255, 255, 255, 178);
 	return;
 }
 
@@ -917,6 +927,12 @@ void feh_menu_init_common()
 			eprintf
 			    ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
 			     opt.menu_font);
+	}
+	if ( opt.menu_style ) {     /* have a style file */
+		feh_style_new_from_ascii(opt.menu_style, &opt.menu_style_l );
+    max_min_style( &opt.menu_style_l );
+    /* don't care it it got loaded cause I have the default already loaded */
+  	opt.menu_style = NULL ;     /* flag to only load it ONCE */
 	}
 
 	m = feh_menu_new();
@@ -1233,39 +1249,39 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 			feh_reload_image(m->fehwin, 0, 1);
 			break;
 		case CB_REMOVE:
-			feh_filelist_image_remove(m->fehwin, 0);
+			feh_filelist_image_remove(m->fehwin, DELETE_NO);
 			break;
 		case CB_DELETE:
-			feh_filelist_image_remove(m->fehwin, 1);
+			feh_filelist_image_remove(m->fehwin, DELETE_YES);
 			break;
 		case CB_REMOVE_THUMB:
 			feh_thumbnail_mark_removed(FEH_FILE(m->fehwin->file->data), 0);
-			feh_filelist_image_remove(m->fehwin, 0);
+			feh_filelist_image_remove(m->fehwin, DELETE_NO );
 			break;
 		case CB_DELETE_THUMB:
 			feh_thumbnail_mark_removed(FEH_FILE(m->fehwin->file->data), 1);
-			feh_filelist_image_remove(m->fehwin, 1);
+			feh_filelist_image_remove(m->fehwin, DELETE_YES);
 			break;
 		case CB_SORT_FILENAME:
-			filelist = gib_list_sort(filelist, feh_cmp_filename);
+   		feh_ll_qsort( feh_md , feh_cmp_filename);
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_IMAGENAME:
-			filelist = gib_list_sort(filelist, feh_cmp_name);
+   		feh_ll_qsort( feh_md , feh_cmp_name);
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_FILESIZE:
-			filelist = gib_list_sort(filelist, feh_cmp_size);
+   		feh_ll_qsort( feh_md , feh_cmp_size);
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
 			break;
 		case CB_SORT_RANDOMIZE:
-			filelist = gib_list_randomize(filelist);
+			feh_ll_randomize( feh_md );
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}

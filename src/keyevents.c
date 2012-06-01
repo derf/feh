@@ -137,7 +137,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
 #ifdef HAVE_LIBEXIF
-	feh_set_kb(&keys.toggle_exif, 0, XK_e, 0, 0, 0, 0);	
+	feh_set_kb(&keys.toggle_exif, 0, XK_e, 0, 0, 0, 0);
 #endif
 	feh_set_kb(&keys.toggle_info, 0, XK_i, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pointer, 0, XK_o, 0, 0, 0, 0);
@@ -275,7 +275,7 @@ void init_keyevents(void) {
 			cur_kb = &keys.toggle_filenames;
 #ifdef HAVE_LIBEXIF
 		else if (!strcmp(action, "toggle_exif"))
-			cur_kb = &keys.toggle_exif;			
+			cur_kb = &keys.toggle_exif;
 #endif
 		else if (!strcmp(action, "toggle_info"))
 			cur_kb = &keys.toggle_info;
@@ -535,12 +535,12 @@ void feh_event_handle_keypress(XEvent * ev)
 	else if (feh_is_kp(&keys.delete, keysym, state)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
 			feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 1);
-		feh_filelist_image_remove(winwid, 1);
+		feh_filelist_image_remove(winwid, DELETE_YES );
 	}
 	else if (feh_is_kp(&keys.remove, keysym, state)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
 			feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 0);
-		feh_filelist_image_remove(winwid, 0);
+		feh_filelist_image_remove(winwid, DELETE_NO);
 	}
 	else if (feh_is_kp(&keys.jump_first, keysym, state)) {
 		if (opt.slideshow)
@@ -648,7 +648,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		opt.draw_exif = !opt.draw_exif;
 		winwidget_rerender_all(0);
 	}
-#endif		
+#endif
 	else if (feh_is_kp(&keys.toggle_info, keysym, state)) {
 		opt.draw_info = !opt.draw_info;
 		winwidget_rerender_all(0);
@@ -746,7 +746,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	}
-	else if (feh_is_kp(&keys.reload_plus, keysym, state)){ 
+	else if (feh_is_kp(&keys.reload_plus, keysym, state)){
 		if (opt.reload < SLIDESHOW_RELOAD_MAX)
 			opt.reload++;
 		else if (opt.verbose)

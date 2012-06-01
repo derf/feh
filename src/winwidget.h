@@ -90,7 +90,7 @@ struct __winwidget {
 	Pixmap bg_pmap;
 	Pixmap bg_pmap_cache;
 	char *name;
-	gib_list *file;
+	feh_node *file;
 	unsigned char visible;
 	char *errstr;
 
@@ -140,7 +140,7 @@ void winwidget_get_geometry(winwidget winwid, int *rect);
 int winwidget_get_width(winwidget winwid);
 int winwidget_get_height(winwidget winwid);
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(gib_list * filename, char *name, char type);
+winwidget winwidget_create_from_file(feh_node * l, char *name, char type);
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
 void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);

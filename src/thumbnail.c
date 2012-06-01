@@ -2,6 +2,8 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak  bhs_hash() stuff
+
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -25,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
 #include "thumbnail.h"
@@ -33,8 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "feh_png.h"
 #include "index.h"
 #include "signals.h"
+#include "feh_ll.h"
 
-static gib_list *thumbnails = NULL;
+
+static LLMD *thumb_md;          /* replacement for *thumbnails = NULL; */
 
 static thumbmode_data td;
 
@@ -67,12 +70,20 @@ void init_thumbnail_mode(void)
 	int fw, fh;
 	int thumbnailcount = 0;
 	feh_file *file = NULL;
-	gib_list *l, *last = NULL;
+	feh_node *l, *last = NULL;
 	int lineno;
 	int index_image_width, index_image_height;
 	char *s;
 	unsigned int thumb_counter = 0;
-	gib_list *line, *lines;
+
+  static char *start, *end;        /* substr markers in alp[] */
+  static char last1;               /* save the final char */
+  static ld *alp;                  /* alp stands for Array(of)LinePointers */
+  int i = 0;                       /* index to walk thru alp[] array */
+
+
+  /* set up the rn (root_node) for the thumbnails */
+  thumb_md = init_LLMD();          /* replaces the old thumbnails */
 
 	/* initialize thumbnail mode data */
 	td.im_main = NULL;
@@ -199,16 +210,15 @@ void init_thumbnail_mode(void)
 		feh_thumbnail_setup_thumbnail_dir();
 	}
 
-	for (l = filelist; l; l = l->next) {
+	for (l = feh_md->rn->next ;  l != feh_md->rn ; l = l->next) {
 		file = FEH_FILE(l->data);
-		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
+		if ( last ) {
+      feh_md->cn = last;
+			feh_file_remove_from_list( feh_md );
 			last = NULL;
 		}
 		D(("About to load image %s\n", file->filename));
-		/*      if (feh_load_image(&im_temp, file) != 0) */
-		if (feh_thumbnail_get_thumbnail(&im_temp, file, &orig_w, &orig_h)
-				!= 0) {
+		if (feh_thumbnail_get_thumbnail(&im_temp, file, &orig_w, &orig_h) != 0) {
 			if (opt.verbose)
 				feh_display_status('.');
 			D(("Successfully loaded %s\n", file->filename));
@@ -309,27 +319,30 @@ void init_thumbnail_mode(void)
 							 yyy, www, hhh, 1,
 							 gib_imlib_image_has_alpha(im_thumb), 0);
 
-			thumbnails = gib_list_add_front(thumbnails,
-					feh_thumbnail_new(file, xxx, yyy, www, hhh));
+      feh_ll_add_end( thumb_md, feh_thumbnail_new(file, xxx, yyy, www, hhh));
 
 			gib_imlib_free_image_and_decache(im_thumb);
 
 			lineno = 0;
 			if (opt.index_info) {
-				line = lines = feh_wrap_string(create_index_string(file),
-						opt.thumb_w * 3, td.font_main, NULL);
+          alp = feh_wrap_string( td.font_main, create_index_string(file),
+                                 NULL, opt.thumb_w * 3);
 
-				while (line) {
-					gib_imlib_get_text_size(td.font_main, (char *) line -> data,
-							NULL, &fw, &fh, IMLIB_TEXT_TO_RIGHT);
-					gib_imlib_text_draw(td.im_main, td.font_main, NULL,
-							x + ((td.text_area_w - fw) >> 1),
-							y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
-							(char *) line->data,
-							IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-					line = line->next;
-				}
-				gib_list_free_and_data(lines);
+          for (i=1; i<= alp[0].L0.tot_lines ; i++ ) {
+              fw = alp[i].L1.wide;
+              fh = alp[i].L1.high;
+           		start = alp[i].L1.line;
+              end   = alp[i].L1.line + alp[i].L1.len;
+              /* null term this substring b4 the call ...*/
+              last1 = end[0];  end[0]   = '\0';
+
+              gib_imlib_text_draw(td.im_main, td.font_main, NULL,
+                                  x + ((td.text_area_w - fw) >> 1),
+                                  y + opt.thumb_h + (lineno++ * (th + 2)) + 2,
+                                  start,	IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+              /* ... then restore that last char afterwards */
+              end[0] = last1;
+          }
 			}
 
 			if (td.vertical)
@@ -341,6 +354,7 @@ void init_thumbnail_mode(void)
 				feh_display_status('x');
 			last = l;
 		}
+
 		if (opt.display) {
 			/* thumb_counter is unsigned, so no need to catch overflows */
 			if (++thumb_counter == opt.thumb_redraw) {
@@ -418,10 +432,10 @@ feh_thumbnail *feh_thumbnail_new(feh_file * file, int x, int y, int w, int h)
 
 feh_file *feh_thumbnail_get_file_from_coords(int x, int y)
 {
-	gib_list *l;
+  feh_node *l;
 	feh_thumbnail *thumb;
 
-	for (l = thumbnails; l; l = l->next) {
+	for (l = thumb_md->rn->next ;  l != thumb_md->rn ; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h)) {
 			if (thumb->exists) {
@@ -435,10 +449,10 @@ feh_file *feh_thumbnail_get_file_from_coords(int x, int y)
 
 feh_thumbnail *feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 {
-	gib_list *l;
+  feh_node *l;
 	feh_thumbnail *thumb;
 
-	for (l = thumbnails; l; l = l->next) {
+	for (l = thumb_md->rn->next ;  l != thumb_md->rn ; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (XY_IN_RECT(x, y, thumb->x, thumb->y, thumb->w, thumb->h)) {
 			if (thumb->exists) {
@@ -452,10 +466,10 @@ feh_thumbnail *feh_thumbnail_get_thumbnail_from_coords(int x, int y)
 
 feh_thumbnail *feh_thumbnail_get_from_file(feh_file * file)
 {
-	gib_list *l;
+  feh_node *l;
 	feh_thumbnail *thumb;
 
-	for (l = thumbnails; l; l = l->next) {
+	for (l = thumb_md->rn->next ;  l != thumb_md->rn ; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if (thumb->file == file) {
 			if (thumb->exists) {
@@ -523,7 +537,7 @@ void feh_thumbnail_calculate_geometry(void)
 					"enough to hold all %d thumbnails. To fit all\n"
 					"the thumnails, either decrease their size, choose a smaller font,\n"
 					"or use a larger image (like %dx%d)",
-					opt.limit_w, opt.limit_h, filelist_len, opt.limit_w, td.h);
+					opt.limit_w, opt.limit_h, FEH_LL_LEN( feh_md ), opt.limit_w, td.h);
 			td.h = opt.limit_h;
 		}
 	} else if (opt.limit_h) {
@@ -678,32 +692,56 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 	char *thumb_file, int * orig_w, int * orig_h)
 {
 	struct stat sb;
-	char *c_mtime;
-	char *c_width, *c_height;
+	char *c_mtime=NULL, *c_width=NULL, *c_height=NULL;
 	time_t mtime = 0;
-	gib_hash *hash;
+  bhs_node **aHash;
+  int i=0, bhs_size = 3;             /* change this if you add Thumb::URI */
+  char * ts1 = "Thumb::MTime";
+  char * ts2 = "Thumb::Image::Width";
+  char * ts3 = "Thumb::Image::Height";
 
 	if (!stat(file->filename, &sb)) {
-		hash = feh_png_read_comments(thumb_file);
-		if (hash != NULL) {
-			c_mtime  = (char *) gib_hash_get(hash, "Thumb::MTime");
-			c_width  = (char *) gib_hash_get(hash, "Thumb::Image::Width");
-			c_height = (char *) gib_hash_get(hash, "Thumb::Image::Height");
+
+    /* create aHash[], prefilling with just the three keys we care about.
+     * When feh_png_read_comments() fills in the ->data part, any attempts
+     * to add a new hash key fail cause the hash is only 3 keys deep.
+     */
+    aHash = bhs_hash_init( bhs_size  );
+    i    += bhs_hash_get( aHash , ts1, NULL, ADDIT_YES );
+    i    += bhs_hash_get( aHash , ts2, NULL, ADDIT_YES );
+    i    += bhs_hash_get( aHash , ts3, NULL, ADDIT_YES );
+    if ( i != 6 )
+        eprintf( "Failed to store hash keys.  That's Odd! ");
+
+    /* then fill the data that goes with these three keys. */
+
+		if ( feh_png_read_comments(thumb_file, aHash ) == 0 ) {
+      if ( bhs_hash_get(aHash, ts1 , NULL , ADDIT_NO ))
+          c_mtime  = (char *) aHash[aHash[0]->h0.which]->h1.data;
+      if ( bhs_hash_get(aHash, ts2 , NULL , ADDIT_NO ))
+          c_width  = (char *) aHash[aHash[0]->h0.which]->h1.data;
+      if ( bhs_hash_get(aHash, ts3 , NULL , ADDIT_NO ))
+          c_height  = (char *) aHash[aHash[0]->h0.which]->h1.data;
+
 			if (c_mtime != NULL)
 				mtime = (time_t) strtol(c_mtime, NULL, 10);
 			if (c_width != NULL)
 				*orig_w = atoi(c_width);
 			if (c_height != NULL)
 				*orig_h = atoi(c_height);
-			gib_hash_free_and_data(hash);
-		}
 
-		/* FIXME: should we bother about Thumb::URI? */
-		if (mtime == sb.st_mtime) {
-			feh_load_image_char(image, thumb_file);
+      /* free all the data elements */
+      for ( i=1; i< bhs_size+1 ; i++ ) {
+          if ( aHash[i] )
+              free( aHash[i]->h1.data );
+      }
 
-			return (1);
-		}
+      /* FIXME: should we bother about Thumb::URI? */
+      if (mtime == sb.st_mtime ) {
+        feh_load_image_char(image, thumb_file);
+        return (1);
+      }
+    }
 	}
 
 	return (0);
@@ -711,6 +749,7 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 
 void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 {
+  feh_node *l;
 	winwidget thumbwin = NULL;
 	char *s;
 
@@ -718,17 +757,17 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 		s = thumbfile->name;
 	else
 		s = feh_printf(opt.thumb_title, thumbfile);
-	
+
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
+  l = feh_ll_new();           /* FIXME Is this a memory leak? */
+  l->data = thumbfile;
 	if (!thumbwin) {
-		thumbwin = winwidget_create_from_file(
-				gib_list_add_front(NULL, thumbfile),
-				s, WIN_TYPE_THUMBNAIL_VIEWER);
+		thumbwin = winwidget_create_from_file( l,s, WIN_TYPE_THUMBNAIL_VIEWER);
 		if (thumbwin)
 			winwidget_show(thumbwin);
 	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
 		free(thumbwin->file);
-		thumbwin->file = gib_list_add_front(NULL, thumbfile);
+		thumbwin->file = l;
 		winwidget_rename(thumbwin, s);
 		feh_reload_image(thumbwin, 1, 1);
 	}
@@ -769,10 +808,12 @@ void feh_thumbnail_select(winwidget winwid, feh_thumbnail *thumbnail)
 
 void feh_thumbnail_select_next(winwidget winwid, int jump)
 {
-	gib_list *l, *tmp;
+	feh_node *l, *tmp;
 	int i;
 
-	for (l = thumbnails; l && l->next; l = l->next) {
+	for (l  = thumb_md->rn->next ;
+      (l != thumb_md->rn) && (l->next != thumb_md->rn) ;
+       l = l->next) {
 		tmp = l;
 		for (i = jump; (i > 0) && tmp->next; i--)
 			tmp = tmp->next;
@@ -785,11 +826,11 @@ void feh_thumbnail_select_next(winwidget winwid, int jump)
 
 void feh_thumbnail_select_prev(winwidget winwid, int jump)
 {
-	gib_list *l;
+	feh_node *l;
 	feh_thumbnail *thumb;
 	int i;
 
-	for (l = thumbnails; l; l = l->next) {
+	for (l = thumb_md->rn->next ;  l != thumb_md->rn ; l = l->next) {
 		thumb = FEH_THUMB(l->data);
 		if ((thumb == td.selected) && l->next) {
 			for (i = jump; (i > 0) && l->next; i--)
@@ -798,7 +839,7 @@ void feh_thumbnail_select_prev(winwidget winwid, int jump)
 			return;
 		}
 	}
-	feh_thumbnail_select(winwid, FEH_THUMB(thumbnails->data));
+	feh_thumbnail_select(winwid, FEH_THUMB(FEH_LL_CUR_DATA(thumb_md)));
 }
 
 inline void feh_thumbnail_show_selected()

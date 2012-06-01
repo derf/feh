@@ -33,16 +33,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 void init_multiwindow_mode(void)
 {
 	winwidget w = NULL;
-	gib_list *l;
+	feh_node *l;
 	feh_file *file = NULL;
 
 	mode = "multiwindow";
 
-	for (l = filelist; l; l = l->next) {
+	for (l = feh_md->rn->next ;  l != feh_md->rn ; l = l->next) {
 		char *s = NULL;
 		int len = 0;
 		file = FEH_FILE(l->data);
-		current_file = l;
+    feh_md->cn = l;          /* 	current_file = l */
 
 		if (!opt.title) {
 			len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;

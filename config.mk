@@ -69,4 +69,4 @@ endif
 CFLAGS += -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
-LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib
+LDLIBS += -lm -lpng -lX11 -lImlib2

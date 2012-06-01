@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
+#include "feh_ll.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -39,9 +40,58 @@ static void show_version(void);
 static char *theme;
 
 fehoptions opt;
+/*  extern LLMD *ofi_md;        replaces the old original_file_items */
+
+void init_style( feh_style *s, int a[] ){
+    /* loads the default settings for menu and caption styles */
+  s->fg.x_off = a[0];
+  s->fg.y_off = a[1];
+  s->fg.r     = a[2];
+  s->fg.g     = a[3];
+  s->fg.b     = a[4];
+  s->fg.a     = a[5];
+
+  s->bg.x_off = a[6];
+  s->bg.y_off = a[7];
+  s->bg.r     = a[8];
+  s->bg.g     = a[9];
+  s->bg.b     = a[10];
+  s->bg.a     = a[11];
+
+  return;
+
+}     /* end of init_style() */
+
+void  max_min_style( feh_style *s ){
+  /* store the max/mins once so we don't have to recalc EVERY time */
+  s->max_x_off = s->min_x_off = s->max_y_off = s->min_y_off = 0;
+
+  if (s->bg.x_off > s->max_x_off )
+      s->max_x_off = s->bg.x_off;
+  if (s->fg.x_off > s->max_x_off )
+      s->max_x_off = s->fg.x_off;
+  if (s->bg.x_off < s->min_x_off )
+      s->min_x_off = s->bg.x_off;
+  if (s->fg.x_off < s->min_x_off )
+      s->min_x_off = s->fg.x_off;
+
+  if (s->bg.y_off > s->max_y_off )
+      s->max_y_off = s->bg.y_off;
+  if (s->fg.y_off > s->max_y_off )
+      s->max_y_off = s->fg.y_off;
+  if (s->bg.y_off < s->min_y_off )
+      s->min_y_off = s->bg.y_off;
+  if (s->fg.y_off < s->min_y_off )
+      s->min_y_off = s->fg.y_off;
+  return;
+}   /* end of max_min_style() */
 
 void init_parse_options(int argc, char **argv)
 {
+  /* cheatin way to load defaults into the two style structs */
+  int ms[]={2,2,0,0,0,64,0,0,0,0,0,0};
+  int cs[]={0,0,0,0,0,0 ,1,1,0,0,0,255};
+
 	/* TODO: sort these to match declaration of __fehoptions */
 
 	/* For setting the command hint on X windows */
@@ -60,6 +110,13 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
+	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
+  opt.write_filelist = 1;       /* write filelist on exit? Yes=1 */
+
+  init_style( &opt.menu_style_l,  ms );
+  init_style( &opt.caption_style, cs );
+  max_min_style( &opt.menu_style_l );
+  max_min_style( &opt.caption_style );
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
@@ -81,22 +138,22 @@ void init_parse_options(int argc, char **argv)
 
 	/* If we have a filelist to read, do it now */
 	if (opt.filelistfile) {
-		/* joining two reverse-sorted lists in this manner works nicely for us
-		   here, as files specified on the commandline end up at the *end* of
-		   the combined filelist, in the specified order. */
+		/* tack the contents of the filelistfile to the end of our exisiting
+     * feh_md list in correct order.  No need to reverse them now.
+		 */
 		D(("About to load filelist from file\n"));
-		filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
+		feh_read_filelist( feh_md , opt.filelistfile );
 	}
 
 	D(("Options parsed\n"));
 
-	filelist_len = gib_list_length(filelist);
-	if (!filelist_len)
+	if ( FEH_LL_LEN(feh_md) == 0 )
 		show_mini_usage();
 
 	check_options();
 
-	feh_prepare_filelist();
+	feh_prepare_filelist( feh_md );
+
 	return;
 }
 
@@ -374,6 +431,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-tile"       , 0, 0, 200},
 		{"bg-center"     , 0, 0, 201},
 		{"bg-scale"      , 0, 0, 202},
+		{"menu-style"    , 1, 0, 204},
 		{"zoom"          , 1, 0, 205},
 		{"no-screen-clip", 0, 0, 206},
 		{"index-info"    , 1, 0, 207},
@@ -394,6 +452,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
 		{"no-fehbg"      , 0, 0, 236},
+		{"nowrite-filelist" , 0, 0, 237},
 
 		{0, 0, 0, 0}
 	};
@@ -627,6 +686,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 219:
 			opt.bgmode = BG_MODE_MAX;
 			break;
+		case 204:
+			free(opt.menu_style);
+			opt.menu_style = estrdup(optarg);
+			weprintf("The --menu-style option is deprecated and will be removed by 2012");
+			break;
 		case 205:
 			if (!strcmp("fill", optarg))
 				opt.zoom_mode = ZOOM_MODE_FILL;
@@ -713,6 +777,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 236:
 			opt.no_fehbg = 1;
 			break;
+		case 237:
+			opt.write_filelist = 0;
+			break;
 		default:
 			break;
 		}
@@ -722,7 +789,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	if (optind < argc) {
 		while (optind < argc) {
 			if (opt.reload)
-				original_file_items = gib_list_add_front(original_file_items, estrdup(argv[optind]));
+				feh_ll_add_end( ofi_md, estrdup(argv[optind]));
+
 			/* If recursive is NOT set, but the only argument is a directory
 			   name, we grab all the files in there, but not subdirs */
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);

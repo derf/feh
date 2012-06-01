@@ -40,7 +40,7 @@ void init_collage_mode(void)
 	Imlib_Image bg_im = NULL, im_thumb = NULL;
 	feh_file *file = NULL;
 	unsigned char trans_bg = 0;
-	gib_list *l, *last = NULL;
+	feh_node *l, *last = NULL;
 	char *s;
 
 	mode = "collage";
@@ -117,10 +117,11 @@ void init_collage_mode(void)
 		winwidget_show(winwid);
 	}
 
-	for (l = filelist; l; l = l->next) {
+	for (l = FEH_LL_FIRST(feh_md); l != FEH_LL_ROOT(feh_md); l = l->next) {
 		file = FEH_FILE(l->data);
 		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
+      FEH_LL_CUR(feh_md) = last;
+			feh_file_remove_from_list( feh_md );
 			last = NULL;
 		}
 		D(("About to load image %s\n", file->filename));

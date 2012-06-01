@@ -42,7 +42,6 @@ static winwidget winwidget_allocate(void)
 	winwidget ret = NULL;
 
 	ret = emalloc(sizeof(_winwidget));
-	memset(ret, 0, sizeof(_winwidget));
 
 	ret->win = 0;
 	ret->w = 0;
@@ -107,16 +106,16 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	return(ret);
 }
 
-winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
+winwidget winwidget_create_from_file(feh_node * node, char *name, char type)
 {
 	winwidget ret = NULL;
-	feh_file *file = FEH_FILE(list->data);
+	feh_file *file = FEH_FILE(node->data);
 
 	if (!file || !file->filename)
 		return(NULL);
 
 	ret = winwidget_allocate();
-	ret->file = list;
+	ret->file = node;
 	ret->type = type;
 	if (name)
 		ret->name = estrdup(name);

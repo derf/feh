@@ -1,6 +1,7 @@
 /* feh_png.c
 
 Copyright (C) 2004 Tom Gilbert.
+Copyright (C) 2012      Christopher Hrabak  bhs_hash() stuff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -33,9 +34,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define FEH_PNG_COMPRESSION 3
 #define FEH_PNG_NUM_COMMENTS 4
 
-gib_hash *feh_png_read_comments(char *file)
+int feh_png_read_comments( char *file, bhs_node **aHash)
 {
-	gib_hash *hash = NULL;
 
 	FILE *fp;
 	int i, sig_bytes, comments = 0;
@@ -45,31 +45,31 @@ gib_hash *feh_png_read_comments(char *file)
 	png_textp text_ptr;
 
 	if (!(fp = fopen(file, "rb")))
-		return hash;
+		return -1;
 
 	if (!(sig_bytes = feh_png_file_is_png(fp))) {
 		fclose(fp);
-		return hash;
+		return -1;
 	}
 
 	/* initialize data structures */
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (!png_ptr) {
 		fclose(fp);
-		return hash;
+		return -1;
 	}
 
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
 		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
 		fclose(fp);
-		return hash;
+		return -1;
 	}
 
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
-		return hash;
+		return -1;
 	}
 
 	/* initialize reading */
@@ -78,19 +78,24 @@ gib_hash *feh_png_read_comments(char *file)
 
 	png_read_info(png_ptr, info_ptr);
 
+  i = -1;        /* just for the return code incase no comments */
 #ifdef PNG_TEXT_SUPPORTED
 	png_get_text(png_ptr, info_ptr, &text_ptr, &comments);
 	if (comments > 0) {
-		hash = gib_hash_new();
+    /* Note:  The ADDIT_YES is on, but ONLY the three predefined keys will
+     * have their ->data member updated.  All attempts to add keys will fail
+     * cause we only created this  hash to hold 3 keys.
+     */
 		for (i = 0; i < comments; i++)
-			gib_hash_set(hash, text_ptr[i].key, estrdup(text_ptr[i].text));
+			bhs_hash_get( aHash, text_ptr[i].key, estrdup(text_ptr[i].text), ADDIT_YES );
 	}
+  i = 0;      /* sets the return code to success */
 #endif				/* PNG_TEXT_SUPPORTED */
 
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 	fclose(fp);
 
-	return hash;
+	return i;
 }
 
 /* grab image data from image and write info file with comments ... */
@@ -194,10 +199,11 @@ int feh_png_file_is_png(FILE * fp)
 {
 	unsigned char buf[8];
 
-	fread(buf, 1, 8, fp);
-	if (png_sig_cmp(buf, 0, 8)) {
-		return 0;
-	}
+	if ( fread(buf, 1, 8, fp) > 0 ) {
+      if (png_sig_cmp(buf, 0, 8)) {
+        return 0;
+      }
+  }
 
 	return 8;
 }

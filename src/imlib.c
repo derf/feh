@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -21,6 +22,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+May 2012 HRABAK combined the gib_imlib.c code into this module, and renamed
+the gib_imlib.h into imlib.h.
 
 */
 
@@ -93,11 +97,11 @@ void init_x_and_imlib(void)
 	disp = XOpenDisplay(NULL);
 	if (!disp)
 		eprintf("Can't open X display. It *is* running, yeah?");
-	vis = DefaultVisual(disp, DefaultScreen(disp));
+	vis =   DefaultVisual(disp, DefaultScreen(disp));
 	depth = DefaultDepth(disp, DefaultScreen(disp));
-	cm = DefaultColormap(disp, DefaultScreen(disp));
-	root = RootWindow(disp, DefaultScreen(disp));
-	scr = ScreenOfDisplay(disp, DefaultScreen(disp));
+	cm =    DefaultColormap(disp, DefaultScreen(disp));
+	root =  RootWindow(disp, DefaultScreen(disp));
+	scr =   ScreenOfDisplay(disp, DefaultScreen(disp));
 	xid_context = XUniqueContext();
 
 #ifdef HAVE_LIBXINERAMA
@@ -142,8 +146,9 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		return 0;
 
 	/* Handle URLs */
-	if ((!strncmp(file->filename, "http://", 7)) || (!strncmp(file->filename, "https://", 8))
-			|| (!strncmp(file->filename, "ftp://", 6))) {
+	if ((!strncmp(file->filename, "http://", 7))
+        || (!strncmp(file->filename, "https://", 8))
+        || (!strncmp(file->filename, "ftp://", 6))) {
 		image_source = SRC_HTTP;
 
 		tmpname = feh_http_load_image(file->filename);
@@ -176,7 +181,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->filename = estrdup(tmpname);
 
 			if (!opt.keep_http)
-				add_file_to_rm_filelist(tmpname);
+				add_file_to_rm_filelist( rm_md , tmpname, RM_LIST_ADDTO);
 		}
 		else if ((image_source == SRC_MAGICK) || !opt.keep_http)
 			unlink(tmpname);
@@ -242,7 +247,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 #ifdef HAVE_LIBEXIF
 	file->ed = exif_get_data(file->filename);
-#endif		
+#endif
 
 	D(("Loaded ok\n"));
 	return(1);
@@ -305,7 +310,6 @@ static char *feh_magick_load_image(char *filename)
 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
 			close(fd);
 			unlink(sfn);
-			free(sfn);
 			sfn = NULL;
 
 			if (!opt.quiet) {
@@ -367,7 +371,7 @@ static char *feh_http_load_image(char *url)
 
 	if (strlen(tmpname) > (NAME_MAX-6))
 		tmpname[NAME_MAX-7] = '\0';
-	
+
 	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
 	free(tmpname);
 
@@ -554,8 +558,9 @@ void feh_draw_filename(winwidget w)
 	char *s = NULL;
 	int len = 0;
 
-	if ((!w->file) || (!FEH_FILE(w->file->data))
-			|| (!FEH_FILE(w->file->data)->filename))
+	if ((!w->file)
+        || (!FEH_FILE(w->file->data))
+        || (!FEH_FILE(w->file->data)->filename))
 		return;
 
 	fn = feh_load_font(w);
@@ -564,12 +569,10 @@ void feh_draw_filename(winwidget w)
 	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw,
 			&th, IMLIB_TEXT_TO_RIGHT);
 
-	if (gib_list_length(filelist) > 1) {
-		len = snprintf(NULL, 0, "%d of %d",  gib_list_length(filelist),
-				gib_list_length(filelist)) + 1;
+	if ( FEH_LL_LEN(feh_md) > 1) {
+		len = snprintf(NULL, 0, "%d of %d", FEH_LL_LEN(feh_md),FEH_LL_LEN(feh_md)) + 1;
 		s = emalloc(len);
-		snprintf(s, len, "%d of %d", gib_list_num(filelist, current_file) +
-				1, gib_list_length(filelist));
+		snprintf(s, len, "%d of %d", FEH_LL_CUR_NTH(feh_md), FEH_LL_LEN(feh_md) );
 
 		gib_imlib_get_text_size(fn, s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
 
@@ -602,7 +605,7 @@ void feh_draw_filename(winwidget w)
 	return;
 }
 
-#ifdef HAVE_LIBEXIF  
+#ifdef HAVE_LIBEXIF
 void feh_draw_exif(winwidget w)
 {
 	static Imlib_Font fn = NULL;
@@ -613,7 +616,7 @@ void feh_draw_exif(winwidget w)
 	int pos2 = 0;
 	char info_line[256];
 	char *info_buf[128];
-	char buffer[EXIF_MAX_DATA];
+	char buffer[MAX_EXIF_DATA];
 
 	if ( (!w->file) || (!FEH_FILE(w->file->data))
 			 || (!FEH_FILE(w->file->data)->filename) )
@@ -623,20 +626,20 @@ void feh_draw_exif(winwidget w)
 
 
 	buffer[0] = '\0';
-	exif_get_info(FEH_FILE(w->file->data)->ed, buffer, EXIF_MAX_DATA);
+	exif_get_info(FEH_FILE(w->file->data)->ed, buffer, MAX_EXIF_DATA);
 
 	fn = feh_load_font(w);
 
-	if (buffer == NULL) 
+	if (buffer == NULL)
 	{
-		snprintf(buffer, EXIF_MAX_DATA, "%s", estrdup("Failed to run exif command"));
+		snprintf(buffer, MAX_EXIF_DATA, "%s", estrdup("Failed to run exif command"));
 		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
-	else 
+	else
 	{
 
-		while ( (no_lines < 128) && (pos < EXIF_MAX_DATA) )
+		while ( (no_lines < 128) && (pos < MAX_EXIF_DATA) )
 		{
 			/* max 128 lines */
 			pos2 = 0;
@@ -649,7 +652,7 @@ void feh_draw_exif(winwidget w)
 			  }
 			  else if ( buffer[pos] == '\0' )
 			  {
-			    pos = EXIF_MAX_DATA; /* all data seen */
+			    pos = MAX_EXIF_DATA; /* all data seen */
 			    info_line[pos2] = '\0';
 				}
 			  else
@@ -659,9 +662,9 @@ void feh_draw_exif(winwidget w)
 			    pos++;
 			    break;
 			  }
-			        
+
 			   pos++;
-			   pos2++;  
+			   pos2++;
 			}
 
 			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
@@ -691,7 +694,7 @@ void feh_draw_exif(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, width, height);
 
-	for (i = 0; i < no_lines; i++) 
+	for (i = 0; i < no_lines; i++)
 	{
 		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
@@ -706,7 +709,7 @@ void feh_draw_exif(winwidget w)
 	return;
 
 }
-#endif
+#endif      /* HAVE_LIBEXIF */
 
 void feh_draw_info(winwidget w)
 {
@@ -719,8 +722,9 @@ void feh_draw_info(winwidget w)
 	char *info_buf[128];
 	FILE *info_pipe;
 
-	if ((!w->file) || (!FEH_FILE(w->file->data))
-			|| (!FEH_FILE(w->file->data)->filename))
+	if ((!w->file)
+          || (!FEH_FILE(w->file->data))
+          || (!FEH_FILE(w->file->data)->filename))
 		return;
 
 	fn = feh_load_font(w);
@@ -818,14 +822,19 @@ char *build_caption_filename(feh_file * file, short create_dir)
 
 void feh_draw_caption(winwidget w)
 {
+  static char * no_cap =NULL;      /* to reuse the stock caption hint */
 	static Imlib_Font fn = NULL;
-	int tw = 0, th = 0, ww, hh;
+  static char *start, *end;        /* substr markers in alp[] */
+  static char last1;               /* save the final char */
+  static ld *alp;                  /* alp stands for Array(of)LinePointers */
+  int b;                           /* for the blue component in r,g,b */
+  int i = 0;                       /* index to walk thru alp[] array */
+
+	int tw = 0, th = 0, ww;          /* unused var  hh; */
 	int x, y;
 	Imlib_Image im = NULL;
-	char *p;
-	gib_list *lines, *l;
-	static gib_style *caption_style = NULL;
 	feh_file *file;
+
 
 	if (!w->file) {
 		return;
@@ -861,38 +870,23 @@ void feh_draw_caption(winwidget w)
 	if (*(file->caption) == '\0' && !w->caption_entry)
 		return;
 
-	caption_style = gib_style_new("caption");
-	caption_style->bits = gib_list_add_front(caption_style->bits,
-		gib_style_bit_new(0, 0, 0, 0, 0, 0));
-	caption_style->bits = gib_list_add_front(caption_style->bits,
-		gib_style_bit_new(1, 1, 0, 0, 0, 255));
-
 	fn = feh_load_font(w);
 
 	if (*(file->caption) == '\0') {
-		p = estrdup("Caption entry mode - Hit ESC to cancel");
-		lines = feh_wrap_string(p, w->w, fn, NULL);
-		free(p);
+    if ( no_cap == NULL ){
+        /* save this stock string on the heap.  Don't free it */
+        no_cap = estrdup("Caption entry mode - Hit ESC to cancel");
+    }
+    alp = feh_wrap_string( fn, no_cap, NULL, w->w );
 	} else
-		lines = feh_wrap_string(file->caption, w->w, fn, NULL);
+		alp = feh_wrap_string(fn, file->caption, NULL, w->w );
 
-	if (!lines)
+  if ( alp[0].L0.tot_lines == 0 )
 		return;
 
-	/* Work out how high/wide the caption is */
-	l = lines;
-	while (l) {
-		p = (char *) l->data;
-		gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
-		if (ww > tw)
-			tw = ww;
-		th += hh;
-		if (l->next)
-			th += 1;	/* line spacing */
-		l = l->next;
-	}
-
 	/* we don't want the caption overlay larger than our window */
+  th = alp[0].L0.tot_lines;         /* not really, but feh did it this way */
+  tw = alp[0].L0.maxwide;
 	if (th > w->h)
 		th = w->h;
 	if (tw > w->w)
@@ -904,30 +898,33 @@ void feh_draw_caption(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	l = lines;
+  b = 255 ;           /* only the b == blue component changes */
+	if (w->caption_entry && (*(file->caption) == '\0'))
+		b=127;
+	else if (w->caption_entry)
+    b=0;
+
 	x = 0;
 	y = 0;
-	while (l) {
-		p = (char *) l->data;
-		gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
-		x = (tw - ww) / 2;
-		if (w->caption_entry && (*(file->caption) == '\0'))
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 127, 255);
-		else if (w->caption_entry)
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
-		else
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-		y += hh + 1;	/* line spacing */
-		l = l->next;
+  for (i=1; i<= alp[0].L0.tot_lines ; i++ ) {
+    /* loops ONCE thru the lines and prints them */
+    ww = alp[i].L1.wide;
+		x = (tw - ww) / 2;
+
+		start = alp[i].L1.line;
+    end   = alp[i].L1.line + alp[i].L1.len;
+    /* null term this substring b4 the call ...*/
+    last1 = end[0];  end[0]   = '\0';
+    gib_imlib_text_draw(im, fn, &opt.caption_style, x, y, start, IMLIB_TEXT_TO_RIGHT, 255, 255, b, 255);
+    /* ... then restore that last char afterwards */
+    end[0] = last1;
+		y += alp[i].L1.high + 1;	/* line spacing */
 	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
-	gib_list_free_and_data(lines);
+
 	return;
 }
 
@@ -939,7 +936,7 @@ void feh_display_status(char stat)
 	static int init_len = 0;
 	int j = 0;
 
-	D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
+	D(("filelist %p, filelist->next %p\n", FEH_LL_FIRST(feh_md), FEH_LL_FIRST(feh_md)->next ));
 
 	if (!stat) {
 		putc('\n', stdout);
@@ -949,7 +946,7 @@ void feh_display_status(char stat)
 	}
 
 	if (!init_len)
-		init_len = gib_list_length(filelist);
+		init_len = FEH_LL_LEN(feh_md);
 
 	if (i) {
 		if (reset_output) {
@@ -959,7 +956,7 @@ void feh_display_status(char stat)
 		}
 
 		if (!(i % 50)) {
-			int len = gib_list_length(filelist);
+			int len = FEH_LL_LEN(feh_md);
 
 			fprintf(stdout, " %5d/%d (%d)\n[%3d%%] ",
 					i, init_len, len, ((int) ((float) i / init_len * 100)));
@@ -1010,103 +1007,105 @@ void feh_edit_inplace(winwidget w, int op)
 	return;
 }
 
-gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style * style)
-{
-	gib_list *ll, *lines = NULL, *list = NULL, *words;
-	gib_list *l = NULL;
-	char delim[2] = { '\n', '\0' };
-	int w, line_width;
-	int tw, th;
-	char *p, *pp;
-	char *line = NULL;
-	char *temp;
-	int space_width = 0, m_width = 0, t_width = 0, new_width = 0;
+/* May 2012 HRABAK rewrote feh_wrap_string() to eliminate gib_list
+ * linked list requirement and remove redundant gib_imlib_get_text_size()
+ * calls.
+ */
 
-	lines = gib_string_split(text, delim);
+ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w ){
+    /* takes a (possibly) multi-line text and breaks it into lines that will
+     * fit inside the image w(idth) constraint, for a given font and style.
+     * The wide and high calcs for each line are saved with the line so the
+     * caller can just gib_imlib_text_draw() without have to recalc those
+     * values again.  Returns an array of the lines (alp[]) to the caller.
+     * alp[0] element holds the metadata for all the lines in this text.
+     * Note:  When I pass a substring to get_text_size(), I just jam in a
+     * NULL termination mid-string (in the original), then restore that
+     * one char (last1) after the call.
+     */
 
-	if (wrap_width) {
-		gib_imlib_get_text_size(fn, "M M", style, &t_width, NULL, IMLIB_TEXT_TO_RIGHT);
-		gib_imlib_get_text_size(fn, "M", style, &m_width, NULL, IMLIB_TEXT_TO_RIGHT);
-		space_width = t_width - (2 * m_width);
-		w = wrap_width;
-		l = lines;
-		while (l) {
-			line_width = 0;
-			p = (char *) l->data;
-			/* quick check to see if whole line fits okay */
-			gib_imlib_get_text_size(fn, p, style, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-			if (tw <= w) {
-				list = gib_list_add_end(list, estrdup(p));
-			} else if (strlen(p) == 0) {
-				list = gib_list_add_end(list, estrdup(""));
-			} else if (!strcmp(p, " ")) {
-				list = gib_list_add_end(list, estrdup(" "));
-			} else {
-				words = gib_string_split(p, " ");
-				if (words) {
-					ll = words;
-					while (ll) {
-						pp = (char *) ll->data;
-						if (strcmp(pp, " ")) {
-							gib_imlib_get_text_size
-							    (fn, pp, style, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-							if (line_width == 0)
-								new_width = tw;
-							else
-								new_width = line_width + space_width + tw;
-							if (new_width <= w) {
-								/* add word to line */
-								if (line) {
-									int len;
+    static int guess = FIRST_ALP_GUESS;
+    static ld *alp;                  /*  alp stands for Array(of)LinePointers */
+    static wd *awp;                  /*  awp stands for Array(of)WordPointers */
 
-									len = strlen(line)
-									    + strlen(pp)
-									    + 2;
-									temp = emalloc(len);
-									snprintf(temp, len, "%s %s", line, pp);
-									free(line);
-									line = temp;
-								} else {
-									line = estrdup(pp);
-								}
-								line_width = new_width;
-							} else if (line_width == 0) {
-								/* can't fit single word in :/
-								   increase width limit to width of word
-								   and jam the bastard in anyhow */
-								w = tw;
-								line = estrdup(pp);
-								line_width = new_width;
-							} else {
-								/* finish this line, start next and add word there */
-								if (line) {
-									list = gib_list_add_end(list, estrdup(line));
-									free(line);
-									line = NULL;
-								}
-								line = estrdup(pp);
-								line_width = tw;
-							}
-						}
-						ll = ll->next;
-					}
-					if (line) {
-						/* finish last line */
-						list = gib_list_add_end(list, estrdup(line));
-						free(line);
-						line = NULL;
-						line_width = 0;
-					}
-					gib_list_free_and_data(words);
-				}
-			}
-			l = l->next;
-		}
-		gib_list_free_and_data(lines);
-		lines = list;
-	}
-	return lines;
-}
+    int linenum=0;                   /* index for alp[] */
+    int i_start, i_end;              /* indexs for awp[] */
+    int lw, lh=0;
+    char *start, *end;
+    char last1;                      /* save the final char */
+
+/* adds a new element to the alp[] array. should this be an inline func?  */
+#define ADD_THIS_TO_ALP  if ( linenum == guess ){ \
+                              guess+=FIRST_ALP_GUESS; \
+                              alp =  erealloc( alp, sizeof( ld ) * guess ); \
+                          } \
+                          alp[ linenum ].L1.wide = lw; \
+                          alp[ linenum ].L1.high = lh; \
+                          alp[ linenum ].L1.line = start; \
+                          alp[ linenum ].L1.len  = end - start; \
+                          if ( lw > alp[0].L0.maxwide ){ \
+                              alp[0].L0.maxwide  = lw; \
+                          } \
+                          alp[0].L0.tothigh += lh; \
+                          alp[0].L0.tot_lines = linenum;
+
+    /* I don't like this solution but ....  Initialize it the first time thru  */
+    if ( linenum==0 )
+        alp =  malloc( sizeof( ld ) * guess );
+
+    awp = feh_string_split(text);
+
+    /* incase no text lines */
+    alp[0].L0.maxwide = alp[0].L0.tothigh = alp[0].L0.tot_lines = 0;
+
+    /* prime the pump with the first line */
+    linenum = 1; i_start = 0; start = awp[0].word;
+    end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+
+    while (1) {
+
+        if ( end == NULL ){
+            /* just an empty line */
+            lw = 0;
+            end = start;
+            i_end--;
+        } else {
+            /* null term this substring b4 the call ...*/
+            last1 = end[0];  end[0]   = '\0' ;  start = awp[i_start].word;
+            gib_imlib_get_text_size(fn, start, s, &lw, &lh, IMLIB_TEXT_TO_RIGHT);
+            /* ... then restore that last char afterwards */
+            end[0] = last1;
+        }
+
+        if ( lw <= w ) {      /* it fits */
+            ADD_THIS_TO_ALP
+            linenum++;      /* ready for the next line */
+            i_start = i_end +1;
+            if ( i_start > awp[0].tot_items ) break;
+            start = awp[i_start].word;
+            end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+        } else {              /* did not fit, so drop words off the end */
+            if ( i_start == i_end ){
+                /* not even room for the FIRST word.
+                 * So mash it in, resetting wide to fit */
+                if ( w < lw) w = lw;
+                ADD_THIS_TO_ALP
+                linenum++;      /* ready for the next line */
+                i_start++;
+                if ( i_start > awp[0].tot_items ) break;
+                end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+                continue;
+            }
+
+            i_end--;        /*  drop one word off the end and try again */
+            end = awp[i_end].word + awp[i_end].len;
+
+        }     /* end if lw <=w */
+    }         /* end of infinite while() loop */
+
+    return alp;
+
+}     /* end of feh_wrap_string() */
 
 void feh_edit_inplace_lossless(winwidget w, int op)
 {
@@ -1182,14 +1181,15 @@ void feh_draw_actions(winwidget w)
 	if (num_actions == 0)
 		return;
 
-	if ((!w->file) || (!FEH_FILE(w->file->data))
-			|| (!FEH_FILE(w->file->data)->filename))
+	if ((!w->file)
+          || (!FEH_FILE(w->file->data))
+          || (!FEH_FILE(w->file->data)->filename))
 		return;
 
 	fn = feh_load_font(w);
 
 	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-/* Check for the widest line */
+  /* Check for the widest line */
 	max_tw = tw;
 
 	for (i = 0; i < 10; i++) {
@@ -1211,7 +1211,7 @@ void feh_draw_actions(winwidget w)
 	th = (th * num_actions) + line_th;
 
 	/* This depends on feh_draw_filename internals...
-	 * should be fixed some time
+	 * should be FIXME some time
 	 */
 	if (opt.draw_filename)
 		th_offset = line_th * 2;
@@ -1248,4 +1248,352 @@ void feh_draw_actions(winwidget w)
 
 	gib_imlib_free_image_and_decache(im);
 	return;
+}
+
+
+/* As of May 25, 2012 HRABAK moved all the old gib_imlib.c code here and
+ * killed gib_imlib.c and .h files.  This was the last move to remove
+ * any gib_??? named files from feh.
+ */
+
+int
+gib_imlib_image_get_width(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   return imlib_image_get_width();
+}
+
+int
+gib_imlib_image_get_height(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   return imlib_image_get_height();
+}
+
+int
+gib_imlib_image_has_alpha(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   return imlib_image_has_alpha();
+}
+
+void
+gib_imlib_free_image_and_decache(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   imlib_free_image_and_decache();
+}
+
+void
+gib_imlib_free_image(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   imlib_free_image();
+}
+
+void
+gib_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
+                                   char dither, char blend, char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_render_image_on_drawable(x, y);
+}
+
+void
+gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
+                                           int y, int w, int h, char dither,
+                                           char blend, char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_render_image_on_drawable_at_size(x, y, w, h);
+}
+
+
+void
+gib_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
+                                                int sx, int sy, int sw,
+                                                int sh, int dx, int dy,
+                                                int dw, int dh, char dither,
+                                                char blend, char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
+                                               dh);
+}
+
+void
+gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
+                                                              Imlib_Image im,
+                                                              int sx, int sy,
+                                                              int sw, int sh,
+                                                              int dx, int dy,
+                                                              int dw, int dh,
+                                                              double angle,
+                                                              char dither,
+                                                              char blend,
+                                                              char alias)
+{
+   Imlib_Image new_im;
+
+   imlib_context_set_image(im);
+   imlib_context_set_drawable(d);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_angle(angle);
+   imlib_context_set_blend(blend);
+   new_im = imlib_create_rotated_image(angle);
+   imlib_context_set_image(new_im);
+   imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
+                                               dh);
+   imlib_free_image_and_decache();
+}
+
+void
+gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
+                               int r, int g, int b, int a)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_image_fill_rectangle(x, y, w, h);
+}
+
+
+void
+gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
+                               int r, int g, int b, int a)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_image_draw_rectangle(x, y, w, h);
+}
+
+
+void
+gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
+                    char *text, Imlib_Text_Direction dir, int r, int g,
+                    int b, int a)
+{
+    /* HRABAKs rewrite now assumes any feh_style s pass to this will have
+     * both s.fg and s.bg values defined.
+     */
+
+   imlib_context_set_image(im);
+   imlib_context_set_font(fn);
+   imlib_context_set_direction(dir);
+   if (s) {
+      /* here we shift the draw to accomodate bits with negative offsets,
+       * which would be drawn at negative coords otherwise */
+      if ( s->min_x_off < 0 )
+          x -= s->min_x_off;
+      if ( s->min_y_off < 0 )
+          y -= s->min_y_off;
+
+      /* Now draw the bits */
+      if ((s->fg.r + s->fg.g + s->fg.b + s->fg.a) == 0)
+         imlib_context_set_color(r, g, b, a);
+      else
+         imlib_context_set_color(s->fg.r, s->fg.g, s->fg.b, s->fg.a);
+      imlib_text_draw(x + s->fg.x_off, y + s->fg.y_off, text);
+
+      if ((s->bg.r + s->bg.g + s->bg.b + s->bg.a) == 0)
+         imlib_context_set_color(r, g, b, a);
+      else
+         imlib_context_set_color(s->bg.r, s->bg.g, s->bg.b, s->bg.a);
+      imlib_text_draw(x + s->bg.x_off, y + s->bg.y_off, text);
+   }
+   else
+   {
+      imlib_context_set_color(r, g, b, a);
+      imlib_text_draw(x, y, text);
+   }
+}
+
+
+
+void
+gib_imlib_get_text_size(Imlib_Font fn, char *text, feh_style *s, int *w,
+                        int *h, Imlib_Text_Direction dir)
+{
+
+   imlib_context_set_font(fn);
+   imlib_context_set_direction(dir);
+   imlib_get_text_size(text, w, h);
+   if (s) {
+      if (h) {
+         *h += s->max_y_off;
+         *h -= s->min_y_off;
+      }
+      if (w) {
+         *w += s->max_x_off;
+         *w -= s->min_x_off;
+      }
+   }
+}
+
+Imlib_Image gib_imlib_clone_image(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   return imlib_clone_image();
+}
+
+char *
+gib_imlib_image_format(Imlib_Image im)
+{
+   imlib_context_set_image(im);
+   return imlib_image_format();
+}
+
+void
+gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
+                                 Imlib_Image source_image, char merge_alpha,
+                                 int sx, int sy, int sw, int sh, int dx,
+                                 int dy, int dw, int dh, char dither,
+                                 char blend, char alias)
+{
+   imlib_context_set_image(dest_image);
+   imlib_context_set_anti_alias(alias);
+   imlib_context_set_dither(dither);
+   imlib_context_set_blend(blend);
+   imlib_context_set_angle(0);
+   imlib_blend_image_onto_image(source_image, merge_alpha, sx, sy, sw, sh, dx,
+                                dy, dw, dh);
+}
+
+Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
+                                                  int sy, int sw, int sh,
+                                                  int dw, int dh, char alias)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_anti_alias(alias);
+   return imlib_create_cropped_scaled_image(sx, sy, sw, sh, dw, dh);
+}
+
+void
+gib_imlib_apply_color_modifier_to_rectangle(Imlib_Image im, int x, int y,
+                                            int w, int h, DATA8 * rtab,
+                                            DATA8 * gtab, DATA8 * btab,
+                                            DATA8 * atab)
+{
+   Imlib_Color_Modifier cm;
+
+   imlib_context_set_image(im);
+   cm = imlib_create_color_modifier();
+   imlib_context_set_color_modifier(cm);
+   imlib_set_color_modifier_tables(rtab, gtab, btab, atab);
+   imlib_apply_color_modifier_to_rectangle(x, y, w, h);
+   imlib_free_color_modifier();
+}
+
+void
+gib_imlib_image_set_has_alpha(Imlib_Image im, int alpha)
+{
+   imlib_context_set_image(im);
+   imlib_image_set_has_alpha(alpha);
+}
+
+void
+gib_imlib_save_image(Imlib_Image im, char *file)
+{
+   char *tmp;
+
+   imlib_context_set_image(im);
+   tmp = strrchr(file, '.');
+   if (tmp)
+   {
+     char *p, *pp;
+     p = estrdup(tmp + 1);
+     pp = p;
+     while(*pp) {
+       *pp = tolower(*pp);
+       pp++;
+     }
+     imlib_image_set_format(p);
+     free(p);
+   }
+   imlib_save_image(file);
+}
+
+void
+gib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
+                                       Imlib_Load_Error * error_return)
+{
+   char *tmp;
+
+   imlib_context_set_image(im);
+   tmp = strrchr(file, '.');
+   if (tmp)
+      imlib_image_set_format(tmp + 1);
+   imlib_save_image_with_error_return(file, error_return);
+}
+
+void
+gib_imlib_free_font(Imlib_Font fn)
+{
+   imlib_context_set_font(fn);
+   imlib_free_font();
+}
+
+void
+gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
+                          char make_updates, int r, int g, int b, int a)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, a);
+   imlib_image_draw_line(x1, y1, x2, y2, make_updates);
+}
+
+Imlib_Image gib_imlib_create_rotated_image(Imlib_Image im, double angle)
+{
+   imlib_context_set_image(im);
+   return (imlib_create_rotated_image(angle));
+}
+
+void
+gib_imlib_image_blur(Imlib_Image im, int radius)
+{
+   imlib_context_set_image(im);
+   imlib_image_blur(radius);
+}
+
+void
+gib_imlib_image_sharpen(Imlib_Image im, int radius)
+{
+   imlib_context_set_image(im);
+   imlib_image_sharpen(radius);
+}
+
+
+Imlib_Font
+gib_imlib_load_font(char *name)
+{
+   Imlib_Font fn;
+
+   if ((fn = imlib_load_font(name)))
+      return fn;
+   weprintf("couldn't load font %s, attempting to fall back to fixed.", name);
+   if ((fn = imlib_load_font("fixed")))
+      return fn;
+   weprintf("failed to even load fixed! Attempting to find any font.");
+   return imlib_load_font("*");
+}
+
+void gib_imlib_image_orientate(Imlib_Image im, int orientation)
+{
+  imlib_context_set_image(im);
+  imlib_image_orientate(orientation);
 }
