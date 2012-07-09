@@ -902,7 +902,7 @@ An example entry would be
 .
 .Pp
 .
-You cane use this theme in two ways.  Either call
+You can use this theme in two ways.  Either call
 .Qo
 .Nm
 -Timagemap *.jpg
