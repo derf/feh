@@ -65,7 +65,7 @@ void init_slideshow_mode(void)
 			winwidget_show(w);
 			if (opt.slideshow_delay > 0.0)
 				feh_add_timer(cb_slide_timer, w, opt.slideshow_delay, "SLIDE_CHANGE");
-			else if (opt.reload > 0)
+			if (opt.reload > 0)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 			break;
 		} else {
