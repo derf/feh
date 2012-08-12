@@ -49,7 +49,7 @@ void init_multiwindow_mode(void)
 			s = emalloc(len);
 			snprintf(s, len, PACKAGE " - %s", file->filename);
 		} else {
-			s = estrdup(feh_printf(opt.title, file));
+			s = estrdup(feh_printf(opt.title, file, w));
 		}
 
 		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL) {

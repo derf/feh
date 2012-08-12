@@ -169,7 +169,7 @@ void init_thumbnail_mode(void)
 	if (!opt.title)
 		s = estrdup(PACKAGE " [thumbnail mode]");
 	else
-		s = estrdup(feh_printf(opt.title, NULL));
+		s = estrdup(feh_printf(opt.title, NULL, NULL));
 
 	if (opt.display) {
 		winwid = winwidget_create_from_image(td.im_main, s, WIN_TYPE_THUMBNAIL);
@@ -717,7 +717,7 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 	if (!opt.thumb_title)
 		s = thumbfile->name;
 	else
-		s = feh_printf(opt.thumb_title, thumbfile);
+		s = feh_printf(opt.thumb_title, thumbfile, NULL);
 	
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
 	if (!thumbwin) {
