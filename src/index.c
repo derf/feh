@@ -167,7 +167,7 @@ void init_index_mode(void)
 	if (!opt.title)
 		s = estrdup(PACKAGE " [index mode]");
 	else
-		s = estrdup(feh_printf(opt.title, NULL));
+		s = estrdup(feh_printf(opt.title, NULL, NULL));
 
 	if (opt.display) {
 		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
@@ -465,7 +465,7 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 
 char *create_index_string(feh_file * file)
 {
-	return feh_printf(opt.index_info, file);
+	return feh_printf(opt.index_info, file, NULL);
 }
 
 char *create_index_title_string(int num, int w, int h)

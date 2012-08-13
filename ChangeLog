@@ -6,6 +6,10 @@ git HEAD
     * menu: simpler background, remove drop shadows
     * Remove --menu-style support (deprecated in 1.12)
     * Allow --slideshow-delay and --reload to be used together
+    * New format specifiers:
+    ** %o    x,y image offset relative to top-left window corner
+    ** %r    image rotation
+    ** %z    image zoom
 
 Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
 

@@ -817,6 +817,10 @@ Image name
 .
 Escaped image name
 .
+.It %o
+.
+x,y offset of top-left image corner to window corner in pixels
+.
 .It %p
 .
 Number of image pixels
@@ -825,6 +829,10 @@ Number of image pixels
 .
 Numbor of image pixels
 .Pq kilopixels / megapixels
+.
+.It %r
+.
+Image rotation. A half right turn equals pi.
 .
 .It %s
 .
@@ -851,6 +859,10 @@ Image width
 .
 .Nm
 version
+.
+.It %z
+.
+current image zoom
 .
 .El
 .

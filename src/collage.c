@@ -110,7 +110,7 @@ void init_collage_mode(void)
 	if (!opt.title)
 		s = estrdup(PACKAGE " [collage mode]");
 	else
-		s = estrdup(feh_printf(opt.title, NULL));
+		s = estrdup(feh_printf(opt.title, NULL, NULL));
 
 	if (opt.display) {
 		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);

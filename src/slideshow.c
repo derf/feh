@@ -58,7 +58,7 @@ void init_slideshow_mode(void)
 			last = NULL;
 		}
 		current_file = l;
-		s = slideshow_create_name(file);
+		s = slideshow_create_name(file, NULL);
 		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL) {
 			free(s);
 			success = 1;
@@ -133,7 +133,7 @@ void cb_reload_timer(void *data)
 	/* reset window name in case of current file order,
 	 * filename, or filelist_length has changed.
 	 */
-	current_filename = slideshow_create_name(FEH_FILE(current_file->data));
+	current_filename = slideshow_create_name(FEH_FILE(current_file->data), w);
 	winwidget_rename(w, current_filename);
 	free(current_filename);
 
@@ -321,7 +321,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			if (render)
 				winwidget_render_image(winwid, 1, 0);
 
-			s = slideshow_create_name(FEH_FILE(current_file->data));
+			s = slideshow_create_name(FEH_FILE(current_file->data), winwid);
 			winwidget_rename(winwid, s);
 			free(s);
 
@@ -351,7 +351,7 @@ void slideshow_pause_toggle(winwidget w)
 	winwidget_rename(w, NULL);
 }
 
-char *slideshow_create_name(feh_file * file)
+char *slideshow_create_name(feh_file * file, winwidget winwid)
 {
 	char *s = NULL;
 	int len = 0;
@@ -362,7 +362,7 @@ char *slideshow_create_name(feh_file * file)
 		snprintf(s, len, PACKAGE " [%d of %d] - %s",
 			gib_list_num(filelist, current_file) + 1, gib_list_length(filelist), file->filename);
 	} else {
-		s = estrdup(feh_printf(opt.title, file));
+		s = estrdup(feh_printf(opt.title, file, winwid));
 	}
 
 	return(s);
@@ -373,7 +373,7 @@ void feh_action_run(feh_file * file, char *action)
 	if (action) {
 		char *sys;
 		D(("Running action %s\n", action));
-		sys = feh_printf(action, file);
+		sys = feh_printf(action, file, NULL);
 
 		if (opt.verbose && !opt.list && !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
@@ -418,7 +418,7 @@ char *format_size(int size)
 	return ret;
 }
 
-char *feh_printf(char *str, feh_file * file)
+char *feh_printf(char *str, feh_file * file, winwidget winwid)
 {
 	char *c;
 	char buf[20];
@@ -438,6 +438,19 @@ char *feh_printf(char *str, feh_file * file)
 				if (file)
 					strcat(ret, shell_escape(file->filename));
 				break;
+			case 'h':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					snprintf(buf, sizeof(buf), "%d", file->info->height);
+					strcat(ret, buf);
+				}
+				break;
+			case 'l':
+				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
+				strcat(ret, buf);
+				break;
+			case 'm':
+				strcat(ret, mode);
+				break;
 			case 'n':
 				if (file)
 					strcat(ret, file->name);
@@ -446,15 +459,27 @@ char *feh_printf(char *str, feh_file * file)
 				if (file)
 					strcat(ret, shell_escape(file->name));
 				break;
-			case 'w':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->width);
+			case 'o':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%d,%d", winwid->im_x,
+						winwid->im_y);
 					strcat(ret, buf);
 				}
 				break;
-			case 'h':
+			case 'p':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->height);
+					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
+					strcat(ret, buf);
+				}
+				break;
+			case 'P':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					strcat(ret, format_size(file->info->pixels));
+				}
+				break;
+			case 'r':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%.1f", winwid->im_angle);
 					strcat(ret, buf);
 				}
 				break;
@@ -469,37 +494,31 @@ char *feh_printf(char *str, feh_file * file)
 					strcat(ret, format_size(file->info->size));
 				}
 				break;
-			case 'p':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
-					strcat(ret, buf);
-				}
-				break;
-			case 'P':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strcat(ret, format_size(file->info->pixels));
-				}
-				break;
 			case 't':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					strcat(ret, file->info->format);
 				}
-				break;
-			case 'v':
-				strcat(ret, VERSION);
-				break;
-			case 'm':
-				strcat(ret, mode);
-				break;
-			case 'l':
-				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
-				strcat(ret, buf);
 				break;
 			case 'u':
 				snprintf(buf, sizeof(buf), "%d",
 					 current_file != NULL ? gib_list_num(filelist, current_file)
 					 + 1 : 0);
 				strcat(ret, buf);
+				break;
+			case 'v':
+				strcat(ret, VERSION);
+				break;
+			case 'w':
+				if (file && (file->info || !feh_file_info_load(file, NULL))) {
+					snprintf(buf, sizeof(buf), "%d", file->info->width);
+					strcat(ret, buf);
+				}
+				break;
+			case 'z':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%.2f", winwid->zoom);
+					strcat(ret, buf);
+				}
 				break;
 			case '%':
 				strcat(ret, "%");
@@ -542,7 +561,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 			winwidget_destroy(winwid);
 			return;
 		}
-		s = slideshow_create_name(FEH_FILE(winwid->file->data));
+		s = slideshow_create_name(FEH_FILE(winwid->file->data), winwid);
 		winwidget_rename(winwid, s);
 		free(s);
 		winwidget_render_image(winwid, 1, 0);
