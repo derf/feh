@@ -12,6 +12,7 @@ git HEAD
     ** %z    image zoom
     * Always use file URL as filename when opening http files.
       (consequence: lossless rotate no longer works for such files)
+    * --reload now accepts rational numbers
 
 Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
 

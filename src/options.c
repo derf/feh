@@ -590,7 +590,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			}
 			break;
 		case 'R':
-			opt.reload = atoi(optarg);
+			opt.reload = atof(optarg);
 			break;
 		case 'a':
 			opt.alpha = 1;

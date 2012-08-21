@@ -750,7 +750,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		if (opt.reload < SLIDESHOW_RELOAD_MAX)
 			opt.reload++;
 		else if (opt.verbose)
-			weprintf("Cannot set RELOAD higher than %d seconds.", opt.reload);
+			weprintf("Cannot set RELOAD higher than %f seconds.", opt.reload);
 	}
 	else if (feh_is_kp(&keys.reload_minus, keysym, state)) {
 		if (opt.reload > 1)
