@@ -456,6 +456,7 @@ gib_list *feh_read_filelist(char *filename)
 	char s[1024], s1[1024];
 	Imlib_Image tmp_im;
 	struct stat st;
+	signed short tmp_magick_timeout;
 
 	if (!filename)
 		return(NULL);
@@ -463,6 +464,8 @@ gib_list *feh_read_filelist(char *filename)
 	/*
 	 * feh_load_image will fail horribly if filename is not seekable
 	 */
+	tmp_magick_timeout = opt.magick_timeout;
+	opt.magick_timeout = -1;
 	if (!stat(filename, &st) && S_ISREG(st.st_mode) &&
 			feh_load_image_char(&tmp_im, filename)) {
 		weprintf("Filelist file %s is an image, refusing to use it.\n"
@@ -470,6 +473,7 @@ gib_list *feh_read_filelist(char *filename)
 		opt.filelistfile = NULL;
 		return NULL;
 	}
+	opt.magick_timeout = tmp_magick_timeout;
 
 	errno = 0;
 	if ((fp = fopen(filename, "r")) == NULL) {
