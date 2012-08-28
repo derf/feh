@@ -1527,7 +1527,7 @@ window slightly too large.
 .Ss REPORTING BUGS
 .
 If you find a bug, please report it to
-.Aq derf@finalrewind.org
+.Aq derf+feh@finalrewind.org
 or via
 .Aq http://github.com/derf/feh/issues .
 You are also welcome to direct any feh-related comments/questions/... to #feh
