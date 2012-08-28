@@ -118,17 +118,11 @@ can open any format supported by Imlib2, most notably jpeg and png.
 If the convert binary
 .Pq supplied by ImageMagick
 is available, it also has limited support for many other filetypes, such as
-svg, xcf and otf.
+svg, xcf and otf. Use
+.Cm --magick-timeout Ar num
+with a non-negative value to enable it.
 .
 For animated images, only the first frame is shown.
-.
-.Pp
-.
-If you don't like the results produced by convert, disable it with
-.Qq --magick-timeout -1 .
-Also, note that
-.Nm
-will only try to convert a file for up to five seconds by default.
 .
 .
 .Sh OPTIONS
@@ -401,7 +395,7 @@ Stop trying to convert unloadable files after
 seconds. A negative value disables covert / magick support altogether, a value
 of zero causes
 .Nm
-to try indefinitely. Default timeout is 5 seconds.
+to try indefinitely. By default, magick support is disabled.
 .
 .It Cm -M , --menu-font Ar font
 .
@@ -1527,7 +1521,7 @@ window slightly too large.
 .Ss REPORTING BUGS
 .
 If you find a bug, please report it to
-.Aq derf@finalrewind.org
+.Aq derf+feh@finalrewind.org
 or via
 .Aq http://github.com/derf/feh/issues .
 You are also welcome to direct any feh-related comments/questions/... to #feh
