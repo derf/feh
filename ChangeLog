@@ -14,6 +14,9 @@ git HEAD
       (consequence: lossless rotate no longer works for such files)
     * --reload now accepts rational numbers
     * Fix --filelist trying to load .txt files with imagemagick
+    * imagemagick support is now disabled by default, to make feh behaviour
+      less confusing. Set --magick-timeout to a non-negative value to enable
+      it (--magick-timeout 5 for feh-2.5 behaviour)
 
 Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
 
