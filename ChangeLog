@@ -1,3 +1,10 @@
+git HEAD
+
+    * Fix freedesktop.org Thumbnail Managing Standard implementation:
+      when running feh on the current working directory, '/path/to/./image.png'
+      was used for thumbnail name generation. Now it is always
+      '/path/to/image.png'
+
 Tue, 28 Aug 2012 11:46:19 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.6

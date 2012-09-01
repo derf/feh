@@ -596,6 +596,9 @@ char *feh_thumbnail_get_name_uri(char *name)
 		/* FIXME: add support for ~, need to investigate if it's expanded
 		   somewhere else before adding (unecessary) code */
 		if (name[0] != '/') {
+			/* work around /some/path/./image.ext */
+			if ((strncmp(name, "./", 2)) == 0)
+				name += 2;
 			cwd = getcwd(NULL, 0);
 			uri = estrjoin("/", "file:/", cwd, name, NULL);
 			free(cwd);
