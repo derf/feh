@@ -1000,6 +1000,7 @@ void feh_edit_inplace(winwidget w, int op)
 {
 	int ret;
 	Imlib_Image old;
+	Imlib_Load_Error err;
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
 		return;
 
@@ -1019,8 +1020,11 @@ void feh_edit_inplace(winwidget w, int op)
 			imlib_image_flip_horizontal();
 		} else
 			gib_imlib_image_orientate(old, op);
-		gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
+		ungib_imlib_save_image_with_error_return(old,
+			FEH_FILE(w->file->data)->filename, &err);
 		gib_imlib_free_image(old);
+		if (err)
+			im_weprintf(w, "Failed to save image after operation");
 		feh_reload_image(w, 1, 1);
 	} else {
 		im_weprintf(w, "failed to load image from disk to edit it in place");
