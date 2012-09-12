@@ -384,7 +384,7 @@ void init_thumbnail_mode(void)
 			strncpy(output_buf, opt.output_file, 1024);
 		ungib_imlib_save_image_with_error_return(td.im_main, output_buf, &err);
 		if (err) {
-			weprintf("Cannot save image to %s", output_buf);
+			feh_imlib_print_load_error(output_buf, td.im_main, err);
 		}
 		else if (opt.verbose) {
 			int tw, th;

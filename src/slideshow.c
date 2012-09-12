@@ -597,7 +597,7 @@ void slideshow_save_image(winwidget win)
 	ungib_imlib_save_image_with_error_return(win->im, tmpname, &err);
 
 	if (err)
-		im_weprintf(win, "Can't save image %s:", tmpname);
+		feh_imlib_print_load_error(tmpname, win, err);
 
 	free(tmpname);
 	return;

@@ -329,7 +329,7 @@ void init_index_mode(void)
 
 		ungib_imlib_save_image_with_error_return(im_main, output_buf, &err);
 		if (err) {
-			weprintf("Cannot save image to %s", output_buf);
+			feh_imlib_print_load_error(output_buf, im_main, err);
 		}
 		else if (opt.verbose) {
 			int tw, th;
