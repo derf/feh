@@ -55,6 +55,7 @@ void init_thumbnail_mode(void)
 	   int max_column_w = 0;
 	 */
 
+	Imlib_Load_Error err;
 	Imlib_Image im_temp;
 	int ww = 0, hh = 0, www, hhh, xxx, yyy;
 	int orig_w, orig_h;
@@ -381,8 +382,11 @@ void init_thumbnail_mode(void)
 			snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
 		else
 			strncpy(output_buf, opt.output_file, 1024);
-		gib_imlib_save_image(td.im_main, output_buf);
-		if (opt.verbose) {
+		ungib_imlib_save_image_with_error_return(td.im_main, output_buf, &err);
+		if (err) {
+			weprintf("Cannot save image to %s", output_buf);
+		}
+		else if (opt.verbose) {
 			int tw, th;
 
 			tw = gib_imlib_image_get_width(td.im_main);

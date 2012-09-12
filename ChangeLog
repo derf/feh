@@ -5,6 +5,7 @@ git HEAD
       was used for thumbnail name generation. Now it is always
       '/path/to/image.png'
     * Show error message if lossless rotate / flip failed on non-JPEG image
+    * Show error message if -O / -o failed to save image
 
 Tue, 28 Aug 2012 11:46:19 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
