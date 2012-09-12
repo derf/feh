@@ -594,13 +594,7 @@ void slideshow_save_image(winwidget win)
 	if (opt.verbose)
 		printf("saving image to filename '%s'\n", tmpname);
 
-	/* XXX gib_imlib_save_image_with_error_return breaks with *.XXX and
-	 * similar because it tries to set the image format, which only works
-	 * with .xxx .
-	 * So we leave that part out.
-	 */
-	imlib_context_set_image(win->im);
-	imlib_save_image_with_error_return(tmpname, &err);
+	ungib_imlib_save_image_with_error_return(win->im, tmpname, &err);
 
 	if (err)
 		im_weprintf(win, "Can't save image %s:", tmpname);

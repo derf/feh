@@ -129,6 +129,32 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 	return(i);
 }
 
+/*
+ * XXX gib_imlib_save_image_with_error_return breaks with *.END and
+ * similar because it tries to set the image format, which only works
+ * with .end .
+ * So we leave that part out.
+ */
+void ungib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
+	Imlib_Load_Error * error_return)
+{
+	char *tmp;
+	imlib_context_set_image(im);
+	tmp = strrchr(file, '.');
+	if (tmp) {
+		char *p, *pp;
+		p = gib_estrdup(tmp + 1);
+		pp = p;
+		while(*pp) {
+			*pp = tolower(*pp);
+			pp++;
+		}
+		imlib_image_set_format(p);
+		gib_efree(p);
+	}
+	imlib_save_image_with_error_return(file, error_return);
+}
+
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
