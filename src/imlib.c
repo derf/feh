@@ -234,10 +234,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		tmpname = feh_magick_load_image(file->filename);
 	}
 
-	if (image_source != SRC_IMLIB) {
-		if (tmpname == NULL)
-			return 0;
-
+	if ((image_source != SRC_IMLIB) && tmpname) {
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (im) {
 			real_filename = file->filename;
@@ -335,9 +332,6 @@ static char *feh_magick_load_image(char *filename)
 			if (!opt.quiet) {
 				if (WIFSIGNALED(status))
 					weprintf("%s - Conversion took too long, skipping",
-						filename);
-				else
-					weprintf("%s - No loader for that file format",
 						filename);
 			}
 

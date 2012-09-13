@@ -33,7 +33,7 @@ if (length($feh_name) == 0) {
 }
 
 my $re_warning =
-	qr{${feh_name} WARNING: test/fail/... \- No loader for that file format\n};
+	qr{${feh_name} WARNING: test/fail/... \- No Imlib2 loader for that file format\n};
 my $re_loadable = qr{test/ok/...};
 my $re_unloadable = qr{test/fail/...};
 my $re_list_action = qr{test/ok/... 16x16};

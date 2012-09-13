@@ -1,4 +1,4 @@
-git HEAD
+Thu, 13 Sep 2012 12:00:06 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * Fix freedesktop.org Thumbnail Managing Standard implementation:
       when running feh on the current working directory, '/path/to/./image.png'
@@ -6,6 +6,8 @@ git HEAD
       '/path/to/image.png'
     * Show error message if lossless rotate / flip failed on non-JPEG image
     * Show error message if -O / -o failed to save image
+    * Show error message if load failed and magick is disabled (was broken
+      by feh 2.4)
 
 Tue, 28 Aug 2012 11:46:19 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
