@@ -1106,6 +1106,16 @@ away.  See
 .Xr jpegtran 1
 for more about lossless JPEG rotation.
 .
+.Em Note:
+jpegtran does not update EXIF orientation tags. However,
+.Nm
+assumes that you use the feature to normalize image orientation and want it to
+be displayed this way everywhere. After every rotation, it will unconditionally
+set the EXIF orientation to 1
+.Pq Qq 0,0 is top left .
+Should you need to reverse this, see
+.Xr jpegexiforient 1 .
+.
 .It _ Bq flip
 .
 In place editing - vertical flip
@@ -1487,7 +1497,9 @@ but without the flickering.
 .Nm
 requires the
 .Cm jpegtran
-binary
+and
+.Cm jpegexiforient
+binaries
 .Pq usually distributed in Qo libjpeg-progs Qc or similar
 for lossless rotation.
 .

@@ -1,3 +1,10 @@
+git HEAD
+
+    * Set EXIF orientation tag to 1 ("0,0 is top left" aka normal) after
+      running jpegtran. Previously, when doing a lossless rotate, the image
+      was rotated but the corresponding EXIF tag not updated, resulting in
+      wrong image display in programs aware of this EXIF tag.
+
 Thu, 13 Sep 2012 12:00:06 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * Fix freedesktop.org Thumbnail Managing Standard implementation:
