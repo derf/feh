@@ -31,7 +31,7 @@ $MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
 .Sh DESCRIPTION
 .
 .Nm
-is a mode-based image viewer.  It is especially aimed at commandline users who
+is a mode-based image viewer.  It is especially aimed at command line users who
 need a fast image viewer without huge GUI dependencies, though it can also be
 started by
 .Pq graphical
@@ -61,7 +61,7 @@ However, if you compile feh with exif=1, you can also display it directly.
 .Sh MODES
 .
 .Nm
-is based on various modes, which are selected at startup by comandline
+is based on various modes, which are selected at startup by command line
 options.
 .
 .Pp
@@ -158,7 +158,7 @@ multiwindow mode, the window will be closed.
 .
 .It Cm --action1 No .. Cm --action9
 .
-Extra actions which can be set and triggered using the appropiate number key.
+Extra actions which can be set and triggered using the appropriate number key.
 .
 .It Cm -Z , --auto-zoom
 .
@@ -192,7 +192,7 @@ the caption will be looked for in
 Don't display images, print image info according to
 .Ar format
 instead.  See
-.Sx FORMAT SPECIFIEDRS .
+.Sx FORMAT SPECIFIERS .
 .
 .It Cm --cycle-once
 .
@@ -246,7 +246,7 @@ will be saved to
 .Ar file
 when
 .Nm
-exits.  You can add files to filelists by specifying them on the commandline
+exits.  You can add files to filelists by specifying them on the command line
 when also specifying the list.
 .
 .Pp
@@ -287,7 +287,7 @@ Enables
 .
 Note: This option needs to load all images to calculate the dimensions of the
 .Nm
-window, so when using it with many files it will ake a while before a
+window, so when using it with many files it will take a while before a
 .Nm
 window is visible.  Use
 .Cm --preload
@@ -329,7 +329,7 @@ Accepted values: checks (default), white, black.
 .It Cm -i , --index
 .
 Enable Index mode.  Index mode is similar to montage mode, and accepts the
-same options.  It creates an index print of thumbails, printing the image
+same options.  It creates an index print of thumbnails, printing the image
 name beneath each thumbnail.  Index mode enables certain other options, see
 .Sx INDEX MODE OPTIONS
 and
@@ -377,7 +377,7 @@ in the name.
 .
 .It Cm -l , --list
 .
-Don't display images.  Analyse them and display an
+Don't display images.  Analyze them and display an
 .Xr ls 1 - No style
 listing.  Useful in scripts to hunt out images of a certain
 size/resolution/type etc.
@@ -662,7 +662,7 @@ without displaying it.
 .
 Normally, if an image is smaller than the specified thumbnail size, it will
 not be enlarged.  If this option is set, the image will be scaled up to fit
-the thumnail size.  Aspect ratio will be maintained unles
+the thumbnail size.  Aspect ratio will be maintained unless
 .Cm --ignore-aspect
 is specified.
 .
@@ -715,7 +715,7 @@ can also be used as a background setter.  Unless you pass the
 .Cm --no-fehbg
 option, it will store the command line necessary to set the background in
 .Pa ~/.fehbg ,
-so to have your background restored everytime you start X, you can add
+so to have your background restored every time you start X, you can add
 .Qq eval $(cat ~/.fehbg)
 to your X startup script
 .Pq like Pa ~/.xinitrc .
@@ -821,7 +821,7 @@ Number of image pixels
 .
 .It \&%P
 .
-Numbor of image pixels
+Number of image pixels
 .Pq kilopixels / megapixels
 .
 .It %r
