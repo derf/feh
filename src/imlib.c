@@ -256,7 +256,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			fputs("\n", stdout);
 			reset_output = 1;
 		}
-		feh_imlib_print_load_error(file->filename, NULL, err)
+		feh_imlib_print_load_error(file->filename, NULL, err);
 		D(("Load *failed*\n"));
 		return(0);
 	}
