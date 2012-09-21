@@ -32,7 +32,7 @@ else
 endif
 
 ifeq (${debug},1)
-	CFLAGS += -DDEBUG
+	CFLAGS += -DDEBUG -O0
 	MAN_DEBUG = . This is a debug build.
 else
 	MAN_DEBUG =
