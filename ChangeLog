@@ -1,4 +1,4 @@
-git HEAD
+Wed, 26 Sep 2012 17:06:50 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * Set EXIF orientation tag to 1 ("0,0 is top left" aka normal) after
       running jpegtran. Previously, when doing a lossless rotate, the image
