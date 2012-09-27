@@ -1198,10 +1198,9 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 
 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
 			im_weprintf(w,
-					"lossless %s: Got exitcode %d from jpegexiforient",
-					status >> 8);
-			free(file_str);
-			return;
+					"lossless %s: Failed to update EXIF orientation tag:"
+					" jpegexiforient returned %d",
+					op_name, status >> 8);
 		}
 	}
 	free(file_str);

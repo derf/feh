@@ -1,3 +1,8 @@
+Thu, 27 Sep 2012 16:48:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+    * Fix segfault when doing lossless mirror/rotate and jpegexiforient is
+      not present <https://github.com/derf/feh/issues/100>
+
 Wed, 26 Sep 2012 17:06:50 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * Set EXIF orientation tag to 1 ("0,0 is top left" aka normal) after
