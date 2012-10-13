@@ -109,6 +109,8 @@ struct __fehoptions {
 	int zoom_mode;
 	unsigned char adjust_reload;
 
+	unsigned int min_width, min_height, max_width, max_height;
+
 	unsigned char mode;
 	unsigned char paused;
 

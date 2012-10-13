@@ -397,12 +397,29 @@ of zero causes
 .Nm
 to try indefinitely. By default, magick support is disabled.
 .
+.It Cm --max-dimension Ar width No x Ar height
+.
+Only show images with width <=
+.Ar width
+and height <=
+.Ar height .
+If you only care about one parameter, set the other to either something large
+or -1.
+.
 .It Cm -M , --menu-font Ar font
 .
 Use
 .Ar font
 .Pq truetype, with size, like Qq yudit/12
 as menu font.
+.
+.It Cm --min-dimension Ar width No x Ar height
+.
+Only show images with width >=
+.Ar width
+and height >=
+.Ar height .
+If you only care about one parameter, set the other to 0.
 .
 .It Cm -m , --montage
 .
@@ -1462,6 +1479,11 @@ Same as above
 .It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' %F \&| cut -d \&. -f 4-\&" \&.
 .
 Show some EXIF information, extracted by exifprobe/exifgrep
+.
+.It feh --action 'rm %F' -rl --max-dim 1000x800
+.
+Resursively remove all images with dimensions below or equal to 1000x800 pixels
+from the current directory.
 .
 .El
 .

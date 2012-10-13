@@ -60,6 +60,7 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
+	opt.max_height = opt.max_width = UINT_MAX;
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
@@ -300,15 +301,18 @@ static void feh_getopt_theme(int argc, char **argv)
 
 static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
+	int discard;
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		".@:^:~:):|:+:";
+		".@:^:~:):|:+:<:>:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
 		{"menu-bg"       , 1, 0, ')'},
 		{"debug"         , 0, 0, '+'},
 		{"scale-down"    , 0, 0, '.'},
+		{"max-dimension" , 1, 0, '<'},
+		{"min-dimension" , 1, 0, '>'},
 		{"title-font"    , 1, 0, '@'},
 		{"action"        , 1, 0, 'A'},
 		{"image-bg"      , 1, 0, 'B'},
@@ -398,7 +402,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	};
 	int optch = 0, cmdx = 0;
 
-	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
 		D(("Got option, getopt calls it %d, or %c\n", optch, optch));
 		switch (optch) {
@@ -411,6 +414,12 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case '+':
 			opt.debug = 1;
+			break;
+		case '<':
+			XParseGeometry(optarg, &discard, &discard, &opt.max_width, &opt.max_height);
+			break;
+		case '>':
+			XParseGeometry(optarg, &discard, &discard, &opt.min_width, &opt.min_height);
 			break;
 		case '.':
 			opt.scale_down = 1;

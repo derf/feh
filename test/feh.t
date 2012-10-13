@@ -2,13 +2,14 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 59;
+use Test::Command tests => 71;
 
 $ENV{HOME} = 'test';
 
 my $feh = "src/feh";
-my $images = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm '
-           . 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
+my $images_ok = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm';
+my $images_fail = 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
+my $images = "${images_ok} ${images_fail}";
 
 my $feh_name = $ENV{'PACKAGE'};
 
@@ -133,3 +134,27 @@ $cmd = Test::Command->new(cmd =>
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file('test/list/default');
 $cmd->stderr_like($re_list_action);
+
+$cmd = Test::Command->new(cmd => "$feh --list --min-dimension 20x20 $images_ok");
+
+$cmd->exit_is_num(1);
+$cmd->stdout_is_eq('');
+$cmd->stderr_is_file('test/no-loadable-files');
+
+$cmd = Test::Command->new(cmd => "$feh --list --max-dimension 10x10 $images_ok");
+
+$cmd->exit_is_num(1);
+$cmd->stdout_is_eq('');
+$cmd->stderr_is_file('test/no-loadable-files');
+
+$cmd = Test::Command->new(cmd => "$feh --list --min-dimension 16x16 $images_ok");
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/list/default');
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new(cmd => "$feh --list --max-dimension 16x16 $images_ok");
+
+$cmd->exit_is_num(0);
+$cmd->stdout_is_file('test/list/default');
+$cmd->stderr_is_eq('');

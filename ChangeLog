@@ -1,3 +1,8 @@
+git HEAD
+
+    * Add --min-dim and --max-dim options to only process images with certain
+      dimensions
+
 Thu, 27 Sep 2012 16:48:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * Fix segfault when doing lossless mirror/rotate and jpegexiforient is
