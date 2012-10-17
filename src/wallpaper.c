@@ -257,6 +257,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char *home;
 		char filbuf[4096];
 		char fehbg_xinerama[] = "--no-xinerama";
+		char *bgfill = NULL;
+		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -326,7 +328,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			D(("centering\n"));
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+			if (opt.image_bg == IMAGE_BG_WHITE)
+				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+			else
+				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
@@ -343,7 +348,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			XFreeGC(disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-center", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, bgfill, "--bg-center", filbuf, NULL);
 
 		} else if (filled == 1) {
 
@@ -366,6 +371,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XGCValues gcval;
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+			if (opt.image_bg == IMAGE_BG_WHITE)
+				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+			else
+				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
@@ -383,7 +392,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			XFreeGC(disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-max", filbuf, NULL);
+			fehbg = estrjoin(" ", "feh", fehbg_xinerama, bgfill, "--bg-max", filbuf, NULL);
 
 		} else {
 			if (use_filelist)
