@@ -558,8 +558,10 @@ theme.
 Same as Index mode, but the thumbnails are clickable image launchers.
 Note that
 .Cm --fullscreen
-does not affect the thumbnail window. It does, however, work for the image
-windows launched from thumbnail mode.
+and
+.Cm --scale-down
+do not affect the thumbnail window. They do, however, work for image windows
+launched from thumbnail mode.
 Also supports
 .Sx MONTAGE MODE OPTIONS .
 .

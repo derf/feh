@@ -402,6 +402,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
 						       || (winwid->h < winwid->im_h)) &&
+							  (winwid->type != WIN_TYPE_THUMBNAIL) &&
 							  (winwid->old_zoom == 1.0)) {
 		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
 
@@ -512,7 +513,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			winwid->im_y = (int) (max_h - (winwid->im_h * winwid->zoom)) >> 1;
 		}
 	}
-	else if (need_center && !winwid->full_screen && opt.scale_down) {
+	else if (need_center && !winwid->full_screen && opt.scale_down
+			&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
