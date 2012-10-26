@@ -1,3 +1,9 @@
+git HEAD
+
+    * Do not apply --scale-down to the thumbnail window. It will be applied
+      to windows opened from this, though.
+    * Patch by Rob Cornish: Respect --image-bg when setting a wallpaper
+
 Tue, 16 Oct 2012 06:29:58 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.7
