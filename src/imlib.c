@@ -129,6 +129,83 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 	return(i);
 }
 
+/*
+ * XXX gib_imlib_save_image_with_error_return breaks with *.END and
+ * similar because it tries to set the image format, which only works
+ * with .end .
+ * So we leave that part out.
+ */
+void ungib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
+	Imlib_Load_Error * error_return)
+{
+	char *tmp;
+	imlib_context_set_image(im);
+	tmp = strrchr(file, '.');
+	if (tmp) {
+		char *p, *pp;
+		p = gib_estrdup(tmp + 1);
+		pp = p;
+		while(*pp) {
+			*pp = tolower(*pp);
+			pp++;
+		}
+		imlib_image_set_format(p);
+		gib_efree(p);
+	}
+	imlib_save_image_with_error_return(file, error_return);
+}
+
+void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
+{
+	if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
+		eprintf("%s - Out of file descriptors while loading", file);
+	else if (!opt.quiet || w) {
+		switch (err) {
+		case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
+			im_weprintf(w, "%s - File does not exist", file);
+			break;
+		case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
+			im_weprintf(w, "%s - Directory specified for image filename", file);
+			break;
+		case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
+			im_weprintf(w, "%s - No read access", file);
+			break;
+		case IMLIB_LOAD_ERROR_UNKNOWN:
+		case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
+			im_weprintf(w, "%s - No Imlib2 loader for that file format", file);
+			break;
+		case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
+			im_weprintf(w, "%s - Path specified is too long", file);
+			break;
+		case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
+			im_weprintf(w, "%s - Path component does not exist", file);
+			break;
+		case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
+			im_weprintf(w, "%s - Path component is not a directory", file);
+			break;
+		case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
+			im_weprintf(w, "%s - Path points outside address space", file);
+			break;
+		case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
+			im_weprintf(w, "%s - Too many levels of symbolic links", file);
+			break;
+		case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
+			im_weprintf(w, "While loading %s - Out of memory", file);
+			break;
+		case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
+			im_weprintf(w, "%s - Cannot write to directory", file);
+			break;
+		case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
+			im_weprintf(w, "%s - Cannot write - out of disk space", file);
+			break;
+		default:
+			im_weprintf(w, "While loading %s - Unknown error (%d)",
+					file, err);
+			break;
+		}
+	}
+}
+
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
@@ -157,10 +234,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		tmpname = feh_magick_load_image(file->filename);
 	}
 
-	if (image_source != SRC_IMLIB) {
-		if (tmpname == NULL)
-			return 0;
-
+	if ((image_source != SRC_IMLIB) && tmpname) {
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (im) {
 			real_filename = file->filename;
@@ -182,53 +256,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			fputs("\n", stdout);
 			reset_output = 1;
 		}
-		if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
-			eprintf("%s - Out of file descriptors while loading", file->filename);
-		else if (!opt.quiet) {
-			switch (err) {
-			case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-				weprintf("%s - File does not exist", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-				weprintf("%s - Directory specified for image filename", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-				weprintf("%s - No read access", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_UNKNOWN:
-			case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-				weprintf("%s - No Imlib2 loader for that file format", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-				weprintf("%s - Path specified is too long", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-				weprintf("%s - Path component does not exist", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-				weprintf("%s - Path component is not a directory", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-				weprintf("%s - Path points outside address space", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-				weprintf("%s - Too many levels of symbolic links", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-				weprintf("While loading %s - Out of memory", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-				weprintf("%s - Cannot write to directory", file->filename);
-				break;
-			case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-				weprintf("%s - Cannot write - out of disk space", file->filename);
-				break;
-			default:
-				weprintf("While loading %s - Unknown error (%d)",
-						file->filename, err);
-				break;
-			}
-		}
+		feh_imlib_print_load_error(file->filename, NULL, err);
 		D(("Load *failed*\n"));
 		return(0);
 	}
@@ -304,9 +332,6 @@ static char *feh_magick_load_image(char *filename)
 			if (!opt.quiet) {
 				if (WIFSIGNALED(status))
 					weprintf("%s - Conversion took too long, skipping",
-						filename);
-				else
-					weprintf("%s - No loader for that file format",
 						filename);
 			}
 
@@ -974,6 +999,7 @@ void feh_edit_inplace(winwidget w, int op)
 {
 	int ret;
 	Imlib_Image old;
+	Imlib_Load_Error err;
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
 		return;
 
@@ -993,8 +1019,12 @@ void feh_edit_inplace(winwidget w, int op)
 			imlib_image_flip_horizontal();
 		} else
 			gib_imlib_image_orientate(old, op);
-		gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
+		ungib_imlib_save_image_with_error_return(old,
+			FEH_FILE(w->file->data)->filename, &err);
 		gib_imlib_free_image(old);
+		if (err)
+			feh_imlib_print_load_error(FEH_FILE(w->file->data)->filename,
+				w, err);
 		feh_reload_image(w, 1, 1);
 	} else {
 		im_weprintf(w, "failed to load image from disk to edit it in place");
@@ -1107,6 +1137,7 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 	int len = strlen(filename) + 1;
 	char *file_str = emalloc(len);
 	int pid, status;
+	int devnull = -1;
 	char op_name[]  = "rotate";     /* message */
 	char op_op[]    = "-rotate";    /* jpegtran option */
 	char op_value[] = "horizontal"; /* jpegtran option's value */
@@ -1126,14 +1157,16 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 	if ((pid = fork()) < 0) {
 		im_weprintf(w, "lossless %s: fork failed:", op_name);
 		exit(1);
-	} else if (pid == 0) {
+	}
+	else if (pid == 0) {
 
 		execlp("jpegtran", "jpegtran", "-copy", "all", op_op, op_value,
 				"-outfile", file_str, file_str, NULL);
 
 		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
 		exit(1);
-	} else {
+	}
+	else {
 		waitpid(pid, &status, 0);
 
 		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
@@ -1144,6 +1177,30 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 					op_name, status >> 8, op_op, op_value, file_str, file_str);
 			free(file_str);
 			return;
+		}
+	}
+	if ((pid = fork()) < 0) {
+		im_weprintf(w, "lossless %s: cannot fix rotation: fork:", op_name);
+		exit(1);
+	}
+	else if (pid == 0) {
+
+		/* discard normal output */
+		devnull = open("/dev/null", O_WRONLY);
+		dup2(devnull, 1);
+
+		execlp("jpegexiforient", "jpegexiforient", "-1", file_str, NULL);
+		im_weprintf(w, "lossless %s: Failed to exec jpegexiforient:", op_name);
+		exit(1);
+	}
+	else {
+		waitpid(pid, &status, 0);
+
+		if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+			im_weprintf(w,
+					"lossless %s: Failed to update EXIF orientation tag:"
+					" jpegexiforient returned %d",
+					op_name, status >> 8);
 		}
 	}
 	free(file_str);

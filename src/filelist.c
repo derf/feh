@@ -281,6 +281,13 @@ gib_list *feh_file_info_preload(gib_list * list)
 			remove_list = gib_list_add_front(remove_list, l);
 			if (opt.verbose)
 				feh_display_status('x');
+		} else if (((unsigned int)file->info->width < opt.min_width)
+				|| ((unsigned int)file->info->width > opt.max_width)
+				|| ((unsigned int)file->info->height < opt.min_height)
+				|| ((unsigned int)file->info->height > opt.max_height)) {
+			remove_list = gib_list_add_front(remove_list, l);
+			if (opt.verbose)
+				feh_display_status('s');
 		} else if (opt.verbose)
 			feh_display_status('.');
 	}
@@ -375,7 +382,8 @@ int feh_cmp_format(void *file1, void *file2)
 void feh_prepare_filelist(void)
 {
 	if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
-			|| opt.preload) {
+			|| opt.preload || opt.min_width || opt.min_height
+			|| (opt.max_width != UINT_MAX) || (opt.max_height != UINT_MAX)) {
 		/* For these sort options, we have to preload images */
 		filelist = feh_file_info_preload(filelist);
 		if (!gib_list_length(filelist))

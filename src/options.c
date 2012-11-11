@@ -60,6 +60,7 @@ void init_parse_options(int argc, char **argv)
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
+	opt.max_height = opt.max_width = UINT_MAX;
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
@@ -300,77 +301,74 @@ static void feh_getopt_theme(int argc, char **argv)
 
 static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
+	int discard;
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		".@:^:~:):|:+:";
+		".@:^:~:):|:+:<:>:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
-		{"help"          , 0, 0, 'h'},
-		{"version"       , 0, 0, 'v'},
-		{"montage"       , 0, 0, 'm'},
-		{"collage"       , 0, 0, 'c'},
-		{"index"         , 0, 0, 'i'},
-		{"fullindex"     , 0, 0, 'I'},
-		{"verbose"       , 0, 0, 'V'},
-		{"borderless"    , 0, 0, 'x'},
-		{"keep-http"     , 0, 0, 'k'},
-		{"stretch"       , 0, 0, 's'},
-		{"multiwindow"   , 0, 0, 'w'},
-		{"recursive"     , 0, 0, 'r'},
-		{"randomize"     , 0, 0, 'z'},
-		{"list"          , 0, 0, 'l'},
-		{"quiet"         , 0, 0, 'q'},
-		{"loadable"      , 0, 0, 'U'},
-		{"unloadable"    , 0, 0, 'u'},
-		{"no-menus"      , 0, 0, 'N'},
+		{"menu-bg"       , 1, 0, ')'},
+		{"debug"         , 0, 0, '+'},
+		{"scale-down"    , 0, 0, '.'},
+		{"max-dimension" , 1, 0, '<'},
+		{"min-dimension" , 1, 0, '>'},
+		{"title-font"    , 1, 0, '@'},
+		{"action"        , 1, 0, 'A'},
+		{"image-bg"      , 1, 0, 'B'},
+		{"fontpath"      , 1, 0, 'C'},
+		{"slideshow-delay",1, 0, 'D'},
+		{"thumb-height"  , 1, 0, 'E'},
 		{"full-screen"   , 0, 0, 'F'}, /* deprecated */
 		{"fullscreen"    , 0, 0, 'F'},
-		{"auto-zoom"     , 0, 0, 'Z'},
-		{"ignore-aspect" , 0, 0, 'X'},
-		{"draw-filename" , 0, 0, 'd'},
-		{"preload"       , 0, 0, 'p'},
-		{"reverse"       , 0, 0, 'n'},
-		{"thumbnails"    , 0, 0, 't'},
-		{"scale-down"    , 0, 0, '.'},
-		{"no-jump-on-resort", 0, 0, 220},
-		{"hide-pointer"  , 0, 0, 'Y'},
 		{"draw-actions"  , 0, 0, 'G'},
-		{"cache-thumbnails", 0, 0, 'P'},
-		{"cycle-once"    , 0, 0, 224},
-		{"no-xinerama"   , 0, 0, 225},
-		{"draw-tinted"   , 0, 0, 229},
-#ifdef HAVE_LIBEXIF
-		{"draw-exif"     , 0, 0, 223},
-#endif
-
-		{"output"        , 1, 0, 'o'},
-		{"output-only"   , 1, 0, 'O'},
-		{"action"        , 1, 0, 'A'},
-		{"limit-width"   , 1, 0, 'W'},
 		{"limit-height"  , 1, 0, 'H'},
+		{"fullindex"     , 0, 0, 'I'},
+		{"thumb-redraw"  , 1, 0, 'J'},
+		{"caption-path"  , 1, 0, 'K'},
+		{"customlist"    , 1, 0, 'L'},
+		{"menu-font"     , 1, 0, 'M'},
+		{"no-menus"      , 0, 0, 'N'},
+		{"output-only"   , 1, 0, 'O'},
+		{"cache-thumbnails", 0, 0, 'P'},
 		{"reload"        , 1, 0, 'R'},
-		{"alpha"         , 1, 0, 'a'},
 		{"sort"          , 1, 0, 'S'},
 		{"theme"         , 1, 0, 'T'},
-		{"filelist"      , 1, 0, 'f'},
-		{"customlist"    , 1, 0, 'L'},
-		{"geometry"      , 1, 0, 'g'},
-		{"menu-font"     , 1, 0, 'M'},
-		{"thumb-width"   , 1, 0, 'y'},
-		{"thumb-height"  , 1, 0, 'E'},
-		{"slideshow-delay",1, 0, 'D'},
-		{"font"          , 1, 0, 'e'},
-		{"title-font"    , 1, 0, '@'},
+		{"loadable"      , 0, 0, 'U'},
+		{"verbose"       , 0, 0, 'V'},
+		{"limit-width"   , 1, 0, 'W'},
+		{"ignore-aspect" , 0, 0, 'X'},
+		{"hide-pointer"  , 0, 0, 'Y'},
+		{"auto-zoom"     , 0, 0, 'Z'},
 		{"title"         , 1, 0, '^'},
-		{"thumb-title"   , 1, 0, '~'},
+		{"alpha"         , 1, 0, 'a'},
 		{"bg"            , 1, 0, 'b'},
-		{"fontpath"      , 1, 0, 'C'},
-		{"menu-bg"       , 1, 0, ')'},
-		{"image-bg"      , 1, 0, 'B'},
-		{"start-at"      , 1, 0, '|'},
-		{"debug"         , 0, 0, '+'},
+		{"collage"       , 0, 0, 'c'},
+		{"draw-filename" , 0, 0, 'd'},
+		{"font"          , 1, 0, 'e'},
+		{"filelist"      , 1, 0, 'f'},
+		{"geometry"      , 1, 0, 'g'},
+		{"help"          , 0, 0, 'h'},
+		{"index"         , 0, 0, 'i'},
 		{"output-dir"    , 1, 0, 'j'},
+		{"keep-http"     , 0, 0, 'k'},
+		{"list"          , 0, 0, 'l'},
+		{"montage"       , 0, 0, 'm'},
+		{"reverse"       , 0, 0, 'n'},
+		{"output"        , 1, 0, 'o'},
+		{"preload"       , 0, 0, 'p'},
+		{"quiet"         , 0, 0, 'q'},
+		{"recursive"     , 0, 0, 'r'},
+		{"stretch"       , 0, 0, 's'},
+		{"thumbnails"    , 0, 0, 't'},
+		{"unloadable"    , 0, 0, 'u'},
+		{"version"       , 0, 0, 'v'},
+		{"multiwindow"   , 0, 0, 'w'},
+		{"borderless"    , 0, 0, 'x'},
+		{"thumb-width"   , 1, 0, 'y'},
+		{"randomize"     , 0, 0, 'z'},
+		{"start-at"      , 1, 0, '|'},
+		{"thumb-title"   , 1, 0, '~'},
 		{"bg-tile"       , 0, 0, 200},
 		{"bg-center"     , 0, 0, 201},
 		{"bg-scale"      , 0, 0, 202},
@@ -378,7 +376,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"no-screen-clip", 0, 0, 206},
 		{"index-info"    , 1, 0, 207},
 		{"magick-timeout", 1, 0, 208},
-		{"caption-path"  , 1, 0, 'K'},
 		{"action1"       , 1, 0, 209},
 		{"action2"       , 1, 0, 210},
 		{"action3"       , 1, 0, 211},
@@ -390,7 +387,13 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"action9"       , 1, 0, 217},
 		{"bg-fill"       , 0, 0, 218},
 		{"bg-max"        , 0, 0, 219},
-		{"thumb-redraw"  , 1, 0, 'J'},
+		{"no-jump-on-resort", 0, 0, 220},
+#ifdef HAVE_LIBEXIF
+		{"draw-exif"     , 0, 0, 223},
+#endif
+		{"cycle-once"    , 0, 0, 224},
+		{"no-xinerama"   , 0, 0, 225},
+		{"draw-tinted"   , 0, 0, 229},
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
 		{"no-fehbg"      , 0, 0, 236},
@@ -399,38 +402,76 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	};
 	int optch = 0, cmdx = 0;
 
-	/* Now to pass some optionarinos */
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
 		D(("Got option, getopt calls it %d, or %c\n", optch, optch));
 		switch (optch) {
 		case 0:
 			break;
-		case 'h':
-			show_usage();
+		case ')':
+			free(opt.menu_bg);
+			opt.menu_bg = estrdup(optarg);
+			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
-		case 'v':
-			show_version();
+		case '+':
+			opt.debug = 1;
 			break;
-		case 'm':
-			opt.index = 1;
+		case '<':
+			XParseGeometry(optarg, &discard, &discard, &opt.max_width, &opt.max_height);
 			break;
-		case 'c':
-			opt.collage = 1;
-			break;
-		case 'i':
-			opt.index = 1;
-			opt.index_info = estrdup("%n");
+		case '>':
+			XParseGeometry(optarg, &discard, &discard, &opt.min_width, &opt.min_height);
 			break;
 		case '.':
 			opt.scale_down = 1;
+			break;
+		case '@':
+			opt.title_font = estrdup(optarg);
+			break;
+		case 'A':
+			opt.actions[0] = estrdup(optarg);
+			break;
+		case 'B':
+			if (!strcmp(optarg, "checks"))
+				opt.image_bg = IMAGE_BG_CHECKS;
+			else if (!strcmp(optarg, "white"))
+				opt.image_bg = IMAGE_BG_WHITE;
+			else if (!strcmp(optarg, "black"))
+				opt.image_bg = IMAGE_BG_BLACK;
+			else
+				weprintf("Unknown argument to --image-bg: %s", optarg);
+			break;
+		case 'C':
+			D(("adding fontpath %s\n", optarg));
+			imlib_add_path_to_font_path(optarg);
+			break;
+		case 'D':
+			opt.slideshow_delay = atof(optarg);
+			if (opt.slideshow_delay < 0.0) {
+				opt.slideshow_delay *= (-1);
+				opt.paused = 1;
+			}
+			break;
+		case 'E':
+			opt.thumb_h = atoi(optarg);
+			break;
+		case 'F':
+			opt.full_screen = 1;
+			break;
+		case 'G':
+			opt.draw_actions = 1;
+			break;
+		case 'H':
+			opt.limit_h = atoi(optarg);
 			break;
 		case 'I':
 			opt.index = 1;
 			opt.index_info = estrdup("%n\n%S\n%wx%h");
 			break;
-		case 'l':
-			opt.list = 1;
-			opt.display = 0;
+		case 'J':
+			opt.thumb_redraw = atoi(optarg);
+			break;
+		case 'K':
+			opt.caption_path = estrdup(optarg);
 			break;
 		case 'L':
 			opt.customlist = estrdup(optarg);
@@ -440,64 +481,19 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			free(opt.menu_font);
 			opt.menu_font = estrdup(optarg);
 			break;
-		case '+':
-			opt.debug = 1;
-			break;
-		case 'n':
-			opt.reverse = 1;
-			break;
-		case 'g':
-			opt.geom_flags = XParseGeometry(optarg, &opt.geom_x, &opt.geom_y, &opt.geom_w, &opt.geom_h);
-			break;
 		case 'N':
 			opt.no_menus = 1;
 			break;
-		case 'V':
-			opt.verbose = 1;
-			break;
-		case 'q':
-			opt.quiet = 1;
-			break;
-		case 'x':
-			opt.borderless = 1;
-			break;
-		case 'k':
-			opt.keep_http = 1;
-			break;
-		case 's':
-			opt.stretch = 1;
-			break;
-		case 'w':
-			opt.multiwindow = 1;
-			break;
-		case 'r':
-			opt.recursive = 1;
-			break;
-		case 'z':
-			opt.randomize = 1;
-			break;
-		case 'd':
-			opt.draw_filename = 1;
-			break;
-		case 'F':
-			opt.full_screen = 1;
-			break;
-		case 'Z':
-			opt.zoom_mode = ZOOM_MODE_MAX;
-			break;
-		case 'U':
-			opt.loadables = 1;
+		case 'O':
+			opt.output = 1;
+			opt.output_file = estrdup(optarg);
 			opt.display = 0;
 			break;
-		case 'u':
-			opt.unloadables = 1;
-			opt.display = 0;
+		case 'P':
+			opt.cache_thumbnails = 1;
 			break;
-		case 'p':
-			opt.preload = 1;
-			break;
-		case 'X':
-			opt.aspect = 0;
+		case 'R':
+			opt.reload = atof(optarg);
 			break;
 		case 'S':
 			if (!strcasecmp(optarg, "name"))
@@ -520,81 +516,47 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.sort = SORT_FILENAME;
 			}
 			break;
-		case 'o':
-			opt.output = 1;
-			opt.output_file = estrdup(optarg);
-			break;
-		case 'O':
-			opt.output = 1;
-			opt.output_file = estrdup(optarg);
-			opt.display = 0;
-			break;
 		case 'T':
 			theme = estrdup(optarg);
 			break;
-		case 'C':
-			D(("adding fontpath %s\n", optarg));
-			imlib_add_path_to_font_path(optarg);
+		case 'U':
+			opt.loadables = 1;
+			opt.display = 0;
 			break;
-		case 'e':
-			opt.font = estrdup(optarg);
+		case 'V':
+			opt.verbose = 1;
 			break;
-		case '@':
-			opt.title_font = estrdup(optarg);
+		case 'W':
+			opt.limit_w = atoi(optarg);
+			break;
+		case 'X':
+			opt.aspect = 0;
+			break;
+		case 'Y':
+			opt.hide_pointer = 1;
+			break;
+		case 'Z':
+			opt.zoom_mode = ZOOM_MODE_MAX;
 			break;
 		case '^':
 			opt.title = estrdup(optarg);
 			break;
-		case '~':
-			opt.thumb_title = estrdup(optarg);
+		case 'a':
+			opt.alpha = 1;
+			opt.alpha_level = 255 - atoi(optarg);
 			break;
 		case 'b':
 			opt.bg = 1;
 			opt.bg_file = estrdup(optarg);
 			break;
-		case 'A':
-			opt.actions[0] = estrdup(optarg);
+		case 'c':
+			opt.collage = 1;
 			break;
-		case 'W':
-			opt.limit_w = atoi(optarg);
+		case 'd':
+			opt.draw_filename = 1;
 			break;
-		case 'H':
-			opt.limit_h = atoi(optarg);
-			break;
-		case 'y':
-			opt.thumb_w = atoi(optarg);
-			break;
-		case 'E':
-			opt.thumb_h = atoi(optarg);
-			break;
-		case ')':
-			free(opt.menu_bg);
-			opt.menu_bg = estrdup(optarg);
-			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
-			break;
-		case 'B':
-			if (!strcmp(optarg, "checks"))
-				opt.image_bg = IMAGE_BG_CHECKS;
-			else if (!strcmp(optarg, "white"))
-				opt.image_bg = IMAGE_BG_WHITE;
-			else if (!strcmp(optarg, "black"))
-				opt.image_bg = IMAGE_BG_BLACK;
-			else
-				weprintf("Unknown argument to --image-bg: %s", optarg);
-			break;
-		case 'D':
-			opt.slideshow_delay = atof(optarg);
-			if (opt.slideshow_delay < 0.0) {
-				opt.slideshow_delay *= (-1);
-				opt.paused = 1;
-			}
-			break;
-		case 'R':
-			opt.reload = atof(optarg);
-			break;
-		case 'a':
-			opt.alpha = 1;
-			opt.alpha_level = 255 - atoi(optarg);
+		case 'e':
+			opt.font = estrdup(optarg);
 			break;
 		case 'f':
 			if (!strcmp(optarg, "-"))
@@ -602,15 +564,77 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			else
 				opt.filelistfile = estrdup(optarg);
 			break;
-		case '|':
-			opt.start_list_at = estrdup(optarg);
+		case 'g':
+			opt.geom_flags = XParseGeometry(optarg, &opt.geom_x,
+					&opt.geom_y, &opt.geom_w, &opt.geom_h);
+			break;
+		case 'h':
+			show_usage();
+			break;
+		case 'i':
+			opt.index = 1;
+			opt.index_info = estrdup("%n");
+			break;
+		case 'j':
+			opt.output_dir = estrdup(optarg);
+			break;
+		case 'k':
+			opt.keep_http = 1;
+			break;
+		case 'l':
+			opt.list = 1;
+			opt.display = 0;
+			break;
+		case 'm':
+			opt.index = 1;
+			break;
+		case 'n':
+			opt.reverse = 1;
+			break;
+		case 'o':
+			opt.output = 1;
+			opt.output_file = estrdup(optarg);
+			break;
+		case 'p':
+			opt.preload = 1;
+			break;
+		case 'q':
+			opt.quiet = 1;
+			break;
+		case 'r':
+			opt.recursive = 1;
+			break;
+		case 's':
+			opt.stretch = 1;
 			break;
 		case 't':
 			opt.thumbs = 1;
 			opt.index_info = estrdup("%n");
 			break;
-		case 'j':
-			opt.output_dir = estrdup(optarg);
+		case 'u':
+			opt.unloadables = 1;
+			opt.display = 0;
+			break;
+		case 'v':
+			show_version();
+			break;
+		case 'w':
+			opt.multiwindow = 1;
+			break;
+		case 'x':
+			opt.borderless = 1;
+			break;
+		case 'y':
+			opt.thumb_w = atoi(optarg);
+			break;
+		case 'z':
+			opt.randomize = 1;
+			break;
+		case '|':
+			opt.start_list_at = estrdup(optarg);
+			break;
+		case '~':
+			opt.thumb_title = estrdup(optarg);
 			break;
 		case 200:
 			opt.bgmode = BG_MODE_TILE;
@@ -620,12 +644,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 202:
 			opt.bgmode = BG_MODE_SCALE;
-			break;
-		case 218:
-			opt.bgmode = BG_MODE_FILL;
-			break;
-		case 219:
-			opt.bgmode = BG_MODE_MAX;
 			break;
 		case 205:
 			if (!strcmp("fill", optarg))
@@ -643,9 +661,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 208:
 			opt.magick_timeout = atoi(optarg);
-			break;
-		case 'K':
-			opt.caption_path = estrdup(optarg);
 			break;
 		case 209:
 			opt.actions[1] = estrdup(optarg);
@@ -674,17 +689,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 217:
 			opt.actions[9] = estrdup(optarg);
 			break;
+		case 218:
+			opt.bgmode = BG_MODE_FILL;
+			break;
+		case 219:
+			opt.bgmode = BG_MODE_MAX;
+			break;
 		case 220:
 			opt.jump_on_resort = 0;
-			break;
-		case 'Y':
-			opt.hide_pointer = 1;
-			break;
-		case 'G':
-			opt.draw_actions = 1;
-			break;
-		case 'P':
-			opt.cache_thumbnails = 1;
 			break;
 #ifdef HAVE_LIBEXIF
 		case 223:
@@ -699,9 +711,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 229:
 			opt.text_bg = TEXT_BG_TINTED;
-			break;
-		case 'J':
-			opt.thumb_redraw = atoi(optarg);
 			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);

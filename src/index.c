@@ -35,6 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* TODO s/bit/lot */
 void init_index_mode(void)
 {
+	Imlib_Load_Error err;
 	Imlib_Image im_main;
 	Imlib_Image im_temp;
 	int w = 800, h = 600, ww = 0, hh = 0, www, hhh, xxx, yyy;
@@ -326,8 +327,11 @@ void init_index_mode(void)
 		else
 			strncpy(output_buf, opt.output_file, 1024);
 
-		gib_imlib_save_image(im_main, output_buf);
-		if (opt.verbose) {
+		ungib_imlib_save_image_with_error_return(im_main, output_buf, &err);
+		if (err) {
+			feh_imlib_print_load_error(output_buf, im_main, err);
+		}
+		else if (opt.verbose) {
 			int tw, th;
 
 			tw = gib_imlib_image_get_width(im_main);

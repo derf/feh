@@ -55,6 +55,7 @@ void init_thumbnail_mode(void)
 	   int max_column_w = 0;
 	 */
 
+	Imlib_Load_Error err;
 	Imlib_Image im_temp;
 	int ww = 0, hh = 0, www, hhh, xxx, yyy;
 	int orig_w, orig_h;
@@ -381,8 +382,11 @@ void init_thumbnail_mode(void)
 			snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
 		else
 			strncpy(output_buf, opt.output_file, 1024);
-		gib_imlib_save_image(td.im_main, output_buf);
-		if (opt.verbose) {
+		ungib_imlib_save_image_with_error_return(td.im_main, output_buf, &err);
+		if (err) {
+			feh_imlib_print_load_error(output_buf, td.im_main, err);
+		}
+		else if (opt.verbose) {
 			int tw, th;
 
 			tw = gib_imlib_image_get_width(td.im_main);
@@ -596,6 +600,9 @@ char *feh_thumbnail_get_name_uri(char *name)
 		/* FIXME: add support for ~, need to investigate if it's expanded
 		   somewhere else before adding (unecessary) code */
 		if (name[0] != '/') {
+			/* work around /some/path/./image.ext */
+			if ((strncmp(name, "./", 2)) == 0)
+				name += 2;
 			cwd = getcwd(NULL, 0);
 			uri = estrjoin("/", "file:/", cwd, name, NULL);
 			free(cwd);
