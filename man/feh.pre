@@ -873,6 +873,10 @@ Image width
 .Nm
 version
 .
+.It %V
+.
+Process ID
+.
 .It %z
 .
 current image zoom

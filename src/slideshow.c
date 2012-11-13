@@ -508,6 +508,10 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 			case 'v':
 				strcat(ret, VERSION);
 				break;
+			case 'V':
+				snprintf(buf, sizeof(buf), "%d", getpid());
+				strcat(ret, buf);
+				break;
 			case 'w':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->width);
