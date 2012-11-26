@@ -277,7 +277,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				bgfill = "--image-bg checks";
 				break;
 			default:
-				bgfill = "--image-bg checks";
+				bgfill = "--image-bg black";
 				break;
 		}
 
