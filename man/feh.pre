@@ -762,7 +762,9 @@ to treat the whole X display as one screen when setting wallpapers.
 .It Cm --bg-center
 .
 Center the file on the background.  If it is too small, it will be surrounded
-by a black border
+by a border whose color is determined by
+.Cm --image-bg
+(defaults to black).
 .
 .It Cm --bg-fill
 .
@@ -775,7 +777,10 @@ horizontal or a vertical part of the image will be cut off
 .
 Like
 .Cm --bg-fill ,
-but scale the image to the maximum size that fits the screen with black borders on one side.
+but scale the image to the maximum size that fits the screen with borders on one side.
+Border color is specified by
+.Cm --image-bg
+and defaults to black.
 .
 .It Cm --bg-scale
 .

@@ -34,6 +34,8 @@ Window my_ipc_win = None;
 Atom ipc_atom = None;
 static unsigned char timeout = 0;
 
+Pixmap feh_create_checks(void);
+
 /*
  * This is a boolean indicating
  * That while we seem to see E16 IPC
@@ -258,8 +260,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char filbuf[4096];
 		char fehbg_xinerama[] = "--no-xinerama";
 		char *bgfill = NULL;
-		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
-
+		
 		/* local display to set closedownmode on */
 		Display *disp2;
 		Window root2;
@@ -267,6 +268,18 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		XGCValues gcvalues;
 		GC gc;
 		int in, out, w, h;
+
+		switch (opt.image_bg) {
+			case IMAGE_BG_WHITE:
+				bgfill = "--image-bg white";
+				break;
+			case IMAGE_BG_CHECKS:
+				bgfill = "--image-bg checks";
+				break;
+			default:
+				bgfill = "--image-bg black";
+				break;
+		}
 
 		if (opt.xinerama)
 			fehbg_xinerama[0] = '\0';
@@ -328,11 +341,17 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			D(("centering\n"));
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			if (opt.image_bg == IMAGE_BG_WHITE)
+			if (opt.image_bg == IMAGE_BG_WHITE) {
 				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-			else
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+			} else if (opt.image_bg == IMAGE_BG_CHECKS) {
+				gcval.tile = feh_create_checks();
+				gcval.fill_style = FillTiled;
+				gc = XCreateGC(disp, root, GCTile | GCFillStyle, &gcval);
+			} else { /* Defaults to black border */
 				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+			}
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
 #ifdef HAVE_LIBXINERAMA
@@ -371,12 +390,17 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XGCValues gcval;
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			if (opt.image_bg == IMAGE_BG_WHITE)
+			if (opt.image_bg == IMAGE_BG_WHITE) {
 				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-			else
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+			} else if (opt.image_bg == IMAGE_BG_CHECKS) {
+				gcval.tile = feh_create_checks();
+				gcval.fill_style = FillTiled;
+				gc = XCreateGC(disp, root, GCTile | GCFillStyle, &gcval);
+			} else { /* Defaults to black border */
 				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+			}
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
 #ifdef HAVE_LIBXINERAMA
