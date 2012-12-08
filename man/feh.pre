@@ -1060,7 +1060,8 @@ Toggle filename display
 .
 .It f Bq save_filelist
 .
-Save the current filelist to a unique filename
+Save the current filelist as
+.Qq feh_PID_ID_filelist
 .
 .It h Bq toggle_pause
 .
@@ -1102,7 +1103,8 @@ Reload current image.  Useful for webcams
 .
 .It s Bq save_image
 .
-Save the current image to a unique filename
+Save the current image as
+.Qq feh_PID_ID_FILENAME
 .
 .It v Bq toggle_fullscreen
 .
