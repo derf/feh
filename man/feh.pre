@@ -1369,7 +1369,7 @@ When viewing an image, mouse button 1 pans the image
 or, when only clicked, moves to the next image
 .Pq slideshow mode only .
 Quick drags with less than 2px of movement per axis will be treated as clicks
-to aid grahics tablet users.
+to aid graphics tablet users.
 .
 Mouse button 2 zooms
 .Po click and drag left->right to zoom in, right->left to zoom out, click once
