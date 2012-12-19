@@ -10,6 +10,9 @@ git HEAD
       <https://github.com/derf/feh/issues/109>
     * Fix delete not working on last image with --cycle-once
       <https://github.com/derf/feh/issues/107>
+    * Treat quick, low-offset drags (1px or 2px move in <1 second) as clicks
+      to improve graphics tablet support
+      <https://github.com/derf/feh/issues/113>
 
 Tue, 16 Oct 2012 06:29:58 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 

@@ -1363,14 +1363,18 @@ Rotate current image
 .
 .Sh MOUSE ACTIONS
 .
-When viewing an image, by default mouse button 1 pans
-.Pq moves the image around
+Default Bindings:
+When viewing an image, mouse button 1 pans the image
+.Pq moves it around
 or, when only clicked, moves to the next image
-.Pq slideshow mode only ;
-button 2 zooms
+.Pq slideshow mode only .
+Quick drags with less than 2px of movement per axis will be treated as clicks
+to aid grahics tablet users.
+.
+Mouse button 2 zooms
 .Po click and drag left->right to zoom in, right->left to zoom out, click once
 to restore zoom to 100%
-.Pc ;
+.Pc
 and mouse button 3 opens the menu.
 .
 .Pp
