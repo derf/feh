@@ -190,6 +190,9 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		int filled, int desktop, int use_filelist)
 {
+	XGCValues gcvalues;
+	XGCValues gcval;
+	GC gc;
 	char bgname[20];
 	int num = (int) rand();
 	char bgfil[4096];
@@ -264,8 +267,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		Display *disp2;
 		Window root2;
 		int depth2;
-		XGCValues gcvalues;
-		GC gc;
 		int in, out, w, h;
 
 		if (opt.xinerama)
@@ -322,8 +323,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					0, 0, scr->width, scr->height);
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
-			XGCValues gcval;
-			GC gc;
 
 			D(("centering\n"));
 
@@ -368,14 +367,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-fill", filbuf, NULL);
 
 		} else if (filled == 2) {
-			XGCValues gcval;
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 			if (opt.image_bg == IMAGE_BG_WHITE)
 				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
 			else
 				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 

@@ -32,6 +32,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "events.h"
 #include "thumbnail.h"
 
+#define FEH_JITTER_OFFSET 2
+#define FEH_JITTER_TIME 1
+
 fehbb buttons;
 
 feh_event_handler *ev_handler[LASTEvent];
@@ -226,6 +229,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
 		winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
 		winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
+		winwid->click_start_time = time(NULL);
 
 	} else if (feh_is_bb(&buttons.zoom, button, state)) {
 		D(("Zoom Button Press event\n"));
@@ -496,8 +500,14 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
 			if (opt.mode == MODE_NEXT) {
-				opt.mode = MODE_PAN;
-				winwid->mode = MODE_PAN;
+				if ((abs(winwid->click_offset_x - (ev->xmotion.x - winwid->im_x)) > FEH_JITTER_OFFSET)
+						|| (abs(winwid->click_offset_y - (ev->xmotion.y - winwid->im_y)) > FEH_JITTER_OFFSET)
+						|| (time(NULL) - winwid->click_start_time > FEH_JITTER_TIME)) {
+					opt.mode = MODE_PAN;
+					winwid->mode = MODE_PAN;
+				}
+				else
+					return;
 			}
 			D(("Panning\n"));
 			orig_x = winwid->im_x;

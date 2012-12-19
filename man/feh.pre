@@ -1060,7 +1060,8 @@ Toggle filename display
 .
 .It f Bq save_filelist
 .
-Save the current filelist to a unique filename
+Save the current filelist as
+.Qq feh_PID_ID_filelist
 .
 .It h Bq toggle_pause
 .
@@ -1102,7 +1103,8 @@ Reload current image.  Useful for webcams
 .
 .It s Bq save_image
 .
-Save the current image to a unique filename
+Save the current image as
+.Qq feh_PID_ID_FILENAME
 .
 .It v Bq toggle_fullscreen
 .
@@ -1361,14 +1363,18 @@ Rotate current image
 .
 .Sh MOUSE ACTIONS
 .
-When viewing an image, by default mouse button 1 pans
-.Pq moves the image around
+Default Bindings:
+When viewing an image, mouse button 1 pans the image
+.Pq moves it around
 or, when only clicked, moves to the next image
-.Pq slideshow mode only ;
-button 2 zooms
+.Pq slideshow mode only .
+Quick drags with less than 2px of movement per axis will be treated as clicks
+to aid graphics tablet users.
+.
+Mouse button 2 zooms
 .Po click and drag left->right to zoom in, right->left to zoom out, click once
 to restore zoom to 100%
-.Pc ;
+.Pc
 and mouse button 3 opens the menu.
 .
 .Pp

@@ -555,6 +555,14 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 		gib_list *doomed;
 
 		doomed = current_file;
+		/*
+		 * work around feh_list_jump exiting if cycle_once is enabled
+		 * and no further files are left (we need to delete first)
+		 */
+		if (opt.cycle_once && ! doomed->next && do_delete) {
+			feh_file_rm_and_free(filelist, doomed);
+			exit(0);
+		}
 		slideshow_change_image(winwid, SLIDE_NEXT, 0);
 		if (do_delete)
 			filelist = feh_file_rm_and_free(filelist, doomed);
