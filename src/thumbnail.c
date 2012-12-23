@@ -400,6 +400,16 @@ void init_thumbnail_mode(void)
 
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(td.im_main);
+	else if (opt.start_list_at) {
+		for (l = thumbnails; l; l = l->next) {
+			if (!strcmp(opt.start_list_at, FEH_THUMB(l->data)->file->filename)) {
+				opt.start_list_at = NULL;
+				feh_thumbnail_select(winwid, FEH_THUMB(l->data));
+				break;
+			}
+		}
+	}
+
 
 	free(s);
 	return;
