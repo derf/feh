@@ -15,6 +15,8 @@ git HEAD
       <https://github.com/derf/feh/issues/113>
     * Respect --start-at in thumbnail mode
       <https://github.com/derf/feh/issues/116>
+    * Make 'z' (jump_random) work in thumbnail mode as well, fix thumbnail
+      selection roll-over <https://github.com/derf/feh/issues/115>
 
 Tue, 16 Oct 2012 06:29:58 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 

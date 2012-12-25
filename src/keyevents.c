@@ -658,7 +658,10 @@ void feh_event_handle_keypress(XEvent * ev)
 		opt.hide_pointer = !opt.hide_pointer;
 	}
 	else if (feh_is_kp(&keys.jump_random, keysym, state)) {
-		slideshow_change_image(winwid, SLIDE_RAND, 1);
+		if (winwid->type == WIN_TYPE_THUMBNAIL)
+			feh_thumbnail_select_next(winwid, rand() % (filelist_len - 1));
+		else
+			slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
 	else if (feh_is_kp(&keys.toggle_caption, keysym, state)) {
 		if (opt.caption_path) {
