@@ -107,6 +107,7 @@ static void exn_get_prim_af_pt(unsigned int phasedetectaf,
                                char * buffer,
                                unsigned int maxsize);
 static void exn_get_flash_output(unsigned int flashoutput, char * buffer, unsigned int maxsize);
+static void exn_get_mnote_nikon_18(ExifData *ed, char * buffer, unsigned int maxsize);
 static void exn_get_mnote_nikon_34(ExifData *ed, char * buffer, unsigned int maxsize);
 static void exn_get_mnote_nikon_35(ExifData *ed, char * buffer, unsigned int maxsize);
 static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int maxsize);
@@ -195,6 +196,23 @@ static void exn_get_flash_output(unsigned int flashoutput, char * buffer, unsign
       snprintf(buffer, maxsize, "1/2^(%f)", ((float)flashoutput)/6.0);
     }
   }
+}
+
+
+
+/* get ActiveD-Lighting (18) info */
+static void exn_get_mnote_nikon_18(ExifData *ed, char * buffer, unsigned int maxsize)
+{
+
+  char buf[EXIF_STD_BUF_LEN];
+  float data = 0;
+
+  buf[0] = '\0';
+  exif_get_mnote_tag(ed, 18, buf, sizeof(buf));
+
+  sscanf(buf, "Flash Exposure Compensation: %f", &data); /* libexif buggy here. fix conversion */
+
+  snprintf(buffer, maxsize, "FlashExposureCompensation: %.1f\n", ((float)((signed char)round(data*6.0))) / 6.0 );
 }
 
 
@@ -321,12 +339,15 @@ static void exn_get_mnote_nikon_168(ExifData *ed, char * buffer, unsigned int ma
   unsigned int exn_fcm = (EXN_FLASH_CONTROL_MODES_MAX-1); /* default to N/A */
   unsigned int flashoutput = 0;
   unsigned int externalflashflags = 0;
+  unsigned int flashcompensation = 0;
 
   /* libexif does not support flash info 168 yet. so we have to parse the debug data :-( */
   buf[0] = '\0';
   exif_get_mnote_tag(ed, 168, buf, sizeof(buf));
-  sscanf(buf, "(null): %u bytes unknown data: 303130%02X%*8s%02X%02X%02X", &length, &version, &externalflashflags, &exn_fcm, &flashoutput);
+  sscanf(buf, "(null): %u bytes unknown data: 303130%02X%*8s%02X%02X%02X%02X", &length, &version, &externalflashflags, &exn_fcm, &flashoutput, &flashcompensation);
   exn_fcm = exn_fcm & EXN_FLASH_CONTROL_MODE_MASK;
+
+  /* printf("%s - %d %d %d %d\n", buf, externalflashflags, exn_fcm, flashoutput, (signed char)flashcompensation); */
 
   if ( (exn_fcm < EXN_FLASH_CONTROL_MODES_MAX)
        && ( ((length == 22) && (version == '3'))      /* Nikon FlashInfo0103 */
@@ -422,7 +443,7 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
     /* show only if flash was used */
     case 8:   /* Flash Setting */
     case 9:   /* Flash Mode */
-    case 24:  /* Flash exposure bracket value */
+    case 27:  /* Flash exposure bracket value */
     case 135: /* Flash used */
     {
       if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
@@ -433,6 +454,16 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
     }
     break;
 
+    case 18:  /* FlashExposureComp */
+    {
+      if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
+      {
+        /* show only if flash was fired */
+        exn_get_mnote_nikon_18(ed, buffer, maxsize);
+      }
+    }
+    break;
+    
     case 34:
     {
       /* ActiveD-Lighting */

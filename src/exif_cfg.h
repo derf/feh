@@ -72,8 +72,8 @@ const unsigned int Exif_makernote_nikon_tag_list [] =
   6,
   8,   /* Flash Setting */
   9,   /* Flash Mode */
-  24,  /* Flash exposure bracket value */
   135, /* Flash used */
+  18,  /* Flash Exposure Comp */
   168, /* Flash info: control mode */
 
   2,   /* ISO. Has some more info than EXIF_TAG_ISO_SPEED_RATINGS but also fails on Lo.1 */  
