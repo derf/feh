@@ -443,7 +443,6 @@ void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, uns
     /* show only if flash was used */
     case 8:   /* Flash Setting */
     case 9:   /* Flash Mode */
-    case 27:  /* Flash exposure bracket value */
     case 135: /* Flash used */
     {
       if ( !(strcmp("Flash: Flash did not fire\n", buf) == 0) )
