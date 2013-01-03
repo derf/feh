@@ -400,6 +400,16 @@ void init_thumbnail_mode(void)
 
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(td.im_main);
+	else if (opt.start_list_at) {
+		for (l = thumbnails; l; l = l->next) {
+			if (!strcmp(opt.start_list_at, FEH_THUMB(l->data)->file->filename)) {
+				opt.start_list_at = NULL;
+				feh_thumbnail_select(winwid, FEH_THUMB(l->data));
+				break;
+			}
+		}
+	}
+
 
 	free(s);
 	return;
@@ -776,36 +786,47 @@ void feh_thumbnail_select(winwidget winwid, feh_thumbnail *thumbnail)
 
 void feh_thumbnail_select_next(winwidget winwid, int jump)
 {
-	gib_list *l, *tmp;
-	int i;
+	gib_list *l;
+	feh_thumbnail *thumb;
+	int len = 0, cur = 0, target = 0;
 
-	for (l = thumbnails; l && l->next; l = l->next) {
-		tmp = l;
-		for (i = jump; (i > 0) && tmp->next; i--)
-			tmp = tmp->next;
-		if (tmp->data == td.selected)
-			break;
+	for (l = thumbnails; l; l = l->next) {
+		thumb = FEH_THUMB(l->data);
+		if (thumb == td.selected)
+			cur = len;
+		len++;
 	}
 
-	feh_thumbnail_select(winwid, FEH_THUMB(l->data));
+	target = (cur + len - jump) % len;
+
+	for (l = thumbnails; l; l = l->next) {
+		if (target-- == 0) {
+			feh_thumbnail_select(winwid, FEH_THUMB(l->data));
+		}
+	}
 }
 
 void feh_thumbnail_select_prev(winwidget winwid, int jump)
 {
 	gib_list *l;
 	feh_thumbnail *thumb;
-	int i;
+	int len = 0, cur = 0, target = 0;
 
 	for (l = thumbnails; l; l = l->next) {
 		thumb = FEH_THUMB(l->data);
-		if ((thumb == td.selected) && l->next) {
-			for (i = jump; (i > 0) && l->next; i--)
-				l = l->next;
+		if (thumb == td.selected)
+			cur = len;
+		len++;
+	}
+
+	target = (cur + jump) % len;
+
+	for (l = thumbnails; l; l = l->next) {
+		if (target-- == 0) {
 			feh_thumbnail_select(winwid, FEH_THUMB(l->data));
-			return;
+			break;
 		}
 	}
-	feh_thumbnail_select(winwid, FEH_THUMB(thumbnails->data));
 }
 
 inline void feh_thumbnail_show_selected()

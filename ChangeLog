@@ -1,5 +1,6 @@
-git HEAD
+Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.8
     * Do not apply --scale-down to the thumbnail window. It will be applied
       to windows opened from this, though.
       <https://github.com/derf/feh/issues/106>
@@ -13,6 +14,10 @@ git HEAD
     * Treat quick, low-offset drags (1px or 2px move in <1 second) as clicks
       to improve graphics tablet support
       <https://github.com/derf/feh/issues/113>
+    * Respect --start-at in thumbnail mode
+      <https://github.com/derf/feh/issues/116>
+    * Make 'z' (jump_random) work in thumbnail mode as well, fix thumbnail
+      selection roll-over <https://github.com/derf/feh/issues/115>
 
 Tue, 16 Oct 2012 06:29:58 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
