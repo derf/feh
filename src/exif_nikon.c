@@ -212,7 +212,7 @@ static void exn_get_mnote_nikon_18(ExifData *ed, char * buffer, unsigned int max
 
   sscanf(buf, "Flash Exposure Compensation: %f", &data); /* libexif buggy here. fix conversion */
 
-  snprintf(buffer, maxsize, "FlashExposureCompensation: %.1f\n", ((float)((signed char)round(data*6.0))) / 6.0 );
+  snprintf(buffer, maxsize, "FlashExposureCompensation: %+.1f EV\n", ((float)((signed char)round(data*6.0))) / 6.0 );
 }
 
 
