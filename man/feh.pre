@@ -375,6 +375,11 @@ with
 .Qq Nm
 in the name.
 .
+.It Cm --keep-zoom-vp
+.
+When switching images, keep zoom and viewport settings
+.Pq zoom level and X, Y offsets
+.
 .It Cm -l , --list
 .
 Don't display images.  Analyze them and display an
@@ -1048,15 +1053,15 @@ and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
 .Aq CTRL+return .
 .
-.It e Bq toggle_exif
-.
-.Pq only if compiled with exif=1
-Toggle EXIF tag display
-.
 .It d Bq toggle_filenames
 .
 Toggle filename display
 .Pq see Cm --draw-filename
+.
+.It e Bq toggle_exif
+.
+.Pq only if compiled with exif=1
+Toggle EXIF tag display
 .
 .It f Bq save_filelist
 .
@@ -1073,6 +1078,12 @@ change slides based on
 .
 Toggle info display
 .Pq see Cm --info
+.
+.It k Bq toggle_keep_vp
+.
+Toggle zoom and viewport keeping. When enabled,
+.Nm
+will keep zoom and X, Y offset when switching images.
 .
 .It m Bq toggle_menu
 .
