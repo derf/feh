@@ -1,12 +1,15 @@
 include config.mk
 
-all: build-src build-man
+all: build-src build-man build-applications
 
 build-src:
 	@${MAKE} -C src
 
 build-man:
 	@${MAKE} -C man
+
+build-applications:
+	@${MAKE} -C share/applications
 
 test: all
 	@PACKAGE=${PACKAGE} prove test
@@ -16,7 +19,7 @@ test-x11: all
 	prove test/feh-bg.i
 
 install: install-man install-doc install-bin install-font install-img
-install: install-examples
+install: install-examples install-applications
 
 install-man:
 	@echo installing manuals to ${man_dir}
@@ -57,12 +60,19 @@ install-examples:
 	@cp examples/* ${example_dir}
 	@chmod 644 ${example_dir}/*
 
+install-applications:
+	@echo installing desktop file to ${desktop_dir}
+	@mkdir -p ${desktop_dir}
+	@cp share/applications/feh.desktop ${desktop_dir}
+	@chmod 644 ${desktop_dir}/feh.desktop
+
 
 uninstall:
 	rm -f ${man_dir}/man1/feh.1 ${man_dir}/man1/feh-cam.1
 	rm -f ${man_dir}/man1/gen-cam-menu.1
 	rm -rf ${doc_dir}
 	rm -f ${bin_dir}/feh ${bin_dir}/feh-cam ${bin_dir}/gen-cam-menu
+	rm -f ${desktop_dir}/feh.desktop
 	rm -rf ${font_dir}
 	rm -rf ${image_dir}
 
@@ -86,6 +96,8 @@ disttest: dist
 clean:
 	@${MAKE} -C src clean
 	@${MAKE} -C man clean
+	@${MAKE} -C share/applications clean
 
 .PHONY: all test test-x11 install uninstall clean install-man install-doc \
-	install-bin install-font install-img install-examples dist
+	install-bin install-font install-img install-examples \
+	install-applications dist
