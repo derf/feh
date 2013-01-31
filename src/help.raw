@@ -46,7 +46,8 @@ OPTIONS
  -U, --loadable            List all loadable files. No image display
  -u, --unloadable          List all unloadable files. No image display
  -S, --sort SORT_TYPE      Sort files by:
-                           name, filename, width, height, pixels, size or format
+                           name, filename, mtime, width, height, pixels, size,
+                           or format
  -n, --reverse             Reverse sort order
  -A, --action ACTION       Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS

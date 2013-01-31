@@ -532,9 +532,14 @@ in paused mode.
 .It Cm -S , --sort Ar sort_type
 .
 The file list may be sorted according to image parameters.  Allowed sort
-types are: name, filename, width, height, pixels, size, format.  For sort
-modes other than name or filename, a preload run will be necessary,
+types are: name, filename, mtime, width, height, pixels, size, format.  For sort
+modes other than name, filename, or mtime, a preload run will be necessary,
 causing a delay proportional to the number of images in the list.
+.
+.Pp
+.
+The mtime sort mode sorts images by most recently modified. To sort by oldest
+first, reverse the filelist with --reverse.
 .
 .It Cm -| , --start-at Ar filename
 .

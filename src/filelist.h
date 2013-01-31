@@ -56,7 +56,7 @@ struct __feh_file_info {
 
 enum filelist_recurse { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
-enum sort_type { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_WIDTH,
+enum sort_type { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_MTIME, SORT_WIDTH,
 	SORT_HEIGHT,
 	SORT_PIXELS,
 	SORT_SIZE, SORT_FORMAT
@@ -82,6 +82,7 @@ void feh_save_filelist();
 
 int feh_cmp_name(void *file1, void *file2);
 int feh_cmp_filename(void *file1, void *file2);
+int feh_cmp_mtime(void *file1, void *file2);
 int feh_cmp_width(void *file1, void *file2);
 int feh_cmp_height(void *file1, void *file2);
 int feh_cmp_pixels(void *file1, void *file2);
