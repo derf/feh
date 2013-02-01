@@ -61,6 +61,7 @@ int num_xinerama_screens;
 
 int childpid = 0;
 
+static char *feh_stdin_load_image();
 static char *feh_http_load_image(char *url);
 static char *feh_magick_load_image(char *filename);
 
@@ -209,7 +210,8 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
-	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source = SRC_IMLIB;
+	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK, SRC_STDIN } image_source =
+		SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
 
@@ -224,6 +226,10 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		image_source = SRC_HTTP;
 
 		tmpname = feh_http_load_image(file->filename);
+	}
+	if ((strlen(file->filename) == 1) && (file->filename[0] == '-')) {
+		image_source = SRC_STDIN;
+		tmpname = feh_stdin_load_image();
 	}
 	else
 		*im = imlib_load_image_with_error_return(file->filename, &err);
@@ -267,6 +273,38 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	D(("Loaded ok\n"));
 	return(1);
+}
+
+static char *feh_stdin_load_image()
+{
+	char buf[1024];
+	size_t readsize;
+	char *sfn = estrjoin("_", "/tmp/feh_stdin", "XXXXXX", NULL);
+	int fd = mkstemp(sfn);
+	FILE *outfile;
+
+	if (fd == -1) {
+		free(sfn);
+		return NULL;
+	}
+
+	outfile = fdopen(fd, "w");
+
+	if (outfile == NULL) {
+		free(sfn);
+		return NULL;
+	}
+
+	while ((readsize = fread(buf, sizeof(char), sizeof(buf), stdin)) > 0) {
+		if (fwrite(buf, sizeof(char), readsize, outfile) < readsize) {
+			free(sfn);
+			return NULL;
+		}
+	}
+
+	fclose(outfile);
+
+	return sfn;
 }
 
 static char *feh_magick_load_image(char *filename)

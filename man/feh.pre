@@ -72,6 +72,10 @@ image in it, the keyboard and mouse can be used to change slides
 In slideshow mode, images can be deleted either from the filelist or from the
 disk, the new filelist can then be saved to the disk and reopened at a later
 time.
+An image can also be read from stdin via
+.Qq feh - .
+However, you should not combine reading from stdin with normal file / filelist
+usage.
 .
 .Pp
 .

@@ -185,6 +185,11 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			/* We'll download it later... */
 			free(path);
 			return;
+		} else if ((len == 1) && (path[0] == '-')) {
+			D(("Addig stdin (-) to filelist\n"));
+			filelist = gib_list_add_front(filelist, feh_file_new(path));
+			free(path);
+			return;
 		} else if (opt.filelistfile) {
 			char *newpath = feh_absolute_path(path);
 
