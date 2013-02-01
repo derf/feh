@@ -17,7 +17,7 @@ all: ${TARGETS}
 	< ${@:.desktop=.pre} > $@
 
 clean:
-	rm -f *.1
+	rm -f *.desktop
 
 .SUFFIXES: .pre .desktop
 
