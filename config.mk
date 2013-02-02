@@ -12,6 +12,7 @@ doc_dir = ${main_dir}/share/doc/feh
 image_dir = ${main_dir}/share/feh/images
 font_dir = ${main_dir}/share/feh/fonts
 example_dir = ${main_dir}/share/doc/feh/examples
+desktop_dir = ${main_dir}/share/applications
 
 # default CFLAGS
 CFLAGS ?= -g -O2

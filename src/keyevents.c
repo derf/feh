@@ -154,6 +154,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.mirror, 0, XK_bar, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_minus, 0, XK_minus, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_plus, 0, XK_plus, 0, 0, 0, 0);
+	feh_set_kb(&keys.toggle_keep_vp, 0, XK_k, 0, 0, 0, 0);
 
 	home = getenv("HOME");
 	if (!home)
@@ -307,6 +308,8 @@ void init_keyevents(void) {
 			cur_kb = &keys.reload_minus;
 		else if (!strcmp(action, "reload_plus"))
 			cur_kb = &keys.reload_plus;
+		else if (!strcmp(action, "toggle_keep_vp"))
+			cur_kb = &keys.toggle_keep_vp;
 		else
 			weprintf("keys: Invalid action: %s", action);
 
@@ -760,6 +763,9 @@ void feh_event_handle_keypress(XEvent * ev)
 			opt.reload--;
 		else if (opt.verbose)
 			weprintf("Cannot set RELOAD lower than 1 second.");
+	}
+	else if (feh_is_kp(&keys.toggle_keep_vp, keysym, state)) {
+		opt.keep_zoom_vp = !opt.keep_zoom_vp;
 	}
 	return;
 }

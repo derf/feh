@@ -56,7 +56,7 @@ enum {
 	CB_SORT_FILENAME, CB_SORT_IMAGENAME, CB_SORT_FILESIZE, CB_SORT_RANDOMIZE,
 	CB_SAVE_IMAGE, CB_SAVE_FILELIST, CB_FIT, CB_OPT_DRAW_FILENAME,
 	CB_OPT_DRAW_ACTIONS, CB_OPT_KEEP_HTTP, CB_OPT_FREEZE_WINDOW,
-	CB_OPT_FULLSCREEN, CB_EDIT_ROTATE, CB_OPT_AUTO_ZOOM
+	CB_OPT_FULLSCREEN, CB_EDIT_ROTATE, CB_OPT_AUTO_ZOOM, CB_OPT_KEEP_ZOOM_VP
 };
 
 feh_menu *feh_menu_new(void)
@@ -1326,6 +1326,14 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 				opt.zoom_mode = 0;
 			winwidget_rerender_all(1);
 			break;
+		case CB_OPT_KEEP_ZOOM_VP:
+			MENU_ITEM_TOGGLE(i);
+			if (MENU_ITEM_IS_ON(i))
+				opt.keep_zoom_vp = 1;
+			else
+				opt.keep_zoom_vp = 0;
+			winwidget_rerender_all(1);
+			break;
 	}
 	return;
 }
@@ -1381,6 +1389,8 @@ static feh_menu *feh_menu_func_gen_options(feh_menu * m)
 				CB_OPT_FREEZE_WINDOW, 0, NULL, opt.geom_flags);
 	feh_menu_add_toggle_entry(mm, "Fullscreen", NULL,
 				CB_OPT_FULLSCREEN, 0, NULL, m->fehwin->full_screen);
+	feh_menu_add_toggle_entry(mm, "Keep viewport zoom & pos", NULL,
+				CB_OPT_KEEP_ZOOM_VP, 0, NULL, opt.keep_zoom_vp);
 
 	feh_menu_add_entry(mm, NULL, NULL, 0, 0, NULL);
 

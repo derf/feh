@@ -1,3 +1,4 @@
+/share/applications/*.desktop
 /src/deps.mk
 /src/*.o
 /src/*.inc

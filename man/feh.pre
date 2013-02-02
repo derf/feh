@@ -72,6 +72,10 @@ image in it, the keyboard and mouse can be used to change slides
 In slideshow mode, images can be deleted either from the filelist or from the
 disk, the new filelist can then be saved to the disk and reopened at a later
 time.
+An image can also be read from stdin via
+.Qq feh - .
+However, you should not combine reading from stdin with normal file / filelist
+usage.
 .
 .Pp
 .
@@ -375,6 +379,11 @@ with
 .Qq Nm
 in the name.
 .
+.It Cm --keep-zoom-vp
+.
+When switching images, keep zoom and viewport settings
+.Pq zoom level and X, Y offsets
+.
 .It Cm -l , --list
 .
 Don't display images.  Analyze them and display an
@@ -527,9 +536,14 @@ in paused mode.
 .It Cm -S , --sort Ar sort_type
 .
 The file list may be sorted according to image parameters.  Allowed sort
-types are: name, filename, width, height, pixels, size, format.  For sort
-modes other than name or filename, a preload run will be necessary,
+types are: name, filename, mtime, width, height, pixels, size, format.  For sort
+modes other than name, filename, or mtime, a preload run will be necessary,
 causing a delay proportional to the number of images in the list.
+.
+.Pp
+.
+The mtime sort mode sorts images by most recently modified. To sort by oldest
+first, reverse the filelist with --reverse.
 .
 .It Cm -| , --start-at Ar filename
 .
@@ -1048,15 +1062,15 @@ and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
 .Aq CTRL+return .
 .
-.It e Bq toggle_exif
-.
-.Pq only if compiled with exif=1
-Toggle EXIF tag display
-.
 .It d Bq toggle_filenames
 .
 Toggle filename display
 .Pq see Cm --draw-filename
+.
+.It e Bq toggle_exif
+.
+.Pq only if compiled with exif=1
+Toggle EXIF tag display
 .
 .It f Bq save_filelist
 .
@@ -1073,6 +1087,12 @@ change slides based on
 .
 Toggle info display
 .Pq see Cm --info
+.
+.It k Bq toggle_keep_vp
+.
+Toggle zoom and viewport keeping. When enabled,
+.Nm
+will keep zoom and X, Y offset when switching images.
 .
 .It m Bq toggle_menu
 .

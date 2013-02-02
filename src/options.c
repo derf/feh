@@ -397,6 +397,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
 		{"no-fehbg"      , 0, 0, 236},
+		{"keep-zoom-vp"  , 0, 0, 237},
 
 		{0, 0, 0, 0}
 	};
@@ -500,6 +501,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.sort = SORT_NAME;
 			else if (!strcasecmp(optarg, "filename"))
 				opt.sort = SORT_FILENAME;
+			else if (!strcasecmp(optarg, "mtime"))
+				opt.sort = SORT_MTIME;
 			else if (!strcasecmp(optarg, "width"))
 				opt.sort = SORT_WIDTH;
 			else if (!strcasecmp(optarg, "height"))
@@ -721,6 +724,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 236:
 			opt.no_fehbg = 1;
+			break;
+		case 237:
+			opt.keep_zoom_vp = 1;
 			break;
 		default:
 			break;

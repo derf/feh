@@ -28,6 +28,7 @@ OPTIONS
                            mode or when window geometry is fixed. If combined
                            with --auto-zoom, zooming will be limited to the
                            the size.
+     --keep-zoom-vp        Keep viewport zoom and settings while changing images
  -w, --multiwindow         Open all files at once, one window per image
  -x, --borderless          Create borderless windows
  -d, --draw-filename       Show the filename in the image window
@@ -45,7 +46,8 @@ OPTIONS
  -U, --loadable            List all loadable files. No image display
  -u, --unloadable          List all unloadable files. No image display
  -S, --sort SORT_TYPE      Sort files by:
-                           name, filename, width, height, pixels, size or format
+                           name, filename, mtime, width, height, pixels, size,
+                           or format
  -n, --reverse             Reverse sort order
  -A, --action ACTION       Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS

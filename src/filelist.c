@@ -185,6 +185,11 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			/* We'll download it later... */
 			free(path);
 			return;
+		} else if ((len == 1) && (path[0] == '-')) {
+			D(("Addig stdin (-) to filelist\n"));
+			filelist = gib_list_add_front(filelist, feh_file_new(path));
+			free(path);
+			return;
 		} else if (opt.filelistfile) {
 			char *newpath = feh_absolute_path(path);
 
@@ -354,6 +359,25 @@ int feh_cmp_name(void *file1, void *file2)
 	return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
+/* Return -1 if file1 is _newer_ than file2 */
+int feh_cmp_mtime(void *file1, void *file2)
+{
+	struct stat s1, s2;
+
+	if (stat(FEH_FILE(file1)->filename, &s1)) {
+		feh_print_stat_error(FEH_FILE(file1)->filename);
+		return(-1);
+	}
+
+	if (stat(FEH_FILE(file2)->filename, &s2)) {
+		feh_print_stat_error(FEH_FILE(file2)->filename);
+		return(-1);
+	}
+
+	/* gib_list_sort is not stable, so explicitly return 0 as -1 */
+	return(s1.st_mtime >= s2.st_mtime ? -1 : 1);
+}
+
 int feh_cmp_width(void *file1, void *file2)
 {
 	return((FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
@@ -381,7 +405,7 @@ int feh_cmp_format(void *file1, void *file2)
 
 void feh_prepare_filelist(void)
 {
-	if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME)
+	if (opt.list || opt.customlist || (opt.sort > SORT_MTIME)
 			|| opt.preload || opt.min_width || opt.min_height
 			|| (opt.max_width != UINT_MAX) || (opt.max_height != UINT_MAX)) {
 		/* For these sort options, we have to preload images */
@@ -406,6 +430,9 @@ void feh_prepare_filelist(void)
 		break;
 	case SORT_FILENAME:
 		filelist = gib_list_sort(filelist, feh_cmp_filename);
+		break;
+	case SORT_MTIME:
+		filelist = gib_list_sort(filelist, feh_cmp_mtime);
 		break;
 	case SORT_WIDTH:
 		filelist = gib_list_sort(filelist, feh_cmp_width);

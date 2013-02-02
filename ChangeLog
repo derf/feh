@@ -1,3 +1,10 @@
+git HEAD
+    * Add --keep-zoom-vp option to keep zoom and offsets when switching
+      images (patch by sdaau). Press 'k' to toggle it.
+    * Add --sort mtime option (patch by guns)
+    * Add a desktop file (installed to share/applications/feh.desktop)
+    * Use "feh -" to read image from stdin
+
 Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.8
