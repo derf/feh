@@ -186,6 +186,7 @@ static void add_stdin_to_filelist()
 	fclose(outfile);
 
 	filelist = gib_list_add_front(filelist, feh_file_new(sfn));
+	add_file_to_rm_filelist(sfn);
 	free(sfn);
 }
 
