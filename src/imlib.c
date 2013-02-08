@@ -224,7 +224,8 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			|| (!strncmp(file->filename, "ftp://", 6))) {
 		image_source = SRC_HTTP;
 
-		tmpname = feh_http_load_image(file->filename);
+		if ((tmpname = feh_http_load_image(file->filename)) == NULL)
+			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	}
 	else
 		*im = imlib_load_image_with_error_return(file->filename, &err);
