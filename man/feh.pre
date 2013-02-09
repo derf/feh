@@ -74,8 +74,6 @@ disk, the new filelist can then be saved to the disk and reopened at a later
 time.
 An image can also be read from stdin via
 .Qq feh - .
-However, you should not combine reading from stdin with normal file / filelist
-usage.
 .
 .Pp
 .
