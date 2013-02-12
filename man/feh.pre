@@ -1376,6 +1376,15 @@ Blur current image
 .
 Rotate current image
 .
+.It unbound Bq zoom_in
+.
+Zoom in
+.
+.It unbound Bq zoom_out
+.
+Zoom out
+.
+.
 .El
 .
 .

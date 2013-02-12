@@ -6,6 +6,7 @@ git HEAD
     * Use "feh -" to read image from stdin
     * Fix Imlib2 and X11 warnings when opening a URL that returned an HTTP
       error
+    * Add button bindings to zoom in / out (patch by sdaau)
 
 Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
