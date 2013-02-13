@@ -1,4 +1,6 @@
-git HEAD
+Wed, 13 Feb 2013 01:46:56 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.9
     * Add --keep-zoom-vp option to keep zoom and offsets when switching
       images (patch by sdaau). Press 'k' to toggle it.
     * Add --sort mtime option (patch by guns)
