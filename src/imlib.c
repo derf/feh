@@ -68,13 +68,32 @@ static char *feh_magick_load_image(char *filename);
 void init_xinerama(void)
 {
 	if (opt.xinerama && XineramaIsActive(disp)) {
-		int major, minor;
-		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
-		else
-			xinerama_screen = 0;
+		int major, minor, px, py, i;
+
+		/* discarded */
+		Window dw;
+		int di;
+		unsigned int du;
+
 		XineramaQueryVersion(disp, &major, &minor);
 		xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
+
+		if (getenv("XINERAMA_SCREEN"))
+			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+		else {
+			xinerama_screen = 0;
+			XQueryPointer(disp, root, &dw, &dw, &px, &py, &di, &di, &du);
+			for (i = 0; i < num_xinerama_screens; i++) {
+				if (XY_IN_RECT(px, py,
+							xinerama_screens[i].x_org,
+							xinerama_screens[i].y_org,
+							xinerama_screens[i].width,
+							xinerama_screens[i].height)) {
+					xinerama_screen = i;
+					break;
+				}
+			}
+		}
 	}
 }
 #endif				/* HAVE_LIBXINERAMA */

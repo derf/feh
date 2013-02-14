@@ -780,23 +780,28 @@ void winwidget_move(winwidget winwid, int x, int y)
 
 void winwidget_resize(winwidget winwid, int w, int h)
 {
-	Window ignored_window;
 	XWindowAttributes attributes;
-	int tc_x, tc_y;
+	int tc_x, tc_y, px, py;
 	int scr_width = scr->width;
 	int scr_height = scr->height;
+
+	/* discarded */
+	Window dw;
+	int di, i;
+	unsigned int du;
 
 	XGetWindowAttributes(disp, winwid->win, &attributes);
 
 #ifdef HAVE_LIBXINERAMA
 	if (opt.xinerama && xinerama_screens) {
-		int i;
 		xinerama_screen = 0;
+		XQueryPointer(disp, root, &dw, &dw, &px, &py, &di, &di, &du);
 		for (i = 0; i < num_xinerama_screens; i++) {
-			if (XY_IN_RECT(attributes.x, attributes.y,
+			if (XY_IN_RECT(px, py,
 						xinerama_screens[i].x_org,
 						xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height)) {
+						xinerama_screens[i].width,
+						xinerama_screens[i].height)) {
 				xinerama_screen = i;
 				break;
 			}
@@ -828,7 +833,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 			XTranslateCoordinates(disp, winwid->win, attributes.root,
 						-attributes.border_width -
 						attributes.x,
-						-attributes.border_width - attributes.y, &tc_x, &tc_y, &ignored_window);
+						-attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
 			winwid->x = tc_x;
 			winwid->y = tc_y;
 			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
