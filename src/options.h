@@ -207,6 +207,8 @@ struct __fehbb {
 	struct __fehbutton menu;
 	struct __fehbutton blur;
 	struct __fehbutton rotate;
+	struct __fehbutton zoom_in;
+	struct __fehbutton zoom_out;
 };
 
 void init_parse_options(int argc, char **argv);

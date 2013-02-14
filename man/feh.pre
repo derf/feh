@@ -74,8 +74,6 @@ disk, the new filelist can then be saved to the disk and reopened at a later
 time.
 An image can also be read from stdin via
 .Qq feh - .
-However, you should not combine reading from stdin with normal file / filelist
-usage.
 .
 .Pp
 .
@@ -1378,6 +1376,15 @@ Blur current image
 .
 Rotate current image
 .
+.It unbound Bq zoom_in
+.
+Zoom in
+.
+.It unbound Bq zoom_out
+.
+Zoom out
+.
+.
 .El
 .
 .
@@ -1567,10 +1574,6 @@ section.
 .
 .
 .Sh BUGS
-.
-In a Xinerama setup, fullscreen mode only works properly on screen 0.  Set
-.Ev XINERAMA_SCREEN
-to the correct screen number or toggle fullscreen off, then on as a workaround.
 .
 .Pp
 .

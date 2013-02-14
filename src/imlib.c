@@ -61,7 +61,6 @@ int num_xinerama_screens;
 
 int childpid = 0;
 
-static char *feh_stdin_load_image();
 static char *feh_http_load_image(char *url);
 static char *feh_magick_load_image(char *filename);
 
@@ -69,13 +68,32 @@ static char *feh_magick_load_image(char *filename);
 void init_xinerama(void)
 {
 	if (opt.xinerama && XineramaIsActive(disp)) {
-		int major, minor;
-		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
-		else
-			xinerama_screen = 0;
+		int major, minor, px, py, i;
+
+		/* discarded */
+		Window dw;
+		int di;
+		unsigned int du;
+
 		XineramaQueryVersion(disp, &major, &minor);
 		xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
+
+		if (getenv("XINERAMA_SCREEN"))
+			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+		else {
+			xinerama_screen = 0;
+			XQueryPointer(disp, root, &dw, &dw, &px, &py, &di, &di, &du);
+			for (i = 0; i < num_xinerama_screens; i++) {
+				if (XY_IN_RECT(px, py,
+							xinerama_screens[i].x_org,
+							xinerama_screens[i].y_org,
+							xinerama_screens[i].width,
+							xinerama_screens[i].height)) {
+					xinerama_screen = i;
+					break;
+				}
+			}
+		}
 	}
 }
 #endif				/* HAVE_LIBXINERAMA */
@@ -210,7 +228,7 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err;
-	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK, SRC_STDIN } image_source =
+	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source =
 		SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
@@ -225,11 +243,8 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			|| (!strncmp(file->filename, "ftp://", 6))) {
 		image_source = SRC_HTTP;
 
-		tmpname = feh_http_load_image(file->filename);
-	}
-	if ((strlen(file->filename) == 1) && (file->filename[0] == '-')) {
-		image_source = SRC_STDIN;
-		tmpname = feh_stdin_load_image();
+		if ((tmpname = feh_http_load_image(file->filename)) == NULL)
+			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	}
 	else
 		*im = imlib_load_image_with_error_return(file->filename, &err);
@@ -273,38 +288,6 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	D(("Loaded ok\n"));
 	return(1);
-}
-
-static char *feh_stdin_load_image()
-{
-	char buf[1024];
-	size_t readsize;
-	char *sfn = estrjoin("_", "/tmp/feh_stdin", "XXXXXX", NULL);
-	int fd = mkstemp(sfn);
-	FILE *outfile;
-
-	if (fd == -1) {
-		free(sfn);
-		return NULL;
-	}
-
-	outfile = fdopen(fd, "w");
-
-	if (outfile == NULL) {
-		free(sfn);
-		return NULL;
-	}
-
-	while ((readsize = fread(buf, sizeof(char), sizeof(buf), stdin)) > 0) {
-		if (fwrite(buf, sizeof(char), readsize, outfile) < readsize) {
-			free(sfn);
-			return NULL;
-		}
-	}
-
-	fclose(outfile);
-
-	return sfn;
 }
 
 static char *feh_magick_load_image(char *filename)

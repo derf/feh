@@ -155,6 +155,41 @@ static void feh_print_stat_error(char *path)
 	}
 }
 
+static void add_stdin_to_filelist()
+{
+	char buf[1024];
+	size_t readsize;
+	char *sfn = estrjoin("_", "/tmp/feh_stdin", "XXXXXX", NULL);
+	int fd = mkstemp(sfn);
+	FILE *outfile;
+
+	if (fd == -1) {
+		free(sfn);
+		weprintf("cannot read from stdin: mktemp:");
+		return;
+	}
+
+	outfile = fdopen(fd, "w");
+
+	if (outfile == NULL) {
+		free(sfn);
+		weprintf("cannot read from stdin: fdopen:");
+		return;
+	}
+
+	while ((readsize = fread(buf, sizeof(char), sizeof(buf), stdin)) > 0) {
+		if (fwrite(buf, sizeof(char), readsize, outfile) < readsize) {
+			free(sfn);
+			return;
+		}
+	}
+	fclose(outfile);
+
+	filelist = gib_list_add_front(filelist, feh_file_new(sfn));
+	add_file_to_rm_filelist(sfn);
+	free(sfn);
+}
+
 
 /* Recursive */
 void add_file_to_filelist_recursively(char *origpath, unsigned char level)
@@ -186,8 +221,8 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			free(path);
 			return;
 		} else if ((len == 1) && (path[0] == '-')) {
-			D(("Addig stdin (-) to filelist\n"));
-			filelist = gib_list_add_front(filelist, feh_file_new(path));
+			D(("Adding temporary file for stdin (-) to filelist\n"));
+			add_stdin_to_filelist();
 			free(path);
 			return;
 		} else if (opt.filelistfile) {

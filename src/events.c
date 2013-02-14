@@ -152,6 +152,10 @@ void init_buttonbindings(void)
 			cur_bb = &buttons.blur;
 		else if (!strcmp(action, "rotate"))
 			cur_bb = &buttons.rotate;
+		else if (!strcmp(action, "zoom_in"))
+			cur_bb = &buttons.zoom_in;
+		else if (!strcmp(action, "zoom_out"))
+			cur_bb = &buttons.zoom_out;
 		else
 			weprintf("buttons: Invalid action: %s", action);
 
@@ -245,6 +249,62 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- winwid->im_x) / winwid->old_zoom;
 		winwid->im_click_offset_y = (winwid->click_offset_y
 				- winwid->im_y) / winwid->old_zoom;
+
+	} else if (feh_is_bb(&buttons.zoom_in, button, state)) {
+		D(("Zoom_In Button Press event\n"));
+		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->click_offset_x = ev->xbutton.x;
+		winwid->click_offset_y = ev->xbutton.y;
+		winwid->old_zoom = winwid->zoom;
+
+		/* required to adjust the image position in zoom mode */
+		winwid->im_click_offset_x = (winwid->click_offset_x
+				- winwid->im_x) / winwid->old_zoom;
+		winwid->im_click_offset_y = (winwid->click_offset_y
+				- winwid->im_y) / winwid->old_zoom;
+
+		/* copied from zoom_in, keyevents.c */
+		winwid->zoom = winwid->zoom * 1.25;
+
+		if (winwid->zoom > ZOOM_MAX)
+			winwid->zoom = ZOOM_MAX;
+
+		/* copied from below (ZOOM, feh_event_handle_MotionNotify) */
+		winwid->im_x = winwid->click_offset_x
+				- (winwid->im_click_offset_x * winwid->zoom);
+		winwid->im_y = winwid->click_offset_y
+				- (winwid->im_click_offset_y * winwid->zoom);
+
+		winwidget_sanitise_offsets(winwid);
+		winwidget_render_image(winwid, 0, 0);
+
+	} else if (feh_is_bb(&buttons.zoom_out, button, state)) {
+		D(("Zoom_Out Button Press event\n"));
+		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->click_offset_x = ev->xbutton.x;
+		winwid->click_offset_y = ev->xbutton.y;
+		winwid->old_zoom = winwid->zoom;
+
+		/* required to adjust the image position in zoom mode */
+		winwid->im_click_offset_x = (winwid->click_offset_x
+				- winwid->im_x) / winwid->old_zoom;
+		winwid->im_click_offset_y = (winwid->click_offset_y
+				- winwid->im_y) / winwid->old_zoom;
+
+		/* copied from zoom_out, keyevents.c */
+		winwid->zoom = winwid->zoom * 0.80;
+
+		if (winwid->zoom < ZOOM_MIN)
+			winwid->zoom = ZOOM_MIN;
+
+		/* copied from below (ZOOM, feh_event_handle_MotionNotify) */
+		winwid->im_x = winwid->click_offset_x
+				- (winwid->im_click_offset_x * winwid->zoom);
+		winwid->im_y = winwid->click_offset_y
+				- (winwid->im_click_offset_y * winwid->zoom);
+
+		winwidget_sanitise_offsets(winwid);
+		winwidget_render_image(winwid, 0, 0);
 
 	} else if (feh_is_bb(&buttons.reload, button, state)) {
 		D(("Reload Button Press event\n"));

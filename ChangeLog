@@ -1,9 +1,20 @@
-git HEAD
+Thu, 14 Feb 2013 12:52:02 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.9.1
+    * Set correct window dimensions on any Xinerama screen, not just the
+      first one (active screen is determined by current pointer location)
+
+Wed, 13 Feb 2013 01:46:56 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.9
     * Add --keep-zoom-vp option to keep zoom and offsets when switching
       images (patch by sdaau). Press 'k' to toggle it.
     * Add --sort mtime option (patch by guns)
     * Add a desktop file (installed to share/applications/feh.desktop)
     * Use "feh -" to read image from stdin
+    * Fix Imlib2 and X11 warnings when opening a URL that returned an HTTP
+      error
+    * Add button bindings to zoom in / out (patch by sdaau)
 
 Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
