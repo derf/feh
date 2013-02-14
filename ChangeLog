@@ -1,5 +1,6 @@
-git HEAD
+Thu, 14 Feb 2013 12:52:02 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.9.1
     * Set correct window dimensions on any Xinerama screen, not just the
       first one (active screen is determined by current pointer location)
 

@@ -1575,10 +1575,6 @@ section.
 .
 .Sh BUGS
 .
-In a Xinerama setup, fullscreen mode only works properly on screen 0.  Set
-.Ev XINERAMA_SCREEN
-to the correct screen number or toggle fullscreen off, then on as a workaround.
-.
 .Pp
 .
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
