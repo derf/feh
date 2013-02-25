@@ -36,6 +36,7 @@ typedef struct
 
 
 /* show these standard tags. section must be given first, than the tag itself */
+/* definition: http://libexif.sourceforge.net/api/exif-tag_8h.html */
 const t_EXIF_INFO Exif_tag_list [] =
 {
   {EXIF_IFD_0, EXIF_TAG_MAKE},
@@ -67,15 +68,21 @@ const t_EXIF_INFO Exif_tag_list [] =
 /* show these nikon makernote tags */
 const unsigned int Exif_makernote_nikon_tag_list [] =
 {
+
+  6,
   8,   /* Flash Setting */
   9,   /* Flash Mode */
-  24,  /* Flash exposure bracket value */
   135, /* Flash used */
+  18,  /* Flash Exposure Comp */
   168, /* Flash info: control mode */
-  
+
+  2,   /* ISO. Has some more info than EXIF_TAG_ISO_SPEED_RATINGS but also fails on Lo.1 */  
+  5,   /* White Balance */
   132, /* Lens */
   171, /* Digital Vari-Program */
-  34,  /* ActiveD-Lighting */
+  34,  /* Active D-Lighting */
+
+  35,  /* PictureControlData */
   183, /* AFInfo2 */
 
   EXIF_NIKON_MAKERNOTE_END   /* end marker */
