@@ -2,6 +2,7 @@ git HEAD
 
     * Fix -F --zoom 100 not working in Gnome+Unity when compiling feh with
       gcc and enabled optimizations (not -O0)
+    * EXIF updates by Dennis Real
 
 Thu, 14 Feb 2013 12:52:02 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
