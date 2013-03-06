@@ -1,47 +1,47 @@
 Principle author.
-Tom Gilbert (gilbrit, giblet, grubby) <gilbertt@linuxbrit.co.uk>
+Tom Gilbert (gilbrit, giblet, grubby) <gilbertt (at) linuxbrit.co.uk>
 
-Paul Duncan (pabs) <pabs@pablotron.org>
+Paul Duncan (pabs) - pabs (at) pablotron (dot) org
     - cam, wget fixups, mouse-button swapping options, rotation,
       xinerama support, menu backgrounds, and more.
 
-Richard Lowe (richlowe) <richlowe@btinternet.com>
+Richard Lowe (richlowe) - richlowe (at) btinternet (dot) com
     - background setting code, thumbnail patches.
 
-Benjamin Elijah Griffin <bgriffin@cddb.com>
+Benjamin Elijah Griffin bgriffin (at) cddb (dot) com
     - made builtin http work.
 
-Mrinal Kalakrishnan <mrinal@india.com>
+Mrinal Kalakrishnan - mrinal (at) india (dot) com
     - auto-zoom mode.
 
-Phil Morris (marmot) <marmot@vennercs.com>
+Phil Morris (marmot) - marmot (at) vennercs (dot) com
     - about.png.
 
 Carlos Puchol - cpg (at) puchol (dot) com
     - configure.in fix for nonstandard imlib2 locations.
 
-Eric Dorland <dorland@lords.com>
+Eric Dorland - dorland (at) lords (dot) com
     - the --title option.
 
-Omar Harriott <omar.harriott@csun.edu>
+Omar Harriott - omar.harriott (at) csun (dot) edu
     - fix filelist handling for filenames with spaces.
 
-Panagiotis Issaris <takis.issaris@skynet.be>
+Panagiotis Issaris - takis.issaris (at) skynet (dot) be
     - keypad buttonpresses
 
-Jon Bernard <jbernard@roanoke.edu>
+Jon Bernard - jbernard (at) roanoke (dot) edu
     - xinerama bugfix
 
-Maciej Kalisiak <mac@dgp.toronto.edu>
+Maciej Kalisiak - mac (at) dgp (dot) toronto (dot) edu
     - large image/zoom bugfix
 
-Claes Nasten <pekdon@pekdon.net>
+Claes Nasten - pekdon (at) pekdon (dot) net
     - Thumbnail caching, fixes
 
-JC <jcm314@yahoo.com>
+JC - jcm314 (at) yahoo (dot) com
     - multiple --action* options
 
-Ulrich Spoerlein <q@uni.de>
+Ulrich Spoerlein - q (at) uni (dot) de
     - fullscreen image count display
 
 Yu-Jie Lin
@@ -50,17 +50,21 @@ Yu-Jie Lin
 Dennis Real
     - patch for builtin exif support (exif=1)
 
-Daniel Friesel <derf@finalrewind.org>
+Daniel Friesel - derf (at) finalrewind (dot) org
     - Maintenance since 2010
 
 Thanks to:
-Michael Jennings <mej@eterm.org>
+Michael Jennings - mej (at) eterm (dot) org
     - Makefile Fixes, moral support
-Alistair Sutton <metallica@freenet.co.uk>
+
+Alistair Sutton - metallica (at) freenet (dot) co (dot) uk
     - rpm spec file for redhat.
-Laurence J. Lane <ljlane@debian.org>
+
+Laurence J. Lane - ljlane (at) debian (dot) org
     - debian assimilation.
-The Rasterman <raster@rasterman.com>
+
+The Rasterman - raster (at) rasterman (dot) com
     - Imlib2, initial zooming code example. Enlightenment.
+
 Stephen Levine
     - Great help debugging under E17
