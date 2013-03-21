@@ -233,6 +233,10 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	char *tmpname = NULL;
 	char *real_filename = NULL;
 
+#ifdef HAVE_LIBEXIF
+	ExifEntry *entry;
+#endif
+
 	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
@@ -284,7 +288,19 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 #ifdef HAVE_LIBEXIF
 	file->ed = exif_get_data(file->filename);
-#endif		
+
+	if (file->ed) {
+		entry = exif_content_get_entry(file->ed->ifd[EXIF_IFD_0], 0x0112);
+		if (entry != NULL) {
+			if (*(entry->data) == 3)
+				gib_imlib_image_orientate(*im, 2);
+			else if (*(entry->data) == 6)
+				gib_imlib_image_orientate(*im, 1);
+			else if (*(entry->data) == 8)
+				gib_imlib_image_orientate(*im, 3);
+		}
+	}
+#endif
 
 	D(("Loaded ok\n"));
 	return(1);
