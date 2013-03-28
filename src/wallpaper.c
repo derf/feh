@@ -261,7 +261,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char filbuf[4096];
 		char fehbg_xinerama[] = "--no-xinerama";
 		char *bgfill = NULL;
-		if(strlen((char*) opt.image_bg) <= 7) {
+		if(opt.image_bg) {
 			bgfill = emalloc(sizeof("--image-bg") + sizeof(opt.image_bg));
 			sprintf(bgfill, "--image-bg %s", opt.image_bg);
 		}
@@ -271,7 +271,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		if(strcmp(opt.image_bg, IMAGE_BG_WHITE) &&
 				strcmp(opt.image_bg, IMAGE_BG_BLACK)) {
 			Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
-			XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+			if(XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color) == 
+					BadColor) 
+				weprintf("Unrecognized color");
 		}
 		
 		/* local display to set closedownmode on */
