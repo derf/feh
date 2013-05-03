@@ -1,5 +1,6 @@
-git HEAD
+Fri, 03 May 2013 21:16:59 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.9.2
     * Fix -F --zoom 100 not working in Gnome+Unity when compiling feh with
       gcc and enabled optimizations (not -O0)
     * EXIF updates by Dennis Real
