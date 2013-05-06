@@ -830,6 +830,10 @@ Image height
 .
 Total number of files in filelist
 .
+.It %L
+.
+Temporary copy of filelist. Multiple uses of %L within the same format string will return the same copy.
+.
 .It %m
 .
 Current mode

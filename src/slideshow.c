@@ -467,8 +467,10 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 	char *c;
 	char buf[20];
 	static char ret[4096];
+	char *filelist_tmppath;
 
 	ret[0] = '\0';
+	filelist_tmppath = NULL;
 
 	for (c = str; *c != '\0'; c++) {
 		if ((*c == '%') && (*(c+1) != '\0')) {
@@ -491,6 +493,15 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 			case 'l':
 				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
 				strcat(ret, buf);
+				break;
+			case 'L':
+				if (filelist_tmppath != NULL) {
+					strcat(ret, filelist_tmppath);
+				} else {
+					filelist_tmppath = feh_unique_filename("/tmp/","filelist");
+					feh_write_filelist(filelist, filelist_tmppath);
+					strcat(ret, filelist_tmppath);
+				}
 				break;
 			case 'm':
 				strcat(ret, mode);
@@ -589,6 +600,8 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 		} else
 			strncat(ret, c, 1);
 	}
+	if (filelist_tmppath != NULL)
+		free(filelist_tmppath);
 	return(ret);
 }
 
