@@ -478,109 +478,109 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 			switch (*c) {
 			case 'f':
 				if (file)
-					strncat(ret, file->filename, sizeof(ret) - strlen(ret));
+					strncat(ret, file->filename, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'F':
 				if (file)
-					strncat(ret, shell_escape(file->filename), sizeof(ret) - strlen(ret));
+					strncat(ret, shell_escape(file->filename), sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'h':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->height);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'l':
 				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
-				strncat(ret, buf, sizeof(ret) - strlen(ret));
+				strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'L':
 				if (filelist_tmppath != NULL) {
-					strncat(ret, filelist_tmppath, sizeof(ret) - strlen(ret));
+					strncat(ret, filelist_tmppath, sizeof(ret) - strlen(ret) - 1);
 				} else {
 					filelist_tmppath = feh_unique_filename("/tmp/","filelist");
 					feh_write_filelist(filelist, filelist_tmppath);
-					strncat(ret, filelist_tmppath, sizeof(ret) - strlen(ret));
+					strncat(ret, filelist_tmppath, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'm':
-				strncat(ret, mode, sizeof(ret) - strlen(ret));
+				strncat(ret, mode, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'n':
 				if (file)
-					strncat(ret, file->name, sizeof(ret) - strlen(ret));
+					strncat(ret, file->name, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'N':
 				if (file)
-					strncat(ret, shell_escape(file->name), sizeof(ret) - strlen(ret));
+					strncat(ret, shell_escape(file->name), sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'o':
 				if (winwid) {
 					snprintf(buf, sizeof(buf), "%d,%d", winwid->im_x,
 						winwid->im_y);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'p':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'P':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strncat(ret, format_size(file->info->pixels), sizeof(ret) - strlen(ret));
+					strncat(ret, format_size(file->info->pixels), sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'r':
 				if (winwid) {
 					snprintf(buf, sizeof(buf), "%.1f", winwid->im_angle);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 's':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->size);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'S':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strncat(ret, format_size(file->info->size), sizeof(ret) - strlen(ret));
+					strncat(ret, format_size(file->info->size), sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 't':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strncat(ret, file->info->format, sizeof(ret) - strlen(ret));
+					strncat(ret, file->info->format, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'u':
 				snprintf(buf, sizeof(buf), "%d",
 					 current_file != NULL ? gib_list_num(filelist, current_file)
 					 + 1 : 0);
-				strncat(ret, buf, sizeof(ret) - strlen(ret));
+				strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'v':
-				strncat(ret, VERSION, sizeof(ret) - strlen(ret));
+				strncat(ret, VERSION, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'V':
 				snprintf(buf, sizeof(buf), "%d", getpid());
-				strncat(ret, buf, sizeof(ret) - strlen(ret));
+				strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'w':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->width);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'z':
 				if (winwid) {
 					snprintf(buf, sizeof(buf), "%.2f", winwid->zoom);
-					strncat(ret, buf, sizeof(ret) - strlen(ret));
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case '%':
-				strncat(ret, "%", sizeof(ret) - strlen(ret));
+				strncat(ret, "%", sizeof(ret) - strlen(ret) - 1);
 				break;
 			default:
 				weprintf("Unrecognized format specifier %%%c", *c);

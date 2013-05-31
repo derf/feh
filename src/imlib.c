@@ -227,7 +227,7 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
-	Imlib_Load_Error err;
+	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
 	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source =
 		SRC_IMLIB;
 	char *tmpname = NULL;

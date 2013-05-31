@@ -829,13 +829,13 @@ void feh_thumbnail_select_prev(winwidget winwid, int jump)
 	}
 }
 
-inline void feh_thumbnail_show_selected()
+void feh_thumbnail_show_selected()
 {
 	if (td.selected && td.selected->file)
 		feh_thumbnail_show_fullsize(td.selected->file);
 }
 
-inline feh_file* feh_thumbnail_get_selected_file()
+feh_file* feh_thumbnail_get_selected_file()
 {
 	if (td.selected)
 		return td.selected->file;
