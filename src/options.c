@@ -805,6 +805,10 @@ static void show_version(void)
 		"exif "
 #endif
 
+#ifdef INCLUDE_HELP
+		"help "
+#endif
+
 #if _FILE_OFFSET_BITS == 64
 		"stat64 "
 #endif

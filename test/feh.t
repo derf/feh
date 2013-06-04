@@ -10,6 +10,7 @@ my $feh = "src/feh";
 my $images_ok = 'test/ok/gif test/ok/jpg test/ok/png test/ok/pnm';
 my $images_fail = 'test/fail/gif test/fail/jpg test/fail/png test/fail/pnm';
 my $images = "${images_ok} ${images_fail}";
+my $has_help = 0;
 
 my $feh_name = $ENV{'PACKAGE'};
 
@@ -31,6 +32,11 @@ EOF
 
 if (length($feh_name) == 0) {
 	die($err_no_env);
+}
+
+my $version = qx{$feh --version};
+if ($version =~ m{ Compile-time \s switches : \s .* help }ox) {
+	$has_help = 1;
 }
 
 my $re_warning =
@@ -139,13 +145,23 @@ $cmd = Test::Command->new(cmd => "$feh --list --min-dimension 20x20 $images_ok")
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_eq('');
-$cmd->stderr_is_file('test/no-loadable-files');
+if ($has_help) {
+	$cmd->stderr_is_file('test/no-loadable-files.help');
+}
+else {
+	$cmd->stderr_is_file('test/no-loadable-files');
+}
 
 $cmd = Test::Command->new(cmd => "$feh --list --max-dimension 10x10 $images_ok");
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_eq('');
-$cmd->stderr_is_file('test/no-loadable-files');
+if ($has_help) {
+	$cmd->stderr_is_file('test/no-loadable-files.help');
+}
+else {
+	$cmd->stderr_is_file('test/no-loadable-files');
+}
 
 $cmd = Test::Command->new(cmd => "$feh --list --min-dimension 16x16 $images_ok");
 

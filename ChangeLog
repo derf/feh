@@ -3,6 +3,7 @@ git HEAD
     * Patch by David Gowers: Add %L format code (temporary copy of filelist)
     * Fix buffer overflows in printf implementation (affects --action,
       --customlist, --index-info, --info, --thumb-title, --title)
+    * Fix tests failing when compiled with help=1
 
 Fri, 03 May 2013 21:16:59 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
