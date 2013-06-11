@@ -1,5 +1,6 @@
-git HEAD
+Tue, 11 Jun 2013 08:27:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.9.3
     * Patch by David Gowers: Add %L format code (temporary copy of filelist)
     * Fix buffer overflows in printf implementation (affects --action,
       --customlist, --index-info, --info, --thumb-title, --title)
