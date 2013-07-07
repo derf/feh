@@ -29,7 +29,6 @@ the gib_imlib.h into imlib.h.
 */
 
 #include "feh.h"
-#include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
 
@@ -47,74 +46,90 @@ the gib_imlib.h into imlib.h.
 #include "exif.h"
 #endif
 
-Display *disp = NULL;
-Visual *vis = NULL;
-Screen *scr = NULL;
-Colormap cm;
-int depth;
-Atom wmDeleteWindow;
-XContext xid_context = 0;
-Window root = 0;
-
-/* Xinerama support */
-#ifdef HAVE_LIBXINERAMA
-XineramaScreenInfo *xinerama_screens = NULL;
-int xinerama_screen;
-int num_xinerama_screens;
-#endif				/* HAVE_LIBXINERAMA */
-
-int childpid = 0;
-
 static char *feh_http_load_image(char *url);
 static char *feh_magick_load_image(char *filename);
 
 #ifdef HAVE_LIBXINERAMA
 void init_xinerama(void)
 {
-	if (opt.xinerama && XineramaIsActive(disp)) {
+	if (opt.flg.xinerama && XineramaIsActive(fgv.disp)) {
 		int major, minor;
 		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+			fgv.xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
 		else
-			xinerama_screen = 0;
-		XineramaQueryVersion(disp, &major, &minor);
-		xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
+			fgv.xinerama_screen = 0;
+		XineramaQueryVersion(fgv.disp, &major, &minor);
+		fgv.xinerama_screens = XineramaQueryScreens(fgv.disp, &fgv.num_xinerama_screens);
 	}
 }
 #endif				/* HAVE_LIBXINERAMA */
 
-void init_imlib_fonts(void)
-{
-	/* Set up the font stuff */
+void init_feh_fonts(void){
+		/* As of Apr 2013 HRABAK encapsulated all the font stuff here.  Fonts get
+		 * loaded once, stored into opt.big||dflt||menu, the opt.fn_ptr points to
+		 * the one we want and no other func has to load or check or worry about
+		 * it.  Place all the #defines here cause they should NOT be used anywhere
+		 * else. init_parse_options() has NULL'd out all members B4 this call.
+		 */
+
+#define DEFAULT_FONT_MENU  "yudit/10"
+#define DEFAULT_FONT       "yudit/11"
+#define DEFAULT_FONT_BIG   "yudit/12"
+#define DEFAULT_FONT_TITLE "yudit/14"
+#define DEFAULT_FONT_FEP   "yudit/30"
+
+
 	imlib_add_path_to_font_path(".");
 	imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
 
+	/* walk thru and load the four instances of the opt.font family */
+	if ( !opt.fn_dflt.name ) opt.fn_dflt.name = DEFAULT_FONT;
+		gib_imlib_load_font(&opt.fn_dflt);
+	if ( !opt.fn_menu.name ) opt.fn_menu.name = DEFAULT_FONT_MENU;
+		gib_imlib_load_font(&opt.fn_menu);
+	if ( !opt.fn_fulls.name ) opt.fn_fulls.name = DEFAULT_FONT_BIG;
+		gib_imlib_load_font(&opt.fn_fulls);
+	opt.fn_fep.name = DEFAULT_FONT_FEP;
+		gib_imlib_load_font(&opt.fn_fep);
+
+	/* "--title-font FONT" option is really a flag and a font.  If user
+	 * supplies a font, then create_index_title_string() is called.
+	 * So leave this blank UNLESS the user supplies a font.
+	 */
+	if ( opt.fn_title.name )
+		gib_imlib_load_font(&opt.fn_title);
+
+	/* opt.fn_ptr is always set to the dflt font unless w->full_screen.
+	 * The ONLY func that should change this is stub_toggle_fullscreen()
+	 */
+	opt.fn_ptr =  opt.flg.full_screen ? &opt.fn_fulls : &opt.fn_dflt;
+
 	return;
-}
+}    /* end of init_feh_fonts()  */
 
 void init_x_and_imlib(void)
 {
-	disp = XOpenDisplay(NULL);
-	if (!disp)
-		eprintf("Can't open X display. It *is* running, yeah?");
-	vis =   DefaultVisual(disp, DefaultScreen(disp));
-	depth = DefaultDepth(disp, DefaultScreen(disp));
-	cm =    DefaultColormap(disp, DefaultScreen(disp));
-	root =  RootWindow(disp, DefaultScreen(disp));
-	scr =   ScreenOfDisplay(disp, DefaultScreen(disp));
-	xid_context = XUniqueContext();
+	fgv.disp = XOpenDisplay(NULL);
+	if (!fgv.disp)
+		eprintf("%s%sX display. It *is* running??", ERR_CANNOT, ERR_OPEN);
+	fgv.vis  = DefaultVisual(fgv.disp, DefaultScreen(fgv.disp));
+	fgv.depth= DefaultDepth(fgv.disp, DefaultScreen(fgv.disp));
+	fgv.cm   = DefaultColormap(fgv.disp, DefaultScreen(fgv.disp));
+	fgv.root = RootWindow(fgv.disp, DefaultScreen(fgv.disp));
+	fgv.scr  = ScreenOfDisplay(fgv.disp, DefaultScreen(fgv.disp));
+	fgv.xid_context = XUniqueContext();
 
 #ifdef HAVE_LIBXINERAMA
 	init_xinerama();
 #endif				/* HAVE_LIBXINERAMA */
 
-	imlib_context_set_display(disp);
-	imlib_context_set_visual(vis);
-	imlib_context_set_colormap(cm);
+	imlib_context_set_display(fgv.disp);
+	imlib_context_set_visual(fgv.vis);
+	imlib_context_set_colormap(fgv.cm);
 	imlib_context_set_color_modifier(NULL);
 	imlib_context_set_progress_function(NULL);
 	imlib_context_set_operation(IMLIB_OP_COPY);
-	wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
+	fgv.wmDeleteWindow = XInternAtom(fgv.disp, "WM_DELETE_WINDOW", False);
 
 	/* Initialise random numbers */
 	srand(getpid() * time(NULL) % ((unsigned int) -1));
@@ -124,42 +139,42 @@ void init_x_and_imlib(void)
 
 int feh_load_image_char(Imlib_Image * im, char *filename)
 {
-	feh_file *file;
+	feh_data *data;
 	int i;
 
-	file = feh_file_new(filename);
-	i = feh_load_image(im, file);
-	feh_file_free(file);
+	data = feh_ll_new_data(filename);
+	i = feh_load_image(im, data);
+	feh_ll_free_data(data);
 	return(i);
 }
 
-int feh_load_image(Imlib_Image * im, feh_file * file)
+int feh_load_image(Imlib_Image * im, feh_data * data)
 {
 	Imlib_Load_Error err;
 	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source = SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
 
-	D(("filename is %s, image is %p\n", file->filename, im));
+	D(("filename is %s, image is %p\n", data->filename, im));
 
-	if (!file || !file->filename)
+	if (!data || !data->filename)
 		return 0;
 
 	/* Handle URLs */
-	if ((!strncmp(file->filename, "http://", 7))
-        || (!strncmp(file->filename, "https://", 8))
-        || (!strncmp(file->filename, "ftp://", 6))) {
+	if ((!strncmp(data->filename, "http://" , 7))
+	 || (!strncmp(data->filename, "https://", 8))
+	 || (!strncmp(data->filename, "ftp://"  , 6))) {
 		image_source = SRC_HTTP;
 
-		tmpname = feh_http_load_image(file->filename);
+		tmpname = feh_http_load_image(data->filename);      /* static */
 	}
 	else
-		*im = imlib_load_image_with_error_return(file->filename, &err);
+		*im = imlib_load_image_with_error_return(data->filename, &err);
 
 	if ((err == IMLIB_LOAD_ERROR_UNKNOWN)
 			|| (err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT)) {
 		image_source = SRC_MAGICK;
-		tmpname = feh_magick_load_image(file->filename);
+		tmpname = feh_magick_load_image(data->filename);    /* static */
 	}
 
 	if (image_source != SRC_IMLIB) {
@@ -168,76 +183,77 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (im) {
-			real_filename = file->filename;
-			file->filename = tmpname;
-			feh_file_info_load(file, *im);
-			file->filename = real_filename;
+			real_filename = data->filename;
+			data->filename = tmpname;
+			feh_ll_load_data_info(data, *im);
+			data->filename = real_filename;
 #ifdef HAVE_LIBEXIF
-			file->ed = exif_get_data(tmpname);
+			data->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((opt.slideshow) && (opt.reload == 0) && (image_source != SRC_MAGICK)) {
-			free(file->filename);
-			file->filename = estrdup(tmpname);
+		if    ((opt.flg.mode == MODE_SLIDESHOW)
+		    && (opt.reload == 0)
+		    && (image_source != SRC_MAGICK)) {
+			free(data->filename);
+			data->filename = estrdup(tmpname);
 
-			if (!opt.keep_http)
-				add_file_to_rm_filelist( rm_md , tmpname, RM_LIST_ADDTO);
+			if (!opt.flg.keep_http)
+				feh_move_node_to_remove_list(NULL, DELETE_YES, WIN_MAINT_NO );
 		}
-		else if ((image_source == SRC_MAGICK) || !opt.keep_http)
+		else if ((image_source == SRC_MAGICK) || !opt.flg.keep_http)
 			unlink(tmpname);
 
-		free(tmpname);
 	}
 
 	if ((err) || (!im)) {
-		if (opt.verbose && !opt.quiet) {
+		if (opt.flg.verbose && !opt.flg.quiet) {
 			fputs("\n", stdout);
-			reset_output = 1;
+			opt.flg.reset_output = 1;
 		}
 		if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
-			eprintf("%s - Out of file descriptors while loading", file->filename);
-		else if (!opt.quiet) {
+			eprintf("%s - Out of file descriptors while loading", data->filename);
+		else if (!opt.flg.quiet) {
 			switch (err) {
 			case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-				weprintf("%s - File does not exist", file->filename);
+				weprintf("%s - File does not exist", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-				weprintf("%s - Directory specified for image filename", file->filename);
+				weprintf("%s - Directory specified for image filename", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-				weprintf("%s - No read access", file->filename);
+				weprintf("%s - No read access", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_UNKNOWN:
 			case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-				weprintf("%s - No Imlib2 loader for that file format", file->filename);
+				weprintf("%s - No Imlib2 loader for that file format", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-				weprintf("%s - Path specified is too long", file->filename);
+				weprintf("%s - Path specified is too long", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-				weprintf("%s - Path component does not exist", file->filename);
+				weprintf("%s - Path component does not exist", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-				weprintf("%s - Path component is not a directory", file->filename);
+				weprintf("%s - Path component is not a directory", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-				weprintf("%s - Path points outside address space", file->filename);
+				weprintf("%s - Path points outside address space", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-				weprintf("%s - Too many levels of symbolic links", file->filename);
+				weprintf("%s - Too many levels of symbolic links", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-				weprintf("While loading %s - Out of memory", file->filename);
+				weprintf("While loading %s - Out of memory", data->filename);
 				break;
 			case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-				weprintf("%s - Cannot write to directory", file->filename);
+				weprintf("%s - %swrite to directory", data->filename,ERR_CANNOT);
 				break;
 			case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-				weprintf("%s - Cannot write - out of disk space", file->filename);
+				weprintf("%s - %swrite - out of disk space", data->filename,ERR_CANNOT);
 				break;
 			default:
 				weprintf("While loading %s - Unknown error (%d)",
-						file->filename, err);
+						data->filename, err);
 				break;
 			}
 		}
@@ -246,7 +262,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	}
 
 #ifdef HAVE_LIBEXIF
-	file->ed = exif_get_data(file->filename);
+	data->ed = exif_get_data(data->filename);
 #endif
 
 	D(("Loaded ok\n"));
@@ -257,7 +273,6 @@ static char *feh_magick_load_image(char *filename)
 {
 	char argv_fd[12];
 	char *basename;
-	char *tmpname;
 	char *sfn;
 	int fd = -1, devnull = -1;
 	int status;
@@ -272,13 +287,12 @@ static char *feh_magick_load_image(char *filename)
 	else
 		basename++;
 
-	tmpname = feh_unique_filename("/tmp/", basename);
+	sfn = feh_unique_filename("/tmp/", basename); /* static */
 
-	if (strlen(tmpname) > (NAME_MAX-6))
-		tmpname[NAME_MAX-7] = '\0';
+	if (strlen(sfn) > (NAME_MAX-6))
+		sfn[NAME_MAX-7] = '\0';
 
-	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
-	free(tmpname);
+	strcat(sfn,"_XXXXXX");
 
 	fd = mkstemp(sfn);
 
@@ -287,7 +301,7 @@ static char *feh_magick_load_image(char *filename)
 
 	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
 
-	if ((childpid = fork()) == 0) {
+	if ((fgv.childpid = fork()) == 0) {
 
 		/* discard convert output */
 		devnull = open("/dev/null", O_WRONLY);
@@ -305,14 +319,14 @@ static char *feh_magick_load_image(char *filename)
 	}
 	else {
 		alarm(opt.magick_timeout);
-		waitpid(childpid, &status, 0);
+		waitpid(fgv.childpid, &status, 0);
 		alarm(0);
 		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
 			close(fd);
 			unlink(sfn);
 			sfn = NULL;
 
-			if (!opt.quiet) {
+			if (!opt.flg.quiet) {
 				if (WIFSIGNALED(status))
 					weprintf("%s - Conversion took too long, skipping",
 						filename);
@@ -325,14 +339,14 @@ static char *feh_magick_load_image(char *filename)
 			 * Reap child.  The previous waitpid call was interrupted by
 			 * alarm, but convert doesn't terminate immediately.
 			 * XXX
-			 * normally, if (WIFSIGNALED(status)) waitpid(childpid, &status, 0);
+			 * normally, if (WIFSIGNALED(status)) waitpid(fgv.childpid, &status, 0);
 			 * would suffice. However, as soon as feh has its own window,
 			 * this doesn't work anymore and the following workaround is
 			 * required. Hm.
 			 */
 			waitpid(-1, &status, 0);
 		}
-		childpid = 0;
+		fgv.childpid = 0;
 	}
 
 	return sfn;
@@ -348,11 +362,10 @@ static char *feh_http_load_image(char *url)
 	FILE *sfp;
 	int fd = -1;
 	char *ebuff;
-	char *tmpname;
 	char *basename;
-	char *path = NULL;
+	char *path = NULL;          /* FIXME?  no storage space for path??? */
 
-	if (opt.keep_http) {
+	if (opt.flg.keep_http) {
 		if (opt.output_dir)
 			path = opt.output_dir;
 		else
@@ -362,18 +375,17 @@ static char *feh_http_load_image(char *url)
 
 	curl = curl_easy_init();
 	if (!curl) {
-		weprintf("open url: libcurl initialization failure");
+		weprintf("%slibcurl initialization failure", ERR_OPEN_URL );
 		return NULL;
 	}
 
 	basename = strrchr(url, '/') + 1;
-	tmpname = feh_unique_filename(path, basename);
+	sfn = feh_unique_filename(path, basename);    /* static */
 
-	if (strlen(tmpname) > (NAME_MAX-6))
-		tmpname[NAME_MAX-7] = '\0';
+	if (strlen(sfn) > (NAME_MAX-6))
+		sfn[NAME_MAX-7] = '\0';
 
-	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
-	free(tmpname);
+	strcat(sfn,"_XXXXXX");
 
 	fd = mkstemp(sfn);
 	if (fd != -1) {
@@ -392,10 +404,9 @@ static char *feh_http_load_image(char *url)
 			res = curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
 			if (res != CURLE_OK) {
-				weprintf("open url: %s", ebuff);
+				weprintf("%s%s",ERR_OPEN_URL, ebuff);
 				unlink(sfn);
 				close(fd);
-				free(sfn);
 				sfn = NULL;
 			}
 
@@ -403,14 +414,12 @@ static char *feh_http_load_image(char *url)
 			fclose(sfp);
 			return sfn;
 		} else {
-			weprintf("open url: fdopen failed:");
+			weprintf("%sfdopen %s:",ERR_OPEN_URL,ERR_FAILED);
 			unlink(sfn);
-			free(sfn);
 			close(fd);
 		}
 	} else {
-		weprintf("open url: mkstemp failed:");
-		free(sfn);
+		weprintf("%smkstemp %s:", ERR_OPEN_URL,ERR_FAILED);
 	}
 	curl_easy_cleanup(curl);
 	return NULL;
@@ -421,7 +430,8 @@ static char *feh_http_load_image(char *url)
 char *feh_http_load_image(char *url)
 {
 	weprintf(
-		"Cannot load image %s\n Please recompile with libcurl support",
+		"%sload image %s\n Please recompile with libcurl support",
+		ERR_CANNOT,
 		url
 	);
 	return NULL;
@@ -429,45 +439,30 @@ char *feh_http_load_image(char *url)
 
 #endif				/* HAVE_LIBCURL */
 
-void feh_imlib_image_fill_text_bg(Imlib_Image im, int w, int h)
-{
-	gib_imlib_image_set_has_alpha(im, 1);
+Imlib_Image feh_imlib_image_make_n_fill_text_bg( int w, int h, int alpha){
+		/* combined imlib_create_image() and feh_imlib_image_fill_text_bg()
+		 * to collect and simplify the error processing.
+		 */
+	Imlib_Image im = NULL;
+
+	if ( !( im = imlib_create_image(w, h)))
+		eprintf("%screate image. Out of memory?", ERR_CANNOT);
+
+	gib_imlib_image_set_has_alpha(im, alpha);
 
 	imlib_context_set_blend(0);
 
-	if (opt.text_bg == TEXT_BG_CLEAR)
-		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
-	else
-		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 127);
+	gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0,
+	    (opt.flg.text_bg == TEXT_BG_CLEAR)? 0 : 127 );
 
 	imlib_context_set_blend(1);
-}
 
-static Imlib_Font feh_load_font(winwidget w)
-{
-	static Imlib_Font fn = NULL;
-
-	if (opt.font)
-		fn = gib_imlib_load_font(opt.font);
-
-	if (!fn) {
-		if (w && w->full_screen)
-			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
-		else
-			fn = gib_imlib_load_font(DEFAULT_FONT);
-	}
-
-	if (!fn) {
-		eprintf("Couldn't load font to draw a message");
-	}
-
-	return fn;
+	return im;
 }
 
 
 void feh_draw_zoom(winwidget w)
 {
-	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
 	char buf[100];
@@ -475,24 +470,22 @@ void feh_draw_zoom(winwidget w)
 	if (!w->im)
 		return;
 
-	fn = feh_load_font(w);
+	opt.fn_ptr = w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
 
 	snprintf(buf, sizeof(buf), "%.0f%%, %dx%d", w->zoom * 100,
-			(int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
+			(int) (w->im_w * w->zoom),
+			(int) (w->im_h * w->zoom));
 
 	/* Work out how high the font is */
-	gib_imlib_get_text_size(fn, buf, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size( buf, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
 	tw += 3;
 	th += 3;
-	im = imlib_create_image(tw, th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
+	im = feh_imlib_image_make_n_fill_text_bg( tw, th, 1);
 
-	feh_imlib_image_fill_text_bg(im, tw, th);
-
-	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1, 1, buf, IMLIB_TEXT_TO_RIGHT);
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
+	feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ],
+		                  1, 1, buf, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->high - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 	return;
 }
@@ -500,13 +493,13 @@ void feh_draw_zoom(winwidget w)
 void im_weprintf(winwidget w, char *fmt, ...)
 {
 	va_list args;
-	char *errstr = emalloc(1024);
+	char *errstr = mobs(8);   /* SIZE_1024 */
 
 	fflush(stdout);
 	fputs(PACKAGE " WARNING: ", stderr);
 
 	va_start(args, fmt);
-	vsnprintf(errstr, 1024, fmt, args);
+	vsnprintf(errstr, SIZE_1024, fmt, args);
 	va_end(args);
 
 	if (w)
@@ -521,55 +514,58 @@ void im_weprintf(winwidget w, char *fmt, ...)
 
 void feh_draw_errstr(winwidget w)
 {
-	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
 
 	if (!w->im)
 		return;
 
-	fn = feh_load_font(NULL);
+	opt.fn_ptr = &opt.fn_dflt;
 
 	/* Work out how high the font is */
-	gib_imlib_get_text_size(fn, w->errstr, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size( w->errstr, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
 	tw += 3;
 	th += 3;
-	im = imlib_create_image(tw, th);
-	if (!im)
-		eprintf("Couldn't create errstr image. Out of memory?");
+	im = feh_imlib_image_make_n_fill_text_bg( tw, th, 1 );
 
-	feh_imlib_image_fill_text_bg(im, tw, th);
-
-	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_RED ], 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT);
-	free(w->errstr);
-	w->errstr = NULL;
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
+	feh_imlib_text_draw(im, &opt.style[ STYLE_RED ],
+		                  1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT);
+	w->errstr = NULL;       /* static mobs() now , don't free */
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->high - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 }
 
-#define MAX_PRINT_WIDTH 64
-void feh_draw_filename(winwidget w)
-{
-  static char s[MAX_PRINT_WIDTH];
-	static Imlib_Font fn = NULL;
+void feh_draw_filename(winwidget w){
+		/* the caller wants the filename to show, so no need to test */
+
+	static char *last1 = NULL;
+	static char  *name = NULL;
+	char *s = mobs(1);
 	int tw = 0, th = 0, nw = 0;
 	Imlib_Image im = NULL;
 
-	if ((!w->file) || (!FEH_FILE(w->file->data))
-                 || (!FEH_FILE(w->file->data)->filename))
+	if ( !w->node || !NODE_DATA(w->node)
+	              || !NODE_FILENAME(w->node) )
 		return;
 
-	fn = feh_load_font(w);
+	opt.fn_ptr =  w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
+
+	/* we want filename, but what part(s)? */
+	name = NODE_FILENAME(w->node);
+	if (opt.flg.draw_name) {
+		name = NODE_NAME(w->node);
+		if ( opt.flg.draw_no_ext )
+			if ( ( last1 = NODE_EXT(w->node))  )
+					*last1 = '\0';
+	}
 
 	/* Work out how high the font is */
-	gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename,
-        NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+	gib_imlib_get_text_size( name, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
-  s[0]='\0';
-	if ( FEH_LL_LEN(feh_md) > 1) {
-		snprintf(s, MAX_PRINT_WIDTH, "%d of %d", FEH_LL_CUR_NTH(feh_md), FEH_LL_LEN(feh_md) );
-		gib_imlib_get_text_size(fn, s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
+	if ( LL_CNT(feh_md) > 1) {
+		sprintf(s, "%d of %d", CN_CNT(feh_md), LL_CNT(feh_md) );
+		gib_imlib_get_text_size( s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
 
 		if (nw > tw)
 			tw = nw;
@@ -577,18 +573,18 @@ void feh_draw_filename(winwidget w)
 
 	tw += 3;
 	th += 3;
-	im = imlib_create_image(tw, 2 * th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
+	im = feh_imlib_image_make_n_fill_text_bg( tw, 2 * th, 1);
 
-	feh_imlib_image_fill_text_bg(im, tw, 2 * th);
-
-	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1, 1,
-      FEH_FILE(w->file->data)->filename, IMLIB_TEXT_TO_RIGHT);
+	feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ],
+	                    1, 1, name, IMLIB_TEXT_TO_RIGHT);
+	if ( last1 ){
+			*last1 = '.';     /* restore the name+extension */
+			last1 = NULL;
+	}
 
 	if (s[0] != '\0' ) {
-		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ],
-                        1, th , s, IMLIB_TEXT_TO_RIGHT);
+		feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ],
+		                    1, th , s, IMLIB_TEXT_TO_RIGHT);
 	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
@@ -600,67 +596,64 @@ void feh_draw_filename(winwidget w)
 #ifdef HAVE_LIBEXIF
 void feh_draw_exif(winwidget w)
 {
-	static Imlib_Font fn = NULL;
 	int width = 0, height = 0, line_width = 0, line_height = 0;
 	Imlib_Image im = NULL;
 	int no_lines = 0, i;
 	int pos = 0;
 	int pos2 = 0;
-	char info_line[256];
-	char *info_buf[128];
+	char *info_buf[ SIZE_128 ];    /* max 128 lines */
+	char *info_line = mobs(2);     /* SIZE_256,  max 256 chars per line */
+
 	char buffer[MAX_EXIF_DATA];
 
-	if ( (!w->file) || (!FEH_FILE(w->file->data))
-			 || (!FEH_FILE(w->file->data)->filename) )
-	{
-		return;
-	}
 
+	if ( !w->node || !NODE_DATA(w->node)
+	              || !NODE_FILENAME(w->node) )
+		return;
 
 	buffer[0] = '\0';
-	exif_get_info(FEH_FILE(w->file->data)->ed, buffer, MAX_EXIF_DATA);
+	exif_get_info(NODE_DATA(w->node)->ed, buffer, MAX_EXIF_DATA);
 
-	fn = feh_load_font(w);
+	opt.fn_ptr =  w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
 
 	if (buffer == NULL)
 	{
-		snprintf(buffer, MAX_EXIF_DATA, "%s", estrdup("Failed to run exif command"));
-		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+		STRCAT_2ITEMS(buffer, ERR_FAILED, " to run exif command");
+		gib_imlib_get_text_size( &buffer[0], NULL, &width, &height,
+		                         IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
 	else
 	{
 
-		while ( (no_lines < 128) && (pos < MAX_EXIF_DATA) )
+		while ( (no_lines < SIZE_128 ) && (pos < MAX_EXIF_DATA) )
 		{
-			/* max 128 lines */
 			pos2 = 0;
-			while ( pos2 < 256 ) /* max 256 chars per line */
+			while ( pos2 < SIZE_256 )
 			{
 				if ( (buffer[pos] != '\n')
-				      && (buffer[pos] != '\0') )
+						  && (buffer[pos] != '\0') )
 				{
-			    info_line[pos2] = buffer[pos];
-			  }
-			  else if ( buffer[pos] == '\0' )
-			  {
-			    pos = MAX_EXIF_DATA; /* all data seen */
-			    info_line[pos2] = '\0';
+					info_line[pos2] = buffer[pos];
 				}
-			  else
-			  {
-			  	info_line[pos2] = '\0'; /* line finished, continue with next line*/
+				else if ( buffer[pos] == '\0' )
+				{
+					pos = MAX_EXIF_DATA;          /* all data seen */
+					info_line[pos2] = '\0';
+				}
+				else
+				{
+					info_line[pos2] = '\0';       /* line finished, cont with next line*/
+					pos++;
+					break;
+				}
 
-			    pos++;
-			    break;
-			  }
-
-			   pos++;
-			   pos2++;
+				pos++;
+				pos2++;
 			}
 
-			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
-                              &line_height, IMLIB_TEXT_TO_RIGHT);
+			gib_imlib_get_text_size( info_line, NULL, &line_width,
+			                         &line_height, IMLIB_TEXT_TO_RIGHT);
 
 			if (line_height > height)
 				height = line_height;
@@ -678,21 +671,16 @@ void feh_draw_exif(winwidget w)
 	height *= no_lines;
 	width += 4;
 
-	im = imlib_create_image(width, height);
-	if (!im)
-	{
-		eprintf("Couldn't create image. Out of memory?");
-	}
-
-	feh_imlib_image_fill_text_bg(im, width, height);
+	im = feh_imlib_image_make_n_fill_text_bg( width, height, 1 );
 
 	for (i = 0; i < no_lines; i++)
 	{
-		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ] ,
-        1, (i * line_height) + 1,	info_buf[i], IMLIB_TEXT_TO_RIGHT);
+		feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ] ,
+		                    1, (i * line_height) + 1,
+		                    info_buf[i], IMLIB_TEXT_TO_RIGHT);
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - height, 1, 1, 0);
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->high - height, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
@@ -702,38 +690,38 @@ void feh_draw_exif(winwidget w)
 
 void feh_draw_info(winwidget w)
 {
-	static Imlib_Font fn = NULL;
 	int width = 0, height = 0, line_width = 0, line_height = 0;
 	Imlib_Image im = NULL;
 	int no_lines = 0, i;
 	char *info_cmd;
-	char info_line[256];
-	char *info_buf[128];
+	char *info_line = mobs(2);    /* SIZE_256 */
+	char *info_buf[ SIZE_128 ];
 	FILE *info_pipe;
 
-	if ((!w->file)
-          || (!FEH_FILE(w->file->data))
-          || (!FEH_FILE(w->file->data)->filename))
+
+	if ( !w->node || !NODE_DATA(w->node)
+	            || !NODE_FILENAME(w->node) )
 		return;
 
-	fn = feh_load_font(w);
+	opt.fn_ptr = w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
 
-	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data));
+	info_cmd = feh_printf(opt.info_cmd, NODE_DATA(w->node) );
 
 	info_pipe = popen(info_cmd, "r");
 
 	if (!info_pipe) {
-		info_buf[0] = estrdup("Failed to run info command");
-		gib_imlib_get_text_size(fn, info_buf[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+		STRCAT_2ITEMS(info_buf[0], ERR_FAILED, " to run info command");
+		gib_imlib_get_text_size( info_buf[0], NULL, &width, &height,
+		                         IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
 	else {
-		while ((no_lines < 128) && fgets(info_line, 256, info_pipe)) {
+		while ((no_lines < SIZE_128 ) && fgets(info_line, SIZE_256, info_pipe)) {
 			if (info_line[strlen(info_line)-1] == '\n')
 				info_line[strlen(info_line)-1] = '\0';
 
-			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
-					&line_height, IMLIB_TEXT_TO_RIGHT);
+			gib_imlib_get_text_size( info_line, NULL, &line_width,
+			                         &line_height, IMLIB_TEXT_TO_RIGHT);
 
 			if (line_height > height)
 				height = line_height;
@@ -753,171 +741,138 @@ void feh_draw_info(winwidget w)
 	height *= no_lines;
 	width += 4;
 
-	im = imlib_create_image(width, height);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
-
-	feh_imlib_image_fill_text_bg(im, width, height);
+	im = feh_imlib_image_make_n_fill_text_bg( width, height, 1 );
 
 	for (i = 0; i < no_lines; i++) {
-		feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1,
-        (i * line_height) + 1, info_buf[i], IMLIB_TEXT_TO_RIGHT );
+		feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ],
+		                  1, (i * line_height) + 1, info_buf[i],
+		                  IMLIB_TEXT_TO_RIGHT );
 
 		free(info_buf[i]);
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
-			w->h - height, 1, 1, 0);
+	gib_imlib_render_image_on_drawable(w->bg_pmap,im,0,w->high - height, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
 }
 
-char *build_caption_filename(feh_file * file, short create_dir)
+char *build_caption_filename(feh_data * data, short create_dir)
 {
-	char *caption_filename;
-	char *s, *dir, *caption_dir;
-	struct stat cdir_stat;
-	s = strrchr(file->filename, '/');
-	if (s) {
-		dir = estrdup(file->filename);
-		s = strrchr(dir, '/');
-		*s = '\0';
+	static struct stat cdir_stat;
+	char *caption_dir = mobs(2);
+
+	/* data->name is already at the last '/' in the filename */
+	if ( data->name == data->filename ){
+			/* no path */
+			caption_dir[0] = '.' ; caption_dir[1] = '\0';
 	} else {
-		dir = estrdup(".");
+			strcpy( caption_dir, data->filename );
+			caption_dir[ data->name - data->filename -1 ] = '\0';
 	}
 
-	caption_dir = estrjoin("/", dir, opt.caption_path, NULL);
+	if ( opt.caption_path[0] != '/' )
+			strcat( caption_dir, "/" );
+	strcat( caption_dir, opt.caption_path );
 
-	D(("dir %s, cp %s, cdir %s\n", dir, opt.caption_path, caption_dir))
+	D(("cp %s, cdir %s\n", opt.caption_path, caption_dir))
 
 	if (stat(caption_dir, &cdir_stat) == -1) {
 		if (!create_dir)
 			return NULL;
 		if (mkdir(caption_dir, 0755) == -1)
-			eprintf("Failed to create caption directory %s:", caption_dir);
+			eprintf("%s to create caption directory %s:",ERR_FAILED, caption_dir);
 	} else if (!S_ISDIR(cdir_stat.st_mode))
-		eprintf("Caption directory (%s) exists, but is not a directory.",
-			caption_dir);
+			eprintf("Caption directory (%s) exists, but is not a directory.",
+								caption_dir);
 
-	free(caption_dir);
+	strcat( caption_dir, "/");
+	strcat( caption_dir, data->name);
+	strcat( caption_dir, ".txt");
 
-	caption_filename = estrjoin("", dir, "/", opt.caption_path, "/", file->name, ".txt", NULL);
-	free(dir);
-	return caption_filename;
+	return caption_dir;
 }
 
-void feh_draw_caption(winwidget w)
-{
-  static char * no_cap =NULL;      /* to reuse the stock caption hint */
-	static Imlib_Font fn = NULL;
-  static char *start, *end;        /* substr markers in alp[] */
-  static char last1;               /* save the final char */
-  static ld *alp;                  /* alp stands for Array(of)LinePointers */
-  int b;                           /* for the blue component in r,g,b */
-  int i = 0;                       /* index to walk thru alp[] array */
+
+void feh_draw_caption(winwidget w) {
+		/* To avoid re-stat()ing the caption when you zoom a captionless pic, HRABAK
+		* set ALL empty captions to "Caption entry mode - Hit ESC to cancel".
+		* Don't forget this function is called from winwidget_render_image(), so
+		* without this "fix" the captions file would be stat()d like 30 times a
+		* second.
+		*/
+
+	static char *start, *end;        /* substr markers in alp[] */
+	static char last1;               /* save the final char */
+	static ld *alp;                  /* alp stands for Array(of)LinePointers */
+	int i = 0;                       /* index to walk thru alp[] array */
+	int style_flag = STYLE_WHITE;    /* to toggle between WHITE and YELLOW */
 
 	int tw = 0, th = 0, ww;          /* unused var  hh; */
 	int x, y;
 	Imlib_Image im = NULL;
-	feh_file *file;
 
-
-	if (!w->file) {
+	if ( !w->node || !NODE_DATA(w->node)
+	              || !NODE_FILENAME(w->node) )
 		return;
-	}
-	file = FEH_FILE(w->file->data);
-	if (!file->filename) {
-		return;
-	}
 
-	if (!file->caption) {
-		char *caption_filename;
-		caption_filename = build_caption_filename(file, 0);
+	if (!NODE_CAPTION(w->node) ) {
+		/* read caption from file */
+		char *caption_filename = build_caption_filename(NODE_DATA(w->node), 0);
 		if (caption_filename)
-			/* read caption from file */
-			file->caption = ereadfile(caption_filename);
-		else
-			file->caption = estrdup("");
-		free(caption_filename);
+			NODE_CAPTION(w->node) = ereadfile(caption_filename);
 	}
 
-	if (file->caption == NULL) {
-		/* caption file is not there, we want to cache that, otherwise we'll stat
-		 * the damn file every time we render the image. Reloading an image will
-		 * always cause the caption to be reread though so we're safe to do so.
-		 * (Before this bit was added, when zooming a captionless image with
-		 * captions enabled, the captions file would be stat()d like 30 times a
-		 * second) - don't forget this function is called from
-		 * winwidget_render_image().
-		 */
-		file->caption = estrdup("");
-	}
+	if (NODE_CAPTION(w->node) == NULL)
+			NODE_CAPTION(w->node) = fgv.no_cap;          /* they all point to this one */
 
-	if (*(file->caption) == '\0' && !w->caption_entry)
+	if ( !w->caption_entry && NODE_CAPTION(w->node) == fgv.no_cap )
 		return;
 
-	fn = feh_load_font(w);
+	opt.fn_ptr = w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
 
-	if (*(file->caption) == '\0') {
-    if ( no_cap == NULL ){
-        /* save this stock string on the heap.  Don't free it */
-        no_cap = estrdup("Caption entry mode - Hit ESC to cancel");
-    }
-    alp = feh_wrap_string( fn, no_cap, NULL, w->w );
-	} else
-		alp = feh_wrap_string(fn, file->caption, NULL, w->w );
+	/* ALL captions now point to something valid */
+	alp = feh_wrap_string( NODE_CAPTION(w->node), NULL, w->wide );
 
-  if ( alp[0].L0.tot_lines == 0 )
-		return;
+	if ( alp[0].L0.tot_lines == 0 ) return;
 
 	/* we don't want the caption overlay larger than our window */
-  th = alp[0].L0.tothigh + alp[0].L0.tot_lines + 2;
-  tw = alp[0].L0.maxwide +1 ;
-	if (th > w->h)
-		th = w->h;
-	if (tw > w->w)
-		tw = w->w;
+	th = alp[0].L0.tothigh + alp[0].L0.tot_lines + 2;
+	tw = alp[0].L0.maxwide +1 ;
+	if (th > w->high)
+		th = w->high;
+	if (tw > w->wide)
+		tw = w->wide;
 
-	im = imlib_create_image(tw, th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
-
-	feh_imlib_image_fill_text_bg(im, tw, th);
-
-  b = opt.style[ STYLE_CAPTION ].fg.b;           /* save the orig bg.b component */
-	if (w->caption_entry && (*(file->caption) == '\0'))
-		opt.style[ STYLE_CAPTION ].fg.b=127;             /* b=127; */
-	else if (w->caption_entry)
-    opt.style[ STYLE_CAPTION ].fg.b=0;               /* b=0; */
+	im = feh_imlib_image_make_n_fill_text_bg( tw, th, 1 );
 
 	x = 0;
 	y = 0;
+	if (w->caption_entry) style_flag = STYLE_YELLOW ;
 
-  for (i=1; i<= alp[0].L0.tot_lines ; i++ ) {
-    /* loops ONCE thru the lines and prints them */
-    ww = alp[i].L1.wide;
+	for (i=1; i<= alp[0].L0.tot_lines ; i++ ) {
+		/* loops ONCE thru the lines and prints them */
+		ww = alp[i].L1.wide;
 		x = (tw - ww) / 2;
 
 		start = alp[i].L1.line;
-    end   = alp[i].L1.line + alp[i].L1.len;
-    /* null term this substring b4 the call ...*/
-    last1 = end[0];  end[0]   = '\0';
-    feh_imlib_text_draw(im, fn, &opt.style[ STYLE_CAPTION ], x, y, start, IMLIB_TEXT_TO_RIGHT);
-    /* ... then restore that last char afterwards */
-    end[0] = last1;
+		end   = alp[i].L1.line + alp[i].L1.len;
+		/* null term this substring b4 the call ...*/
+		last1 = end[0];  end[0]   = '\0';
+		feh_imlib_text_draw(im, &opt.style[ style_flag ],
+		                    x, y, start, IMLIB_TEXT_TO_RIGHT);
+		/* ... then restore that last char afterwards */
+		end[0] = last1;
 		y += alp[i].L1.high + 2;	/* line spacing */
 	}
 
-  opt.style[ STYLE_CAPTION ].fg.b=b;           /* restore the orig bg.b component */
-
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->wide - tw) / 2, w->high - th, 1, 1, 0);
 	gib_imlib_free_image_and_decache(im);
 
 	return;
 }
 
-unsigned char reset_output = 0;
+/* unsigned char reset_output = 0;*/
 
 void feh_display_status(char stat)
 {
@@ -925,7 +880,7 @@ void feh_display_status(char stat)
 	static int init_len = 0;
 	int j = 0;
 
-	D(("filelist %p, filelist->next %p\n", FEH_LL_FIRST(feh_md), FEH_LL_FIRST(feh_md)->next ));
+	D(("first node %p, node->next %p\n", feh_md->rn->next, feh_md->rn->next->next ));
 
 	if (!stat) {
 		putc('\n', stdout);
@@ -935,25 +890,25 @@ void feh_display_status(char stat)
 	}
 
 	if (!init_len)
-		init_len = FEH_LL_LEN(feh_md);
+		init_len = LL_CNT(feh_md);
 
 	if (i) {
-		if (reset_output) {
+		if (opt.flg.reset_output) {
 			/* There's just been an error message. Unfortunate ;) */
 			for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 7); j++)
 				putc(' ', stdout);
 		}
 
 		if (!(i % 50)) {
-			int len = FEH_LL_LEN(feh_md);
+			int len = LL_CNT(feh_md);
 
 			fprintf(stdout, " %5d/%d (%d)\n[%3d%%] ",
 					i, init_len, len, ((int) ((float) i / init_len * 100)));
 
-		} else if ((!(i % 10)) && (!reset_output))
+		} else if ((!(i % 10)) && (!opt.flg.reset_output))
 			putc(' ', stdout);
 
-		reset_output = 0;
+		opt.flg.reset_output = 0;
 	} else
 		fputs("[  0%] ", stdout);
 
@@ -967,16 +922,17 @@ void feh_edit_inplace(winwidget w, int op)
 {
 	int ret;
 	Imlib_Image old;
-	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
+
+	if ( !w->node || !NODE_DATA(w->node) || !NODE_FILENAME(w->node) )
 		return;
 
 	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
 		feh_edit_inplace_lossless(w, op);
-		feh_reload_image(w, 1, 1);
+		feh_reload_image(w, RESIZE_YES, FORCE_NEW_YES);
 		return;
 	}
 
-	ret = feh_load_image(&old, FEH_FILE(w->file->data));
+	ret = feh_load_image(&old, NODE_DATA(w->node));
 	if (ret) {
 		if (op == INPLACE_EDIT_FLIP) {
 			imlib_context_set_image(old);
@@ -986,11 +942,11 @@ void feh_edit_inplace(winwidget w, int op)
 			imlib_image_flip_horizontal();
 		} else
 			gib_imlib_image_orientate(old, op);
-		gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
+		gib_imlib_save_image(old, NODE_FILENAME(w->node));
 		gib_imlib_free_image(old);
-		feh_reload_image(w, 1, 1);
+		feh_reload_image(w, RESIZE_YES, FORCE_NEW_YES );
 	} else {
-		im_weprintf(w, "failed to load image from disk to edit it in place");
+		im_weprintf(w, "%s to load image from disk to edit it in place",ERR_FAILED);
 	}
 
 	return;
@@ -1001,30 +957,30 @@ void feh_edit_inplace(winwidget w, int op)
  * calls.
  */
 
-ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w ){
-    /* takes a (possibly) multi-line text and breaks it into lines that will
-     * fit inside the image w(idth) constraint, for a given font and style.
-     * The wide and high calcs for each line are saved with the line so the
-     * caller can just feh_imlib_text_draw() without have to recalc those
-     * values again.  Returns an array of the lines (alp[]) to the caller.
-     * alp[0] element holds the metadata for all the lines in this text.
-     * Note:  When I pass a substring to get_text_size(), I just jam in a
-     * NULL termination mid-string (in the original), then restore that
-     * one char (last1) after the call.
-     */
+ld * feh_wrap_string( char *text, feh_style *s,  int w ){
+		/* takes a (possibly) multi-line text and breaks it into lines that will
+		* fit inside the image w(idth) constraint, for a given font and style.
+		* The wide and high calcs for each line are saved with the line so the
+		* caller can just feh_imlib_text_draw() without having to recalc those
+		* values again.  Returns an array of the lines (alp[]) to the caller.
+		* alp[0] element holds the metadata for all the lines in this text.
+		* Note:  When I pass a substring to get_text_size(), I just jam in a
+		* NULL termination mid-string (in the original), then restore that
+		* one char (last1) after the call.
+		*/
 
-    static int guess = FIRST_ALP_GUESS;
-    static ld *alp;                  /*  alp stands for Array(of)LinePointers */
-    static wd *awp;                  /*  awp stands for Array(of)WordPointers */
+	static int guess = FIRST_ALP_GUESS;
+	static ld *alp;                  /*  alp stands for Array(of)LinePointers */
+	static wd *awp;                  /*  awp stands for Array(of)WordPointers */
 
-    int linenum=0;                   /* index for alp[] */
-    int i_start, i_end;              /* indexs for awp[] */
-    int lw, lh=0;
-    char *start, *end;
-    char last1;                      /* save the final char */
+	int linenum=0;                   /* index for alp[] */
+	int i_start, i_end;              /* indexs for awp[] */
+	int lw, lh=0;
+	char *start, *end;
+	char last1;                      /* save the final char */
 
 /* adds a new element to the alp[] array. should this be an inline func?  */
-#define ADD_THIS_TO_ALP  if ( linenum == guess ){ \
+#define ADD_THIS_TO_ALP { if ( linenum == guess ){ \
                               guess+=FIRST_ALP_GUESS; \
                               alp =  erealloc( alp, sizeof( ld ) * guess ); \
                           } \
@@ -1036,97 +992,96 @@ ld * feh_wrap_string(Imlib_Font fn, char *text, feh_style *s,  int w ){
                               alp[0].L0.maxwide  = lw; \
                           } \
                           alp[0].L0.tothigh += lh; \
-                          alp[0].L0.tot_lines = linenum;
+                          alp[0].L0.tot_lines = linenum; \
+                        }
 
-    /* I don't like this solution but ....  Initialize it the first time thru  */
-    if ( linenum==0 )
-        alp =  malloc( sizeof( ld ) * guess );
+	/* I don't like this solution but ....  Initialize it the first time thru  */
+	if ( linenum==0 )
+			alp =  malloc( sizeof( ld ) * guess );
 
-    awp = feh_string_split(text);
+	awp = feh_string_split(text);
 
-    /* incase no text lines */
-    alp[0].L0.maxwide = alp[0].L0.tothigh = alp[0].L0.tot_lines = 0;
+	/* incase no text lines */
+	alp[0].L0.maxwide = alp[0].L0.tothigh = alp[0].L0.tot_lines = 0;
 
-    /* prime the pump with the first line */
-    linenum = 1; i_start = 0; start = awp[0].word;
-    end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+	/* prime the pump with the first line */
+	linenum = 1; i_start = 1; start = awp[0].word;
+	end = get_next_awp_line( awp , linenum,  i_start, &i_end );
 
-    while (1) {
+	while (1) {
 
-        if ( end == NULL ){
-            /* just an empty line */
-            lw = 0;
-            end = start;
-            i_end--;
-        } else {
-            /* null term this substring b4 the call ...*/
-            last1 = end[0];  end[0]   = '\0' ;  start = awp[i_start].word;
-            gib_imlib_get_text_size(fn, start, s, &lw, &lh, IMLIB_TEXT_TO_RIGHT);
-            /* ... then restore that last char afterwards */
-            end[0] = last1;
-        }
+			if ( end == NULL ){
+					/* an empty line, so use the default wide/high */
+					lw = opt.fn_ptr->wide;  lh = opt.fn_ptr->high;
+					end = start;
+					i_end--;
+			} else {
+					/* null term this substring b4 the call ...*/
+					last1 = end[0];  end[0]   = '\0' ;  start = awp[i_start].word;
+					gib_imlib_get_text_size( start, s, &lw, &lh, IMLIB_TEXT_TO_RIGHT);
+					/* ... then restore that last char afterwards */
+					end[0] = last1;
+			}
 
-        if ( lw <= w ) {      /* it fits */
-            ADD_THIS_TO_ALP
-            linenum++;      /* ready for the next line */
-            i_start = i_end +1;
-            if ( i_start > awp[0].tot_items ) break;
-            start = awp[i_start].word;
-            end = get_next_awp_line( awp , linenum,  i_start, &i_end );
-        } else {              /* did not fit, so drop words off the end */
-            if ( i_start == i_end ){
-                /* not even room for the FIRST word.
-                 * So mash it in, resetting wide to fit */
-                if ( w < lw) w = lw;
-                ADD_THIS_TO_ALP
-                linenum++;      /* ready for the next line */
-                i_start++;
-                if ( i_start > awp[0].tot_items ) break;
-                end = get_next_awp_line( awp , linenum,  i_start, &i_end );
-                continue;
-            }
+			if ( lw <= w ) {      /* it fits */
+					ADD_THIS_TO_ALP
+					linenum++;      /* ready for the next line */
+					i_start = i_end +1;
+					if ( i_start > awp[0].linenum ) break;
+					start = awp[i_start].word;
+					end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+			} else {              /* did not fit, so drop words off the end */
+					if ( i_start == i_end ){
+							/* not even room for the FIRST word.
+							* So mash it in, resetting wide to fit */
+							if ( w < lw) w = lw;
+							ADD_THIS_TO_ALP
+							linenum++;      /* ready for the next line */
+							i_start++;
+							if ( i_start > awp[0].linenum ) break;
+							end = get_next_awp_line( awp , linenum,  i_start, &i_end );
+							continue;
+					}
 
-            i_end--;        /*  drop one word off the end and try again */
-            end = awp[i_end].word + awp[i_end].len;
+					i_end--;        /*  drop one word off the end and try again */
+					end = awp[i_end].word + awp[i_end].len;
 
-        }     /* end if lw <=w */
-    }         /* end of infinite while() loop */
+			}     /* end if lw <=w */
+	}         /* end of infinite while() loop */
 
-    return alp;
+	return alp;
 
 }     /* end of feh_wrap_string() */
 
 void feh_edit_inplace_lossless(winwidget w, int op)
 {
-	char *filename = FEH_FILE(w->file->data)->filename;
-	int len = strlen(filename) + 1;
-	char *file_str = emalloc(len);
+	char *file_str  = mobs(2);
 	int pid, status;
 	char op_name[]  = "rotate";     /* message */
 	char op_op[]    = "-rotate";    /* jpegtran option */
 	char op_value[] = "horizontal"; /* jpegtran option's value */
 
 	if (op == INPLACE_EDIT_FLIP) {
-		sprintf(op_name,  "flip");
-		sprintf(op_op,    "-flip");
-		sprintf(op_value, "vertical");
+		strcpy(op_name,  "flip");
+		strcpy(op_op,    "-flip");
+		strcpy(op_value, "vertical");
 	} else if (op == INPLACE_EDIT_MIRROR) {
-		sprintf(op_name,  "mirror");
-		sprintf(op_op,    "-flip");
+		strcpy(op_name,  "mirror");
+		strcpy(op_op,    "-flip");
 	} else
 		snprintf(op_value, 4, "%d", 90 * op);
 
-	snprintf(file_str, len, "%s", filename);
+	strcpy(file_str, NODE_FILENAME(w->node));
 
 	if ((pid = fork()) < 0) {
-		im_weprintf(w, "lossless %s: fork failed:", op_name);
+		im_weprintf(w, "lossless %s: fork %s:", op_name, ERR_FAILED);
 		exit(1);
 	} else if (pid == 0) {
 
 		execlp("jpegtran", "jpegtran", "-copy", "all", op_op, op_value,
 				"-outfile", file_str, file_str, NULL);
 
-		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
+		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? %s to exec:", op_name,ERR_FAILED);
 		exit(1);
 	} else {
 		waitpid(pid, &status, 0);
@@ -1137,101 +1092,74 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 					" Commandline was: "
 					"jpegtran -copy all %s %s -outfile %s %s",
 					op_name, status >> 8, op_op, op_value, file_str, file_str);
-			free(file_str);
 			return;
 		}
 	}
-	free(file_str);
 }
 
 void feh_draw_actions(winwidget w)
 {
-	static Imlib_Font fn = NULL;
-	int tw = 0, th = 0;
-	int th_offset = 0;
-	int max_tw = 0;
-	int line_th = 0;
+	static char *heading = "defined actions:";
+	static char digits[] = "0123456789 : ";
 	Imlib_Image im = NULL;
-	int i = 0;
-	int num_actions = 0;
-	int cur_action = 0;
-	char index[2];
-	char *line;
+	int tw, th, th_offset, max_tw, max_th, i, cur_action;
+	char *line = mobs(1);
 
-	/* Count number of defined actions. This method sucks a bit since it needs
-	 * to be changed if the number of actions changes, but at least it doesn't
-	 * miss actions 2 to 9 if action1 isn't defined
-	 */
-	for (i = 0; i < 10; i++) {
-		if (opt.actions[i])
-			num_actions++;
-	}
-
-	if (num_actions == 0)
+	if (opt.flg.no_actions )
 		return;
 
-	if ((!w->file)
-          || (!FEH_FILE(w->file->data))
-          || (!FEH_FILE(w->file->data)->filename))
-		return;
+	if ( !w->node || !NODE_DATA(w->node) || !NODE_FILENAME(w->node) )
+			return;
 
-	fn = feh_load_font(w);
+	opt.fn_ptr = w->full_screen ? &opt.fn_fulls : &opt.fn_dflt;
 
-	gib_imlib_get_text_size(fn, "defined actions:", NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-  /* Check for the widest line */
-	max_tw = tw;
+	tw = th = th_offset = max_tw = max_th = i = cur_action = 0;
+	gib_imlib_get_text_size( heading, NULL, &max_tw, &max_th, IMLIB_TEXT_TO_RIGHT);
 
-	for (i = 0; i < 10; i++) {
-		if (opt.actions[i]) {
-			line = emalloc(strlen(opt.actions[i]) + 5);
-			strcpy(line, "0: ");
-			line = strcat(line, opt.actions[i]);
-			gib_imlib_get_text_size(fn, line, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
-			free(line);
+	/* Check for the widest line */
+	for (i = 0; i < MAX_ACTIONS ; i++) {
+		if (opt.actions[i]) {     /* print the leading ";" (hold flag) too */
+			gib_imlib_get_text_size(opt.actions[i], NULL, &tw, &th,
+			                        IMLIB_TEXT_TO_RIGHT);
 			if (tw > max_tw)
 				max_tw = tw;
+
+			max_th += th + 3;       /* vert padding */
 		}
 	}
 
-	tw = max_tw;
-	tw += 3;
-	th += 3;
-	line_th = th;
-	th = (th * num_actions) + line_th;
+	/* (3*opt.fn_ptr->wide) is aprox size of "0: "  prefix */
+	max_tw += 3 + (opt.fn_ptr->wide * 3);
+	max_th += 3;
 
 	/* This depends on feh_draw_filename internals...
-	 * should be FIXME some time
+	 * should be FIXME some time.  Maybe save the actual th_offset.
 	 */
-	if (opt.draw_filename)
-		th_offset = line_th * 2;
+	if (opt.flg.draw_filename)
+		th_offset = opt.fn_ptr->high * 2;
 
-	im = imlib_create_image(tw, th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
+	im = feh_imlib_image_make_n_fill_text_bg( max_tw, max_th, 1);
 
-	feh_imlib_image_fill_text_bg(im, tw, th);
+	feh_imlib_text_draw(im, &opt.style[ STYLE_YELLOW ],
+	                    1, 1, heading, IMLIB_TEXT_TO_RIGHT);
 
-	feh_imlib_text_draw(im, fn, &opt.style[ STYLE_YELLOW ], 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT);
-
-	for (i = 0; i < 10; i++) {
+	for (i = 0; i < MAX_ACTIONS ; i++) {
 		if (opt.actions[i]) {
 			cur_action++;
-			line = emalloc(strlen(opt.actions[i]) + 5);
-			sprintf(index, "%d", i);
-			strcpy(line, index);
-			strcat(line, ": ");
-			strcat(line, opt.actions[i]);
+			digits[10] = digits[i];           /* makes the "0: " string */
+			STRCAT_2ITEMS( line, digits+10,opt.actions[i]);
 
-			feh_imlib_text_draw(im, fn, &opt.style[ STYLE_WHITE ], 1,
-					(cur_action * line_th) + 1, line,	IMLIB_TEXT_TO_RIGHT );
-			free(line);
+			feh_imlib_text_draw(im, &opt.style[ STYLE_WHITE ],
+			                    1, (cur_action * opt.fn_ptr->high) + 1, line,
+			                    IMLIB_TEXT_TO_RIGHT );
 		}
 	}
 
 	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0 + th_offset, 1, 1, 0);
-
 	gib_imlib_free_image_and_decache(im);
+
 	return;
+
 }
 
 
@@ -1368,7 +1296,7 @@ gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w, int h,
 
 
 void
-feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
+feh_imlib_text_draw(Imlib_Image im, feh_style *s, int x, int y,
                     char *text, Imlib_Text_Direction dir )
 {
     /* HRABAK's rewrite now requires each call to supply a feh_style,
@@ -1378,7 +1306,7 @@ feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
      */
 
     imlib_context_set_image(im);
-    imlib_context_set_font(fn);
+    imlib_context_set_font(opt.fn_ptr->fn);
     imlib_context_set_direction(dir);
 
     /* draw the text first with the background setting ... */
@@ -1395,11 +1323,15 @@ feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s, int x, int y,
 
 
 void
-gib_imlib_get_text_size(Imlib_Font fn, char *text, feh_style *s, int *w,
-                        int *h, Imlib_Text_Direction dir)
+gib_imlib_get_text_size( char *text, feh_style *s,
+                         int *w, int *h, Imlib_Text_Direction dir)
 {
-
-   imlib_context_set_font(fn);
+	/* As of Apr 2013 HRABAK uses the global opt.fn_ptr->fn rather than
+	 * passing "Imlib_Font fn" all the way down the call chain.  For this
+	 * func alone, the call stack is 6 deep and "Imlib_Font fn" is not
+	 * needed in the 5 intervening calls :-)
+	 */
+   imlib_context_set_font( opt.fn_ptr->fn );
    imlib_context_set_direction(dir);
    imlib_get_text_size(text, w, h);
    if (s) {     /* I think I can kill this whole thing */
@@ -1507,13 +1439,6 @@ gib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
 }
 
 void
-gib_imlib_free_font(Imlib_Font fn)
-{
-   imlib_context_set_font(fn);
-   imlib_free_font();
-}
-
-void
 gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
                           char make_updates, int r, int g, int b, int a)
 {
@@ -1543,18 +1468,31 @@ gib_imlib_image_sharpen(Imlib_Image im, int radius)
 }
 
 
-Imlib_Font
-gib_imlib_load_font(char *name)
-{
-   Imlib_Font fn;
+void gib_imlib_load_font(feh_font *fn_ptr){
+		/* This fills the already reserved feh_font structure in opt.
+		 */
 
-   if ((fn = imlib_load_font(name)))
-      return fn;
-   weprintf("couldn't load font %s, attempting to fall back to fixed.", name);
-   if ((fn = imlib_load_font("fixed")))
-      return fn;
-   weprintf("failed to even load fixed! Attempting to find any font.");
-   return imlib_load_font("*");
+	int w,h;
+
+	fn_ptr->fn = imlib_load_font(fn_ptr->name);
+	if (!fn_ptr->fn) {
+		weprintf("%Sload font %s, attempting to fall back to fixed.",ERR_CANNOT, fn_ptr->name);
+		if ((fn_ptr->fn = imlib_load_font("fixed"))){
+			fn_ptr->name = estrdup("fixed");
+		} else {
+			weprintf("%s to even load fixed! Attempting to find any font.",ERR_FAILED);
+			if ((fn_ptr->fn = imlib_load_font("*"))) {
+				fn_ptr->name = estrdup("anything");
+			} else eprintf("FATAL! Could NOT find any font.");
+		}
+	}
+
+	/* something got loaded, so calc the default spacings */
+	opt.fn_ptr = fn_ptr;        /* all imlib calls now use opt.fn_ptr */
+	gib_imlib_get_text_size( "M", NULL, &w, &h, IMLIB_TEXT_TO_RIGHT);
+	fn_ptr->wide = (unsigned char) w;
+	fn_ptr->high = (unsigned char) h;
+
 }
 
 void gib_imlib_image_orientate(Imlib_Image im, int orientation)

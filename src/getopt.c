@@ -4,7 +4,7 @@
    before changing it!
 
    Copyright (C) 1987, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97
-   	Free Software Foundation, Inc.
+   Free Software Foundation, Inc.
 
    The GNU C Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -295,7 +295,7 @@ char **argv;
 
 	/* Exchange the shorter segment with the far end of the longer segment.
 	   That puts the shorter segment into the right place. It leaves the
-	   longer segment in the right place overall, but it consists of two parts 
+	   longer segment in the right place overall, but it consists of two parts
 	   that need to be swapped next.  */
 
 #ifdef _LIBC
@@ -303,7 +303,7 @@ char **argv;
 	   can work normally.  Our top argument must be in the range of the
 	   string.  */
 	if (nonoption_flags_len > 0 && top >= nonoption_flags_max_len) {
-		/* We must extend the array.  The user plays games with us and presents 
+		/* We must extend the array.  The user plays games with us and presents
 		   new arguments.  */
 		char *new_str = malloc(top + 1);
 
@@ -533,7 +533,7 @@ int long_only;
 		}
 
 		/* The special ARGV-element `--' means premature end of options. Skip
-		   it like a null option, then exchange with previous non-options as if 
+		   it like a null option, then exchange with previous non-options as if
 		   it were an option, then skip everything else like a non-option.  */
 
 		if (optind != argc && !strcmp(argv[optind], "--")) {
@@ -579,7 +579,7 @@ int long_only;
 
 	/* Check whether the ARGV-element is a long option.
 
-	   If long_only and the ARGV-element has the form "-f", where f is a valid 
+	   If long_only and the ARGV-element has the form "-f", where f is a valid
 	   short option, don't consider it an abbreviated form of a long option
 	   that starts with f.  Otherwise there would be no way to give the -f
 	   short option.
@@ -604,7 +604,7 @@ int long_only;
 		for (nameend = nextchar; *nameend && *nameend != '='; nameend++)
 			/* Do nothing.  */ ;
 
-		/* Test all long options for either exact match or abbreviated matches. 
+		/* Test all long options for either exact match or abbreviated matches.
 		 */
 		for (p = longopts, option_index = 0; p->name; p++, option_index++)
 			if (!strncmp(p->name, nextchar, nameend - nextchar)) {
@@ -685,7 +685,7 @@ int long_only;
 			return pfound->val;
 		}
 
-		/* Can't find it as a long option.  If this is not getopt_long_only, or 
+		/* Can't find it as a long option.  If this is not getopt_long_only, or
 		   the option starts with '--' or is not a valid short option, then
 		   it's an error. Otherwise interpret it as a short option.  */
 		if (!long_only || argv[optind][1] == '-' || my_index(optstring, *nextchar) == NULL) {
@@ -760,7 +760,7 @@ int long_only;
 				   taking next ARGV-elt as argument.  */
 				optarg = argv[optind++];
 
-			/* optarg is now the argument, see if it's in the table of longopts. 
+			/* optarg is now the argument, see if it's in the table of longopts.
 			 */
 
 			for (nextchar = nameend = optarg; *nameend && *nameend != '='; nameend++)
@@ -829,7 +829,7 @@ int long_only;
 				return pfound->val;
 			}
 			nextchar = NULL;
-			return 'W';	/* Let the application handle it. 
+			return 'W';	/* Let the application handle it.
 					 */
 		}
 		if (temp[1] == ':') {

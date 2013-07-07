@@ -2,6 +2,7 @@
 
 Copyright (C) 1999-2003 Tom Gilbert.
 Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2012      Christopher Hrabak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -26,180 +27,177 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "feh_ll.h"
-#include "filelist.h"
 #include "options.h"
 
-static void check_options(void);
 static void feh_getopt_theme(int argc, char **argv);
-static void feh_parse_option_array(int argc, char **argv, int finalrun);
 static void feh_check_theme_options(char **argv);
 static void feh_parse_options_from_string(char *opts);
 static void feh_load_options_for_theme(char *theme);
 static void show_usage(void);
 static void show_version(void);
 void init_all_styles( feh_style (*s)[] );
-static char *theme;
+/*static char *theme;*/
 
-fehoptions opt;
-/*  extern LLMD *ofi_md;        replaces the old original_file_items */
+void init_all_fgv(){  /* 'fgv' stands for fehGlobalVars. */
+
+		/* initialize all members to zero. */
+		memset(&fgv, 0, sizeof(feh_global_vars));
+
+		fgv.no_cap = "Caption entry mode - Hit ESC to cancel";
+		fgv.ptr    = NULL;        /* function ptr for &stub_move_mode_toggle */
+
+		fgv.mnu.cover = 0;
+		fgv.mnu.root  = NULL;
+		fgv.mnu.list  = NULL;
+
+}   /* end of init_all_fgv() */
+
 
 void init_all_styles( feh_style (*s)[] ){
-    /* loads the set of default sytle settings used in feh.
-     * Historically, menu and caption styles were only two, but
-     * HRABAK added several more to encapsulate the five diff ways
-     * that feh called the feh_imlib_text_draw() function.
-     * See the style[] array stored inside fehoptions.
-     * See the style_type enum in structs.h.  That enum  IS the index to
-     * this styles array, so DON'T screw up the order.
-     * This internal order matches the external menu.style file like ...
-     * #Style
-     * #NAME Menu
-     * 0 0 0 64 1 1                 #bg, r g b x_off y_off
-     * 127 0 0 255 0 0              #fg, r g b x_off y_off
-     */
+		/* loads the set of default sytle settings used in feh.
+		* Historically, menu and caption styles were the only two, but
+		* HRABAK added several more to encapsulate the five diff ways
+		* that feh called the feh_imlib_text_draw() function.
+		* See the style[] array stored inside fehoptions.
+		* See the misc_flags enum in structs.h.  That enum  IS the index to
+		* this styles array, so DON'T screw up the order.
+		* This internal order matches the external menu.style file like ...
+		* #Style
+		* #NAME Menu
+		* 0 0 0 64 1 1                 #bg, r g b x_off y_off
+		* 127 0 0 255 0 0              #fg, r g b x_off y_off
+		*/
 
 
-  /* cheatin way to load defaults into the many style structs */
-  int a[ STYLE_CNT ][12]={
-        /* bg r,g,b,a     fg r,g,b,a                   enum name    */
-        {0,0,0,64 ,1,1,   127,0,    0,255,0,0} ,      /* STYLE_MENU */
-        {0,0,0,255,1,1,   255,255,255,255,0,0} ,      /* STYLE_CAPTION */
-        {0,0,0,255,1,1,   255,255,255,255,0,0} ,      /* STYLE_WHITE */
-        {0,0,0,255,1,1,   255,0,    0,255,0,0} ,      /* STYLE_RED */
-        {0,0,0,255,1,1,   205,205, 50,255,0,0 }  };   /* STYLE_YELLOW */
+	/* load defaults into the many style structs */
+	int a[ STYLE_CNT ][12]={
+				/* bg r,g,b,a     fg r,g,b,a                   enum name    */
+				{0,0,0,64 ,1,1,   127,0,    0,255,0,0} ,      /* STYLE_MENU */
+				{0,0,0,255,1,1,   255,255,255,255,0,0} ,      /* STYLE_WHITE */
+				{0,0,0,255,1,1,   255,0,    0,255,0,0} ,      /* STYLE_RED */
+				{0,0,0,255,1,1,   205,205, 50,255,0,0 }  };   /* STYLE_YELLOW */
 
-  int i;
+	int i;
 
-  for (i=0; i<STYLE_CNT  ; i++ ){
-    (*s)[i].bg.r     = a[i][0];
-    (*s)[i].bg.g     = a[i][1];
-    (*s)[i].bg.b     = a[i][2];
-    (*s)[i].bg.a     = a[i][3];
-    (*s)[i].bg.x_off = a[i][4];
-    (*s)[i].bg.y_off = a[i][5];
+	for (i=0; i<STYLE_CNT  ; i++ ){
+		(*s)[i].bg.r     = a[i][0];
+		(*s)[i].bg.g     = a[i][1];
+		(*s)[i].bg.b     = a[i][2];
+		(*s)[i].bg.a     = a[i][3];
+		(*s)[i].bg.x_off = a[i][4];
+		(*s)[i].bg.y_off = a[i][5];
 
-    (*s)[i].fg.r     = a[i][6];
-    (*s)[i].fg.g     = a[i][7];
-    (*s)[i].fg.b     = a[i][8];
-    (*s)[i].fg.a     = a[i][9];
-    (*s)[i].fg.x_off = a[i][10];
-    (*s)[i].fg.y_off = a[i][11];
+		(*s)[i].fg.r     = a[i][6];
+		(*s)[i].fg.g     = a[i][7];
+		(*s)[i].fg.b     = a[i][8];
+		(*s)[i].fg.a     = a[i][9];
+		(*s)[i].fg.x_off = a[i][10];
+		(*s)[i].fg.y_off = a[i][11];
 
-  }
+	}
 
-  return;
+	return;
 
 }     /* end of init_all_styles() */
 
 
-void init_parse_options(int argc, char **argv)
-{
+void init_parse_options(int argc, char **argv){
+		/* Note. magick_timeout default used to be 5.  HRABAK changed to
+		 * -1 (off) cause any recursive load against a large set of files
+		 * that require convert, seems to hang.
+		 */
 
 	/* TODO: sort these to match declaration of __fehoptions */
 
 	/* For setting the command hint on X windows */
-	cmdargc = argc;
-	cmdargv = argv;
+	fgv.cmdargc = argc;
+	fgv.cmdargv = argv;
 
-	/* Set default options */
+	/* Set default options.  Note:  The memset(0) clears all to 0 */
 	memset(&opt, 0, sizeof(fehoptions));
-	opt.display = 1;
-	opt.aspect = 1;
-	opt.slideshow_delay = 0.0;
-	opt.magick_timeout = 5;
-	opt.thumb_w = 60;
-	opt.thumb_h = 60;
-	opt.thumb_redraw = 10;
-	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
-	opt.font = NULL;
+	opt.flg.display     = 1;
+	opt.flg.aspect      = 1;
+	opt.magick_timeout = -1;              /* old default was 5 */
+	opt.thumb_w         = 60;
+	opt.thumb_h         = 60;
+	opt.thumb_redraw    = 10;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
-	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
-  opt.write_filelist = 1;       /* write filelist on exit? Yes=1 */
+/*	opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style"); */
+	opt.flg.write_filelist = 1;           /* write filelist on exit? Yes=1 */
+	opt.flg.no_actions     = 1;           /* just need to know if we have ANY */
 
-  init_all_styles( &opt.style );
+	init_all_styles( &opt.style );
 
-	opt.start_list_at = NULL;
-	opt.jump_on_resort = 1;
+	opt.flg.mode =MODE_SLIDESHOW;         /* this modes list is in enum order */
+	opt.modes[MODE_SLIDESHOW]   = "slideshow";
+	opt.modes[MODE_MULTIWINDOW] = "multiwindow";
+	opt.modes[MODE_INDEX]       = "index";
+	opt.modes[MODE_THUMBNAIL]   = "thumbnail";
+	opt.modes[MODE_LOADABLES]   = "loadables";
+	opt.modes[MODE_UNLOADABLES] = "unloadables";
+	opt.modes[MODE_LIST]        = "list";
+	opt.modes[MODE_MOVE]        = "move";
 
-	opt.screen_clip = 1;
+	opt.flg.jump_on_resort = 1;
+
+	opt.flg.screen_clip    = 1;
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
-	opt.xinerama = 1;
-#endif				/* HAVE_LIBXINERAMA */
+	opt.flg.xinerama       = 1;
+#endif       /* HAVE_LIBXINERAMA */
 
 	feh_getopt_theme(argc, argv);
 
 	D(("About to check for theme configuration\n"));
 	feh_check_theme_options(argv);
 
-	D(("About to parse commandline options\n"));
-	/* Parse the cmdline args */
-	feh_parse_option_array(argc, argv, 1);
-
-	/* If we have a filelist to read, do it now */
-	if (opt.filelistfile) {
-		/* tack the contents of the filelistfile to the end of our exisiting
-     * feh_md list in correct order.  No need to reverse them now.
-		 */
-		D(("About to load filelist from file\n"));
-		feh_read_filelist( feh_md , opt.filelistfile );
-	}
-
-	D(("Options parsed\n"));
-
-	if ( FEH_LL_LEN(feh_md) == 0 )
-		show_mini_usage();
-
-	check_options();
-
-	feh_prepare_filelist( feh_md );
 
 	return;
 }
 
 static void feh_check_theme_options(char **argv)
 {
-	if (!theme) {
+	if (!fgv.theme) {
 		/* This prevents screw up when running src/feh or ./feh */
 		char *pos = strrchr(argv[0], '/');
 
 		if (pos)
-			theme = estrdup(pos + 1);
+			fgv.theme = estrdup(pos + 1);
 		else
-			theme = estrdup(argv[0]);
+			fgv.theme = estrdup(argv[0]);
 	}
-	D(("Theme name is %s\n", theme));
+	D(("Theme name is %s\n", fgv.theme));
 
-	feh_load_options_for_theme(theme);
+	feh_load_options_for_theme(fgv.theme);
 
-	free(theme);
+	free(fgv.theme);
 	return;
 }
 
 static void feh_load_options_for_theme(char *theme)
 {
 	FILE *fp = NULL;
-	char *home = getenv("HOME");
-	char *rcpath = NULL;
-	char *oldrcpath = NULL;
-	char *confbase = getenv("XDG_CONFIG_HOME");
-	char s[1024], s1[1024], s2[1024];
+	char *home      = getenv("HOME");
+	char *confbase  = getenv("XDG_CONFIG_HOME");
+	char *rcpath    = mobs(4);
+	char *oldrcpath = mobs(4);
+	char *s         = mobs(4);   /* match  MOBS_NSIZE(4) below */
+	char *s1;                    /* reuse    rcpath buf*/
+	char *s2;                    /* reuse oldrcpath buf*/
 	int cont = 0;
 	int bspos;
 
 	if (!home)
-		eprintf("You have no HOME, cannot read themes");
+		eprintf("You have no HOME, %sread themes",ERR_CANNOT);
 
-	oldrcpath = estrjoin("/", home, ".fehrc", NULL);
+	STRCAT_2ITEMS(oldrcpath,home, "/.fehrc");
 
 	if (confbase)
-		rcpath = estrjoin("/", confbase, "feh/themes", NULL);
+		STRCAT_2ITEMS(rcpath,confbase,"/feh/themes");
 	else
-		rcpath = estrjoin("/", home, ".config/feh/themes", NULL);
+		STRCAT_2ITEMS(rcpath,home, "/.config/feh/themes");
 
 	fp = fopen(rcpath, "r");
-
-	free(rcpath);
 
 	if (!fp && ((fp = fopen(oldrcpath, "r")) != NULL))
 		weprintf("The theme config file was moved from ~/.fehrc to "
@@ -207,23 +205,22 @@ static void feh_load_options_for_theme(char *theme)
 			"    mkdir -p ~/.config/feh; mv ~/.fehrc ~/.config/feh/themes\n"
 			"to fix this.");
 
-	free(oldrcpath);
-
 	if (!fp && ((fp = fopen("/etc/feh/themes", "r")) == NULL))
 		return;
 
 	/* Oooh. We have an options file :) */
-	for (; fgets(s, sizeof(s), fp);) {
+  s1 = rcpath; s2 = oldrcpath;    /* just reuse existing buffers */
+	for (; fgets(s, MOBS_NSIZE(4), fp);) {
 		s1[0] = '\0';
 		s2[0] = '\0';
 
 		if (cont) {
-			sscanf(s, " %[^\n]\n", (char *) &s2);
+			sscanf(s, " %[^\n]\n", (char *) s2);
 			if (!*s2)
 				break;
 			D(("Got continued options %s\n", s2));
 		} else {
-			sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
+			sscanf(s, "%s %[^\n]\n", (char *) s1, (char *) s2);
 			if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#')) {
 				cont = 0;
 				continue;
@@ -295,7 +292,7 @@ static void feh_parse_options_from_string(char *opts)
 		last = *t;
 	}
 
-	feh_parse_option_array(num, list, 0);
+	feh_parse_option_array(num, list);
 
 	for (i = 0; i < num; i++)
 		if (list[i])
@@ -305,13 +302,13 @@ static void feh_parse_options_from_string(char *opts)
 
 char *feh_string_normalize(char *str)
 {
-	char ret[4096];
+	char *ret = mobs(3);
 	char *s;
 	int i = 0;
 	char last = 0;
 
 	D(("normalizing %s\n", str));
-	ret[0] = '\0';
+	/* ret[0] = '\0'; */      /* mobs() does this */
 
 	for (s = str;; s++) {
 		if (*s == '\0')
@@ -339,8 +336,8 @@ static void feh_getopt_theme(int argc, char **argv)
 {
 	static char stropts[] = "-T:";
 	static struct option lopts[] = {
-		{"theme", 1, 0, 'T'},
-		{0, 0, 0, 0}
+				{"theme", 1, 0, 'T'},
+				{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
 
@@ -348,25 +345,24 @@ static void feh_getopt_theme(int argc, char **argv)
 
 	while ((optch = getopt_long(argc, argv, stropts, lopts, &cmdx)) != EOF) {
 		if (optch == 'T')
-			theme = estrdup(optarg);
+			fgv.theme = estrdup(optarg);
 	}
 
 	opterr = 1;
 	optind = 0;
 }
 
-static void feh_parse_option_array(int argc, char **argv, int finalrun)
+void feh_parse_option_array(int argc, char **argv )
 {
 	static char stropts[] =
 		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		".@:^:~:):|:+:";
+		".@:^:~:):|:#:+:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
 		{"help"          , 0, 0, 'h'},
 		{"version"       , 0, 0, 'v'},
-		{"montage"       , 0, 0, 'm'},
-		{"collage"       , 0, 0, 'c'},
+		/* {"montage"       , 0, 0, 'm'}, */   /* killed jul 2012 */
 		{"index"         , 0, 0, 'i'},
 		{"fullindex"     , 0, 0, 'I'},
 		{"verbose"       , 0, 0, 'V'},
@@ -426,6 +422,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"menu-bg"       , 1, 0, ')'},
 		{"image-bg"      , 1, 0, 'B'},
 		{"start-at"      , 1, 0, '|'},
+		{"start-at-num"  , 1, 0, '#'},      /* same as start-at but @ number, not name */
 		{"debug"         , 0, 0, '+'},
 		{"output-dir"    , 1, 0, 'j'},
 		{"bg-tile"       , 0, 0, 200},
@@ -452,7 +449,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"info"          , 1, 0, 234},
 		{"force-aliasing", 0, 0, 235},
 		{"no-fehbg"      , 0, 0, 236},
-		{"nowrite-filelist" , 0, 0, 237},
+		{"nowrite-filelist" , 0, 0, 237}, /* don't write filelist at the end      */
+		{"dname"         , 0, 0, 238},    /* like -d but only name                */
+		{"dno-ext"       , 0, 0, 239},    /* like --dname but no extension either */
 
 		{0, 0, 0, 0}
 	};
@@ -471,92 +470,88 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			show_version();
 			break;
 		case 'm':
-			opt.index = 1;
-			break;
-		case 'c':
-			opt.collage = 1;
+			opt.flg.index = 1;
 			break;
 		case 'i':
-			opt.index = 1;
+			opt.flg.index = 1;
 			opt.index_info = estrdup("%n");
 			break;
 		case '.':
-			opt.scale_down = 1;
+			opt.flg.scale_down = 1;
 			break;
 		case 'I':
-			opt.index = 1;
+			opt.flg.index = 1;
 			opt.index_info = estrdup("%n\n%S\n%wx%h");
 			break;
 		case 'l':
-			opt.list = 1;
-			opt.display = 0;
+			opt.flg.list = 1;
+			opt.flg.display = 0;
 			break;
 		case 'L':
 			opt.customlist = estrdup(optarg);
-			opt.display = 0;
+			opt.flg.display = 0;
 			break;
 		case 'M':
-			free(opt.menu_font);
-			opt.menu_font = estrdup(optarg);
+			opt.fn_menu.name = estrdup(optarg);
 			break;
 		case '+':
 			opt.debug = 1;
 			break;
 		case 'n':
-			opt.reverse = 1;
+			opt.flg.reverse = 1;
 			break;
 		case 'g':
 			opt.geom_flags = XParseGeometry(optarg, &opt.geom_x, &opt.geom_y, &opt.geom_w, &opt.geom_h);
 			break;
 		case 'N':
-			opt.no_menus = 1;
+			opt.flg.no_menus = 1;
 			break;
 		case 'V':
-			opt.verbose = 1;
+			opt.flg.verbose = 1;
 			break;
 		case 'q':
-			opt.quiet = 1;
+			opt.flg.quiet = 1;
 			break;
 		case 'x':
-			opt.borderless = 1;
+			opt.flg.borderless = 1;
 			break;
 		case 'k':
-			opt.keep_http = 1;
+			opt.flg.keep_http = 1;
 			break;
 		case 's':
-			opt.stretch = 1;
+			opt.flg.stretch = 1;
 			break;
 		case 'w':
-			opt.multiwindow = 1;
+			opt.flg.multiwindow = 1;
 			break;
 		case 'r':
-			opt.recursive = 1;
+			opt.flg.recursive = 1;
 			break;
 		case 'z':
-			opt.randomize = 1;
+			opt.flg.randomize = 1;
 			break;
 		case 'd':
-			opt.draw_filename = 1;
+			opt.flg.draw_filename = 1;
 			break;
 		case 'F':
-			opt.full_screen = 1;
+			opt.flg.full_screen = 1;
 			break;
 		case 'Z':
 			opt.zoom_mode = ZOOM_MODE_MAX;
 			break;
 		case 'U':
-			opt.loadables = 1;
-			opt.display = 0;
+			opt.flg.loadables = 1;
+			opt.flg.display = 0;
 			break;
 		case 'u':
-			opt.unloadables = 1;
-			opt.display = 0;
+			opt.flg.unloadables = 1;
+			opt.flg.display = 0;
 			break;
 		case 'p':
-			opt.preload = 1;
+			opt.flg.preload = 1;
 			break;
 		case 'X':
-			opt.aspect = 0;
+			opt.flg.aspect = 0;
 			break;
 		case 'S':
 			if (!strcasecmp(optarg, "name"))
@@ -580,26 +575,24 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			}
 			break;
 		case 'o':
-			opt.output = 1;
 			opt.output_file = estrdup(optarg);
 			break;
 		case 'O':
-			opt.output = 1;
 			opt.output_file = estrdup(optarg);
-			opt.display = 0;
+			opt.flg.display = 0;
 			break;
 		case 'T':
-			theme = estrdup(optarg);
+			fgv.theme = estrdup(optarg);
 			break;
 		case 'C':
 			D(("adding fontpath %s\n", optarg));
 			imlib_add_path_to_font_path(optarg);
 			break;
 		case 'e':
-			opt.font = estrdup(optarg);
+			opt.fn_dflt.name = estrdup(optarg);
 			break;
 		case '@':
-			opt.title_font = estrdup(optarg);
+			opt.fn_title.name = estrdup(optarg);
 			break;
 		case '^':
 			opt.title = estrdup(optarg);
@@ -608,7 +601,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.thumb_title = estrdup(optarg);
 			break;
 		case 'b':
-			opt.bg = 1;
+			opt.flg.bg = 1;
 			opt.bg_file = estrdup(optarg);
 			break;
 		case 'A':
@@ -626,18 +619,20 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'E':
 			opt.thumb_h = atoi(optarg);
 			break;
-		case ')':
+
+/*		case ')':
 			free(opt.menu_bg);
 			opt.menu_bg = estrdup(optarg);
 			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
+*/
 		case 'B':
 			if (!strcmp(optarg, "checks"))
-				opt.image_bg = IMAGE_BG_CHECKS;
+				opt.flg.image_bg = IMAGE_BG_CHECKS;
 			else if (!strcmp(optarg, "white"))
-				opt.image_bg = IMAGE_BG_WHITE;
+				opt.flg.image_bg = IMAGE_BG_WHITE;
 			else if (!strcmp(optarg, "black"))
-				opt.image_bg = IMAGE_BG_BLACK;
+				opt.flg.image_bg = IMAGE_BG_BLACK;
 			else
 				weprintf("Unknown argument to --image-bg: %s", optarg);
 			break;
@@ -645,14 +640,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.slideshow_delay = atof(optarg);
 			if (opt.slideshow_delay < 0.0) {
 				opt.slideshow_delay *= (-1);
-				opt.paused = 1;
+				opt.flg.paused = 1;
 			}
 			break;
 		case 'R':
 			opt.reload = atoi(optarg);
 			break;
 		case 'a':
-			opt.alpha = 1;
+			opt.flg.alpha = 1;
 			opt.alpha_level = 255 - atoi(optarg);
 			break;
 		case 'f':
@@ -662,35 +657,40 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.filelistfile = estrdup(optarg);
 			break;
 		case '|':
-			opt.start_list_at = estrdup(optarg);
+			opt.start_at_name = estrdup(optarg);
+			break;
+		case '#':
+			opt.start_at_num = atoi(optarg);
 			break;
 		case 't':
-			opt.thumbs = 1;
+			opt.flg.thumbnail = 1;
 			opt.index_info = estrdup("%n");
 			break;
 		case 'j':
 			opt.output_dir = estrdup(optarg);
 			break;
 		case 200:
-			opt.bgmode = BG_MODE_TILE;
+			opt.flg.bgmode = CB_BG_TILED;
 			break;
 		case 201:
-			opt.bgmode = BG_MODE_CENTER;
+			opt.flg.bgmode = CB_BG_CENTERED;
 			break;
 		case 202:
-			opt.bgmode = BG_MODE_SCALE;
+			opt.flg.bgmode = CB_BG_SCALED;
 			break;
 		case 218:
-			opt.bgmode = BG_MODE_FILL;
+			opt.flg.bgmode = CB_BG_FILLED;
 			break;
 		case 219:
-			opt.bgmode = BG_MODE_MAX;
+			opt.flg.bgmode = CB_BG_MAX;
 			break;
+/*
 		case 204:
 			free(opt.menu_style);
 			opt.menu_style = estrdup(optarg);
 			weprintf("The --menu-style option is deprecated and will be removed by 2012");
 			break;
+*/
 		case 205:
 			if (!strcmp("fill", optarg))
 				opt.zoom_mode = ZOOM_MODE_FILL;
@@ -700,7 +700,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.default_zoom = atoi(optarg);
 			break;
 		case 206:
-			opt.screen_clip = 0;
+			opt.flg.screen_clip = 0;
 			break;
 		case 207:
 			opt.index_info = estrdup(optarg);
@@ -739,46 +739,52 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.actions[9] = estrdup(optarg);
 			break;
 		case 220:
-			opt.jump_on_resort = 0;
+			opt.flg.jump_on_resort = 0;
 			break;
 		case 'Y':
-			opt.hide_pointer = 1;
+			opt.flg.hide_pointer = 1;
 			break;
 		case 'G':
-			opt.draw_actions = 1;
+			opt.flg.draw_actions = 1;
 			break;
 		case 'P':
-			opt.cache_thumbnails = 1;
+			opt.flg.cache_thumbnails = 1;
 			break;
 #ifdef HAVE_LIBEXIF
 		case 223:
-			opt.draw_exif = 1;
+			opt.flg.draw_exif = 1;
 			break;
 #endif
 		case 224:
-			opt.cycle_once = 1;
+			opt.flg.cycle_once = 1;
 			break;
 		case 225:
-			opt.xinerama = 0;
+			opt.flg.xinerama = 0;
 			break;
 		case 229:
-			opt.text_bg = TEXT_BG_TINTED;
+			opt.flg.text_bg = TEXT_BG_TINTED;
 			break;
 		case 'J':
 			opt.thumb_redraw = atoi(optarg);
 			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);
-			opt.draw_info = 1;
+			opt.flg.draw_info = 1;
 			break;
 		case 235:
 			opt.force_aliasing = 1;
 			break;
 		case 236:
-			opt.no_fehbg = 1;
+			opt.flg.no_fehbg = 1;
 			break;
 		case 237:
-			opt.write_filelist = 0;
+			opt.flg.write_filelist = 0;
+			break;
+		case 238:
+			opt.flg.draw_filename = opt.flg.draw_name = 1;
+			break;
+		case 239:
+			opt.flg.draw_filename = opt.flg.draw_name = opt.flg.draw_no_ext = 1;
 			break;
 		default:
 			break;
@@ -786,60 +792,101 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	}
 
 	/* Now the leftovers, which must be files */
-	if (optind < argc) {
-		while (optind < argc) {
-			if (opt.reload)
-				feh_ll_add_end( ofi_md, estrdup(argv[optind]));
-
-			/* If recursive is NOT set, but the only argument is a directory
-			   name, we grab all the files in there, but not subdirs */
-			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
-		}
-	}
-	else if (finalrun && !opt.filelistfile && !opt.bgmode)
-		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+	reload_logic( argc, argv, optind );
 
 	/* So that we can safely be called again */
 	optind = 0;
 	return;
-}
+}    /* end of feh_parse_option_array() */
 
-static void check_options(void)
+void check_options(void)
 {
 	int i;
 	for (i = 0; i < 10; i++) {
-		if (opt.actions[i] && !opt.hold_actions[i] && (opt.actions[i][0] == ';')) {
-			opt.hold_actions[i] = 1;
-			opt.actions[i] = &opt.actions[i][1];
+		if (opt.actions[i] ) {
+			opt.flg.no_actions =0;      /* just need to know if we have ANY */
+			break;
 		}
 	}
 
-	if ((opt.index + opt.collage) > 1) {
-		weprintf("you can't use collage mode and index mode together.\n"
-				"   I'm going with index");
-		opt.collage = 0;
+	if (opt.flg.full_screen && opt.flg.multiwindow) {
+		eprintf("%s%sfullscreen with --multiwindow",ERR_CANNOT, ERR_COMBINE);
 	}
 
-	if (opt.full_screen && opt.multiwindow) {
-		eprintf("You cannot combine --fullscreen with --multiwindow");
+	if (opt.flg.list && (opt.flg.multiwindow || opt.flg.index  )) {
+		eprintf("%s%slist with other modes",ERR_CANNOT, ERR_COMBINE);
 	}
 
-	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
-		eprintf("You cannot combine --list with other modes");
+	if (opt.sort && opt.flg.randomize) {
+		weprintf("%s%ssort AND randomize! randomize was unset\n",ERR_CANNOT, ERR_COMBINE);
+		opt.flg.randomize = 0;
 	}
 
-	if (opt.sort && opt.randomize) {
-		weprintf("You cant sort AND randomize the filelist...\n"
-				"randomize mode has been unset\n");
-		opt.randomize = 0;
+	if (opt.flg.loadables && opt.flg.unloadables) {
+		eprintf("%s%sloadable with --unloadable",ERR_CANNOT, ERR_COMBINE);
 	}
 
-	if (opt.loadables && opt.unloadables) {
-		eprintf("You cannot combine --loadable with --unloadable");
+	if (opt.start_at_name && opt.start_at_num ) {
+		eprintf("%s%sstart-at with --start-at-num",ERR_CANNOT, ERR_COMBINE);
 	}
+
+	/* allow a %z fmt spec to disable ANY info display */
+	if ( opt.index_info ){
+		if ( !opt.index_info[0] ){          /* empty string     */
+			opt.index_info=NULL;              /* this is the flag */
+		} else {
+			for (i = 1; opt.index_info[i] != 0; i++) {
+				if (opt.index_info[i] == 'z')
+					if (opt.index_info[i-1] == '%') {
+						opt.index_info=NULL;        /* this is the flag */
+						break;
+					}
+			}
+		}
+	}
+
+	/* Apr 2013 HRABAK changed the whole idea of modes in feh to simplify
+	 * the "on the fly" toggling between "modes".  Historically, feh used
+	 * the opt flags (like opt.slideshow, opt.thumbnail etc) to determine what
+	 * "mode" it was in, yet the word "mode" held the name of that mode.
+	 * The HRABAK change uses the individual opt flags just to load the
+	 * options passed on the command line.  Then I change to a opt.mode
+	 * value (the individual opt flags are no longer used after this point).
+	 * and the rest of feh behavior is based on this new opt.mode setting.
+	 * The opt.mode_original keeps a copy of the original setting, so you can
+	 * toggle to slideshow mode (and move_mode) and back again.
+	 * MODE_SLIDESHOW is the odd-ball.  There is no command line param to
+	 * request slideshow - it is the default.  So MODE_SLIDESHOW is defined
+	 * as zero, so if any other modes are spec'd, slideshow gets over ridden.
+	 * Only one mode survives this conv from opt flags to opt.mode, so the
+	 * last one in this list wins in the event they request multiples.
+	 *
+	 * opt.flg.mode controls both the mode behavior AND the coresponding text
+	 * display.  The first four modes in this hierarchy are the display modes,
+	 * ie the ones you can toggle between "on the fly".  The last three modes
+	 * are blind modes (no display).
+	 */
+
+	 /* set the default       */ opt.flg.mode = MODE_SLIDESHOW;
+	 /* if (opt.slideshow_delay   ) opt.flg.mode = MODE_SLIDESHOW; */  /* redundant */
+	 if (opt.flg.multiwindow   ) opt.flg.mode = MODE_MULTIWINDOW;
+	 if (opt.flg.index         ) opt.flg.mode = MODE_INDEX;
+	 if (opt.flg.thumbnail     ) opt.flg.mode = MODE_THUMBNAIL;
+
+	/* the blind set */
+	 if (opt.flg.loadables     ) opt.flg.mode = MODE_LOADABLES;
+	 if (opt.flg.unloadables   ) opt.flg.mode = MODE_UNLOADABLES;
+	 if (opt.flg.list || opt.customlist  ) opt.flg.mode = MODE_LIST;
+
+	/* save the original "mode" to toggle back to.  If mode is ONLY slideshow
+	 * then set the mode_original to allow toggling into thumb mode
+	 */
+	opt.flg.mode_original = ( opt.flg.mode == MODE_SLIDESHOW ) ?
+	                          MODE_THUMBNAIL : opt.flg.mode ;
+
 
 	return;
-}
+}   /* end of check_options() */
 
 static void show_version(void)
 {

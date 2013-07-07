@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "filelist.h"
 #include "options.h"
 #include "wallpaper.h"
 #include <limits.h>
@@ -42,41 +41,17 @@ static unsigned char timeout = 0;
  */
 static char e17_fake_ipc = 0;
 
-void feh_wm_set_bg_filelist(unsigned char bgmode)
-{
-	if ( FEH_LL_LEN( feh_md ) == 0)
-		eprintf("No files specified for background setting");
-
-	switch (bgmode) {
-		case BG_MODE_TILE:
-			feh_wm_set_bg(NULL, NULL, 0, 0, 0, 0, 1);
-			break;
-		case BG_MODE_SCALE:
-			feh_wm_set_bg(NULL, NULL, 0, 1, 0, 0, 1);
-			break;
-		case BG_MODE_FILL:
-			feh_wm_set_bg(NULL, NULL, 0, 0, 1, 0, 1);
-			break;
-		case BG_MODE_MAX:
-			feh_wm_set_bg(NULL, NULL, 0, 0, 2, 0, 1);
-			break;
-		default:
-			feh_wm_set_bg(NULL, NULL, 1, 0, 0, 0, 1);
-			break;
-	}
-}
-
 static void feh_wm_load_next(Imlib_Image *im)
 {
-	static feh_node *wpfile = NULL;
+	static feh_node *node = NULL;
 
-	if (wpfile == NULL)
-		wpfile = feh_md->rn->next;
+	if (node == NULL)
+		node = feh_md->rn->next;
 
-	if (feh_load_image(im, FEH_FILE(wpfile->data)) == 0)
-		eprintf("Unable to load image %s", FEH_FILE(wpfile->data)->filename);
-	if (wpfile->next != feh_md->rn )
-		wpfile = wpfile->next;
+	if (feh_load_image(im, NODE_DATA(node)) == 0)
+		eprintf("Unable to load image %s", NODE_FILENAME(node) );
+	if (node->next != feh_md->rn )
+		node = node->next;
 
 	return;
 }
@@ -187,13 +162,25 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 	return;
 }
 
-void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
-		int filled, int desktop, int use_filelist)
+void feh_wm_set_bg(char *fil, Imlib_Image im, enum mnu_lvl bgmode,
+		               int desktop, int use_filelist)
 {
 	char bgname[20];
 	int num = (int) rand();
 	char bgfil[4096];
 	char sendbuf[4096];
+	int centered, scaled,filled;
+
+	if ( bgmode == CB_BG_TILED )
+		 ( centered = scaled = filled = 0);
+	else if ( bgmode == CB_BG_SCALED )
+		 ( centered = 0, scaled = 1, filled = 0);
+	else if ( bgmode == CB_BG_FILLED )
+		 ( centered = scaled = 0, filled = 1);
+	else if ( bgmode == CB_BG_MAX )
+		 ( centered = scaled = 0, filled = 2);
+	else    /* CB_BG_CENTERED is the default */
+		 ( centered = 1, scaled = filled = 0);
 
 	snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
 
@@ -209,35 +196,35 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None)) {
 		if (use_filelist) {
 			feh_wm_load_next(&im);
-			fil = FEH_FILE(FEH_LL_CUR_DATA(feh_md))->filename;
+			fil = NODE_FILENAME(feh_md->cn);
 		}
-		snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil);
+		snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.file %s", ERR_BACKGROUND,bgname, fil);
 		enl_ipc_send(sendbuf);
 
 		if (scaled) {
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.solid 0 0 0", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.solid 0 0 0", ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.tile 0", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.tile 0",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.xjust 512", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.xjust 512",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.yjust 512", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.yjust 512",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.xperc 1024", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.xperc 1024",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.yperc 1024", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.yperc 1024",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
 		} else if (centered) {
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.solid 0 0 0", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.solid 0 0 0", ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.tile 0", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s%s bg.tile 0",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.xjust 512", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.xjust 512", ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.yjust 512", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.yjust 512",ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
 		} else {
-			snprintf(sendbuf, sizeof(sendbuf), "background %s bg.tile 1", bgname);
+			snprintf(sendbuf, sizeof(sendbuf), "%s %s bg.tile 1", ERR_BACKGROUND, bgname);
 			enl_ipc_send(sendbuf);
 		}
 
@@ -250,10 +237,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root, *data_esetroot;
 		Pixmap pmap_d1, pmap_d2;
-		feh_node *l;
 
 		/* string for sticking in ~/.fehbg */
-		char *fehbg = NULL;
+		char *fehbg = mobs(3);
 		char *home;
 		char filbuf[4096];
 		char fehbg_xinerama[] = "--no-xinerama";
@@ -266,7 +252,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		GC gc;
 		int in, out, w, h;
 
-		if (opt.xinerama)
+		if (opt.flg.xinerama)
 			fehbg_xinerama[0] = '\0';
 
 		D(("Falling back to XSetRootWindowPixmap\n"));
@@ -286,10 +272,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			filbuf[out++] = '\'';
 
 		} else {
-      for (l = feh_md->rn->next ;  (l != feh_md->rn) && out < 4092; l = l->next) {
+      for (feh_md->cn = feh_md->rn->next ;
+                       (feh_md->cn != feh_md->rn) && out < 4092;
+                        feh_md->cn = feh_md->cn->next) {
 				filbuf[out++] = '\'';
 
-				fil = FEH_FILE(l->data)->filename;
+				fil = NODE_FILENAME(feh_md->cn);
 
 				for (in = 0; fil[in] && out < 4092; in++) {
 
@@ -306,128 +294,126 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		filbuf[out++] = 0;
 
 		if (scaled) {
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+			pmap_d1 = XCreatePixmap(fgv.disp, fgv.root, fgv.scr->width, fgv.scr->height, fgv.depth);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++)
+			if (opt.flg.xinerama && fgv.xinerama_screens)
+				for (i = 0; i < fgv.num_xinerama_screens; i++)
 					feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
-						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height);
+						fgv.xinerama_screens[i].x_org, fgv.xinerama_screens[i].y_org,
+						fgv.xinerama_screens[i].width, fgv.xinerama_screens[i].height);
 			else
 #endif			/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
-                              0, 0, scr->width, scr->height);
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-scale", filbuf, NULL);
+                              0, 0, fgv.scr->width, fgv.scr->height);
+			STRCAT_4ITEMS(fehbg,"feh ", fehbg_xinerama, " --bg-scale ", filbuf);
 		} else if (centered) {
 			XGCValues gcval;
 			GC gc;
 
 			D(("centering\n"));
 
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
-			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+			pmap_d1 = XCreatePixmap(fgv.disp, fgv.root, fgv.scr->width, fgv.scr->height, fgv.depth);
+			gcval.foreground = BlackPixel(fgv.disp, DefaultScreen(fgv.disp));
+			gc = XCreateGC(fgv.disp, fgv.root, GCForeground, &gcval);
+			XFillRectangle(fgv.disp, pmap_d1, gc, 0, 0, fgv.scr->width, fgv.scr->height);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++)
+			if (opt.flg.xinerama && fgv.xinerama_screens)
+				for (i = 0; i < fgv.num_xinerama_screens; i++)
 					feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
-						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height);
+						fgv.xinerama_screens[i].x_org, fgv.xinerama_screens[i].y_org,
+						fgv.xinerama_screens[i].width, fgv.xinerama_screens[i].height);
 			else
 #endif				/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
-					0, 0, scr->width, scr->height);
+					0, 0, fgv.scr->width, fgv.scr->height);
 
-			XFreeGC(disp, gc);
+			XFreeGC(fgv.disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-center", filbuf, NULL);
+			STRCAT_4ITEMS(fehbg,"feh ", fehbg_xinerama, " --bg-center ", filbuf);
 
 		} else if (filled == 1) {
 
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+			pmap_d1 = XCreatePixmap(fgv.disp, fgv.root, fgv.scr->width, fgv.scr->height, fgv.depth);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++)
+			if (opt.flg.xinerama && fgv.xinerama_screens)
+				for (i = 0; i < fgv.num_xinerama_screens; i++)
 					feh_wm_set_bg_filled(pmap_d1, im, use_filelist,
-						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height);
+						fgv.xinerama_screens[i].x_org, fgv.xinerama_screens[i].y_org,
+						fgv.xinerama_screens[i].width, fgv.xinerama_screens[i].height);
 			else
 #endif				/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_filled(pmap_d1, im, use_filelist
-					, 0, 0, scr->width, scr->height);
+					, 0, 0, fgv.scr->width, fgv.scr->height);
 
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-fill", filbuf, NULL);
+			STRCAT_4ITEMS(fehbg,"feh ", fehbg_xinerama, " --bg-fill ", filbuf);
 
 		} else if (filled == 2) {
 			XGCValues gcval;
 
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
-			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+			pmap_d1 = XCreatePixmap(fgv.disp, fgv.root, fgv.scr->width, fgv.scr->height, fgv.depth);
+			gcval.foreground = BlackPixel(fgv.disp, DefaultScreen(fgv.disp));
+			gc = XCreateGC(fgv.disp, fgv.root, GCForeground, &gcval);
+			XFillRectangle(fgv.disp, pmap_d1, gc, 0, 0, fgv.scr->width, fgv.scr->height);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-				for (i = 0; i < num_xinerama_screens; i++)
+			if (opt.flg.xinerama && fgv.xinerama_screens)
+				for (i = 0; i < fgv.num_xinerama_screens; i++)
 					feh_wm_set_bg_maxed(pmap_d1, im, use_filelist,
-						xinerama_screens[i].x_org, xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height);
+						fgv.xinerama_screens[i].x_org, fgv.xinerama_screens[i].y_org,
+						fgv.xinerama_screens[i].width, fgv.xinerama_screens[i].height);
 			else
 #endif				/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_maxed(pmap_d1, im, use_filelist,
-					0, 0, scr->width, scr->height);
+					0, 0, fgv.scr->width, fgv.scr->height);
 
-			XFreeGC(disp, gc);
+			XFreeGC(fgv.disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_xinerama, "--bg-max", filbuf, NULL);
+			STRCAT_4ITEMS(fehbg,"feh ", fehbg_xinerama, " --bg-max ", filbuf);
 
 		} else {
 			if (use_filelist)
 				feh_wm_load_next(&im);
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
-			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
+			pmap_d1 = XCreatePixmap(fgv.disp, fgv.root, w, h, fgv.depth);
 			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
-			fehbg = estrjoin(" ", "feh --bg-tile", filbuf, NULL);
+			STRCAT_2ITEMS(fehbg,"feh --bg-tile ", filbuf);
 		}
 
-		if (fehbg && !opt.no_fehbg) {
+		if (fehbg[0] && !opt.flg.no_fehbg) {
 			home = getenv("HOME");
 			if (home) {
 				FILE *fp;
-				char *path;
-				path = estrjoin("/", home, ".fehbg", NULL);
+				char *path = mobs(2);
+				STRCAT_2ITEMS(path, home, "/.fehbg");
 				if ((fp = fopen(path, "w")) == NULL) {
-					weprintf("Can't write to %s", path);
+					weprintf("%swrite to %s",ERR_CANNOT, path);
 				} else {
 					fprintf(fp, "%s\n", fehbg);
 					fclose(fp);
 				}
-				free(path);
 			}
-			free(fehbg);
 		}
 
 		/* create new display, copy pixmap to new display */
 		disp2 = XOpenDisplay(NULL);
 		if (!disp2)
-			eprintf("Can't reopen X display.");
+			eprintf("%sreopen X display.", ERR_CANNOT);
 		root2 = RootWindow(disp2, DefaultScreen(disp2));
 		depth2 = DefaultDepth(disp2, DefaultScreen(disp2));
-		XSync(disp, False);
-		pmap_d2 = XCreatePixmap(disp2, root2, scr->width, scr->height, depth2);
+		XSync(fgv.disp, False);
+		pmap_d2 = XCreatePixmap(disp2, root2, fgv.scr->width, fgv.scr->height, depth2);
 		gcvalues.fill_style = FillTiled;
 		gcvalues.tile = pmap_d1;
 		gc = XCreateGC(disp2, pmap_d2, GCFillStyle | GCTile, &gcvalues);
-		XFillRectangle(disp2, pmap_d2, gc, 0, 0, scr->width, scr->height);
+		XFillRectangle(disp2, pmap_d2, gc, 0, 0, fgv.scr->width, fgv.scr->height);
 		XFreeGC(disp2, gc);
 		XSync(disp2, False);
-		XSync(disp, False);
-		XFreePixmap(disp, pmap_d1);
+		XSync(fgv.disp, False);
+		XFreePixmap(fgv.disp, pmap_d1);
 
 		prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", True);
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", True);
@@ -453,7 +439,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", False);
 
 		if (prop_root == None || prop_esetroot == None)
-			eprintf("creation of pixmap property failed.");
+			eprintf("creation of pixmap property %s.",ERR_FAILED);
 
 		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32, PropModeReplace, (unsigned char *) &pmap_d2, 1);
 		XChangeProperty(disp2, root2, prop_esetroot, XA_PIXMAP, 32,
@@ -475,8 +461,8 @@ signed char feh_wm_get_wm_is_e(void)
 	/* check if E is actually running */
 	if (e == -1) {
 		/* XXX: This only covers E17 prior to 6/22/05 */
-		if ((XInternAtom(disp, "ENLIGHTENMENT_COMMS", True) != None)
-		    && (XInternAtom(disp, "ENLIGHTENMENT_VERSION", True) != None)) {
+		if ((XInternAtom(fgv.disp, "ENLIGHTENMENT_COMMS", True) != None)
+		    && (XInternAtom(fgv.disp, "ENLIGHTENMENT_VERSION", True) != None)) {
 			D(("Enlightenment detected.\n"));
 			e = 1;
 		} else {
@@ -527,34 +513,34 @@ Window enl_ipc_get_win(void)
 	if (e17_fake_ipc)
 		return(ipc_win);
 
-		    prop = XInternAtom(disp, "ENLIGHTENMENT_COMMS", True);
+	prop = XInternAtom(fgv.disp, "ENLIGHTENMENT_COMMS", True);
 	if (prop == None) {
 		D(("Enlightenment is not running.\n"));
 		return(None);
 	} else {
 		/* XXX: This will only work with E17 prior to 6/22/2005 */
-		ever = XInternAtom(disp, "ENLIGHTENMENT_VERSION", True);
+		ever = XInternAtom(fgv.disp, "ENLIGHTENMENT_VERSION", True);
 		if (ever == None) {
 			/* This is an E without ENLIGHTENMENT_VERSION */
 			D(("E16 IPC Protocol not supported"));
 			return(None);
 		}
 	}
-	XGetWindowProperty(disp, root, prop, 0, 14, False, AnyPropertyType, &prop2, &format, &num, &after, &str);
+	XGetWindowProperty(fgv.disp, fgv.root, prop, 0, 14, False, AnyPropertyType, &prop2, &format, &num, &after, &str);
 	if (str) {
 		sscanf((char *) str, "%*s %x", (unsigned int *) &ipc_win);
 		XFree(str);
 	}
 	if (ipc_win != None) {
 		if (!XGetGeometry
-		    (disp, ipc_win, &dummy_win, &dummy_int, &dummy_int,
+		    (fgv.disp, ipc_win, &dummy_win, &dummy_int, &dummy_int,
 		     &dummy_uint, &dummy_uint, &dummy_uint, &dummy_uint)) {
 			D((" -> IPC Window property is valid, but the window doesn't exist.\n"));
 			ipc_win = None;
 		}
 		str = NULL;
 		if (ipc_win != None) {
-			XGetWindowProperty(disp, ipc_win, prop, 0, 14,
+			XGetWindowProperty(fgv.disp, ipc_win, prop, 0, 14,
 					   False, AnyPropertyType, &prop2, &format, &num, &after, &str);
 			if (str) {
 				XFree(str);
@@ -566,7 +552,7 @@ Window enl_ipc_get_win(void)
 	}
 	if (ipc_win != None) {
 
-		XGetWindowProperty(disp, ipc_win, ever, 0, 14, False,
+		XGetWindowProperty(fgv.disp, ipc_win, ever, 0, 14, False,
 				   AnyPropertyType, &prop2, &format, &num, &after, &str);
 		if (str) {
 			/*
@@ -584,7 +570,7 @@ Window enl_ipc_get_win(void)
 		}
 
 		D((" -> IPC Window found and verified as 0x%08x.  Registering feh as an IPC client.\n", (int) ipc_win));
-		XSelectInput(disp, ipc_win, StructureNotifyMask | SubstructureNotifyMask);
+		XSelectInput(fgv.disp, ipc_win, StructureNotifyMask | SubstructureNotifyMask);
 		enl_ipc_send("set clientname " PACKAGE);
 		enl_ipc_send("set version " VERSION);
 		enl_ipc_send("set email tom@linuxbrit.co.uk");
@@ -592,7 +578,7 @@ Window enl_ipc_get_win(void)
 		enl_ipc_send("set info Feh - be pr0n or be dead");
 	}
 	if (my_ipc_win == None) {
-		my_ipc_win = XCreateSimpleWindow(disp, root, -2, -2, 1, 1, 0, 0, 0);
+		my_ipc_win = XCreateSimpleWindow(fgv.disp, fgv.root, -2, -2, 1, 1, 0, 0, 0);
 	}
 	return(ipc_win);
 }
@@ -626,12 +612,12 @@ void enl_ipc_send(char *str)
 		}
 	}
 	len = strlen(str);
-	ipc_atom = XInternAtom(disp, "ENL_MSG", False);
+	ipc_atom = XInternAtom(fgv.disp, "ENL_MSG", False);
 	if (ipc_atom == None) {
 		D(("IPC error:  Unable to find/create ENL_MSG atom.\n"));
 		return;
 	}
-	for (; XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev););	/* Discard any out-of-sync messages */
+	for (; XCheckTypedWindowEvent(fgv.disp, my_ipc_win, ClientMessage, &ev););	/* Discard any out-of-sync messages */
 	ev.xclient.type = ClientMessage;
 	ev.xclient.serial = 0;
 	ev.xclient.send_event = True;
@@ -651,7 +637,7 @@ void enl_ipc_send(char *str)
 		for (j = 0; j < 20; j++) {
 			ev.xclient.data.b[j] = buff[j];
 		}
-		XSendEvent(disp, ipc_win, False, 0, (XEvent *) & ev);
+		XSendEvent(fgv.disp, ipc_win, False, 0, (XEvent *) & ev);
 	}
 	return;
 }
@@ -671,7 +657,7 @@ char *enl_wait_for_reply(void)
 	register unsigned char i;
 
 	alarm(2);
-	for (; !XCheckTypedWindowEvent(disp, my_ipc_win, ClientMessage, &ev)
+	for (; !XCheckTypedWindowEvent(fgv.disp, my_ipc_win, ClientMessage, &ev)
 	     && !timeout;);
 	alarm(0);
 	if (ev.xany.type != ClientMessage) {
@@ -747,7 +733,7 @@ char *enl_send_and_wait(char *msg)
 		if (reply == IPC_TIMEOUT) {
 			/* We timed out.  The IPC window must be AWOL.  Reset and resend message. */
 			D(("IPC timed out.  IPC window has gone. Clearing ipc_win.\n"));
-			XSelectInput(disp, ipc_win, None);
+			XSelectInput(fgv.disp, ipc_win, None);
 			ipc_win = None;
 		}
 	}

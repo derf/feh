@@ -24,8 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "feh_png.h"
-
+#include "feh.h"
 #include <png.h>
 
 #include <stdio.h>
@@ -200,10 +199,10 @@ int feh_png_file_is_png(FILE * fp)
 	unsigned char buf[8];
 
 	if ( fread(buf, 1, 8, fp) > 0 ) {
-      if (png_sig_cmp(buf, 0, 8)) {
-        return 0;
-      }
-  }
+			if (png_sig_cmp(buf, 0, 8)) {
+				return 0;
+			}
+	}
 
 	return 8;
 }

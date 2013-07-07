@@ -29,76 +29,88 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* As of May 2012, HRABAK cut out ALL the gib_style stuff and replaced it
  * with an array of feh_style structs  inside __fehoptions.
- * See feh.h for struct feh_style.
+ * See structs.h for struct feh_style.
+ * As of Apr 2013 HRABAK encapsulated all feh fonts here in struct _feh_font
  */
 
-struct __fehoptions {
-	unsigned char multiwindow;
-	unsigned char montage;
-	unsigned char collage;
-	unsigned char index;
-	unsigned char thumbs;
-	unsigned char slideshow;
-	unsigned char recursive;
-	unsigned char output;
-	unsigned char verbose;
-	unsigned char display;
-	unsigned char bg;
-	unsigned char alpha;
-	unsigned char alpha_level;
-	unsigned char aspect;
-	unsigned char stretch;
-	unsigned char keep_http;
-	unsigned char borderless;
-	unsigned char randomize;
-	unsigned char jump_on_resort;
-	unsigned char full_screen;
-	unsigned char draw_filename;
-#ifdef HAVE_LIBEXIF
-	unsigned char draw_exif;
-#endif
-	unsigned char list;
-	unsigned char quiet;
-	unsigned char preload;
-	unsigned char loadables;
-	unsigned char unloadables;
-	unsigned char reverse;
-	unsigned char no_menus;
-	unsigned char scale_down;
-	unsigned char bgmode;
-	unsigned char xinerama;
-	unsigned char screen_clip;
-	unsigned char hide_pointer;
-	unsigned char draw_actions;
-	unsigned char draw_info;
-	unsigned char cache_thumbnails;
-	unsigned char cycle_once;
-	unsigned char hold_actions[10];
-	unsigned char text_bg;
-	unsigned char image_bg;
-	unsigned char no_fehbg;
-	unsigned char write_filelist;         /* OK? to write filelist at exit */
+struct __fehoptions {         /* montage and collage killed Jul 2012 */
+	struct {                    /* flags for all on/off settings        */
+		unsigned list           : 1;
+		unsigned index          : 1;
+		unsigned thumbnail      : 1;
+		unsigned multiwindow    : 1;
+		unsigned full_screen    : 1;
+		unsigned unloadables    : 1;
+		unsigned loadables      : 1;
+		unsigned randomize      : 1;
+		unsigned recursive      : 1;
+		unsigned verbose        : 1;
+		unsigned display        : 1;
+		unsigned bg             : 1;
+		unsigned alpha          : 1;
+		unsigned aspect         : 1;
+		unsigned stretch        : 1;
+		unsigned keep_http      : 1;
+		unsigned borderless     : 1;
+		unsigned jump_on_resort : 1;
+		unsigned draw_exif      : 1;      /*  only used when HAVE_LIBEXIF  */
+		unsigned quiet          : 1;
+		unsigned preload        : 1;
+		unsigned reverse        : 1;
+		unsigned no_menus       : 1;
+		unsigned big_menus      : 1;      /* large font for menus          */
+		unsigned scale_down     : 1;
+		unsigned xinerama       : 1;
+		unsigned screen_clip    : 1;
+		unsigned hide_pointer   : 1;
+		unsigned no_actions     : 1;      /* defaults to "1" meaning no actions    */
+		unsigned draw_actions   : 1;
+		unsigned draw_info      : 1;
+		unsigned draw_filename  : 1;
+		unsigned draw_name      : 1;
+		unsigned draw_no_ext    : 1;
+		unsigned cache_thumbnails   : 1;   /* use cached thumbnails from ~/.thumbnails */
+		unsigned cycle_once     : 1;
+		unsigned no_fehbg       : 1;
+		unsigned write_filelist : 1;       /* OK to write filelist at exit? */
+		unsigned reset_output   : 1;       /* was a naked global b4 */
+		unsigned paused         : 1;
+		unsigned text_bg        : 1;      /* OK at 1bit.  Only on/off              */
+							/* MULTI-BIT values */
+		unsigned image_bg       : 2;      /* holds 0, 1, 2                         */
+		unsigned state          : 3;      /* holds 0 thru 5 used for panning etc.  */
+		unsigned mode           : 4;      /* holds 0 thru 9. ptr to modes[]        */
+		unsigned mode_original  : 4;      /* copy of the above mode setting        */
+		unsigned bgmode         : 8;      /* holds 23 thru 27                      */
+	} flg;                            /* flg stands for flags */
+
+	char *modes[8];                      /* mode names.  opt.flg.mode is the index */
+
+	unsigned char alpha_level;    /* zero thru 255 */
 
 	char *output_file;
 	char *output_dir;
 	char *bg_file;
-	char *font;
-	char *title_font;
 	char *title;
 	char *thumb_title;
-	char *actions[10];
+	char *actions[ MAX_ACTIONS ];
 	char *fontpath;
 	char *filelistfile;
-	char *menu_font;
 	char *customlist;
 	char *menu_bg;
-	char *menu_style;
+	/* char *menu_style; */
 	char *caption_path;
-	char *start_list_at;
+	char *start_at_name;
 	char *info_cmd;
 	char *index_info;
 
-  feh_style style[STYLE_CNT];
+	feh_style style[STYLE_CNT];
+	feh_font *fn_ptr;                        /* points to one of the five below  */
+	feh_font fn_dflt;                        /* used to be the default "font"    */
+	feh_font fn_title;                       /* used to be title_font            */
+	feh_font fn_menu;                        /* used to be the menu_font         */
+	feh_font fn_fulls;                       /* used to be the big_font          */
+	feh_font fn_fep;                         /* used inside the move_mode scrn   */
 
 	int force_aliasing;
 	int thumb_w;
@@ -116,86 +128,13 @@ struct __fehoptions {
 	unsigned int geom_h;
 	int default_zoom;
 	int zoom_mode;
-	unsigned char adjust_reload;
-
-	unsigned char mode;
-	unsigned char paused;
+	unsigned int start_at_num;            /* start_at a numbered item in the list */
 
 	double slideshow_delay;
 
+	/* default this to -1 (off) cause big recurvive loads can take forever otherwise */
 	signed short magick_timeout;
 
-	Imlib_Font menu_fn;
-};
-
-struct __fehkey {
-	int keysyms[3];
-	int keystates[3];
-};
-
-struct __fehkb {
-	struct __fehkey menu_close;
-	struct __fehkey menu_parent;
-	struct __fehkey menu_down;
-	struct __fehkey menu_up;
-	struct __fehkey menu_child;
-	struct __fehkey menu_select;
-	struct __fehkey scroll_right;
-	struct __fehkey prev_img;
-	struct __fehkey scroll_left;
-	struct __fehkey next_img;
-	struct __fehkey scroll_up;
-	struct __fehkey scroll_down;
-	struct __fehkey scroll_right_page;
-	struct __fehkey scroll_left_page;
-	struct __fehkey scroll_up_page;
-	struct __fehkey scroll_down_page;
-	struct __fehkey jump_back;
-	struct __fehkey quit;
-	struct __fehkey jump_fwd;
-	struct __fehkey remove;
-	struct __fehkey delete;
-	struct __fehkey jump_first;
-	struct __fehkey jump_last;
-	struct __fehkey action_0;
-	struct __fehkey action_1;
-	struct __fehkey action_2;
-	struct __fehkey action_3;
-	struct __fehkey action_4;
-	struct __fehkey action_5;
-	struct __fehkey action_6;
-	struct __fehkey action_7;
-	struct __fehkey action_8;
-	struct __fehkey action_9;
-	struct __fehkey zoom_in;
-	struct __fehkey zoom_out;
-	struct __fehkey zoom_default;
-	struct __fehkey zoom_fit;
-	struct __fehkey render;
-	struct __fehkey toggle_actions;
-	struct __fehkey toggle_filenames;
-#ifdef HAVE_LIBEXIF
-	struct __fehkey toggle_exif;
-#endif
-	struct __fehkey toggle_info;
-	struct __fehkey toggle_pointer;
-	struct __fehkey toggle_aliasing;
-	struct __fehkey jump_random;
-	struct __fehkey toggle_caption;
-	struct __fehkey toggle_pause;
-	struct __fehkey reload_image;
-	struct __fehkey save_image;
-	struct __fehkey save_filelist;
-	struct __fehkey size_to_image;
-	struct __fehkey toggle_menu;
-	struct __fehkey close;
-	struct __fehkey orient_1;
-	struct __fehkey orient_3;
-	struct __fehkey flip;
-	struct __fehkey mirror;
-	struct __fehkey toggle_fullscreen;
-	struct __fehkey reload_minus;
-	struct __fehkey reload_plus;
 };
 
 struct __fehbutton {
@@ -216,7 +155,10 @@ struct __fehbb {
 
 void init_parse_options(int argc, char **argv);
 char *feh_string_normalize(char *str);
+void check_options(void);
+void feh_parse_option_array(int argc, char **argv );
 
-extern fehoptions opt;
+
+/* extern fehoptions opt;   moved to feh.h */
 
 #endif

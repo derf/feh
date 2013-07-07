@@ -28,14 +28,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define DEBUG_H
 
 #ifdef WITH_DMALLOC
-#include <dmalloc.h>
-#define emalloc(a) malloc(a)
-#define estrdup(a) strdup(a)
-#define erealloc(a,b) realloc(a,b)
+	#include <dmalloc.h>
+	#define emalloc(a) malloc(a)
+	#define ecalloc(a) calloc(1,a)
+	#define estrdup(a) strdup(a)
+	#define erealloc(a,b) realloc(a,b)
 #else
-#define emalloc(a) _emalloc(a)
-#define estrdup(a) _estrdup(a)
-#define erealloc(a,b) _erealloc(a,b)
+	#define emalloc(a) _emalloc(a)
+	#define ecalloc(a) _ecalloc(a)
+	#define estrdup(a) _estrdup(a)
+	#define erealloc(a,b) _erealloc(a,b)
 #endif
 
 #ifdef DEBUG

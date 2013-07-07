@@ -1,5 +1,5 @@
 PACKAGE ?= feh
-VERSION ?= ${shell git describe --dirty}
+VERSION ?= 2.5hrabak10
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
@@ -14,8 +14,12 @@ font_dir = ${main_dir}/share/feh/fonts
 example_dir = ${main_dir}/share/doc/feh/examples
 
 # default CFLAGS
-CFLAGS ?= -g -O2
-CFLAGS += -Wall -Wextra -pedantic
+CFLAGS ?=  -Os -fshort-enums
+#CFLAGS ?= -g -O2 -fshort-enums
+#CFLAGS ?= -g -fshort-enums
+CFLAGS += -Wall -Wextra
+#CFLAGS += -Wall -Wextra -pedantic
+#CFLAGS += -Wall -Wextra -pg -fprofile-arcs -ftest-coverage
 
 curl ?= 1
 debug ?= 0
@@ -69,4 +73,6 @@ endif
 CFLAGS += -DPREFIX=\"${PREFIX}\" \
 	-DPACKAGE=\"${PACKAGE}\" -DVERSION=\"${VERSION}\"
 
+# kill the dependancy on giblib, May 4, 2012
+#LDLIBS += -lm -lpng -lX11 -lImlib2 -lgiblib
 LDLIBS += -lm -lpng -lX11 -lImlib2

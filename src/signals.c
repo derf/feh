@@ -42,7 +42,7 @@ void setup_signal_handlers()
 		(sigaddset(&feh_ss, SIGQUIT) == -1) ||
 		(sigaddset(&feh_ss, SIGINT) == -1))
 	{
-		weprintf("Failed to set up signal masks");
+		weprintf("%s%smasks",ERR_FAILED, ERR_TO_SET_UP_SIGNAL);
 		return;
 	}
 
@@ -58,7 +58,7 @@ void setup_signal_handlers()
 		(sigaction(SIGQUIT, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGINT, &feh_sh, NULL) == -1))
 	{
-		weprintf("Failed to set up signal handler");
+		weprintf("%s%shandler",ERR_FAILED, ERR_TO_SET_UP_SIGNAL);
 		return;
 	}
 
@@ -67,32 +67,32 @@ void setup_signal_handlers()
 
 void feh_handle_signal(int signo)
 {
-	winwidget winwid;
+	winwidget w;
 	int i;
 
 	switch (signo) {
 		case SIGALRM:
-			if (childpid)
-				killpg(childpid, SIGINT);
+			if (fgv.childpid)
+				killpg(fgv.childpid, SIGINT);
 			return;
 		case SIGINT:
 		case SIGTERM:
 		case SIGQUIT:
-			if (childpid)
-				killpg(childpid, SIGINT);
+			if (fgv.childpid)
+				killpg(fgv.childpid, SIGINT);
 			exit(128 + signo);
 	}
 
-	winwid = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
+	w = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
 
-	if (winwid) {
+	if (w) {
 		if (signo == SIGUSR1)
-			slideshow_change_image(winwid, SLIDE_NEXT, 1);
+			slideshow_change_image(w, SLIDE_NEXT, RENDER_YES);
 		else if (signo == SIGUSR2)
-			slideshow_change_image(winwid, SLIDE_PREV, 1);
-	} else if (opt.multiwindow) {
-		for (i = window_num - 1; i >= 0; i--)
-			feh_reload_image(windows[i], 0, 0);
+			slideshow_change_image(w, SLIDE_PREV, RENDER_YES);
+	} else if (opt.flg.mode == MODE_MULTIWINDOW) {
+		for (i = fgv.window_num - 1; i >= 0; i--)
+			feh_reload_image(fgv.windows[i],RESIZE_NO, FORCE_NEW_NO );
 	}
 
 	return;

@@ -70,38 +70,36 @@ typedef struct _mwmhints {
 
 enum win_type {
 	WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE,
-	WIN_TYPE_THUMBNAIL, WIN_TYPE_THUMBNAIL_VIEWER
+	WIN_TYPE_THUMBNAIL, WIN_TYPE_THUMBNAIL_VIEWER, WIN_TYPE_MOVE_MODE
 };
 
 struct __winwidget {
-	Window win;
-	int x;
-	int y;
-	int w;
-	int h;
+	int x,y,wide,high;                /* overall window size               */
+	int im_x;                   /* image offset from window top left */
+	int im_y;
 	int im_w;
 	int im_h;
-	int force_aliasing;
+	int click_offset_x;         /* equals ev->xbutton.x - winwid->im_x */
+	int click_offset_y;
+	int im_click_offset_x;
+	int im_click_offset_y;
 	double im_angle;
-	enum win_type type;
-	unsigned char had_resize, full_screen;
-	Imlib_Image im;
+
 	GC gc;
+	Window win;
+	Imlib_Image im;
 	Pixmap bg_pmap;
 	Pixmap bg_pmap_cache;
+
 	char *name;
-	feh_node *file;
-	unsigned char visible;
 	char *errstr;
-
-	/* panning, zooming, etc. */
-	unsigned char mode;
-
+	LLMD *md;                   /*  so I can access the md->rn         */
+	feh_node *node;
+	enum win_type type;
+	unsigned char visible;             /* on/off flags           */
 	unsigned char caption_entry;
-
-	/* image offset from window top left */
-	int im_x;
-	int im_y;
+	unsigned char has_rotated;
+	unsigned char had_resize, full_screen;
 
 	/* From 0 (not visible) to 1.00 (actual size)
 	 * all the way up to INT_MAX (eww)
@@ -109,53 +107,44 @@ struct __winwidget {
 	double zoom;
 	double old_zoom;
 
-	int click_offset_x;
-	int click_offset_y;
-	int im_click_offset_x;
-	int im_click_offset_y;
-
-	unsigned char has_rotated;
 };
 
-int winwidget_loadimage(winwidget winwid, feh_file * filename);
-void winwidget_show(winwidget winwid);
-void winwidget_show_menu(winwidget winwid);
-void winwidget_hide(winwidget winwid);
+int winwidget_loadimage(winwidget w, feh_data * data);
+void winwidget_show(winwidget w);
+void winwidget_show_menu(winwidget w);
+void winwidget_hide(winwidget w);
 void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
 void winwidget_center_image(winwidget w);
-void winwidget_render_image(winwidget winwid, int resize, int force_alias);
-void winwidget_rotate_image(winwidget winid, double angle);
-void winwidget_move(winwidget winwid, int x, int y);
-void winwidget_resize(winwidget winwid, int w, int h);
-void winwidget_setup_pixmaps(winwidget winwid);
-void winwidget_update_title(winwidget ret);
-void winwidget_update_caption(winwidget winwid);
+void winwidget_render_image(winwidget w, int resize, int force_alias, int sanitize);
+/* void winwidget_rotate_image(winwidget w, double angle); */
+void winwidget_move(winwidget w, int x, int y);
+void winwidget_resize(winwidget w, int wide, int high);
+void winwidget_setup_pixmaps(winwidget w);
+void winwidget_update_title(winwidget w, char *newname );
+void winwidget_update_caption(winwidget w);
 void winwidget_rerender_all(int resize);
-void winwidget_destroy_xwin(winwidget winwid);
+void winwidget_destroy_xwin(winwidget w);
 
-void winwidget_set_pointer(winwidget winwid, int visible);
+void winwidget_set_pointer(winwidget w, int visible);
 
-void winwidget_get_geometry(winwidget winwid, int *rect);
-int winwidget_get_width(winwidget winwid);
-int winwidget_get_height(winwidget winwid);
+void winwidget_get_geometry(winwidget w, int *rect);
+int winwidget_get_width(winwidget w);
+int winwidget_get_height(winwidget w);
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(feh_node * l, char *name, char type);
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
-void winwidget_rename(winwidget winwid, char *newname);
-void winwidget_destroy(winwidget winwid);
-void winwidget_create_window(winwidget ret, int w, int h);
-void winwidget_clear_background(winwidget w);
+winwidget winwidget_create_from_file(LLMD *md, feh_node *node, char *name, char type);
+winwidget winwidget_create_from_image(LLMD *md, Imlib_Image im, char *name, char type);
+winwidget winwidget_allocate(void);
+void winwidget_destroy(winwidget w);
+void winwidget_create_window(winwidget w, int wide, int high);
+/* void winwidget_clear_background(winwidget w); */
 Pixmap feh_create_checks(void);
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
-void feh_debug_print_winwid(winwidget winwid);
+void feh_debug_print_winwid(winwidget w);
 winwidget winwidget_get_first_window_of_type(unsigned int type);
-void winwidget_reset_image(winwidget winwid);
-void winwidget_sanitise_offsets(winwidget winwid);
-void winwidget_size_to_image(winwidget winwid);
-void winwidget_render_image_cached(winwidget winwid);
-
-extern int window_num;		/* For window list */
-extern winwidget *windows;	/* List of windows to loop though */
+void winwidget_reset_image(winwidget w);
+void winwidget_sanitise_offsets(winwidget w);
+void winwidget_size_to_image(winwidget w);
+void winwidget_render_image_cached(winwidget w);
 
 #endif

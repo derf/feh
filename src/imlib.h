@@ -43,7 +43,7 @@ all the giblib dependancies in feh.
 extern "C"
 {
 #endif
-
+Imlib_Image feh_imlib_image_make_n_fill_text_bg( int w, int h, int alpha);
 int gib_imlib_load_image(Imlib_Image * im, char *filename);
 int gib_imlib_image_get_width(Imlib_Image im);
 int gib_imlib_image_get_height(Imlib_Image im);
@@ -75,10 +75,11 @@ void gib_imlib_render_image_part_on_drawable_at_size_with_rotation(
 void gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w,
                                     int h, int r, int g, int b, int a);
 
-void feh_imlib_text_draw(Imlib_Image im, Imlib_Font fn, feh_style *s,
-                      int x, int y, char *text, Imlib_Text_Direction dir );
+void feh_imlib_text_draw(Imlib_Image im,  feh_style *s,
+                         int x, int y, char *text,
+                         Imlib_Text_Direction dir );
 
-void gib_imlib_get_text_size(Imlib_Font fn, char *text, feh_style * s, int *w,
+void gib_imlib_get_text_size( char *text, feh_style * s, int *w,
                              int *h, Imlib_Text_Direction dir);
 Imlib_Image gib_imlib_clone_image(Imlib_Image im);
 char *gib_imlib_image_format(Imlib_Image im);
@@ -124,12 +125,9 @@ void gib_imlib_image_set_has_alpha(Imlib_Image im, int alpha);
 void gib_imlib_save_image(Imlib_Image im, char *file);
 void gib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
                                             Imlib_Load_Error * error_return);
-void gib_imlib_free_font(Imlib_Font fn);
 void gib_imlib_free_image(Imlib_Image im);
 void gib_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
                                char make_updates, int r, int g, int b, int a);
-void gib_imlib_image_set_has_alpha(Imlib_Image im, int alpha);
-void gib_imlib_free_font(Imlib_Font fn);
 Imlib_Image gib_imlib_create_rotated_image(Imlib_Image im, double angle);
 void gib_imlib_image_tile(Imlib_Image im);
 void gib_imlib_image_blur(Imlib_Image im, int radius);
@@ -154,7 +152,7 @@ Imlib_Image gib_imlib_create_image_from_drawable(Drawable d, Pixmap mask,
                                                  char need_to_grab_x);
 void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a);
 void gib_imlib_parse_fontpath(char *path);
-Imlib_Font gib_imlib_load_font(char *name);
+void gib_imlib_load_font(feh_font *fn_ptr);
 void gib_imlib_image_orientate(Imlib_Image im, int orientation);
 
 #ifdef __cplusplus

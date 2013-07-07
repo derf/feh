@@ -26,49 +26,56 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "filelist.h"
-#include "timers.h"
+#include "feh_ll.h"
 #include "winwidget.h"
 #include "options.h"
-#include "signals.h"
 
-void init_slideshow_mode(void)
+void init_slideshow_mode(LLMD *md )
 {
 	winwidget w = NULL;
 	int success = 0;
 	char *s = NULL;
-	feh_node *l;
 
-	for (l = feh_md->rn->next ; ( l != feh_md->rn ) && opt.start_list_at ; l = l->next) {
-		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
-        opt.start_list_at = NULL;       /* found it */
-        break;
+	opt.flg.mode = MODE_SLIDESHOW ;
+
+	if ( md->cn == md->rn )
+		md->cn = md->rn->next;
+
+	/* using the tn for this loop allows returning to ss_mode
+	 * on the selected pix after stub_toggle_thumb_mode() */
+	for (md->tn = md->rn->next ;
+	    (md->tn != md->rn ) && opt.start_at_name ;
+	     md->tn = md->tn->next) {
+		if (!strcmp(opt.start_at_name, NODE_FILENAME(md->tn))) {
+				opt.start_at_name = NULL;       /* found it */
+				md->cn = md->tn;
+				break;
 		}
 	}
 
-	if (opt.start_list_at)
-		eprintf("--start-at %s: File not found in filelist",
-				opt.start_list_at);
+	if (opt.start_at_name)
+		weprintf("--start-at '%s': Not found.",opt.start_at_name);
 
+	/* using --start-at-num you can start the ss at a specific [45 of 200] place */
+	if (opt.start_at_num)
+		feh_ll_nth( md, opt.start_at_num  );
 
-	mode = "slideshow";
+	for (; md->cn != md->rn ; md->cn = md->cn->next) {
+		/* make sure this one can be loaded, else find the next one that can be */
+		s = slideshow_create_name( md );       /* static buff */
 
-	for (; l != feh_md->rn ; l = l->next) {
-    /* make sure this one can be loaded, else find the next one that can be */
-    feh_md->cn = l;          /* 	current_file = l */
-		s = slideshow_create_name( FEH_FILE(l->data) );
-
-		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) == NULL) {
-    	free(s);
- 			feh_file_remove_from_list( feh_md );     /* l failed so remove it */
+		if ((w = winwidget_create_from_file(md, md->cn, s, WIN_TYPE_SLIDESHOW)) == NULL) {
+			/* load failed so remove md->cn */
+			feh_move_node_to_remove_list(NULL, DELETE_NO, WIN_MAINT_NO );
 		} else {
-			free(s);
 			success = 1;
+			/* these 2 cause you can change to mm w/o ret to feh_main_iteration() */
+			fgv.w = w;
+			fgv.tdselected = NULL;
 			winwidget_show(w);
 			if (opt.slideshow_delay > 0.0)
 				feh_add_timer(cb_slide_timer, w, opt.slideshow_delay, "SLIDE_CHANGE");
-			else if (opt.reload > 0)
-				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+
 			break;
 		}
 	}
@@ -82,84 +89,92 @@ void init_slideshow_mode(void)
 
 void cb_slide_timer(void *data)
 {
-	slideshow_change_image((winwidget) data, SLIDE_NEXT, 1);
+	slideshow_change_image((winwidget) data, SLIDE_NEXT, RENDER_YES);
 	return;
 }
 
-void cb_reload_timer(void *data)
-{
-	feh_node *l;
-	char *current_filename;
-
-	winwidget w = (winwidget) data;
+void cb_reload_timer(void ){
+		/* This just sets the stage for an exit back to main()
+		 * to "doit_again", letting the normal load logic do its thing.
+		 */
 
 	/* save the current filename for refinding it in new list */
-	current_filename = estrdup(FEH_FILE(feh_md->cn->data)->filename);
+	if ( opt.start_at_name )
+		free( opt.start_at_name);
 
-  feh_file_free_md( feh_md );          /* cleans the whole list in one shot */
+	if (feh_md->cn == feh_md->rn )
+		opt.start_at_name = NULL;
+	else
+		opt.start_at_name = estrdup(NODE_FILENAME(feh_md->cn));
 
-	/* rebuild filelist from original_file_items */
-	if ( ofi_md->rn->nd.cnt > 0)
-      for (l = ofi_md->rn->next ; l != ofi_md->rn ; l = l->next )
-        add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
-	else if (!opt.filelistfile && !opt.bgmode)
-      add_file_to_filelist_recursively(".", FILELIST_FIRST);
+	feh_ll_free_md( feh_md );           /* cleans the whole list in one shot  */
+	fgv.doit_again = 1;                   /* the real reload is done from main()*/
+	winwidget_destroy_all();              /* triggers the exit from iterations()*/
 
-	if ( feh_md->rn->nd.cnt == 0  )
-      eprintf("No files found to reload.");
-
-
-	/* find the previously current file */
-  for (l = ofi_md->rn->next ; l != ofi_md->rn ; l = l->next )
-		if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
-			feh_md->cn = l;          /* current_file = l; */
-			break;
-		}
-
-	free(current_filename);
-
-	/* old code had to reverse the list here.  Not necessary anymore.*/
-
-	if ( feh_md->cn == feh_md->rn )
-      feh_md->cn = feh_md->rn->next;
-	w->file = feh_md->cn ;
-
-	/* reset window name in case of current file order,
-	 * filename, or filelist_length has changed.
-	 */
-	current_filename = slideshow_create_name(FEH_FILE(FEH_LL_CUR_DATA(feh_md)));
-	winwidget_rename(w, current_filename);
-	free(current_filename);
-
-	feh_reload_image(w, 1, 0);
-	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
 
 }     /* end of cb_reload_timer() */
 
+
+
+void reload_logic( int argc, char **argv, int optind ){
+		/* Apr 2013 HRABAK completely new reload logic.  Save the optind at
+		 * the end of parse_options() here.  Each subsequent call can then
+		 * reuse that ptr to reload any files at the end of the command line
+		 * option parameters.  After that, you just return to main and
+		 * "doit_again".
+		 * This is the ONLY place that feh_add_unique_timer() is called.
+		 */
+
+	static int old_optind = 0;
+
+	if (old_optind == 0 )       /* first time call so save it */
+		old_optind = optind;
+	else
+		optind = old_optind;
+
+	/* First and subsequent calls use that old_optint to reload the tail
+	 * end of the command line options list, where the leftovers are
+	 * assumed to be file names */
+	if (optind < argc) {
+		while (optind < argc) {
+			/* If recursive is NOT set, but the only argument is a directory
+			   name, we grab all the files in there, but not subdirs */
+			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
+		}
+	}
+	else if ( !opt.filelistfile && !opt.flg.bgmode)
+		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+
+	if (opt.reload)             /* trigger the next reload */
+			feh_add_unique_timer(cb_reload_timer, opt.reload);
+
+}   /* end of reload_logic()  */
+
 void feh_reload_image(winwidget w, int resize, int force_new)
 {
-	char *title, *new_title;
-	int len;
 	Imlib_Image tmp;
+	char *title = mobs(2);
+	char *new_title = mobs(2);
 	int old_w, old_h;
 
-	if (!w->file) {
-		im_weprintf(w, "couldn't reload, this image has no file associated with it.");
-		winwidget_render_image(w, 0, 0);
+	if (!w->node) {
+		im_weprintf(w, "%sreload, this image has no file associated with it.", ERR_CANNOT);
+		winwidget_render_image(w, 0, 0, SANITIZE_NO);
 		return;
 	}
 
 	D(("resize %d, force_new %d\n", resize, force_new));
 
-	free(FEH_FILE(w->file->data)->caption);
-	FEH_FILE(w->file->data)->caption = NULL;
+	if ( !(NODE_CAPTION(w->node) == fgv.no_cap
+			|| NODE_CAPTION(w->node) == NULL ) )
+			free(NODE_CAPTION(w->node));
 
-	len = strlen(w->name) + sizeof("Reloading: ") + 1;
-	new_title = emalloc(len);
-	snprintf(new_title, len, "Reloading: %s", w->name);
-	title = estrdup(w->name);
-	winwidget_rename(w, new_title);
+	NODE_CAPTION(w->node) = NULL;
+
+	sprintf(new_title, "Reloading: %s", w->name);
+	strcpy(title, w->name );
+	winwidget_update_title(w, new_title);
 
 	old_w = gib_imlib_image_get_width(w->im);
 	old_h = gib_imlib_image_get_height(w->im);
@@ -173,16 +188,14 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	if (force_new)
 		winwidget_free_image(w);
 
-	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
+	if ((feh_load_image(&tmp, NODE_DATA(w->node))) == 0) {
 		if (force_new)
-			eprintf("failed to reload image\n");
+			eprintf("%s to reload image\n",ERR_FAILED);
 		else {
-			im_weprintf(w, "Couldn't reload image. Is it still there?");
-			winwidget_render_image(w, 0, 0);
+			im_weprintf(w, "%sreload image. Is it still there?",ERR_CANNOT);
+			winwidget_render_image(w, 0, 0, SANITIZE_NO);
 		}
-		winwidget_rename(w, title);
-		free(title);
-		free(new_title);
+		winwidget_update_title(w, title);
 		return;
 	}
 
@@ -196,9 +209,8 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	w->im = tmp;
 	winwidget_reset_image(w);
 
-	w->mode = MODE_NORMAL;
 	if ((w->im_w != gib_imlib_image_get_width(w->im))
-	    || (w->im_h != gib_imlib_image_get_height(w->im)))
+			|| (w->im_h != gib_imlib_image_get_height(w->im)))
 		w->had_resize = 1;
 	if (w->has_rotated) {
 		Imlib_Image temp;
@@ -211,183 +223,187 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		w->im_w = gib_imlib_image_get_width(w->im);
 		w->im_h = gib_imlib_image_get_height(w->im);
 	}
-	winwidget_render_image(w, resize, 0);
 
-	winwidget_rename(w, title);
-	free(title);
-	free(new_title);
-
+	winwidget_render_image(w, resize, 0, SANITIZE_NO);
+	winwidget_update_title(w, title);
 	return;
 }
 
-void slideshow_change_image(winwidget winwid, int change, int render)
-{
-	feh_node *last = NULL;
-	int i = 0;
+enum misc_flags test_first_last( LLMD *md , enum misc_flags jmp_code){
+		/* Ok. I do this in such an odd way to ensure that if the last or first
+		* image is not loadable, it will go through in the right direction to
+		* find the correct one. Otherwise SLIDE_LAST would try the last file,
+		* then loop forward to find a loadable one.
+		*/
 
-	/* We can't use filelist_len in the for loop, since that changes when we
-	 * encounter invalid images.
-	 */
-	int our_filelist_len = FEH_LL_LEN( feh_md );
-	char *s;
-
-	/* Without this, clicking a one-image slideshow reloads it. Not very *
-	   intelligent behaviour :-) */
-	if (our_filelist_len < 2 && opt.cycle_once == 0)
-		return;
-
-	/* Ok. I do this in such an odd way to ensure that if the last or first *
-	   image is not loadable, it will go through in the right direction to *
-	   find the correct one. Otherwise SLIDE_LAST would try the last file, *
-	   then loop forward to find a loadable one. */
-	if (change == SLIDE_FIRST) {
-		feh_md->cn = feh_md->rn->prev;
-		change = SLIDE_NEXT;
-	} else if (change == SLIDE_LAST) {
-		feh_md->cn = feh_md->rn->next;
-		change = SLIDE_PREV;
+	if (jmp_code == SLIDE_FIRST) {
+		md->cn = md->rn->prev;
+		jmp_code = SLIDE_NEXT;
+	} else if (jmp_code == SLIDE_LAST) {
+		md->cn = md->rn->next;
+		jmp_code = SLIDE_PREV;
 	}
+return jmp_code;
+}   /* end of test_first_last() */
 
-	/* The for loop prevents us looping infinitely */
-	for (i = 0; i < our_filelist_len; i++) {
-		winwidget_free_image(winwid);
-		switch (change) {
+void slideshow_change_image(winwidget w,
+                            enum misc_flags jmp_code,
+                            enum misc_flags render){
+		/* HRABAK added SLIDE_NO_JUMP to just refresh md->cn in the winwid */
+
+	LLMD *md = w->md;           /* save incase the window gets recreated     */
+
+	md->tn = md->cn;            /* save the current one to know when to stop */
+
+	/* Without this, clicking a one-image slideshow reloads it. Not very
+	 * intelligent behaviour :-) .  True.  But HRABAK mar 2013 needs a refresh
+	 * if deleting (or moving) all but one pic in the list*/
+	if (md->rn->nd.cnt < 2
+		&& opt.flg.cycle_once == 0
+		&& jmp_code < SLIDE_NO_JUMP ) return;
+
+	jmp_code = test_first_last( md , jmp_code);
+
+	/* The do loop prevents us looping infinitely */
+	do {
+		winwidget_free_image(w);
+		switch (jmp_code) {
 		case SLIDE_NEXT:
-			feh_list_jump( feh_md , SLIDE_NEXT );
+			feh_list_jump( md , SLIDE_NEXT );
 			break;
 		case SLIDE_PREV:
-			feh_list_jump( feh_md , SLIDE_PREV );
+			feh_list_jump( md , SLIDE_PREV );
 			break;
 		case SLIDE_RAND:
-			if ( feh_md->rn->nd.cnt > 1) {
-        feh_list_jump( feh_md , SLIDE_RAND );
-				change = SLIDE_NEXT;
+			if ( md->rn->nd.cnt > 1) {
+        feh_list_jump( md , SLIDE_RAND );
+				jmp_code = SLIDE_NEXT;
 			}
 			break;
 		case SLIDE_JUMP_FWD:
-			feh_list_jump( feh_md , SLIDE_JUMP_FWD);
+			feh_list_jump( md , SLIDE_JUMP_FWD);
 			/* important. if the load fails, we only want to step fwd ONCE to
 			   try the next file, not another jmp */
-			change = SLIDE_NEXT;
+			jmp_code = SLIDE_NEXT;
 			break;
 		case SLIDE_JUMP_BACK:
-			feh_list_jump( feh_md , SLIDE_JUMP_BACK );
+			feh_list_jump( md , SLIDE_JUMP_BACK );
 			/* important. if the load fails, we only want to step back ONCE to
 			   try the previous file, not another jmp */
-			change = SLIDE_PREV;
+			jmp_code = SLIDE_PREV;
+			break;
+		case SLIDE_NO_JUMP:       /* do nothing but refresh winwid */
 			break;
 		default:
 			eprintf("BUG!\n");
 			break;
 		}
 
-		if (last) {
-      feh_md->cn = last;
-			feh_file_remove_from_list( feh_md );
-			last = NULL;
-		}
-
-		if ((winwidget_loadimage(winwid, FEH_FILE(feh_md->cn->data)))
-		    != 0) {
-			winwid->mode = MODE_NORMAL;
-			winwid->file = feh_md->cn;
-			if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))
-			    || (winwid->im_h != gib_imlib_image_get_height(winwid->im)))
-				winwid->had_resize = 1;
-			winwidget_reset_image(winwid);
-			winwid->im_w = gib_imlib_image_get_width(winwid->im);
-			winwid->im_h = gib_imlib_image_get_height(winwid->im);
+		if ((winwidget_loadimage(w, NODE_DATA(md->cn ))) != 0) {
+			w->md   = md;
+			w->node = md->cn;
+			if ((w->im_w != gib_imlib_image_get_width(w->im))
+					|| (w->im_h != gib_imlib_image_get_height(w->im)))
+					w->had_resize = 1;
+			winwidget_reset_image(w);
+			w->im_w = gib_imlib_image_get_width(w->im);
+			w->im_h = gib_imlib_image_get_height(w->im);
 			if (render)
-				winwidget_render_image(winwid, 1, 0);
+				winwidget_render_image(w, 1, 0, SANITIZE_NO);
 
-			s = slideshow_create_name(FEH_FILE(feh_md->cn->data));
-			winwidget_rename(winwid, s);
-			free(s);
+			winwidget_update_title(w, slideshow_create_name( md) );
 
-			break;
-		} else
-			last = feh_md->cn ;
-	}
-	if (last) {
-      feh_md->cn = last;
-			feh_file_remove_from_list( feh_md );
-			last = NULL;
-  }
+			break;        /* out of the for loop */
+		} else          /* removes feh_md->cn */
+			feh_move_node_to_remove_list(NULL, DELETE_NO, WIN_MAINT_NO );
 
-	if ( feh_md->rn->nd.cnt == 0)
+	} while (  md->tn != md->cn );          /* avoids inf loop */
+
+	if ( md->rn->nd.cnt == 0)
 		eprintf("No more slides in show");
 
 	if (opt.slideshow_delay > 0.0)
-		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
+		feh_add_timer(cb_slide_timer, w, opt.slideshow_delay, "SLIDE_CHANGE");
 	return;
 
 }     /* end of slideshow_change_image() */
 
-void slideshow_pause_toggle(winwidget w)
-{
-	if (!opt.paused) {
-		opt.paused = 1;
+char *slideshow_create_name(LLMD *md){
+    /* returns s, which points to static buffer
+     * Caller does NOT free it.
+     */
+	char *s = mobs(2);
+
+	if ( opt.title ) {
+		s = feh_printf(opt.title, NODE_DATA(md->cn));
 	} else {
-		opt.paused = 0;
-	}
+			/* we want filename, but what part(s)? */
+			char *name, *last1=NULL;
+			name = NODE_FILENAME(md->cn);
+			if (opt.flg.draw_name) {
+				name = NODE_NAME(md->cn);
+				if ( opt.flg.draw_no_ext )
+					if ( ( last1 = NODE_EXT(md->cn))  )
+							*last1 = '\0';
+			}
 
-	winwidget_rename(w, NULL);
-}
+			sprintf(s, PACKAGE " [%d of %d] - %s",
+					    md->cn->nd.cnt,
+					    md->rn->nd.cnt,
+					    name );
+			if ( last1 ) *last1 = '.';     /* restore the name+extension */
 
-char *slideshow_create_name(feh_file * file)
-{
-	char *s = NULL;
-	int len = 0;
-
-	if (!opt.title) {
-		len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
-		s = emalloc(len);
-		snprintf(s, len, PACKAGE " [%d of %d] - %s",
-              feh_md->cn->nd.cnt,
-              feh_md->rn->nd.cnt,
-              file->filename);
-	} else {
-		s = estrdup(feh_printf(opt.title, file));
 	}
 
 	return(s);
 }
 
-void feh_action_run(feh_file * file, char *action)
-{
+void feh_action_run( feh_node *node, char *action) {
+		/* Apr 2013 HRABAK killed the hold_actions array.  Just look
+		 * at the leading char and if ';', this is a hold action.
+		 */
+
 	if (action) {
 		char *sys;
-		D(("Running action %s\n", action));
-		sys = feh_printf(action, file);
+		if ( action[0] == ';' )
+				action += 1;          /* just jump past the "hold" indicator */
 
-		if (opt.verbose && !opt.list && !opt.customlist)
+		D(("Running action %s\n", action));
+		sys = feh_printf(action, NODE_DATA(node) );
+
+		if (opt.flg.verbose &&
+		  !(opt.flg.mode == MODE_LIST) &&
+		   !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
 
-		system(sys);
+		esystem(sys);
 	}
 	return;
 }
 
-char *shell_escape(char *input)
-{
-	static char ret[1024];
-	unsigned int out = 0, in = 0;
+void shell_escape(char *input, char *ret) {
+		/* accept the original buffer and just append the
+		* modified input in place.
+		*/
+	unsigned int in = 0;
+	char *out;
 
-	ret[out++] = '\'';
-	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
+	if ( ( out = strchr( ret, '\0') ) == NULL ) out = ret;
+	*out++ = '\'';
+
+	for (in = 0; input[in] ; in++) {
 		if (input[in] == '\'') {
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
+			*out++ = '\'';
+			*out++ = '"';
+			*out++ = '\'';
+			*out++ = '"';
+			*out++ = '\'';
 		}	else
-			ret[out++] = input[in];
+			*out++ = input[in];
 	}
-	ret[out++] = '\'';
-	ret[out++] = '\0';
+	*out++ = '\'';
+	*out++ = '\0';
 
-	return ret;
 }
 
 char *format_size(int size)
@@ -403,160 +419,148 @@ char *format_size(int size)
 	return ret;
 }
 
-char *feh_printf(char *str, feh_file * file)
-{
-	char *c;
-	char buf[20];
-	static char ret[4096];
+char *feh_printf(char *str, feh_data * data){
+		/* only run feh_ll_load_data_info() once per call.  If !file, or
+		 * feh_ll_load_data_info() fails, nothing gets returned to caller.
+		 * ret is a huge buffer so snprintf() check is not necessary.
+		 */
 
-	ret[0] = '\0';
+	int  found_it;
+	char *ret = mobs(0);        /* mobs() already '\0' trunc'd      */
+	char *tail = ret;           /* points to the tail of ret buffer */
+	char *c, *last1 = NULL;
 
 	for (c = str; *c != '\0'; c++) {
 		if ((*c == '%') && (*(c+1) != '\0')) {
 			c++;
-			switch (*c) {
-			case 'f':
-				if (file)
-					strcat(ret, file->filename);
-				break;
-			case 'F':
-				if (file)
-					strcat(ret, shell_escape(file->filename));
-				break;
-			case 'n':
-				if (file)
-					strcat(ret, file->name);
-				break;
-			case 'N':
-				if (file)
-					strcat(ret, shell_escape(file->name));
-				break;
-			case 'w':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->width);
-					strcat(ret, buf);
+			found_it=1;
+			if (data ) {
+				/* allow dropping off the extension from the filename */
+				if ( opt.flg.draw_no_ext && ( last1 = data->ext) ) *last1 = '\0';
+				if (*c == 'f')        { tail = stpcpy(tail, data->filename);
+				} else if (*c == 'F') { shell_escape(data->filename, ret);
+				} else if (*c == 'n') { tail = stpcpy(tail, data->name);
+				} else if (*c == 'N') { shell_escape(data->name, ret);
+				} else {
+						if (!data->info){   /* just check once */
+							if ( feh_ll_load_data_info(data, NULL) )    /*  oops!  failed load... */
+								if (*c=='w'||*c=='h'||*c=='s'||*c=='S'||*c=='p'||*c=='t') continue;
+						}       /* falls thru to the rest */
+						if (*c == 'w')        {tail += sprintf(tail , "%d", data->info->width);
+						} else if (*c == 'h') {tail += sprintf(tail , "%d", data->info->height);
+						} else if (*c == 's') {tail += sprintf(tail , "%d", data->info->size);
+						} else if (*c == 'S') {tail  = stpcpy(tail, format_size(data->info->size));
+						} else if (*c == 'p') {tail += sprintf(tail , "%d", data->info->pixels);
+						} else if (*c == 't') {tail  = stpcpy(tail, data->info->format);
+						} else found_it=0;
 				}
-				break;
-			case 'h':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->height);
-					strcat(ret, buf);
-				}
-				break;
-			case 's':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->size);
-					strcat(ret, buf);
-				}
-				break;
-			case 'S':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strcat(ret, format_size(file->info->size));
-				}
-				break;
-			case 'p':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->pixels);
-					strcat(ret, buf);
-				}
-				break;
-			case 'P':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strcat(ret, format_size(file->info->pixels));
-				}
-				break;
-			case 't':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strcat(ret, file->info->format);
-				}
-				break;
-			case 'v':
-				strcat(ret, VERSION);
-				break;
-			case 'm':
-				strcat(ret, mode);
-				break;
-			case 'l':
-				snprintf(buf, sizeof(buf), "%d", feh_md->rn->nd.cnt );
-				strcat(ret, buf);
-				break;
-			case 'u':
-				snprintf(buf, sizeof(buf), "%d", feh_md->cn->nd.cnt );
-				strcat(ret, buf);
-				break;
-			case '%':
-				strcat(ret, "%");
-				break;
-			default:
-				weprintf("Unrecognized format specifier %%%c", *c);
-				strncat(ret, c - 1, 2);
-				break;
+				if ( last1 ) *last1 = '.';      /* restore the name+extension */
+				if ( found_it ) continue;       /* ok to loop again */
+			}   /* end of if(data) */
+
+			/* did not find the data-dependant opts, so test the rest.
+			 * Even if it WAS a data dependant opt, but no data, I assume this
+			 * if an unlikely event cause we are supposed to ONLY have good data members.
+			 * found_it is still == 1 at this point.
+			 */
+			if (*c == 'v')        {tail  = stpcpy(tail, VERSION);
+			} else if (*c == 'm') {tail  = stpcpy(tail, opt.modes[opt.flg.mode]);
+			} else if (*c == 'l') {tail += sprintf(tail , "%d", feh_md->rn->nd.cnt );
+			} else if (*c == 'u') {tail += sprintf(tail , "%d", feh_md->cn->nd.cnt );
+			} else if (*c == '%') {*tail++ = '%';
+			} else {
+						weprintf("Unrecognized format specifier %%%c", *c);
+						*tail++ = *(c - 1); /* add it verbatum */
+						*tail++ = *c ;
+						found_it=0;
 			}
+			if (found_it) continue;
+			/* end of switch for a % prefixed code */
 		} else if ((*c == '\\') && (*(c+1) != '\0')) {
 			c++;
-			switch (*c) {
-			case 'n':
-				strcat(ret, "\n");
-				break;
-			default:
-				strncat(ret, c - 1, 2);
-				break;
+			if (*c == 'n') {
+				*tail++ = '\n';       /* add a new-line */
+			} else {
+				*tail++ = *(c - 1);   /* add it verbatum */
+				*tail++ = *c ;
 			}
 		} else
-			strncat(ret, c, 1);
+			*tail++ = *c ;
 	}
+	tail[0]=tail[1]='\0';       /* double NULL terminated */
 	return(ret);
-}
+}    /* end of feh_printf() */
 
-void feh_filelist_image_remove(winwidget winwid, char do_delete) {
-    /* deals only with the feh_md->cn node (picture)
-     * But then what is cn set to once it gets deleted here???
-     */
+void feh_move_node_to_remove_list(winwidget w,
+                                  enum misc_flags delete_flag ,
+                                  enum misc_flags w_maint_flag ) {
+		/* deals only with the md->cn node (picture)
+		* feh_ll_unlink() sets the new cn to ->next after remove
+		* As of May 2013 HRABAK moves this node to rm_md which will
+		* be processed at the end by feh_clean_exit() rather than
+		* removing it on the spot.
+		*/
 
-	if (winwid->type == WIN_TYPE_SLIDESHOW) {
-		char *s;
+	if ( rm_md == NULL )
+			return;
 
-		slideshow_change_image(winwid, SLIDE_NEXT, 0);
-		if (do_delete ==  DELETE_YES )
-			feh_file_rm_and_free( feh_md );        /* rm the md->cn */
-		else
-			feh_file_remove_from_list( feh_md );   /* just take md->cn out of the list */
-		if ( FEH_LL_LEN(feh_md) == 0 ) {
+	if ( delete_flag == DELETE_ALL){
+			/* ONLY called by feh_clean_exit() so no need to free anything
+			 * as this is the end of the feh session.
+			*/
+			for ( rm_md->cn  = rm_md->rn->next ;
+			      rm_md->cn != rm_md->rn ;
+			      rm_md->cn  = rm_md->cn->next)
+				if (rm_md->cn->nd.delete) unlink(NODE_FILENAME(rm_md->cn));
+
+	}else {           /* this is an add request */
+			/*if ( feh_md->rn->nd.cnt > 1 ) { */      /* don't delete the last pic */
+			if ( feh_md->cn != feh_md->rn ) {
+				feh_md->tn = feh_md->cn;                /* tmp storage */
+				feh_ll_unlink( feh_md, FREE_NO );
+				feh_md->tn->nd.delete = delete_flag ;   /* 0 or 1 */
+				/* just relink from feh_md LL to rm_md LL */
+				feh_ll_link_at_end( rm_md , feh_md->tn);
+				feh_ll_recnt( feh_md );
+				feh_md->rn->nd.lchange = 1;
+			}
+	}
+
+	/* do we need to update any window stuff? */
+	if ( w_maint_flag != WIN_MAINT_DO )
+		return;
+
+	if (w->type == WIN_TYPE_SLIDESHOW) {
+		if ( LL_CNT(w->md) == 0 ) {
 			/* No more images. Game over ;-) */
-			winwidget_destroy(winwid);
+			winwidget_destroy(w);
 			return;
 		}
-		s = slideshow_create_name(FEH_FILE(winwid->file->data));
-		winwidget_rename(winwid, s);
-		free(s);
-		winwidget_render_image(winwid, 1, 0);
-	} else if ((winwid->type == WIN_TYPE_SINGLE)
-		   || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
- 		if (do_delete ==  DELETE_YES )
-			feh_file_rm_and_free( feh_md );
-		else
-			feh_file_remove_from_list( feh_md );
-		winwidget_destroy(winwid);
+		slideshow_change_image(w, SLIDE_NO_JUMP, RENDER_YES);
+	} else {
+		fgv.tdselected = NULL;
+		if ((w->type == WIN_TYPE_SINGLE)||
+		    (w->type == WIN_TYPE_THUMBNAIL_VIEWER))
+			winwidget_destroy(w);
 	}
-}
+}   /* end of feh_move_node_to_remove_list() */
 
-void slideshow_save_image(winwidget win)
+void slideshow_save_image(winwidget w)
 {
-	char *tmpname;
 	Imlib_Load_Error err;
+	char *tmpname;
 
-	if (win->file) {
-		tmpname = feh_unique_filename("", FEH_FILE(win->file->data)->name);
-	} else if (mode) {
-		char *tmp;
-		tmp = estrjoin(".", mode, "png", NULL);
+	if (w->node) {
+		tmpname = feh_unique_filename("", NODE_NAME(w->node ));
+	} else if (opt.flg.mode) {
+		char tmp[32];
+		STRCAT_2ITEMS(tmp,opt.modes[opt.flg.mode], ".png");
 		tmpname = feh_unique_filename("", tmp);
-		free(tmp);
 	} else {
 		tmpname = feh_unique_filename("", "noname.png");
 	}
 
-	if (opt.verbose)
+	if (opt.flg.verbose)
 		printf("saving image to filename '%s'\n", tmpname);
 
 	/* XXX gib_imlib_save_image_with_error_return breaks with *.XXX and
@@ -564,63 +568,55 @@ void slideshow_save_image(winwidget win)
 	 * with .xxx .
 	 * So we leave that part out.
 	 */
-	imlib_context_set_image(win->im);
+	imlib_context_set_image(w->im);
 	imlib_save_image_with_error_return(tmpname, &err);
 
 	if (err)
-		im_weprintf(win, "Can't save image %s:", tmpname);
+		im_weprintf(w, "%ssave image %s:",ERR_CANNOT, tmpname);
 
-	free(tmpname);
 	return;
 }
 
-void  feh_list_jump( LLMD *md , int direction_code ){
-    /* always sets the md->cn (current_node) to the jumped-to slide.
-     */
+void  feh_list_jump( LLMD *md , enum misc_flags jmp_code ){
+		/* handle the simple SLIDE_NEXT and _PREV cases here,
+		* else hand it off to feh_ll_nth.
+		* Sets md->cn (current_node) to the jumped-to position.
+		*/
 
-	int i, num=1;
-	feh_node *l;
+	int i  =5;        /* used to be 20, but 5 makes it a 20% jump */
+	int num=1;
 
-	if ( md->cn == md->rn )
-      md->cn = md->rn->next;           /* this should never happen */
-
-  l = md->cn;
-
-  /* calc which way and how much */
-  if ( direction_code > SLIDE_RAND ) {
-      /* a 20% jump request */
-			if ( md->rn->nd.cnt < 5)
-				num = 1;
-			else if ( md->rn->nd.cnt < 40)
-				num = 2;
-			else
-				num = md->rn->nd.cnt / 20;
-			if ( num == 0 )
-				num = 2;
-  } else if ( direction_code == SLIDE_RAND ) {
-				num = ( rand() % ( md->rn->nd.cnt - 1)) + 1;
-        direction_code = SLIDE_NEXT;
-  }
-
-	if ( direction_code == SLIDE_NEXT || direction_code == SLIDE_JUMP_FWD ) {
-      for (i = 0; i < num; i++) {
-          if ( l->next != md->rn ) {
-            l = l->next;
-          } else {
-            if (opt.cycle_once) { exit(0); }
-            l = md->rn->next;
-          }
-      }
-  } else {
-      for (i = 0; i < num; i++) {
-          if ( l->prev != md->rn )
-            l = l->prev;
-          else
-            l = md->rn->prev;
-      }
+	if ( jmp_code == SLIDE_PREV ) {
+		md->cn = md->cn->prev;
+		if ( md->cn == md->rn )
+			md->cn = md->rn->prev;
+		return;
 	}
 
-  md->cn = l;
+	if ( jmp_code == SLIDE_NEXT ) {
+		md->cn = md->cn->next;
+		if ( md->cn == md->rn )
+			md->cn = md->rn->next;
+		if (opt.flg.cycle_once) { exit(0); }
+		return;
+	}
+
+	/* more than a +/-1 jump, so calc how much to jump */
+	if ( jmp_code > SLIDE_RAND ) {        /* a 20% jump request */
+			num = (md->rn->nd.cnt / i ) + 1;  /* round up */
+		if ( jmp_code == SLIDE_JUMP_BACK )
+			num *= -1;
+	} else if ( jmp_code == SLIDE_RAND ) {
+			num = ( rand() % ( md->rn->nd.cnt - 1)) + 1;
+			/*jmp_code = SLIDE_NEXT;*/
+	}
+
+	num += md->cn->nd.cnt;                /* make it absolute  */
+	if ( num > md->rn->nd.cnt )
+		num -= md->rn->nd.cnt;    /* allow to wrap around the rn */
+	if ( num < 1 )
+		num += md->rn->nd.cnt;    /* allow to wrap around the rn */
+	feh_ll_nth( md, num );
 
 	return ;
 

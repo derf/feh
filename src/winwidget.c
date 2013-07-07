@@ -25,61 +25,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
 
-static void winwidget_unregister(winwidget win);
-static void winwidget_register(winwidget win);
-static winwidget winwidget_allocate(void);
+static void winwidget_unregister(winwidget w);
+static void winwidget_register(winwidget w);
 
 
-int window_num = 0;		/* For window list */
-winwidget *windows = NULL;	/* List of windows to loop though */
-
-static winwidget winwidget_allocate(void)
+winwidget winwidget_allocate(void)
 {
 	winwidget ret = NULL;
 
-	ret = emalloc(sizeof(_winwidget));
+	ret = ecalloc(sizeof(_winwidget));    /* calloc() zeros out all members */
 
-	ret->win = 0;
-	ret->w = 0;
-	ret->h = 0;
-	ret->full_screen = 0;
-	ret->im_w = 0;
-	ret->im_h = 0;
-	ret->im_angle = 0;
-	ret->bg_pmap = 0;
-	ret->bg_pmap_cache = 0;
-	ret->im = NULL;
-	ret->name = NULL;
-	ret->file = NULL;
-	ret->errstr = NULL;
-	ret->type = WIN_TYPE_UNSET;
-	ret->visible = 0;
-	ret->caption_entry = 0;
-	ret->force_aliasing = opt.force_aliasing;
-
-	/* Zoom stuff */
-	ret->mode = MODE_NORMAL;
-
+	ret->type   = WIN_TYPE_UNSET;
 	ret->gc = None;
 
 	/* New stuff */
-	ret->im_x = 0;
-	ret->im_y = 0;
-	ret->zoom = 1.0;
-	ret->old_zoom = 1.0;
-
-	ret->click_offset_x = 0;
-	ret->click_offset_y = 0;
-	ret->has_rotated = 0;
+	ret->zoom = ret->old_zoom = 1.0;
 
 	return(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget winwidget_create_from_image(LLMD *md, Imlib_Image im, char *name, char type)
 {
 	winwidget ret = NULL;
 
@@ -87,60 +55,63 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 		return(NULL);
 
 	ret = winwidget_allocate();
+	ret->md   = md;
 	ret->type = type;
 
 	ret->im = im;
-	ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
-	ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
+	ret->wide = ret->im_w = gib_imlib_image_get_width(ret->im);
+	ret->high = ret->im_h = gib_imlib_image_get_height(ret->im);
 
 	if (name)
 		ret->name = estrdup(name);
 	else
 		ret->name = estrdup(PACKAGE);
 
-	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
+	if (opt.flg.full_screen
+		  && (type != WIN_TYPE_THUMBNAIL)
+		  && (type != WIN_TYPE_MOVE_MODE))
 		ret->full_screen = True;
-	winwidget_create_window(ret, ret->w, ret->h);
-	winwidget_render_image(ret, 1, 0);
+	winwidget_create_window(ret, ret->wide, ret->high);
+	winwidget_render_image(ret, 1, 0, SANITIZE_NO);
 
 	return(ret);
 }
 
-winwidget winwidget_create_from_file(feh_node * node, char *name, char type)
+winwidget winwidget_create_from_file( LLMD * md, feh_node * node, char *name, char type)
 {
 	winwidget ret = NULL;
-	feh_file *file = FEH_FILE(node->data);
 
-	if (!file || !file->filename)
+	if (!NODE_DATA(node) || !NODE_FILENAME(node) )
 		return(NULL);
 
 	ret = winwidget_allocate();
-	ret->file = node;
+	ret->md   = md;
+	ret->node = node;
 	ret->type = type;
 	if (name)
 		ret->name = estrdup(name);
 	else
-		ret->name = estrdup(file->filename);
+		ret->name = estrdup(NODE_FILENAME(node));
 
-	if (winwidget_loadimage(ret, file) == 0) {
+	if (winwidget_loadimage(ret, NODE_DATA(node)) == 0) {
 		winwidget_destroy(ret);
 		return(NULL);
 	}
 
 	if (!ret->win) {
-		ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
-		ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
-		D(("image is %dx%d pixels, format %s\n", ret->w, ret->h, gib_imlib_image_format(ret->im)));
-		if (opt.full_screen)
+		ret->wide = ret->im_w = gib_imlib_image_get_width(ret->im);
+		ret->high = ret->im_h = gib_imlib_image_get_height(ret->im);
+		D(("image is %dx%d pixels, format %s\n", ret->wide, ret->high, gib_imlib_image_format(ret->im)));
+		if (opt.flg.full_screen)
 			ret->full_screen = True;
-		winwidget_create_window(ret, ret->w, ret->h);
-		winwidget_render_image(ret, 1, 0);
+		winwidget_create_window(ret, ret->wide, ret->high);
+		winwidget_render_image(ret, 1, 0, SANITIZE_NO);
 	}
 
 	return(ret);
 }
 
-void winwidget_create_window(winwidget ret, int w, int h)
+void winwidget_create_window(winwidget w, int wide, int high)
 {
 	XSetWindowAttributes attr;
 	XEvent ev;
@@ -149,75 +120,67 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	Atom prop = None;
 	int x = 0;
 	int y = 0;
-	char *tmpname;
 
-	D(("winwidget_create_window %dx%d\n", w, h));
+	D(("winwidget_create_window %dx%d\n", wide, high));
 
-	if (ret->full_screen) {
-		w = scr->width;
-		h = scr->height;
+	if (w->full_screen) {
+		wide = fgv.scr->width;
+		high = fgv.scr->height;
 
 #ifdef HAVE_LIBXINERAMA
-		if (opt.xinerama && xinerama_screens) {
-			w = xinerama_screens[xinerama_screen].width;
-			h = xinerama_screens[xinerama_screen].height;
-			x = xinerama_screens[xinerama_screen].x_org;
-			y = xinerama_screens[xinerama_screen].y_org;
+		if (opt.flg.xinerama && fgv.xinerama_screens) {
+			wide = fgv.xinerama_screens[fgv.xinerama_screen].width;
+			high = fgv.xinerama_screens[fgv.xinerama_screen].height;
+			x = fgv.xinerama_screens[fgv.xinerama_screen].x_org;
+			y = fgv.xinerama_screens[fgv.xinerama_screen].y_org;
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	} else if (opt.geom_flags) {
 		if (opt.geom_flags & WidthValue) {
-			w = opt.geom_w;
+			wide = opt.geom_w;
 		}
 		if (opt.geom_flags & HeightValue) {
-			h = opt.geom_h;
+			high = opt.geom_h;
 		}
 		if (opt.geom_flags & XValue) {
 			if (opt.geom_flags & XNegative) {
-				x = scr->width - opt.geom_x;
+				x = fgv.scr->width - opt.geom_x;
 			} else {
 				x = opt.geom_x;
 			}
 		}
 		if (opt.geom_flags & YValue) {
 			if (opt.geom_flags & YNegative) {
-				y = scr->height - opt.geom_y;
+				y = fgv.scr->height - opt.geom_y;
 			} else {
 				y = opt.geom_y;
 			}
 		}
-	} else if (opt.screen_clip) {
-		if (w > scr->width)
-			w = scr->width;
-		if (h > scr->height)
-			h = scr->height;
+	} else if (opt.flg.screen_clip) {
+		if (wide > fgv.scr->width)
+			wide = fgv.scr->width;
+		if (high > fgv.scr->height)
+			high = fgv.scr->height;
 
 #ifdef HAVE_LIBXINERAMA
-		if (opt.xinerama && xinerama_screens) {
-			if (w > xinerama_screens[xinerama_screen].width)
-				w = xinerama_screens[xinerama_screen].width;
-			if (h > xinerama_screens[xinerama_screen].height)
-				h = xinerama_screens[xinerama_screen].height;
+		if (opt.flg.xinerama && fgv.xinerama_screens) {
+			if (wide > fgv.xinerama_screens[fgv.xinerama_screen].width)
+				wide = fgv.xinerama_screens[fgv.xinerama_screen].width;
+			if (high > fgv.xinerama_screens[fgv.xinerama_screen].height)
+				high = fgv.xinerama_screens[fgv.xinerama_screen].height;
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	}
 
-	if (opt.paused) {
-		printf("name %s\n", ret->name);
-		tmpname = estrjoin(" ", ret->name, "[Paused]", NULL);
-		free(ret->name);
-		ret->name = tmpname;
-	}
-
-	ret->x = x;
-	ret->y = y;
-	ret->w = w;
-	ret->h = h;
-	ret->visible = False;
+	w->x       = x;
+	w->y       = y;
+	w->wide    = wide;
+	w->high    = high;
+	w->visible = False;
 
 	attr.backing_store = NotUseful;
 	attr.override_redirect = False;
-	attr.colormap = cm;
+	attr.colormap = fgv.cm;
 	attr.border_pixel = 0;
 	attr.background_pixel = 0;
 	attr.save_under = False;
@@ -227,8 +190,8 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	    KeyPressMask | KeyReleaseMask | ButtonMotionMask | ExposureMask
 	    | FocusChangeMask | PropertyChangeMask | VisibilityChangeMask;
 
-	if (opt.borderless || ret->full_screen) {
-		prop = XInternAtom(disp, "_MOTIF_WM_HINTS", True);
+	if (opt.flg.borderless || w->full_screen) {
+		prop = XInternAtom(fgv.disp, "_MOTIF_WM_HINTS", True);
 		if (prop == None) {
 			weprintf
 			    ("Window Manager does not support MWM hints. "
@@ -242,85 +205,96 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	} else
 		mwmhints.flags = 0;
 
-	ret->win =
-	    XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
-			  depth, InputOutput, vis,
+	w->win =
+	    XCreateWindow(fgv.disp, DefaultRootWindow(fgv.disp), x, y, wide, high, 0,
+			  fgv.depth, InputOutput, fgv.vis,
 			  CWOverrideRedirect | CWSaveUnder | CWBackingStore
 			  | CWColormap | CWBackPixel | CWBorderPixel | CWEventMask, &attr);
 
 	if (mwmhints.flags) {
-		XChangeProperty(disp, ret->win, prop, prop, 32,
+		XChangeProperty(fgv.disp, w->win, prop, prop, 32,
 				PropModeReplace, (unsigned char *) &mwmhints, PROP_MWM_HINTS_ELEMENTS);
 	}
-	if (ret->full_screen) {
-		Atom prop_fs = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN", False);
-		Atom prop_state = XInternAtom(disp, "_NET_WM_STATE", False);
+	if (w->full_screen) {
+		Atom prop_fs = XInternAtom(fgv.disp, "_NET_WM_STATE_FULLSCREEN", False);
+		Atom prop_state = XInternAtom(fgv.disp, "_NET_WM_STATE", False);
 
 		memset(&ev, 0, sizeof(ev));
-		ev.xclient.type = ClientMessage;
+		ev.xclient.type         = ClientMessage;
 		ev.xclient.message_type = prop_state;
-		ev.xclient.display = disp;
-		ev.xclient.window = ret->win;
-		ev.xclient.format = 32;
-		ev.xclient.data.l[0] = 1;
-		ev.xclient.data.l[1] = prop_fs;
+		ev.xclient.display      = fgv.disp;
+		ev.xclient.window       = w->win;
+		ev.xclient.format       = 32;
+		ev.xclient.data.l[0]    = 1;
+		ev.xclient.data.l[1]    = prop_fs;
 
-		XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32,
+		XChangeProperty(fgv.disp, w->win, prop_state, XA_ATOM, 32,
 				PropModeReplace, (unsigned char *) &prop_fs, 1);
 	}
 
-	XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
-	winwidget_update_title(ret);
+	XSetWMProtocols(fgv.disp, w->win, &fgv.wmDeleteWindow, 1);
+	winwidget_update_title(w, NULL);
 	xch = XAllocClassHint();
-	xch->res_name = "feh";
-	xch->res_class = "feh";
-	XSetClassHint(disp, ret->win, xch);
+	xch->res_name = xch->res_class = "feh";
+	XSetClassHint(fgv.disp, w->win, xch);
 	XFree(xch);
 
 	/* Size hints */
-	if (ret->full_screen || opt.geom_flags) {
+	if (w->full_screen || opt.geom_flags) {
 		XSizeHints xsz;
 
 		xsz.flags = USPosition;
 		xsz.x = x;
 		xsz.y = y;
-		XSetWMNormalHints(disp, ret->win, &xsz);
-		XMoveWindow(disp, ret->win, x, y);
+		XSetWMNormalHints(fgv.disp, w->win, &xsz);
+		XMoveWindow(fgv.disp, w->win, x, y);
 	}
-	if (opt.hide_pointer)
-		winwidget_set_pointer(ret, 0);
+	if (opt.flg.hide_pointer)
+		winwidget_set_pointer(w, 0);
 
 	/* set the icon name property */
-	XSetIconName(disp, ret->win, "feh");
+	XSetIconName(fgv.disp, w->win, "feh");
 	/* set the command hint */
-	XSetCommand(disp, ret->win, cmdargv, cmdargc);
+	XSetCommand(fgv.disp, w->win, fgv.cmdargv, fgv.cmdargc);
 
-	winwidget_register(ret);
+	winwidget_register(w);
 	return;
 }
 
-void winwidget_update_title(winwidget ret)
-{
-	char *name;
-	Atom prop_name = XInternAtom(disp, "_NET_WM_NAME", False);
-	Atom prop_icon = XInternAtom(disp, "_NET_WM_ICON_NAME", False);
-	Atom prop_utf8 = XInternAtom(disp, "UTF8_STRING", False);
+void winwidget_update_title(winwidget w, char *newname ){
+		/* simplified and combined with old winwidget_rename() */
 
-	D(("winwid->name = %s\n", ret->name));
-	name = ret->name ? ret->name : "feh";
-	XStoreName(disp, ret->win, name);
-	XSetIconName(disp, ret->win, name);
+	char *name = mobs(2);
 
-	XChangeProperty(disp, ret->win, prop_name, prop_utf8, 8,
+	Atom prop_name = XInternAtom(fgv.disp, "_NET_WM_NAME", False);
+	Atom prop_icon = XInternAtom(fgv.disp, "_NET_WM_ICON_NAME", False);
+	Atom prop_utf8 = XInternAtom(fgv.disp, "UTF8_STRING", False);
+
+	if ( newname ){
+		free(w->name);
+		w->name = estrdup( newname);
+	}
+
+	D(("w->name = %s\n", w->name));
+	if ( w->errstr ) {               /* cheat.  Put the warning FIRST */
+		STRCAT_2ITEMS( name, " Hey! ", w->errstr);
+		w->errstr = NULL;
+	}
+	strcat( name, w->name ? w->name : " feh");
+	strcat( name, opt.flg.paused ? " [Paused]":"");
+	XStoreName(fgv.disp, w->win, name);
+	XSetIconName(fgv.disp, w->win, name);
+
+	XChangeProperty(fgv.disp, w->win, prop_name, prop_utf8, 8,
 			PropModeReplace, (const unsigned char *)name, strlen(name));
 
-	XChangeProperty(disp, ret->win, prop_icon, prop_utf8, 8,
+	XChangeProperty(fgv.disp, w->win, prop_icon, prop_utf8, 8,
 			PropModeReplace, (const unsigned char *)name, strlen(name));
 
 	return;
 }
 
-void winwidget_update_caption(winwidget winwid)
+void winwidget_update_caption(winwidget w)
 {
 	if (opt.caption_path) {
 		/* TODO: Does someone understand the caching here. Is this the right
@@ -329,111 +303,113 @@ void winwidget_update_caption(winwidget winwid)
 		/* cache bg pixmap. during caption entry, multiple redraws are done
 		 * because the caption overlay changes - the image doesn't though, so re-
 		 * rendering that is a waste of time */
-		if (winwid->caption_entry) {
+		if (w->caption_entry) {
 			GC gc;
-			if (winwid->bg_pmap_cache)
-				XFreePixmap(disp, winwid->bg_pmap_cache);
-			winwid->bg_pmap_cache = XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
-			gc = XCreateGC(disp, winwid->win, 0, NULL);
-			XCopyArea(disp, winwid->bg_pmap, winwid->bg_pmap_cache, gc, 0, 0, winwid->w, winwid->h, 0, 0);
-			XFreeGC(disp, gc);
+			if (w->bg_pmap_cache)
+				XFreePixmap(fgv.disp, w->bg_pmap_cache);
+			w->bg_pmap_cache = XCreatePixmap(fgv.disp, w->win, w->wide, w->high, fgv.depth);
+			gc = XCreateGC(fgv.disp, w->win, 0, NULL);
+			XCopyArea(fgv.disp, w->bg_pmap, w->bg_pmap_cache, gc, 0, 0, w->wide, w->high, 0, 0);
+			XFreeGC(fgv.disp, gc);
 		}
-		feh_draw_caption(winwid);
+		feh_draw_caption(w);
 	}
 	return;
 }
 
-void winwidget_setup_pixmaps(winwidget winwid)
+void winwidget_setup_pixmaps(winwidget w)
 {
-	if (winwid->full_screen) {
-		if (!(winwid->bg_pmap)) {
-			if (winwid->gc == None) {
+	if (w->full_screen) {
+		if (!(w->bg_pmap)) {
+			if (w->gc == None) {
 				XGCValues gcval;
 
-				if (opt.image_bg == IMAGE_BG_WHITE)
-					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+				if (opt.flg.image_bg == IMAGE_BG_WHITE)
+					gcval.foreground = WhitePixel(fgv.disp, DefaultScreen(fgv.disp));
 				else
-					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-				winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
+					gcval.foreground = BlackPixel(fgv.disp, DefaultScreen(fgv.disp));
+				w->gc = XCreateGC(fgv.disp, w->win, GCForeground, &gcval);
 			}
-			winwid->bg_pmap = XCreatePixmap(disp, winwid->win, scr->width, scr->height, depth);
+			w->bg_pmap = XCreatePixmap(fgv.disp, w->win, fgv.scr->width, fgv.scr->height, fgv.depth);
 		}
-		XFillRectangle(disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width, scr->height);
+		XFillRectangle(fgv.disp, w->bg_pmap, w->gc, 0, 0, fgv.scr->width, fgv.scr->height);
 	} else {
-		if (!winwid->bg_pmap || winwid->had_resize) {
-			D(("recreating background pixmap (%dx%d)\n", winwid->w, winwid->h));
-			if (winwid->bg_pmap)
-				XFreePixmap(disp, winwid->bg_pmap);
+		if (!w->bg_pmap || w->had_resize) {
+			D(("recreating background pixmap (%dx%d)\n", w->wide, w->high));
+			if (w->bg_pmap)
+				XFreePixmap(fgv.disp, w->bg_pmap);
 
-			if (winwid->w == 0)
-				winwid->w = 1;
-			if (winwid->h == 0)
-				winwid->h = 1;
-			winwid->bg_pmap = XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
-			winwid->had_resize = 0;
+			if (w->wide == 0)
+				w->wide = 1;
+			if (w->high == 0)
+				w->high = 1;
+			w->bg_pmap = XCreatePixmap(fgv.disp, w->win, w->wide, w->high, fgv.depth);
+			w->had_resize = 0;
 		}
 	}
 	return;
 }
 
-void winwidget_render_image(winwidget winwid, int resize, int force_alias)
+void winwidget_render_image(winwidget w, int resize, int force_alias, int sanitize)
 {
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
 	int antialias = 0;
-	int need_center = winwid->had_resize;
+	int need_center = w->had_resize;
 
-	if (!winwid->full_screen && resize) {
-		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
-		winwidget_reset_image(winwid);
+	if ( sanitize )
+			winwidget_sanitise_offsets(w);
+
+	if (!w->full_screen && resize) {
+		winwidget_resize(w, w->im_w, w->im_h);
+		winwidget_reset_image(w);
 	}
 
 	/* bounds checks for panning */
-	if (winwid->im_x > winwid->w)
-		winwid->im_x = winwid->w;
-	if (winwid->im_y > winwid->h)
-		winwid->im_y = winwid->h;
+	if (w->im_x > w->wide)
+		w->im_x = w->wide;
+	if (w->im_y > w->high)
+		w->im_y = w->high;
 
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
-	      resize, force_alias, winwid->im_w, winwid->im_h));
+			resize, force_alias, w->im_w, w->im_h));
 
-	winwidget_setup_pixmaps(winwid);
+	winwidget_setup_pixmaps(w);
 
-	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
-						       || (winwid->h < winwid->im_h)) &&
-							  (winwid->old_zoom == 1.0)) {
-		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
+	if (!w->full_screen && opt.flg.scale_down && ((w->wide < w->im_w)
+						       || (w->high < w->im_h)) &&
+						       (w->old_zoom == 1.0)) {
+		D(("scaling down image %dx%d\n", w->wide, w->high));
 
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+		feh_calc_needed_zoom(&(w->zoom), w->im_w, w->im_h, w->wide, w->high);
 		if (resize)
-			 winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
-		D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
+			 winwidget_resize(w, w->im_w * w->zoom, w->im_h * w->zoom);
+		D(("after scaling down image %dx%d\n", w->wide, w->high));
 	}
 
-	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
-				     || (opt.geom_flags & (WidthValue | HeightValue))
-				     || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
-				     || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
-				     || (winwid->has_rotated)))
-		feh_draw_checks(winwid);
+	if (!w->full_screen && ((gib_imlib_image_has_alpha(w->im))
+		      || (opt.geom_flags & (WidthValue | HeightValue))
+		      || (w->im_x || w->im_y) || (w->zoom != 1.0)
+		      || (w->wide > w->im_w || w->high > w->im_h)
+		      || (w->has_rotated)))
+		feh_draw_checks(w);
 
-	if (!winwid->full_screen && opt.zoom_mode
-				     && (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
-				     && (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+	if (!w->full_screen && opt.zoom_mode
+				     && (w->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
+				     && (w->wide > w->im_w) && (w->high > w->im_h))
+		feh_calc_needed_zoom(&(w->zoom), w->im_w, w->im_h, w->wide, w->high);
 
-
-	if (resize && (winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
-		int smaller;	/* Is the image smaller than screen? */
+	if (resize && (w->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
+		int smaller;    /* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
 
-		if (winwid->full_screen) {
-			max_w = scr->width;
-			max_h = scr->height;
+		if (w->full_screen) {
+			max_w = fgv.scr->width;
+			max_h = fgv.scr->height;
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens) {
-				max_w = xinerama_screens[xinerama_screen].width;
-				max_h = xinerama_screens[xinerama_screen].height;
+			if (opt.flg.xinerama && fgv.xinerama_screens) {
+				max_w = fgv.xinerama_screens[fgv.xinerama_screen].width;
+				max_h = fgv.xinerama_screens[fgv.xinerama_screen].height;
 			}
 #endif				/* HAVE_LIBXINERAMA */
 		} else {
@@ -446,15 +422,15 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		}
 
 		D(("Calculating for fullscreen/fixed geom render\n"));
-		smaller = ((winwid->im_w < max_w)
-			   && (winwid->im_h < max_h));
+		smaller = ((w->im_w < max_w)
+			   && (w->im_h < max_h));
 
 		if (!smaller || opt.zoom_mode) {
 			double ratio = 0.0;
 
 			/* Image is larger than the screen (so wants shrinking), or it's
 			   smaller but wants expanding to fill it */
-			ratio = feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, max_w, max_h);
+			ratio = feh_calc_needed_zoom(&(w->zoom), w->im_w, w->im_h, max_w, max_h);
 
 			/* contributed by Jens Laas <jens.laas@data.slu.se>
 			 * What it does:
@@ -472,146 +448,146 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			 *                        130 is 30% larger.
 			 */
 			if (opt.default_zoom) {
-				double old_zoom = winwid->zoom;
+				double old_zoom = w->zoom;
 
-				winwid->zoom = 0.01 * opt.default_zoom;
-				if (winwid->zoom != 1.0) {
-					if ((winwid->im_h * winwid->zoom) > max_h)
-						winwid->zoom = old_zoom;
-					else if ((winwid->im_w * winwid->zoom) > max_w)
-						winwid->zoom = old_zoom;
+				w->zoom = 0.01 * opt.default_zoom;
+				if (w->zoom != 1.0) {
+					if ((w->im_h * w->zoom) > max_h)
+						w->zoom = old_zoom;
+					else if ((w->im_w * w->zoom) > max_w)
+						w->zoom = old_zoom;
 				}
 
-				winwid->im_x = ((int)
-						(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-				winwid->im_y = ((int)
-						(max_h - (winwid->im_h * winwid->zoom))) >> 1;
+				w->im_x = ((int)
+						(max_w - (w->im_w * w->zoom))) >> 1;
+				w->im_y = ((int)
+						(max_h - (w->im_h * w->zoom))) >> 1;
 			} else {
 				if (ratio > 1.0) {
 					/* height is the factor */
-					winwid->im_x = 0;
-					winwid->im_y = ((int)
-							(max_h - (winwid->im_h * winwid->zoom))) >> 1;
+					w->im_x = 0;
+					w->im_y = ((int)
+							(max_h - (w->im_h * w->zoom))) >> 1;
 				} else {
 					/* width is the factor */
-					winwid->im_x = ((int)
-							(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-					winwid->im_y = 0;
+					w->im_x = ((int)
+							(max_w - (w->im_w * w->zoom))) >> 1;
+					w->im_y = 0;
 				}
 			}
 		} else {
 			/* my modification to jens hack, allow --zoom without auto-zoom mode */
 			if (opt.default_zoom) {
-				winwid->zoom = 0.01 * opt.default_zoom;
+				w->zoom = 0.01 * opt.default_zoom;
 			} else {
-				winwid->zoom = 1.0;
+				w->zoom = 1.0;
 			}
 			/* Just center the image in the window */
-			winwid->im_x = (int) (max_w - (winwid->im_w * winwid->zoom)) >> 1;
-			winwid->im_y = (int) (max_h - (winwid->im_h * winwid->zoom)) >> 1;
+			w->im_x = (int) (max_w - (w->im_w * w->zoom)) >> 1;
+			w->im_y = (int) (max_h - (w->im_h * w->zoom)) >> 1;
 		}
 	}
-	else if (need_center && !winwid->full_screen && opt.scale_down) {
-		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
-		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
+	else if (need_center && !w->full_screen && opt.flg.scale_down) {
+		w->im_x = (int) (w->wide - (w->im_w * w->zoom)) >> 1;
+		w->im_y = (int) (w->high - (w->im_h * w->zoom)) >> 1;
 	}
 
 	/* Now we ensure only to render the area we're looking at */
-	dx = winwid->im_x;
-	dy = winwid->im_y;
+	dx = w->im_x;
+	dy = w->im_y;
 	if (dx < 0)
 		dx = 0;
 	if (dy < 0)
 		dy = 0;
 
-	if (winwid->im_x < 0)
-		sx = 0 - lround(winwid->im_x / winwid->zoom);
+	if (w->im_x < 0)
+		sx = 0 - lround(w->im_x / w->zoom);
 	else
 		sx = 0;
 
-	if (winwid->im_y < 0)
-		sy = 0 - lround(winwid->im_y / winwid->zoom);
+	if (w->im_y < 0)
+		sy = 0 - lround(w->im_y / w->zoom);
 	else
 		sy = 0;
 
-	calc_w = lround(winwid->im_w * winwid->zoom);
-	calc_h = lround(winwid->im_h * winwid->zoom);
-	dw = (winwid->w - winwid->im_x);
-	dh = (winwid->h - winwid->im_y);
+	calc_w = lround(w->im_w * w->zoom);
+	calc_h = lround(w->im_h * w->zoom);
+	dw = (w->wide - w->im_x);
+	dh = (w->high - w->im_y);
 	if (calc_w < dw)
 		dw = calc_w;
 	if (calc_h < dh)
 		dh = calc_h;
-	if (dw > winwid->w)
-		dw = winwid->w;
-	if (dh > winwid->h)
-		dh = winwid->h;
+	if (dw > w->wide)
+		dw = w->wide;
+	if (dh > w->high)
+		dh = w->high;
 
-	sw = lround(dw / winwid->zoom);
-	sh = lround(dh / winwid->zoom);
+	sw = lround(dw / w->zoom);
+	sh = lround(dh / w->zoom);
 
 	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
-	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
+	   sx, sy, sw, sh, dx, dy, dw, dh, w->zoom));
 
-	if ((winwid->zoom != 1.0) && !force_alias && !winwid->force_aliasing)
+	if ((w->zoom != 1.0) && !force_alias && !opt.force_aliasing)
 		antialias = 1;
 
-	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
-	if (winwid->has_rotated)
+	D(("winwidget_render(): w->im_angle = %f\n", w->im_angle));
+	if (w->has_rotated)
 		gib_imlib_render_image_part_on_drawable_at_size_with_rotation
-			(winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
-			winwid->im_angle, 1, 1, antialias);
+			(w->bg_pmap, w->im, sx, sy, sw, sh, dx, dy, dw, dh,
+			w->im_angle, 1, 1, antialias);
 	else
-		gib_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
-								winwid->im,
-								sx, sy, sw,
-								sh, dx, dy,
-								dw, dh, 1,
-								gib_imlib_image_has_alpha(winwid->im),
-								antialias);
+		gib_imlib_render_image_part_on_drawable_at_size(w->bg_pmap,
+				      w->im,
+				      sx, sy, sw,
+				      sh, dx, dy,
+				      dw, dh, 1,
+				      gib_imlib_image_has_alpha(w->im),
+				      antialias);
 
-	if (opt.mode == MODE_NORMAL) {
+	if (opt.flg.state == STATE_NORMAL) {
 		if (opt.caption_path)
-			winwidget_update_caption(winwid);
-		if (opt.draw_filename)
-			feh_draw_filename(winwid);
+			winwidget_update_caption(w);
+		if (opt.flg.draw_filename)
+			feh_draw_filename(w);
 #ifdef HAVE_LIBEXIF
-		if (opt.draw_exif)
-			feh_draw_exif(winwid);
+		if (opt.flg.draw_exif)
+			feh_draw_exif(w);
 #endif
-		if (opt.draw_actions)
-			feh_draw_actions(winwid);
-		if (opt.draw_info && opt.info_cmd)
-			feh_draw_info(winwid);
-		if (winwid->errstr)
-			feh_draw_errstr(winwid);
-	} else if ((opt.mode == MODE_ZOOM) && !antialias)
-		feh_draw_zoom(winwid);
+		if (opt.flg.draw_actions)
+			feh_draw_actions(w);
+		if (opt.flg.draw_info && opt.info_cmd)
+			feh_draw_info(w);
+		if (w->errstr)
+			feh_draw_errstr(w);
+	} else if ((opt.flg.state == STATE_ZOOM) && !antialias)
+			feh_draw_zoom(w);
 
-	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
-	XClearWindow(disp, winwid->win);
+	XSetWindowBackgroundPixmap(fgv.disp, w->win, w->bg_pmap);
+	XClearWindow(fgv.disp, w->win);
 	return;
 }
 
-void winwidget_render_image_cached(winwidget winwid)
+void winwidget_render_image_cached(winwidget w)
 {
 	static GC gc = None;
 
 	if (gc == None) {
-		gc = XCreateGC(disp, winwid->win, 0, NULL);
+		gc = XCreateGC(fgv.disp, w->win, 0, NULL);
 	}
-	XCopyArea(disp, winwid->bg_pmap_cache, winwid->bg_pmap, gc, 0, 0, winwid->w, winwid->h, 0, 0);
+	XCopyArea(fgv.disp, w->bg_pmap_cache, w->bg_pmap, gc, 0, 0, w->wide, w->high, 0, 0);
 
 	if (opt.caption_path)
-		feh_draw_caption(winwid);
-	if (opt.draw_filename)
-		feh_draw_filename(winwid);
-	if (opt.draw_actions)
-		feh_draw_actions(winwid);
-	if (opt.draw_info && opt.info_cmd)
-		feh_draw_info(winwid);
-	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
-	XClearWindow(disp, winwid->win);
+		feh_draw_caption(w);
+	if (opt.flg.draw_filename)
+		feh_draw_filename(w);
+	if (opt.flg.draw_actions)
+		feh_draw_actions(w);
+	if (opt.flg.draw_info && opt.info_cmd)
+		feh_draw_info(w);
+	XSetWindowBackgroundPixmap(fgv.disp, w->win, w->bg_pmap);
+	XClearWindow(fgv.disp, w->win);
 }
 
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h)
@@ -637,14 +613,11 @@ Pixmap feh_create_checks(void)
 	Imlib_Image checks = NULL;
 
 	if (checks_pmap == None) {
-		checks = imlib_create_image(16, 16);
+		checks = feh_imlib_image_make_n_fill_text_bg( 16,16,0 );
 
-		if (!checks)
-			eprintf("Unable to create a teeny weeny imlib image. I detect problems");
-
-		if (opt.image_bg == IMAGE_BG_WHITE)
+		if (opt.flg.image_bg == IMAGE_BG_WHITE)
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 255, 255, 255, 255);
-		else if (opt.image_bg == IMAGE_BG_BLACK)
+		else if (opt.flg.image_bg == IMAGE_BG_BLACK)
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
 		else {
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 144, 144, 144, 255);
@@ -652,21 +625,23 @@ Pixmap feh_create_checks(void)
 			gib_imlib_image_fill_rectangle(checks, 8, 8,  8,  8, 100, 100, 100, 255);
 		}
 
-		checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
+		checks_pmap = XCreatePixmap(fgv.disp, fgv.root, 16, 16, fgv.depth);
 		gib_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
 		gib_imlib_free_image_and_decache(checks);
 	}
 	return(checks_pmap);
 }
 
+#if 0
 void winwidget_clear_background(winwidget w)
 {
-	XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
+	XSetWindowBackgroundPixmap(fgv.disp, w->win, feh_create_checks());
 	/* XClearWindow(disp, w->win); */
 	return;
 }
+#endif
 
-void feh_draw_checks(winwidget win)
+void feh_draw_checks(winwidget w)
 {
 	static GC gc = None;
 	XGCValues gcval;
@@ -674,35 +649,35 @@ void feh_draw_checks(winwidget win)
 	if (gc == None) {
 		gcval.tile = feh_create_checks();
 		gcval.fill_style = FillTiled;
-		gc = XCreateGC(disp, win->win, GCTile | GCFillStyle, &gcval);
+		gc = XCreateGC(fgv.disp, w->win, GCTile | GCFillStyle, &gcval);
 	}
-	XFillRectangle(disp, win->bg_pmap, gc, 0, 0, win->w, win->h);
+	XFillRectangle(fgv.disp, w->bg_pmap, gc, 0, 0, w->wide, w->high);
 	return;
 }
 
-void winwidget_destroy_xwin(winwidget winwid)
+void winwidget_destroy_xwin(winwidget w)
 {
-	if (winwid->win) {
-		winwidget_unregister(winwid);
-		XDestroyWindow(disp, winwid->win);
+	if (w->win) {
+		winwidget_unregister(w);
+		XDestroyWindow(fgv.disp, w->win);
 	}
-	if (winwid->bg_pmap) {
-		XFreePixmap(disp, winwid->bg_pmap);
-		winwid->bg_pmap = None;
+	if (w->bg_pmap) {
+		XFreePixmap(fgv.disp, w->bg_pmap);
+		w->bg_pmap = None;
 	}
 	return;
 }
 
-void winwidget_destroy(winwidget winwid)
+void winwidget_destroy(winwidget w)
 {
-	winwidget_destroy_xwin(winwid);
-	if (winwid->name)
-		free(winwid->name);
-	if (winwid->gc)
-		XFreeGC(disp, winwid->gc);
-	if (winwid->im)
-		gib_imlib_free_image_and_decache(winwid->im);
-	free(winwid);
+	winwidget_destroy_xwin(w);
+	if (w->name)
+		free(w->name);
+	if (w->gc)
+		XFreeGC(fgv.disp, w->gc);
+	if (w->im)
+		gib_imlib_free_image_and_decache(w->im);
+	free(w);
 	return;
 }
 
@@ -711,8 +686,8 @@ void winwidget_destroy_all(void)
 	int i;
 
 	/* Have to DESCEND the list here, 'cos of the way _unregister works */
-	for (i = window_num - 1; i >= 0; i--)
-		winwidget_destroy(windows[i]);
+	for (i = fgv.window_num - 1; i >= 0; i--)
+		winwidget_destroy(fgv.windows[i]);
 	return;
 }
 
@@ -721,8 +696,8 @@ void winwidget_rerender_all(int resize)
 	int i;
 
 	/* Have to DESCEND the list here, 'cos of the way _unregister works */
-	for (i = window_num - 1; i >= 0; i--)
-		winwidget_render_image(windows[i], resize, 0);
+	for (i = fgv.window_num - 1; i >= 0; i--)
+		winwidget_render_image(fgv.windows[i], resize, 0, SANITIZE_NO);
 	return;
 }
 
@@ -730,113 +705,113 @@ winwidget winwidget_get_first_window_of_type(unsigned int type)
 {
 	int i;
 
-	for (i = 0; i < window_num; i++)
-		if (windows[i]->type == type)
-			return(windows[i]);
+	for (i = 0; i < fgv.window_num; i++)
+		if (fgv.windows[i]->type == type)
+			return(fgv.windows[i]);
 	return(NULL);
 }
 
-int winwidget_loadimage(winwidget winwid, feh_file * file)
+int winwidget_loadimage(winwidget w, feh_data * data)
 {
-	D(("filename %s\n", file->filename));
-	return(feh_load_image(&(winwid->im), file));
+	D(("filename %s\n", data->filename));
+	return(feh_load_image(&(w->im), data));
 }
 
-void winwidget_show(winwidget winwid)
+void winwidget_show(winwidget w)
 {
 	XEvent ev;
 
-	/* feh_debug_print_winwid(winwid); */
-	if (!winwid->visible) {
-		XMapWindow(disp, winwid->win);
-		if (opt.full_screen)
-			XMoveWindow(disp, winwid->win, 0, 0);
-		/* wait for the window to map */
+#ifdef DEBUG
+	 feh_debug_print_winwid(w);
+#endif
+	if (!w->visible) {
+		XMapWindow(fgv.disp, w->win);
+		if (opt.flg.full_screen)
+			XMoveWindow(fgv.disp, w->win, 0, 0);
 		D(("Waiting for window to map\n"));
-		XMaskEvent(disp, StructureNotifyMask, &ev);
+		XMaskEvent(fgv.disp, StructureNotifyMask, &ev);
 		D(("Window mapped\n"));
-		winwid->visible = 1;
+		w->visible = 1;
 	}
 	return;
 }
 
-void winwidget_move(winwidget winwid, int x, int y)
+void winwidget_move(winwidget w, int x, int y)
 {
-	if (winwid && ((winwid->x != x) || (winwid->y != y))) {
-		winwid->x = x;
-		winwid->y = y;
-		winwid->x = (x > scr->width) ? scr->width : x;
-		winwid->y = (y > scr->height) ? scr->height : y;
-		XMoveWindow(disp, winwid->win, winwid->x, winwid->y);
-		XFlush(disp);
+	if (w && ((w->x != x) || (w->y != y))) {
+		w->x = x;
+		w->y = y;
+		w->x = (x > fgv.scr->width) ? fgv.scr->width : x;
+		w->y = (y > fgv.scr->height) ? fgv.scr->height : y;
+		XMoveWindow(fgv.disp, w->win, w->x, w->y);
+		XFlush(fgv.disp);
 	} else {
 		D(("No move actually needed\n"));
 	}
 	return;
 }
 
-void winwidget_resize(winwidget winwid, int w, int h)
+void winwidget_resize(winwidget w, int wide, int high)
 {
 	Window ignored_window;
 	XWindowAttributes attributes;
 	int tc_x, tc_y;
-	int scr_width = scr->width;
-	int scr_height = scr->height;
+	int scr_width = fgv.scr->width;
+	int scr_height = fgv.scr->height;
 
-	XGetWindowAttributes(disp, winwid->win, &attributes);
+	XGetWindowAttributes(fgv.disp, w->win, &attributes);
 
 #ifdef HAVE_LIBXINERAMA
-	if (opt.xinerama && xinerama_screens) {
+	if (opt.flg.xinerama && fgv.xinerama_screens) {
 		int i;
-		xinerama_screen = 0;
-		for (i = 0; i < num_xinerama_screens; i++) {
+		fgv.xinerama_screen = 0;
+		for (i = 0; i < fgv.num_xinerama_screens; i++) {
 			if (XY_IN_RECT(attributes.x, attributes.y,
-						xinerama_screens[i].x_org,
-						xinerama_screens[i].y_org,
-						xinerama_screens[i].width, xinerama_screens[i].height)) {
-				xinerama_screen = i;
+					   fgv.xinerama_screens[i].x_org,
+					   fgv.xinerama_screens[i].y_org,
+					   fgv.xinerama_screens[i].width,
+					   fgv.xinerama_screens[i].height)) {
+				fgv.xinerama_screen = i;
 				break;
 			}
 
 		}
 		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+			fgv.xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
 
-		scr_width = xinerama_screens[xinerama_screen].width;
-		scr_height = xinerama_screens[xinerama_screen].height;
+		scr_width  = fgv.xinerama_screens[fgv.xinerama_screen].width;
+		scr_height = fgv.xinerama_screens[fgv.xinerama_screen].height;
 	}
 #endif
 
 
-	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
-		winwid->h));
+	D(("   x %d y %d w %d h %d\n",attributes.x,attributes.y,w->wide,w->high));
 
 	if (opt.geom_flags & (WidthValue | HeightValue)) {
-		winwid->had_resize = 1;
+		w->had_resize = 1;
 		return;
 	}
-	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		/* winwidget_clear_background(winwid); */
-		if (opt.screen_clip) {
-			winwid->w = (w > scr_width) ? scr_width : w;
-			winwid->h = (h > scr_height) ? scr_height : h;
+	if (w && ((w->wide != wide) || (w->high != high))) {
+		/* winwidget_clear_background(w); */
+		if (opt.flg.screen_clip) {
+			w->wide = (wide > scr_width) ? scr_width : wide;
+			w->high = (high > scr_height) ? scr_height : high;
 		}
-		if (winwid->full_screen) {
-			XTranslateCoordinates(disp, winwid->win, attributes.root,
-						-attributes.border_width -
-						attributes.x,
-						-attributes.border_width - attributes.y, &tc_x, &tc_y, &ignored_window);
-			winwid->x = tc_x;
-			winwid->y = tc_y;
-			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+		if (w->full_screen) {
+			XTranslateCoordinates(fgv.disp, w->win, attributes.root,
+					    -attributes.border_width - attributes.x,
+					    -attributes.border_width - attributes.y,
+					    &tc_x, &tc_y, &ignored_window);
+			w->x = tc_x;
+			w->y = tc_y;
+			XMoveResizeWindow(fgv.disp, w->win, tc_x, tc_y, w->wide, w->high);
 		} else
-			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
+			XResizeWindow(fgv.disp, w->win, w->wide, w->high);
 
-		winwid->had_resize = 1;
-		XFlush(disp);
+		w->had_resize = 1;
+		XFlush(fgv.disp);
 
-		D(("-> x %d y %d w %d h %d\n", winwid->x, winwid->y, winwid->w,
-			winwid->h));
+		D(("-> x %d y %d w %d h %d\n", w->x, w->y, w->wide,w->high));
 
 	} else {
 		D(("No resize actually needed\n"));
@@ -845,82 +820,60 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	return;
 }
 
-void winwidget_hide(winwidget winwid)
+void winwidget_hide(winwidget w)
 {
-	XUnmapWindow(disp, winwid->win);
-	winwid->visible = 0;
+	XUnmapWindow(fgv.disp, w->win);
+	w->visible = 0;
 	return;
 }
 
-static void winwidget_register(winwidget win)
+static void winwidget_register(winwidget w)
 {
-	D(("window %p\n", win));
-	window_num++;
-	if (windows)
-		windows = erealloc(windows, window_num * sizeof(winwidget));
+	D(("window %p\n", w));
+	fgv.window_num++;
+	if (fgv.windows)
+		fgv.windows = erealloc(fgv.windows, fgv.window_num * sizeof(winwidget));
 	else
-		windows = emalloc(window_num * sizeof(winwidget));
-	windows[window_num - 1] = win;
+		fgv.windows = emalloc(fgv.window_num * sizeof(winwidget));
+	fgv.windows[fgv.window_num - 1] = w;
 
-	XSaveContext(disp, win->win, xid_context, (XPointer) win);
+	XSaveContext(fgv.disp, w->win, fgv.xid_context, (XPointer) w);
 	return;
 }
 
-static void winwidget_unregister(winwidget win)
+static void winwidget_unregister(winwidget w)
 {
 	int i, j;
 
-	for (i = 0; i < window_num; i++) {
-		if (windows[i] == win) {
-			for (j = i; j < window_num - 1; j++)
-				windows[j] = windows[j + 1];
-			window_num--;
-			if (window_num > 0)
-				windows = erealloc(windows, window_num * sizeof(winwidget));
+	for (i = 0; i < fgv.window_num; i++) {
+		if (fgv.windows[i] == w) {
+			for (j = i; j < fgv.window_num - 1; j++)
+				fgv.windows[j] = fgv.windows[j + 1];
+			fgv.window_num--;
+			if (fgv.window_num > 0)
+				fgv.windows = erealloc(fgv.windows, fgv.window_num * sizeof(winwidget));
 			else {
-				free(windows);
-				windows = NULL;
+				free(fgv.windows);
+				fgv.windows = NULL;
 			}
 		}
 	}
-	XDeleteContext(disp, win->win, xid_context);
+	XDeleteContext(fgv.disp, w->win, fgv.xid_context);
 	return;
 }
 
-winwidget winwidget_get_from_window(Window win)
-{
+winwidget winwidget_get_from_window(Window win){
+		/* fgv.w was added when HRABAK changed the keypress logic to use
+		 * function ptrs.  menus need that winwidget w too, so assign fgv.w
+		 * here as the common spot to capture ALL events.
+		 */
 	winwidget ret = NULL;
 
-	if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
+	if (XFindContext(fgv.disp, win, fgv.xid_context, (XPointer *) & ret) != XCNOENT){
+		fgv.w = ret;
 		return(ret);
+	}
 	return(NULL);
-}
-
-void winwidget_rename(winwidget winwid, char *newname)
-{
-	/* newname == NULL -> update current title */
-	char *p_str;
-
-	if (newname == NULL)
-		newname = estrdup(winwid->name ? winwid->name : "");
-	if (winwid->name)
-		free(winwid->name);
-
-	winwid->name = emalloc(strlen(newname) + 10);
-	strcpy(winwid->name, newname);
-
-	if (strlen(winwid->name) > 9)
-		p_str = winwid->name + strlen(winwid->name) - 9;
-	else
-		p_str = winwid->name;
-
-	if (opt.paused && strcmp(p_str, " [Paused]") != 0)
-		strcat(winwid->name, " [Paused]");
-	else if (!opt.paused && strcmp(p_str, " [Paused]") == 0)
-		*p_str = '\0';
-
-	winwidget_update_title(winwid);
-	return;
 }
 
 void winwidget_free_image(winwidget w)
@@ -933,104 +886,106 @@ void winwidget_free_image(winwidget w)
 	return;
 }
 
+#ifdef DEBUG
 void feh_debug_print_winwid(winwidget w)
 {
-	printf("winwid_debug:\n" "winwid = %p\n" "win = %ld\n" "w = %d\n"
+	printf("winwid_debug:\n" "w = %p\n" "win = %ld\n" "w = %d\n"
 	       "h = %d\n" "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n"
 	       "type = %d\n" "had_resize = %d\n" "im = %p\n" "GC = %p\n"
-	       "pixmap = %ld\n" "name = %s\n" "file = %p\n" "mode = %d\n"
+	       "pixmap = %ld\n" "name = %s\n" "node = %p\n" "opt.flg.state = %d\n"
 	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n" "old_zoom = %f\n"
 	       "click_offset_x = %d\n" "click_offset_y = %d\n"
-	       "has_rotated = %d\n", (void *)w, w->win, w->w, w->h, w->im_w,
+	       "has_rotated = %d\n", (void *)w, w->win, w->wide, w->high, w->im_w,
 	       w->im_h, w->im_angle, w->type, w->had_resize, w->im, (void *)w->gc,
-	       w->bg_pmap, w->name, (void *)w->file, w->mode, w->im_x, w->im_y,
+	       w->bg_pmap, w->name, (void *)w->node, opt.flg.state, w->im_x, w->im_y,
 	       w->zoom, w->old_zoom, w->click_offset_x, w->click_offset_y,
 	       w->has_rotated);
 }
+#endif    /* DEBUG */
 
-void winwidget_reset_image(winwidget winwid)
+void winwidget_reset_image(winwidget w)
 {
-	winwid->zoom = 1.0;
-	winwid->old_zoom = 1.0;
-	winwid->im_x = 0;
-	winwid->im_y = 0;
-	winwid->im_angle = 0.0;
-	winwid->has_rotated = 0;
+	w->zoom = 1.0;
+	w->old_zoom = 1.0;
+	w->im_x = 0;
+	w->im_y = 0;
+	w->im_angle = 0.0;
+	w->has_rotated = 0;
 	return;
 }
 
-void winwidget_center_image(winwidget winwid)
+void winwidget_center_image(winwidget w)
 {
 	int scr_width, scr_height;
 
-	scr_width = scr->width;
-	scr_height = scr->height;
+	scr_width  = fgv.scr->width;
+	scr_height = fgv.scr->height;
 
 #ifdef HAVE_LIBXINERAMA
-	if (opt.xinerama && xinerama_screens) {
-		scr_width = xinerama_screens[xinerama_screen].width;
-		scr_height = xinerama_screens[xinerama_screen].height;
+	if (opt.flg.xinerama && fgv.xinerama_screens) {
+		scr_width  = fgv.xinerama_screens[fgv.xinerama_screen].width;
+		scr_height = fgv.xinerama_screens[fgv.xinerama_screen].height;
 	}
 #endif				/* HAVE_LIBXINERAMA */
 
-	if (winwid->full_screen) {
-		winwid->im_x = (scr_width - lround(winwid->im_w * winwid->zoom)) >> 1;
-		winwid->im_y = (scr_height - lround(winwid->im_h * winwid->zoom)) >> 1;
+	if (w->full_screen) {
+		w->im_x = (scr_width - lround(w->im_w * w->zoom)) >> 1;
+		w->im_y = (scr_height - lround(w->im_h * w->zoom)) >> 1;
 	} else {
 		if (opt.geom_flags & WidthValue)
-			winwid->im_x = ((int)opt.geom_w - lround(winwid->im_w * winwid->zoom)) >> 1;
+			w->im_x = ((int)opt.geom_w - lround(w->im_w * w->zoom)) >> 1;
 		else
-			winwid->im_x = 0;
+			w->im_x = 0;
 		if (opt.geom_flags & HeightValue)
-			winwid->im_y = ((int)opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
+			w->im_y = ((int)opt.geom_h - lround(w->im_h * w->zoom)) >> 1;
 		else
-			winwid->im_y = 0;
+			w->im_y = 0;
 	}
 }
 
-void winwidget_sanitise_offsets(winwidget winwid)
+void winwidget_sanitise_offsets(winwidget w)
 {
 	int far_left, far_top;
 	int min_x, max_x, max_y, min_y;
 
-	far_left = winwid->w - (winwid->im_w * winwid->zoom);
-	far_top = winwid->h - (winwid->im_h * winwid->zoom);
+	far_left = w->wide - (w->im_w * w->zoom);
+	far_top = w->high - (w->im_h * w->zoom);
 
-	if ((winwid->im_w * winwid->zoom) > winwid->w) {
+	if ((w->im_w * w->zoom) > w->wide) {
 		min_x = far_left;
 		max_x = 0;
 	} else {
 		min_x = 0;
 		max_x = far_left;
 	}
-	if ((winwid->im_h * winwid->zoom) > winwid->h) {
+	if ((w->im_h * w->zoom) > w->high) {
 		min_y = far_top;
 		max_y = 0;
 	} else {
 		min_y = 0;
 		max_y = far_top;
 	}
-	if (winwid->im_x > max_x)
-		winwid->im_x = max_x;
-	if (winwid->im_x < min_x)
-		winwid->im_x = min_x;
-	if (winwid->im_y > max_y)
-		winwid->im_y = max_y;
-	if (winwid->im_y < min_y)
-		winwid->im_y = min_y;
+	if (w->im_x > max_x)
+		w->im_x = max_x;
+	if (w->im_x < min_x)
+		w->im_x = min_x;
+	if (w->im_y > max_y)
+		w->im_y = max_y;
+	if (w->im_y < min_y)
+		w->im_y = min_y;
 
 	return;
 }
 
-void winwidget_size_to_image(winwidget winwid)
+void winwidget_size_to_image(winwidget w)
 {
-	winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
-	winwid->im_x = winwid->im_y = 0;
-	winwidget_render_image(winwid, 0, 0);
+	winwidget_resize(w, w->im_w * w->zoom, w->im_h * w->zoom);
+	w->im_x = w->im_y = 0;
+	winwidget_render_image(w, 0, 0, SANITIZE_NO);
 	return;
 }
 
-void winwidget_set_pointer(winwidget winwid, int visible)
+void winwidget_set_pointer(winwidget w, int visible)
 {
 	Cursor no_ptr;
 	XColor black, dummy;
@@ -1038,72 +993,70 @@ void winwidget_set_pointer(winwidget winwid, int visible)
 	static char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	if (visible)
-		XUndefineCursor(disp, winwid->win);
+		XUndefineCursor(fgv.disp, w->win);
 	else {
-		bm_no = XCreateBitmapFromData(disp, winwid->win, bm_no_data, 8, 8);
-		XAllocNamedColor(disp, DefaultColormapOfScreen(DefaultScreenOfDisplay(disp)), "black", &black, &dummy);
+		bm_no = XCreateBitmapFromData(fgv.disp, w->win, bm_no_data, 8, 8);
+		XAllocNamedColor(fgv.disp, DefaultColormapOfScreen(DefaultScreenOfDisplay(fgv.disp)), "black", &black, &dummy);
 
-		no_ptr = XCreatePixmapCursor(disp, bm_no, bm_no, &black, &black, 0, 0);
-		XDefineCursor(disp, winwid->win, no_ptr);
+		no_ptr = XCreatePixmapCursor(fgv.disp, bm_no, bm_no, &black, &black, 0, 0);
+		XDefineCursor(fgv.disp, w->win, no_ptr);
 	}
 }
 
-int winwidget_get_width(winwidget winwid)
+int winwidget_get_width(winwidget w)
 {
 	int rect[4];
-	winwidget_get_geometry(winwid, rect);
+	winwidget_get_geometry(w, rect);
 	return(rect[2]);
 }
 
-int winwidget_get_height(winwidget winwid)
+int winwidget_get_height(winwidget w)
 {
 	int rect[4];
-	winwidget_get_geometry(winwid, rect);
+	winwidget_get_geometry(w, rect);
 	return(rect[3]);
 }
 
-void winwidget_get_geometry(winwidget winwid, int *rect)
+void winwidget_get_geometry(winwidget w, int *rect)
 {
 	unsigned int bw, bp;
 	Window child;
 	if (!rect)
 		return;
 
-	XGetGeometry(disp, winwid->win, &root, &(rect[0]), &(rect[1]), (unsigned
+	XGetGeometry(fgv.disp, w->win, &fgv.root, &(rect[0]), &(rect[1]), (unsigned
 				int *)&(rect[2]), (unsigned int *)&(rect[3]), &bw, &bp);
 
-	XTranslateCoordinates(disp, winwid->win, root, 0, 0, &(rect[0]), &(rect[1]), &child);
+	XTranslateCoordinates(fgv.disp, w->win, fgv.root, 0, 0, &(rect[0]), &(rect[1]), &child);
 
 	/* update the window geometry (in case it's inaccurate) */
-	winwid->x = rect[0];
-	winwid->y = rect[1];
-	winwid->w = rect[2];
-	winwid->h = rect[3];
+	w->x    = rect[0];
+	w->y    = rect[1];
+	w->wide = rect[2];
+	w->high = rect[3];
 	return;
 }
 
-void winwidget_show_menu(winwidget winwid)
-{
+void winwidget_show_menu(winwidget w){
+		/* this is the entrance for generating any/all menus.
+		 * Set the fn_menu ONCE here and restore it during
+		 * feh_menu_hide()
+		 */
+
 	int x, y, b;
 	unsigned int c;
 	Window r;
 
-	XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-	if (winwid->type == WIN_TYPE_SINGLE) {
-		if (!menu_single_win)
-			feh_menu_init_single_win();
-		feh_menu_show_at_xy(menu_single_win, winwid, x, y);
-	} else if (winwid->type == WIN_TYPE_THUMBNAIL) {
-		if (!menu_thumbnail_win)
-			feh_menu_init_thumbnail_win();
-		feh_menu_show_at_xy(menu_thumbnail_win, winwid, x, y);
-	} else if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) {
-		if (!menu_single_win)
-			feh_menu_init_thumbnail_viewer();
-		feh_menu_show_at_xy(menu_thumbnail_viewer, winwid, x, y);
-	} else {
-		if (!menu_main)
-			feh_menu_init_main();
-		feh_menu_show_at_xy(menu_main, winwid, x, y);
-	}
+	/* future plan to show mov_md LL items as a menu list in mm */
+	if (opt.flg.mode == MODE_MOVE )
+			return;
+
+	XQueryPointer(fgv.disp, w->win, &r, &r, &x, &y, &b, &b, &c);
+
+	opt.fn_ptr = opt.flg.big_menus ? &opt.fn_fulls : &opt.fn_menu;
+
+	if ( feh_menu_init_from_mnu_defs( MENU_MAIN, 1 ) == 1 )
+			eprintf("%s menu load for sub_code %d !",ERR_FAILED, MENU_MAIN );
+	feh_menu_show_at_xy(fgv.mnu.root, w, x, y);
+
 }

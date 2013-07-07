@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "options.h"
-#include "timers.h"
 
 fehtimer first_timer = NULL;
 
@@ -139,14 +138,16 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 	return;
 }
 
-void feh_add_unique_timer(void (*func) (void *data), void *data, double in)
-{
+void feh_add_unique_timer(void (*func) ,  double in){
+		/* Apr 2013 HRABAK  With reload_logic() the data param is
+		 * not needed, so pass NULL?
+		 */
 	static long i = 0;
 	char evname[20];
 
 	snprintf(evname, sizeof(evname), "T_%ld", i);
 	D(("adding timer with unique name %s\n", evname));
-	feh_add_timer(func, data, in, evname);
+	feh_add_timer(func, NULL, in, evname);
 	i++;
 	/* Mega paranoia ;) */
 	if (i > 1000000)
