@@ -250,8 +250,23 @@ void winwidget_create_window(winwidget ret, int w, int h)
 			  | CWColormap | CWBackPixel | CWBorderPixel | CWEventMask, &attr);
 
 	if (mwmhints.flags) {
+		/* copy hints into buffer
+		 * simply casting mwmhints to (unsigned char *) breaks when
+		 * compiled with -O2 (due to struct padding?)
+		 */
+		unsigned char buf[PROP_MWM_HINTS_ELEMENTS];
+		buf[0] = mwmhints.flags;
+		if (mwmhints.flags & MWM_HINTS_FUNCTIONS)
+			buf[1] = mwmhints.functions;
+		if (mwmhints.flags & MWM_HINTS_DECORATIONS)
+			buf[2] = mwmhints.decorations;
+		if (mwmhints.flags & MWM_HINTS_INPUT_MODE)
+			buf[3] = mwmhints.input_mode;
+		if (mwmhints.flags & MWM_HINTS_STATUS)
+			buf[4] = mwmhints.status;
+
 		XChangeProperty(disp, ret->win, prop, prop, 32,
-				PropModeReplace, (unsigned char *) &mwmhints, PROP_MWM_HINTS_ELEMENTS);
+				PropModeReplace, buf, PROP_MWM_HINTS_ELEMENTS);
 	}
 	if (ret->full_screen) {
 		Atom prop_fs = XInternAtom(disp, "_NET_WM_STATE_FULLSCREEN", False);
