@@ -753,13 +753,26 @@ to your X startup script
 .
 .Pp
 .
+For the
+.Cm --bg-center
+and
+.Cm --bg-max
+options, you can use the
+.Cm --geometry
+option to specify an offset from one side of the screen instead of
+centering the image.  Positive values will offset from the left/top
+side, negative values from the bottom/right.  +0 and -0 are both
+valid and distinct values.
+.
+.Pp
+.
 Note that all options except
 .Cm --bg-tile
 support Xinerama.
 For instance, if you have multiple screens connected and use e.g.
 .Cm --bg-center ,
 .Nm
-will center the image on each screen.
+will center or appropriately offset the image on each screen.
 You may even specify more than one file, in that case, the first file is set
 on screen 0, the second on screen 1, and so on.
 .
