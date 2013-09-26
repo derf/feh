@@ -12,11 +12,11 @@ build-applications:
 	@${MAKE} -C share/applications
 
 test: all
-	@PACKAGE=${PACKAGE} prove test
+	@PACKAGE=${PACKAGE} prove test/feh.t test/mandoc.t
 
 test-x11: all
 	test/run-interactive
-	prove test/feh-bg.i
+	prove test/feh-bg-i.t
 
 install: install-man install-doc install-bin install-font install-img
 install: install-examples install-applications
