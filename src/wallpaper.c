@@ -104,8 +104,21 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
-	offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
-	offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
+	if(opt.geom_flags & XValue)
+		if(opt.geom_flags & XNegative)
+			offset_x = (w - gib_imlib_image_get_width(im)) + opt.geom_x;
+		else
+			offset_x = opt.geom_x;
+	else
+		offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
+
+	if(opt.geom_flags & YValue)
+		if(opt.geom_flags & YNegative)
+			offset_y = (h - gib_imlib_image_get_height(im)) + opt.geom_y;
+		else
+			offset_y = opt.geom_y;
+	else
+		offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
 
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		((offset_x < 0) ? -offset_x : 0),
@@ -161,6 +174,7 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 {
 	int img_w, img_h, border_x;
 	int render_w, render_h, render_x, render_y;
+	int margin_x, margin_y;
 
 	if (use_filelist)
 		feh_wm_load_next(&im);
@@ -173,8 +187,24 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 	render_w = (  border_x ? ((img_w * h) / img_h) : w);
 	render_h = ( !border_x ? ((img_h * w) / img_w) : h);
 
-	render_x = x + (  border_x ? ((w - render_w) >> 1) : 0);
-	render_y = y + ( !border_x ? ((h - render_h) >> 1) : 0);
+	if(opt.geom_flags & XValue)
+		if(opt.geom_flags & XNegative)
+			margin_x = (w - render_w) + opt.geom_x;
+		else
+			margin_x = opt.geom_x;
+	else
+		margin_x = (w - render_w) >> 1;
+
+	if(opt.geom_flags & YValue)
+		if(opt.geom_flags & YNegative)
+			margin_y = (h - render_h) + opt.geom_y;
+		else
+			margin_y = opt.geom_y;
+	else
+		margin_y = (h - render_h) >> 1;
+
+	render_x = x + (  border_x ? margin_x : 0);
+	render_y = y + ( !border_x ? margin_y : 0);
 
 	gib_imlib_render_image_on_drawable_at_size(pmap, im,
 		render_x, render_y,
