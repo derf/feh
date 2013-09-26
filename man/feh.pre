@@ -357,13 +357,20 @@ window becomes visible.  Use
 .Cm --preload
 to get a progress bar.
 .
-.It Cm --info Ar commandline
+.It Cm --info Oo Ar flag Oc Ns Ar commandline
 .
 Execute
 .Ar commandline
 and display its output in the bottom left corner of the image.  Can be used to
 display e.g. image dimensions or EXIF information.  Supports
 .Sx FORMAT SPECIFIERS .
+.
+If
+.Ar flag
+is set to
+.Qo ; Qc ,
+the output will not be displayed by default, but has to be enabled by the
+toggle_info key.
 .
 .It Cm -k , --keep-http
 .
