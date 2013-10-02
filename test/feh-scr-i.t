@@ -131,7 +131,7 @@ test_scr('feh_lwi');
 SendKeys('^({RIG})');
 test_scr('feh_lwi_scroll_r');
 
-SendKeys('^({DOW})');
+SendKeys('^({DOWN})');
 test_scr('feh_lwi_scroll_rd');
 
 SendKeys('^({RIG})');
@@ -286,7 +286,7 @@ test_scr('feh_lhi_iirr');
 SendKeys('{UP}');
 test_scr('feh_lhi_iirri');
 
-SendKeys('{DOW}');
+SendKeys('{DOWN}');
 test_scr('feh_lhi_iirrio');
 
 feh_stop();
@@ -294,13 +294,13 @@ feh_stop();
 feh_start( q{}, 'test/bg/large/h/in' );
 test_scr('feh_lhi');
 
-SendKeys('{DOW}');
+SendKeys('{DOWN}');
 test_scr('feh_lhi_o');
 
-SendKeys('{DOW}');
+SendKeys('{DOWN}');
 test_scr('feh_lhi_oo');
 
-SendKeys('{DOW}');
+SendKeys('{DOWN}');
 test_scr('feh_lhi_ooo');
 
 feh_stop();
