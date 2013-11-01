@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-## Copyright © 2010 by Daniel Friesel <derf@derf.homelinux.org>
+## Copyright © 2010 by Daniel Friesel <derf@finalrewind.org>
 ## License: WTFPL <http://sam.zoy.org/wtfpl>
 use strict;
 use warnings;
