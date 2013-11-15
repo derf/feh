@@ -27,10 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "winwidget.h"
 #include "options.h"
 
+unsigned char reload_signal_flag;
+
 void feh_handle_signal(int);
 
 void setup_signal_handlers()
 {
+	reload_signal_flag = 0;
 	struct sigaction feh_sh;
 	sigset_t feh_ss;
 	if (
@@ -40,7 +43,8 @@ void setup_signal_handlers()
 		(sigaddset(&feh_ss, SIGALRM) == -1) ||
 		(sigaddset(&feh_ss, SIGTERM) == -1) ||
 		(sigaddset(&feh_ss, SIGQUIT) == -1) ||
-		(sigaddset(&feh_ss, SIGINT) == -1))
+		(sigaddset(&feh_ss, SIGINT) == -1) ||
+		(sigaddset(&feh_ss, SIGURG) == -1))
 	{
 		weprintf("Failed to set up signal masks");
 		return;
@@ -56,7 +60,8 @@ void setup_signal_handlers()
 		(sigaction(SIGALRM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGTERM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGQUIT, &feh_sh, NULL) == -1) ||
-		(sigaction(SIGINT, &feh_sh, NULL) == -1))
+		(sigaction(SIGINT, &feh_sh, NULL) == -1) ||
+		(sigaction(SIGURG, &feh_sh, NULL) == -1))
 	{
 		weprintf("Failed to set up signal handler");
 		return;
@@ -90,6 +95,9 @@ void feh_handle_signal(int signo)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
 		else if (signo == SIGUSR2)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
+		else if (signo == SIGURG) {
+			reload_signal_flag = 1;
+		}
 	} else if (opt.multiwindow) {
 		for (i = window_num - 1; i >= 0; i--)
 			feh_reload_image(windows[i], 0, 0);

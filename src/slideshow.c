@@ -81,6 +81,11 @@ void init_slideshow_mode(void)
 
 void cb_slide_timer(void *data)
 {
+	if (reload_signal_flag) {
+		reload_signal_flag = 0;
+		cb_reload_timer(data);
+	}
+
 	slideshow_change_image((winwidget) data, SLIDE_NEXT, 1);
 	return;
 }
@@ -138,7 +143,8 @@ void cb_reload_timer(void *data)
 	free(current_filename);
 
 	feh_reload_image(w, 1, 0);
-	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+	if (opt.reload)
+		feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
 }
 

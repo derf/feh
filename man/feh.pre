@@ -202,6 +202,12 @@ Exit
 .Nm
 after one loop through the slideshow.
 .
+.It Cm --center-info
+.
+Horizontally center the display of 
+.Cm --info 
+output in the image.
+.
 .It Cm -G , --draw-actions
 .
 Draw the defined actions and what they do at the top-left of the image.
@@ -1467,6 +1473,11 @@ Switch to next image
 .It Dv SIGUSR2
 .
 Switch to previous image
+.
+.It Dv SIGURG  
+.
+Reload filelist like
+.Cm --reload
 .
 .El
 .

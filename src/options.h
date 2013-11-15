@@ -73,6 +73,7 @@ struct __fehoptions {
 	unsigned char image_bg;
 	unsigned char no_fehbg;
 	unsigned char keep_zoom_vp;
+	unsigned char center_info;
 
 	char *output_file;
 	char *output_dir;

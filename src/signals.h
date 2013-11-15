@@ -28,4 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void setup_signal_handlers();
 
+extern unsigned char reload_signal_flag;
+
 #endif

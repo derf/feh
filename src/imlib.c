@@ -515,6 +515,56 @@ static Imlib_Font feh_load_font(winwidget w)
 	return fn;
 }
 
+static Imlib_Font feh_find_best_fit_font(winwidget w, int target_width, char *text)
+{
+	static Imlib_Font fn = NULL;
+	static Imlib_Font try_fn = NULL;
+	char *font = NULL;
+	int width = 0, height = 0;
+	int font_size = 0;
+	char *font_name = NULL;
+	char *p = NULL;
+	char fontbuf[1024];
+	
+	if (opt.font)
+		fn = gib_imlib_load_font(font = opt.font);
+
+	if (!fn) {
+		if (w && w->full_screen)
+			fn = gib_imlib_load_font(font = DEFAULT_FONT_BIG);
+		else
+			fn = gib_imlib_load_font(font = DEFAULT_FONT);
+	}
+
+	if (!fn) {
+		eprintf("Couldn't load font to draw a message");
+	}
+
+	gib_imlib_get_text_size(fn, text, NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+	
+	if (width>target_width) {
+		font_name = estrdup(font);
+		p = strchr(font_name,'/');
+		if (p) {
+			*p = 0;
+			font_size = atoi(p+1);
+			while(--font_size>0) {
+				snprintf(fontbuf,sizeof(fontbuf),"%s/%d",font_name,font_size);
+				try_fn = gib_imlib_load_font(fontbuf);
+				if (try_fn) {
+					gib_imlib_get_text_size(try_fn, text, NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+					if (width<=target_width) {
+						fn = try_fn;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	free(font_name);
+	return fn;
+}
 
 void feh_draw_zoom(winwidget w)
 {
@@ -766,10 +816,10 @@ void feh_draw_exif(winwidget w)
 void feh_draw_info(winwidget w)
 {
 	static Imlib_Font fn = NULL;
-	int width = 0, height = 0, line_width = 0, line_height = 0;
+	int width = 0, height = 0, line_width = 0, line_height = 0, info_x = 0, info_width = 0;
 	Imlib_Image im = NULL;
 	int no_lines = 0, i;
-	char *info_cmd;
+	char *info_cmd, *tallest_line = NULL, *widest_line = NULL;
 	char info_line[256];
 	char *info_buf[128];
 	FILE *info_pipe;
@@ -778,7 +828,6 @@ void feh_draw_info(winwidget w)
 			|| (!FEH_FILE(w->file->data)->filename))
 		return;
 
-	fn = feh_load_font(w);
 
 	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data), w);
 
@@ -786,32 +835,45 @@ void feh_draw_info(winwidget w)
 
 	if (!info_pipe) {
 		info_buf[0] = estrdup("Failed to run info command");
+		fn = feh_find_best_fit_font(w,w->w,info_buf[0]);
 		gib_imlib_get_text_size(fn, info_buf[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
 	else {
+		fn = feh_load_font(w);
 		while ((no_lines < 128) && fgets(info_line, 256, info_pipe)) {
 			if (info_line[strlen(info_line)-1] == '\n')
 				info_line[strlen(info_line)-1] = '\0';
 
 			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
 					&line_height, IMLIB_TEXT_TO_RIGHT);
-
-			if (line_height > height)
-				height = line_height;
-			if (line_width > width)
-				width = line_width;
-
+			
 			info_buf[no_lines] = estrdup(info_line);
+
+			if (line_height > height) {
+				height = line_height;
+				tallest_line = info_buf[no_lines];
+			}
+			if (line_width > width) {
+				width = line_width;
+				widest_line = info_buf[no_lines];
+			}
 
 			no_lines++;
 		}
 		pclose(info_pipe);
+		
+		if (widest_line) {
+			fn = feh_find_best_fit_font(w,w->w,widest_line);
+			gib_imlib_get_text_size(fn, widest_line, NULL, &width, NULL, IMLIB_TEXT_TO_RIGHT);
+			gib_imlib_get_text_size(fn, tallest_line, NULL, NULL,	&height, IMLIB_TEXT_TO_RIGHT);
+		}
 	}
 
 	if (no_lines == 0)
 		return;
 
+	line_height = height;
 	height *= no_lines;
 	width += 4;
 
@@ -822,16 +884,23 @@ void feh_draw_info(winwidget w)
 	feh_imlib_image_fill_text_bg(im, width, height);
 
 	for (i = 0; i < no_lines; i++) {
-		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
+
+		info_x = 1;
+		if (opt.center_info) {
+			gib_imlib_get_text_size(fn, info_buf[i], NULL, &info_width, NULL, IMLIB_TEXT_TO_RIGHT);
+		 	info_x = (width-info_width)>>1;
+		}
+
+		gib_imlib_text_draw(im, fn, NULL, info_x+1, (i * line_height) + 2,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
+		gib_imlib_text_draw(im, fn, NULL, info_x, (i * line_height) + 1,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 		free(info_buf[i]);
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
-			w->h - height, 1, 1, 0);
+	info_x = opt.center_info ? (w->w-width)>>1 : 0;
+	gib_imlib_render_image_on_drawable(w->bg_pmap, im, info_x, w->h - height, 1, 1, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
