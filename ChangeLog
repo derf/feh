@@ -4,6 +4,8 @@ git HEAD
       (Patch by Joel Bradshaw)
     * Add ; flag to --info (as in "--info ';echo foo'") to disable info
       display on startup
+    * Fix off-by-one pixel error when warping the pointer in the
+      bottom/right window border
 
 Tue, 11 Jun 2013 08:27:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 

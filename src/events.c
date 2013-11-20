@@ -578,36 +578,36 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 			winwidget_sanitise_offsets(winwid);
 
-			D(("im_x %d, im_w %d, off %d, mx %d\n", winwid->im_x,
-				winwid->im_w, winwid->click_offset_x, ev->xmotion.x));
+			D(("im_x %d, im_w %d, off %d, mx %d, my %d\n", winwid->im_x,
+				winwid->im_w, winwid->click_offset_x, ev->xmotion.x,
+				ev->xmotion.y));
 
 			/* XWarpPointer generates a MotionNotify event which we will
 			 * parse. Since that event would undo the effect of the pointer
 			 * warp, we need to change the click_offset to compensate this.
 			 */
-			if ((winwid->w - ev->xmotion.x <= 1)
-					&& (winwid->click_offset_x >= winwid->w - 4))
+			if ((winwid->w - ev->xmotion.x <= 1) && (winwid->im_x < 0))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0, 3,
 					ev->xmotion.y);
 				winwid->click_offset_x -= winwid->w - 4;
 			}
-			else if ((ev->xmotion.x <= 1) && (winwid->click_offset_x
-					<= (winwid->im_w * winwid->zoom) - winwid->w - 3))
+			else if ((ev->xmotion.x <= 1) && (winwid->w <
+					(winwid->im_x + winwid->im_w * winwid->zoom)))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					winwid->w - 4, ev->xmotion.y);
 				winwid->click_offset_x += winwid->w - 4;
 			}
 			else if ((winwid->h - ev->xmotion.y <= 1)
-					&& (winwid->click_offset_y >= winwid->h - 4))
+					&& (winwid->im_y < 0))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					ev->xmotion.x, 3);
 				winwid->click_offset_y -= winwid->h - 4;
 			}
-			else if ((ev->xmotion.y <= 1) && (winwid->click_offset_y
-					<= (winwid->im_h * winwid->zoom) - winwid->h - 3))
+			else if ((ev->xmotion.y <= 1) && (winwid->h <
+					(winwid->im_y + winwid->im_h * winwid->zoom)))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					ev->xmotion.x, winwid->h - 4);
