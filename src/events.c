@@ -378,8 +378,12 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				x /= winwid->zoom;
 				y /= winwid->zoom;
 				thumbfile = feh_thumbnail_get_file_from_coords(x, y);
-				if (thumbfile)
-					feh_thumbnail_show_fullsize(thumbfile);
+				if (thumbfile) {
+					if (opt.actions[0])
+						feh_action_run(thumbfile, opt.actions[0]);
+					else
+						feh_thumbnail_show_fullsize(thumbfile);
+				}
 			}
 		} else {
 			opt.mode = MODE_NORMAL;

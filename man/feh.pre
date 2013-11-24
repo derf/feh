@@ -136,7 +136,8 @@ For animated images, only the first frame is shown.
 Specify a shell command as an action to perform on the image.  In slideshow or
 multiwindow mode, the action will be run when the action_0 key is pressed, in
 list mode, it will be run for each file.  In loadable/unloadable mode, it will
-be run for each loadable/unloadable file, respectively.
+be run for each loadable/unloadable file, respectively.  In thumbnail mode,
+clicking on an image will cause the action to run instead of opening the image.
 .
 .Pp
 .
