@@ -596,8 +596,9 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 					ev->xmotion.y);
 				winwid->click_offset_x -= winwid->w - 4;
 			}
-			else if ((ev->xmotion.x <= 1) && (winwid->w <
-					(winwid->im_x + winwid->im_w * winwid->zoom)))
+			// TODO needlessly warps for certain zoom levels
+			else if ((ev->xmotion.x <= 1) && (winwid->im_x >
+					(winwid->w - winwid->im_w * winwid->zoom)))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					winwid->w - 4, ev->xmotion.y);
@@ -610,8 +611,9 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 					ev->xmotion.x, 3);
 				winwid->click_offset_y -= winwid->h - 4;
 			}
-			else if ((ev->xmotion.y <= 1) && (winwid->h <
-					(winwid->im_y + winwid->im_h * winwid->zoom)))
+			// TODO needlessly warps for certain zoomlevels
+			else if ((ev->xmotion.y <= 1) && (winwid->im_y >
+					(winwid->h - winwid->im_h * winwid->zoom)))
 			{
 				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
 					ev->xmotion.x, winwid->h - 4);
