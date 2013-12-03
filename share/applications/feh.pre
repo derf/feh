@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Feh
 Comment=Fast Imlib2-based Image Viewer
-Exec=feh %f
+Exec=feh %F
 Terminal=false
 Type=Application
 Icon=$IMAGEDIR$/feh.png
