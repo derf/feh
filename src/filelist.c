@@ -213,7 +213,8 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 
 		if ((!strncmp(path, "http://", 7))
 				|| (!strncmp(path, "https://", 8))
-				|| (!strncmp(path, "ftp://", 6))) {
+				|| (!strncmp(path, "ftp://", 6))
+				|| (!strncmp(path, "file://", 7))) {
 			/* Its a url */
 			D(("Adding url %s to filelist\n", path));
 			filelist = gib_list_add_front(filelist, feh_file_new(path));
