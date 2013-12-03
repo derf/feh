@@ -4,7 +4,7 @@ git HEAD
       (Patch by Joel Bradshaw)
     * Add ; flag to --info (as in "--info ';echo foo'") to disable info
       display on startup
-    * Fix off-by-one pixel error when warping the pointer in the
+    * Partially fix off-by-one pixel error when warping the pointer in the
       bottom/right window border
     * thumbnail mode: If --action is set, run specified command instead of
       opening image on click.
