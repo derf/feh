@@ -228,6 +228,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	    KeyPressMask | KeyReleaseMask | ButtonMotionMask | ExposureMask
 	    | FocusChangeMask | PropertyChangeMask | VisibilityChangeMask;
 
+	memset(&mwmhints, 0, sizeof(mwmhints));
 	if (opt.borderless || ret->full_screen) {
 		prop = XInternAtom(disp, "_MOTIF_WM_HINTS", True);
 		if (prop == None) {
@@ -240,8 +241,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 			mwmhints.flags = MWM_HINTS_DECORATIONS;
 			mwmhints.decorations = 0;
 		}
-	} else
-		mwmhints.flags = 0;
+	}
 
 	ret->win =
 	    XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
