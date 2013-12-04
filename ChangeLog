@@ -9,6 +9,8 @@ git HEAD
     * thumbnail mode: If --action is set, run specified command instead of
       opening image on click.
     * feh.desktop: Use feh %F since we support multiple files
+    * Fix --borderless not working on some 64bit systems
+      (Patch by Brian Mattern)
 
 Tue, 11 Jun 2013 08:27:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
