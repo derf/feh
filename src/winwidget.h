@@ -61,11 +61,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* Motif window hints */
 typedef struct _mwmhints {
-	CARD32 flags;
-	CARD32 functions;
-	CARD32 decorations;
-	INT32 input_mode;
-	CARD32 status;
+	unsigned long flags;
+	unsigned long functions;
+	unsigned long decorations;
+	long input_mode;
+	unsigned long status;
 } MWMHints;
 
 enum win_type {
