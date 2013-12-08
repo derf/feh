@@ -143,7 +143,7 @@ void init_buttonbindings(void);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button);
 fehkey *feh_str_to_kb(char * action);
-void feh_action_run(feh_file * file, char *action);
+void feh_action_run(feh_file * file, char *action, winwidget winwid);
 char *format_size(int size);
 char *feh_printf(char *str, feh_file * file, winwidget winwid);
 void im_weprintf(winwidget w, char *fmt, ...);

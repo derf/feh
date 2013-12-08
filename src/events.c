@@ -388,7 +388,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 				thumbfile = feh_thumbnail_get_file_from_coords(x, y);
 				if (thumbfile) {
 					if (opt.actions[0]) {
-						feh_action_run(thumbfile, opt.actions[0]);
+						feh_action_run(thumbfile, opt.actions[0], winwid);
 						if (!opt.hold_actions[0])
 							feh_thumbnail_mark_removed(thumbfile, 0);
 					} else {

@@ -54,7 +54,7 @@ void init_list_mode(void)
 					file->info->has_alpha ? 'X' : '-', file->filename);
 		}
 
-		feh_action_run(file, opt.actions[0]);
+		feh_action_run(file, opt.actions[0], NULL);
 	}
 	exit(0);
 }
@@ -92,7 +92,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
-				feh_action_run(file, opt.actions[0]);
+				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {
 				if (opt.verbose)
@@ -106,7 +106,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
-				feh_action_run(file, opt.actions[0]);
+				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {
 				if (opt.verbose)

@@ -450,12 +450,12 @@ char *slideshow_create_name(feh_file * file, winwidget winwid)
 	return(s);
 }
 
-void feh_action_run(feh_file * file, char *action)
+void feh_action_run(feh_file * file, char *action, winwidget winwid)
 {
 	if (action) {
 		char *sys;
 		D(("Running action %s\n", action));
-		sys = feh_printf(action, file, NULL);
+		sys = feh_printf(action, file, winwid);
 
 		if (opt.verbose && !opt.list && !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
