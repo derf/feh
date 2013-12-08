@@ -521,6 +521,45 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
+			case 'O':
+				if (winwid) {
+				   /* The code here duplicates the calculation done in winwidget.c */
+					int dx, dy, sx, sy, calc_w, calc_h, dw, dh, sw, sh;
+					dx = winwid->im_x;
+					dy = winwid->im_y;
+					if (dx < 0)
+						dx = 0;
+					if (dy < 0)
+						dy = 0;
+				
+					if (winwid->im_x < 0)
+						sx = 0 - lround(winwid->im_x / winwid->zoom);
+					else
+						sx = 0;
+					if (winwid->im_y < 0)
+						sy = 0 - lround(winwid->im_y / winwid->zoom);
+					else
+						sy = 0;
+				
+					calc_w = lround(winwid->im_w * winwid->zoom);
+					calc_h = lround(winwid->im_h * winwid->zoom);
+					dw = (winwid->w - winwid->im_x);
+					dh = (winwid->h - winwid->im_y);
+					if (calc_w < dw)
+						dw = calc_w;
+					if (calc_h < dh)
+						dh = calc_h;
+					if (dw > winwid->w)
+						dw = winwid->w;
+					if (dh > winwid->h)
+						dh = winwid->h;
+				
+					sw = lround(dw / winwid->zoom);
+					sh = lround(dh / winwid->zoom);
+					snprintf(buf, sizeof(buf), "%d,%d,%d,%d", sx, sy, sw, sh);
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
 			case 'p':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->pixels);

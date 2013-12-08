@@ -871,6 +871,10 @@ Escaped image name
 .
 x,y offset of top-left image corner to window corner in pixels
 .
+.It \&%O
+.
+x,y,w,h pixel coordinates of the portion of the image visible in the window
+.
 .It %p
 .
 Number of image pixels
