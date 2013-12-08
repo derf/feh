@@ -340,7 +340,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 {
 	if (opt.actions[action]) {
 		if (opt.slideshow) {
-			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
+			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action], winwid);
 
 			if (opt.hold_actions[action])
 				feh_reload_image(winwid, 1, 1);
@@ -349,7 +349,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 
 		} else if ((winwid->type == WIN_TYPE_SINGLE)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
-			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action]);
+			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action], winwid);
 
 			if (opt.hold_actions[action])
 				feh_reload_image(winwid, 1, 1);
@@ -360,7 +360,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 			thumbfile = feh_thumbnail_get_selected_file();
 
 			if (thumbfile) {
-				feh_action_run(thumbfile, opt.actions[action]);
+				feh_action_run(thumbfile, opt.actions[action], winwid);
 
 				if (!opt.hold_actions[action])
 					feh_thumbnail_mark_removed(thumbfile, 0);
