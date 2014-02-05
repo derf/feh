@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use 5.010;
 
+no if $] >= 5.018, warnings => 'experimental::smartmatch';
+
 use Cwd;
 use Test::More tests => 103;
 use Time::HiRes qw/sleep/;
