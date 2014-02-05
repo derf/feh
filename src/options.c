@@ -439,7 +439,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			else if (!strcmp(optarg, "black"))
 				opt.image_bg = IMAGE_BG_BLACK;
 			else
-				weprintf("Unknown argument to --image-bg: %s", optarg);
+				opt.image_bg = estrdup(optarg);
 			break;
 		case 'C':
 			D(("adding fontpath %s\n", optarg));
