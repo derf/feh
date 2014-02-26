@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "wallpaper.h"
 #include <limits.h>
+#include <stdlib.h>
 Window ipc_win = None;
 Window my_ipc_win = None;
 Atom ipc_atom = None;
@@ -288,7 +289,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		/* string for sticking in ~/.fehbg */
 		char *fehbg = NULL;
 		char *home;
-		char filbuf[4096];
+		char filbuf[PATH_MAX + 4];
 		char fehbg_xinerama[] = "--no-xinerama";
 		char *bgfill = NULL;
 		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
@@ -319,16 +320,18 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			filbuf[out++] = '\'';
 
 		} else {
+		    char real_fil[PATH_MAX];
 			for (l = filelist; l && out < 4092; l = l->next) {
 				filbuf[out++] = '\'';
 
 				fil = FEH_FILE(l->data)->filename;
+				realpath(fil, real_fil);
 
-				for (in = 0; fil[in] && out < 4092; in++) {
+				for (in = 0; real_fil[in] && out < PATH_MAX; in++) {
 
-					if (fil[in] == '\'')
+					if (real_fil[in] == '\'')
 						filbuf[out++] = '\\';
-					filbuf[out++] = fil[in];
+					filbuf[out++] = real_fil[in];
 				}
 				filbuf[out++] = '\'';
 				filbuf[out++] = ' ';
