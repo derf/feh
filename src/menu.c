@@ -1183,24 +1183,20 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 
 	switch (action) {
 		case CB_BG_TILED:
-			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
+			path = FEH_FILE(m->fehwin->file->data)->filename;
 			feh_wm_set_bg(path, m->fehwin->im, 0, 0, 0, data, 0);
-			free(path);
 			break;
 		case CB_BG_SCALED:
-			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
+			path = FEH_FILE(m->fehwin->file->data)->filename;
 			feh_wm_set_bg(path, m->fehwin->im, 0, 1, 0, data, 0);
-			free(path);
 			break;
 		case CB_BG_CENTERED:
-			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
+			path = FEH_FILE(m->fehwin->file->data)->filename;
 			feh_wm_set_bg(path, m->fehwin->im, 1, 0, 0, data, 0);
-			free(path);
 			break;
 		case CB_BG_FILLED:
-			path = feh_absolute_path(FEH_FILE(m->fehwin->file->data)->filename);
+			path = FEH_FILE(m->fehwin->file->data)->filename;
 			feh_wm_set_bg(path, m->fehwin->im, 0, 0, 1, data, 0);
-			free(path);
 			break;
 		case CB_BG_TILED_NOFILE:
 			feh_wm_set_bg(NULL, m->fehwin->im, 0, 0, 0, data, 0);

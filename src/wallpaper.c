@@ -310,6 +310,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		if (fil && !use_filelist) {
 			filbuf[out++] = '\'';
 
+			fil = feh_absolute_path(fil);
+
 			for (in = 0; fil[in] && out < 4092; in++) {
 
 				if (fil[in] == '\'')
@@ -317,12 +319,13 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				filbuf[out++] = fil[in];
 			}
 			filbuf[out++] = '\'';
+			free(fil);
 
 		} else {
 			for (l = filelist; l && out < 4092; l = l->next) {
 				filbuf[out++] = '\'';
 
-				fil = FEH_FILE(l->data)->filename;
+				fil = feh_absolute_path(FEH_FILE(l->data)->filename);
 
 				for (in = 0; fil[in] && out < 4092; in++) {
 
@@ -332,6 +335,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				}
 				filbuf[out++] = '\'';
 				filbuf[out++] = ' ';
+				free(fil);
 			}
 		}
 
