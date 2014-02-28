@@ -1,5 +1,6 @@
-git HEAD
+Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.10
     * Allow non-centered wallpapers using the --geometry option
       (Patch by Joel Bradshaw)
     * Add ; flag to --info (as in "--info ';echo foo'") to disable info
