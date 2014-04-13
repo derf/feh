@@ -692,7 +692,13 @@ gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
 				if (opt.cycle_once) {
 					exit(0);
 				}
-				ret = root;
+				if (opt.randomize) {
+					/* Randomize the filename order */
+					filelist = gib_list_randomize(filelist);
+					ret = filelist;
+				} else {
+					ret = root;
+				}
 			}
 		} else {
 			if (ret->prev)
