@@ -263,27 +263,27 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 			default:
 				weprintf("Failed to scan directory %s:", path);
 			}
-		}
+		} else {
+			for (cnt = 0; cnt < n; cnt++) {
+				if (strcmp(de[cnt]->d_name, ".")
+						&& strcmp(de[cnt]->d_name, "..")) {
+					char *newfile;
 
-		for (cnt = 0; cnt < n; cnt++) {
-			if (strcmp(de[cnt]->d_name, ".")
-					&& strcmp(de[cnt]->d_name, "..")) {
-				char *newfile;
+					newfile = estrjoin("", path, "/", de[cnt]->d_name, NULL);
 
-				newfile = estrjoin("", path, "/", de[cnt]->d_name, NULL);
+					/* This ensures we go down one level even if not fully recursive
+					   - this way "feh some_dir" expands to some_dir's contents */
+					if (opt.recursive)
+						add_file_to_filelist_recursively(newfile, FILELIST_CONTINUE);
+					else
+						add_file_to_filelist_recursively(newfile, FILELIST_LAST);
 
-				/* This ensures we go down one level even if not fully recursive
-				   - this way "feh some_dir" expands to some_dir's contents */
-				if (opt.recursive)
-					add_file_to_filelist_recursively(newfile, FILELIST_CONTINUE);
-				else
-					add_file_to_filelist_recursively(newfile, FILELIST_LAST);
-
-				free(newfile);
+					free(newfile);
+				}
+				free(de[cnt]);
 			}
-			free(de[cnt]);
+			free(de);
 		}
-		free(de);
 		closedir(dir);
 	} else if (S_ISREG(st.st_mode)) {
 		D(("Adding regular file %s to filelist\n", path));
