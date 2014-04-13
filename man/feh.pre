@@ -491,7 +491,8 @@ only errors.
 .It Cm -z , --randomize
 .
 When viewing multiple files in a slideshow, randomize the file list before
-displaying.
+displaying. The list is re-randomized whenever the slideshow cycles (that is,
+transitions from last to first image).
 .
 .It Cm -r , --recursive
 .

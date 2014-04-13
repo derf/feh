@@ -2,6 +2,8 @@ git HEAD
 
     * Patch by Michael Vorburger: Fix erroneous free() in case of failed
       scandir (closes #147)
+    * Patch by rangerer: --randomize: re-randomize after list is through
+      (closes #154)
 
 Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
