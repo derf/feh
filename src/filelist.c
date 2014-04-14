@@ -573,7 +573,7 @@ char *feh_absolute_path(char *path)
 
 	if (!path)
 		return(NULL);
-	if (path[0] == '/')
+	if (path[0] == '/' || path_is_url(path))
 		return(estrdup(path));
 	/* This path is not relative. We're gonna convert it, so that a
 	   filelist file can be saved anywhere and feh will still find the

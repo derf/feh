@@ -4,6 +4,8 @@ git HEAD
       scandir (closes #147)
     * Patch by rangerer: --randomize: re-randomize after list is through
       (closes #154)
+    * When setting a wallpaper from a URL, do not try to store it as
+      absolute path in .fehbg (closes #153)
 
 Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
