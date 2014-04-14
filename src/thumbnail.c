@@ -602,9 +602,7 @@ char *feh_thumbnail_get_name_uri(char *name)
 	char *cwd, *uri = NULL;
 
 	/* FIXME: what happens with http, https, and ftp? MTime etc */
-	if ((strncmp(name, "http://", 7) != 0) &&
-	    (strncmp(name, "https://", 8) != 0) && (strncmp(name, "ftp://", 6) != 0)
-	    && (strncmp(name, "file://", 7) != 0)) {
+	if (!path_is_url(name)) {
 
 		/* make sure it's an absoulte path */
 		/* FIXME: add support for ~, need to investigate if it's expanded

@@ -36,6 +36,7 @@ char *_estrdup(char *s);
 void *_emalloc(size_t n);
 void *_erealloc(void *ptr, size_t n);
 char *estrjoin(const char *separator, ...);
+char path_is_url(char *path);
 char *feh_unique_filename(char *path, char *basename);
 char *ereadfile(char *path);
 

@@ -143,6 +143,15 @@ char *estrjoin(const char *separator, ...)
 	return string;
 }
 
+char path_is_url(char *path) {
+	if ((!strncmp(path, "http://", 7))
+			|| (!strncmp(path, "https://", 8))
+			|| (!strncmp(path, "ftp://", 6))
+			|| (!strncmp(path, "file://", 7)))
+		return 1;
+	return 0;
+}
+
 /* free the result please */
 char *feh_unique_filename(char *path, char *basename)
 {

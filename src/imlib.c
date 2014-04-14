@@ -242,11 +242,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	if (!file || !file->filename)
 		return 0;
 
-	/* Handle URLs */
-	if ((!strncmp(file->filename, "http://", 7))
-			|| (!strncmp(file->filename, "https://", 8))
-			|| (!strncmp(file->filename, "ftp://", 6))
-			|| (!strncmp(file->filename, "file://", 7))) {
+	if (path_is_url(file->filename)) {
 		image_source = SRC_HTTP;
 
 		if ((tmpname = feh_http_load_image(file->filename)) == NULL)

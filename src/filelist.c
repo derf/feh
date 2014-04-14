@@ -211,11 +211,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 		if (path[len - 1] == '/')
 			path[len - 1] = '\0';
 
-		if ((!strncmp(path, "http://", 7))
-				|| (!strncmp(path, "https://", 8))
-				|| (!strncmp(path, "ftp://", 6))
-				|| (!strncmp(path, "file://", 7))) {
-			/* Its a url */
+		if (path_is_url(path)) {
 			D(("Adding url %s to filelist\n", path));
 			filelist = gib_list_add_front(filelist, feh_file_new(path));
 			/* We'll download it later... */
