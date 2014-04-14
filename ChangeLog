@@ -1,7 +1,7 @@
 git HEAD
 
     * Patch by Michael Vorburger: Fix erroneous free() in case of failed
-      scandir (closes #147)
+      scandir (closes #140, #147)
     * Patch by rangerer: --randomize: re-randomize after list is through
       (closes #154)
     * When setting a wallpaper from a URL, do not try to store it as
