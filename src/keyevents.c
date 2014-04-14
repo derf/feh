@@ -481,22 +481,22 @@ void feh_event_handle_keypress(XEvent * ev)
 			feh_thumbnail_select_prev(winwid, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_right, keysym, state)) {
-		winwid->im_x -= 20;
+		winwid->im_x -= opt.scroll_step;;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_left, keysym, state)) {
-		winwid->im_x += 20;
+		winwid->im_x += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_down, keysym, state)) {
-		winwid->im_y -= 20;
+		winwid->im_y -= opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
 	else if (feh_is_kp(&keys.scroll_up, keysym, state)) {
-		winwid->im_y += 20;
+		winwid->im_y += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}

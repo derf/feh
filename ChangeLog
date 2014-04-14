@@ -6,6 +6,8 @@ git HEAD
       (closes #154)
     * When setting a wallpaper from a URL, do not try to store it as
       absolute path in .fehbg (closes #153)
+    * Add --scroll-step <px> option to change scroll_{up,left,down,right}
+      scroll offset in pixels
 
 Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 

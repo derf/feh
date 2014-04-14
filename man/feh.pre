@@ -529,6 +529,17 @@ When not in fullscreen: Scale images to screen size if they are too big.
 .
 In tiling environments, this also causes the image to be centered in the window.
 .
+.It Cm --scroll-step Ar count
+.
+Scroll
+.Ar count
+pixels whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
+Note that this option accepts negative numbers in case you need to inverse the
+scroll direction; see
+.Sx KEYS CONFIG SYNTAX
+to change it permanently.
+Default: 20
+.
 .It Cm -D , --slideshow-delay Ar float
 .
 For slideshow mode, wait

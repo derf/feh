@@ -57,6 +57,7 @@ void init_parse_options(int argc, char **argv)
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
+	opt.scroll_step = 20;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
@@ -398,6 +399,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"force-aliasing", 0, 0, 235},
 		{"no-fehbg"      , 0, 0, 236},
 		{"keep-zoom-vp"  , 0, 0, 237},
+		{"scroll-step"   , 1, 0, 238},
 
 		{0, 0, 0, 0}
 	};
@@ -730,6 +732,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 237:
 			opt.keep_zoom_vp = 1;
+			break;
+		case 238:
+			opt.scroll_step = atoi(optarg);
 			break;
 		default:
 			break;
