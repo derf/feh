@@ -922,7 +922,7 @@ Image width
 .Nm
 version
 .
-.It %V
+.It \&%V
 .
 Process ID
 .

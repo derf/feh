@@ -8,6 +8,8 @@ git HEAD
       absolute path in .fehbg (closes #153)
     * Add --scroll-step <px> option to change scroll_{up,left,down,right}
       scroll offset in pixels
+    * feh(1): Escape %V (interpreted as mdoc macro)
+      (closes debian #745467)
 
 Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
