@@ -10,6 +10,8 @@ git HEAD
       scroll offset in pixels
     * feh(1): Escape %V (interpreted as mdoc macro)
       (closes debian #745467)
+    * Respect --image-bg=checks in fullscreen mode (default remains black)
+      (closes #156)
 
 Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 

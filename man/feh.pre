@@ -327,7 +327,9 @@ Hide the pointer
 .It Cm -B , --image-bg Ar style
 .
 Use style as background for transparent image parts and the like.
-Accepted values: checks (default), white, black.
+Accepted values: checks, white, black.
+.
+The default for windowed mode is checks, while fullscreen defaults to black.
 .
 .It Cm -i , --index
 .

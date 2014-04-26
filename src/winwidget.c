@@ -351,11 +351,19 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			if (winwid->gc == None) {
 				XGCValues gcval;
 
-				if (opt.image_bg == IMAGE_BG_WHITE)
+				if (opt.image_bg == IMAGE_BG_WHITE) {
 					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-				else
+					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
+				}
+				else if (opt.image_bg == IMAGE_BG_CHECKS) {
+					gcval.tile = feh_create_checks();
+					gcval.fill_style = FillTiled;
+					winwid->gc = XCreateGC(disp, winwid->win, GCTile | GCFillStyle, &gcval);
+				}
+				else {
 					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-				winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
+					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
+				}
 			}
 			winwid->bg_pmap = XCreatePixmap(disp, winwid->win, scr->width, scr->height, depth);
 		}
