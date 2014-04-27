@@ -1,5 +1,6 @@
-git HEAD
+Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.11
     * Patch by Michael Vorburger: Fix erroneous free() in case of failed
       scandir (closes #140, #147)
     * Patch by rangerer: --randomize: re-randomize after list is through
