@@ -1,3 +1,9 @@
+git HEAD
+
+    * feh-cam and gen-cam-menu are no longer installed by default. Use
+      make install cam=1 to install them or make uninstall cam=1 to remove
+      them permanently
+
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.11

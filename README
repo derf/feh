@@ -43,6 +43,7 @@ support and get a debug build.
 
 Available flags are:
 
+ * cam      (default 0) - install deprecated feh-cam und gen-cam-menu scripts
  * curl     (default 1) - use libcurl to view http:// and similar images
  * debug    (default 0) - debug build, enables --debug
  * exif     (default 0) - Builtin EXIF tag display support

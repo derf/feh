@@ -18,6 +18,7 @@ desktop_dir = ${main_dir}/share/applications
 CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -pedantic
 
+cam ?= 0
 curl ?= 1
 debug ?= 0
 help ?= 0
