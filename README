@@ -8,7 +8,6 @@ feh - Imlib2 based image viewer
 Dependencies
 ------------
 
- * giblib
  * Imlib2
  * libcurl (disable with make curl=0)
  * libpng

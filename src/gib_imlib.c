@@ -151,6 +151,7 @@ gib_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x, int y,
    imlib_render_image_on_drawable(x, y);
 }
 
+/*
 void
 gib_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
                                                  int x, int y, double angle,
@@ -170,6 +171,7 @@ gib_imlib_render_image_on_drawable_with_rotation(Drawable d, Imlib_Image im,
    imlib_render_image_on_drawable(x, y);
    imlib_free_image();
 }
+*/
 
 void
 gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
@@ -185,6 +187,8 @@ gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im, int x,
    imlib_render_image_on_drawable_at_size(x, y, w, h);
 }
 
+
+/*
 void
 gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
                                                          Imlib_Image im,
@@ -207,6 +211,8 @@ gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
    imlib_render_image_on_drawable_at_size(x, y, w, h);
    imlib_free_image_and_decache();
 }
+*/
+
 
 void
 gib_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
@@ -224,6 +230,7 @@ gib_imlib_render_image_part_on_drawable_at_size(Drawable d, Imlib_Image im,
    imlib_render_image_part_on_drawable_at_size(sx, sy, sw, sh, dx, dy, dw,
                                                dh);
 }
+
 
 void
 gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
@@ -251,6 +258,7 @@ gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
                                                dh);
    imlib_free_image_and_decache();
 }
+
 
 void
 gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w, int h,
@@ -418,6 +426,7 @@ gib_imlib_image_format(Imlib_Image im)
    return imlib_image_format();
 }
 
+
 void
 gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                  Imlib_Image source_image, char merge_alpha,
@@ -434,6 +443,8 @@ gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                 dy, dw, dh);
 }
 
+
+/*
 void
 gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
                                                Imlib_Image source_image,
@@ -455,6 +466,7 @@ gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dw = 0;
    dh = 0;
 }
+*/
 
 Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
                                                   int sy, int sw, int sh,

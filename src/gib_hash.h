@@ -61,9 +61,12 @@ void      gib_hash_free_and_data(gib_hash *hash);
 
 void      gib_hash_set(gib_hash *hash, char *key, void *data);
 void     *gib_hash_get(gib_hash *hash, char *key);
+
+/* unused
 void      gib_hash_remove(gib_hash *hash, char *key);
 
 void      gib_hash_foreach(gib_hash *hash, void (*foreach_cb)(gib_hash_node *node, void *data), void *data);
+*/
 
 #ifdef __cplusplus
 }

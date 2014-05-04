@@ -121,6 +121,8 @@ void     *gib_hash_get(gib_hash *hash, char *key)
 	return n?n->data:NULL;
 }
 
+/* unused
+
 void      gib_hash_remove(gib_hash *hash, char *key)
 {
 	gib_list *n = gib_list_find(GIB_LIST(hash->base), gib_hash_find_callback, key);
@@ -142,3 +144,4 @@ void      gib_hash_foreach(gib_hash *hash, void (*foreach_cb)(gib_hash_node *nod
 	return;
 }
 
+*/

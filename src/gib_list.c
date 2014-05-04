@@ -75,6 +75,7 @@ gib_list_free_and_data(gib_list * l)
    return;
 }
 
+#if 0
 gib_list *
 gib_list_dup(gib_list * list)
 {
@@ -125,6 +126,7 @@ gib_list_dup_special(gib_list * list,
    }
    return (ret);
 }
+#endif
 
 gib_list *
 gib_list_add_front(gib_list * root, void *data)
@@ -159,6 +161,7 @@ gib_list_add_end(gib_list * root, void *data)
    }
 }
 
+#if 0
 gib_list *
 gib_list_add_at_pos(gib_list * root, int pos, void *data)
 {
@@ -216,6 +219,7 @@ gib_list_move_down_by_one(gib_list * root, gib_list * l)
 
    return (root);
 }
+#endif
 
 
 unsigned char
@@ -227,6 +231,7 @@ gib_list_has_more_than_one_item(gib_list * root)
       return (0);
 }
 
+#if 0
 gib_list *
 gib_list_pop_to_end(gib_list * root, gib_list * l)
 {
@@ -236,6 +241,7 @@ gib_list_pop_to_end(gib_list * root, gib_list * l)
 
    return (root);
 }
+#endif
 
 gib_list *
 gib_list_cat(gib_list * root, gib_list * l)
@@ -478,6 +484,7 @@ gib_list_sort_merge(gib_list * l1, gib_list * l2, gib_compare_fn cmp)
    return (list.next);
 }
 
+#if 0
 gib_list *
 gib_list_nth(gib_list * root, unsigned int num)
 {
@@ -495,6 +502,7 @@ gib_list_nth(gib_list * root, unsigned int num)
    }
    return (root);
 }
+#endif
 
 gib_list *
 gib_list_foreach(gib_list *root, void (*fe_func)(gib_list *node, void *data), void *data)
@@ -572,7 +580,7 @@ gib_string_split(const char *string, const char *delimiter)
    return string_list;
 }
 
-
+#if 0
 char *
 gib_strjoin(const char *separator, ...)
 {
@@ -621,4 +629,4 @@ gib_strjoin(const char *separator, ...)
 
    return string;
 }
-
+#endif

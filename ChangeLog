@@ -3,6 +3,12 @@ git HEAD
     * feh-cam and gen-cam-menu are no longer installed by default. Use
       make install cam=1 to install them or make uninstall cam=1 to remove
       them permanently
+    * feh no longer depends on giblib. Instead, the relevant parts of the
+      giblib source were imported into the feh source.
+      Rationale: giblib is unmaintained and, as far as I know, only used by
+      three projects (one of which is feh). There is at least one known bug
+      in it, and as I do not have the time to take over giblib development,
+      importing the library seems to be the best solution.
 
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 

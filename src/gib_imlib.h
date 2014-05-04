@@ -57,12 +57,14 @@ void gib_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x,
                                         int y, char dither, char blend,
 
                                         char alias);
+/*
 void gib_imlib_render_image_on_drawable_with_rotation(Drawable d,
                                                       Imlib_Image im, int x,
                                                       int y, double angle,
 
                                                       char dither, char blend,
                                                       char alias);
+*/
 void gib_imlib_render_image_part_on_drawable_at_size(Drawable d,
                                                      Imlib_Image im, int sx,
                                                      int sy, int sw, int sh,
@@ -70,6 +72,7 @@ void gib_imlib_render_image_part_on_drawable_at_size(Drawable d,
                                                      int dh, char dither,
 
                                                      char blend, char alias);
+
 void gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
                                                                    Imlib_Image
 
@@ -88,6 +91,7 @@ void gib_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
                                                                    char blend,
                                                                    char
                                                                    alias);
+
 void gib_imlib_image_fill_rectangle(Imlib_Image im, int x, int y, int w,
                                     int h, int r, int g, int b, int a);
 void gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, gib_style * s, int x,
@@ -103,6 +107,7 @@ void gib_imlib_render_image_on_drawable_at_size(Drawable d, Imlib_Image im,
                                                 char dither, char blend,
 
                                                 char alias);
+/*
 void gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
                                                               Imlib_Image im,
                                                               int x, int y,
@@ -112,6 +117,8 @@ void gib_imlib_render_image_on_drawable_at_size_with_rotation(Drawable d,
                                                               char dither,
                                                               char blend,
                                                               char alias);
+*/
+
 void gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                       Imlib_Image source_image,
                                       char merge_alpha, int sx, int sy,
@@ -119,6 +126,8 @@ void gib_imlib_blend_image_onto_image(Imlib_Image dest_image,
                                       int dh, char dither, char blend,
 
                                       char alias);
+
+/*
 void gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
                                                     Imlib_Image source_image,
                                                     char merge_alpha, int sx,
@@ -128,6 +137,7 @@ void gib_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
 
                                                     char dither, char blend,
                                                     char alias);
+*/
 Imlib_Image gib_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
                                                   int sy, int sw, int sh,
                                                   int dw, int dh, char alias);
