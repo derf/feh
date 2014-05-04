@@ -162,14 +162,14 @@ void ungib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
 	tmp = strrchr(file, '.');
 	if (tmp) {
 		char *p, *pp;
-		p = gib_estrdup(tmp + 1);
+		p = estrdup(tmp + 1);
 		pp = p;
 		while(*pp) {
 			*pp = tolower(*pp);
 			pp++;
 		}
 		imlib_image_set_format(p);
-		gib_efree(p);
+		free(p);
 	}
 	imlib_save_image_with_error_return(file, error_return);
 }
