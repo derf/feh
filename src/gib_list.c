@@ -362,12 +362,10 @@ gib_list_randomize(gib_list * list)
    srand(getpid() * time(NULL) % ((unsigned int) -1));
    for (i = 0; i < len - 1; i++)
    {
-      r = (int) ((len - i - 1) * ((float) rand()) / (RAND_MAX + 1.0)) + i + 1;
-      if (i == r)
-         abort();
-      t = farray[i];
-      farray[i] = farray[r];
-      farray[r] = t;
+      r = i + rand() / (RAND_MAX / (len - i) + 1 );
+      t = farray[r];
+      farray[r] = farray[i];
+      farray[i] = t;
    }
    list = farray[0];
    list->prev = NULL;

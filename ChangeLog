@@ -9,6 +9,7 @@ git HEAD
       three projects (one of which is feh). There is at least one known bug
       in it, and as I do not have the time to take over giblib development,
       importing the library seems to be the best solution.
+    * Fix/improve --randomize for short filelists (closes #151)
 
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
