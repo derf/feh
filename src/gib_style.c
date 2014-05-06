@@ -24,14 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "gib_style.h"
-#include "gib_utils.h"
+#include "utils.h"
+#include "debug.h"
 
 gib_style *
 gib_style_new(char *name)
 {
    gib_style *s = NULL;
 
-   s = malloc(sizeof(gib_style));
+   s = emalloc(sizeof(gib_style));
 
    memset(s, 0, sizeof(gib_style));
    if (name)
@@ -69,7 +70,7 @@ gib_style_bit_new(int x_offset, int y_offset, int r, int g, int b, int a)
 {
    gib_style_bit *sb;
 
-   sb = malloc(sizeof(gib_style_bit));
+   sb = emalloc(sizeof(gib_style_bit));
    memset(sb, 0, sizeof(gib_style_bit));
 
    sb->x_offset = x_offset;

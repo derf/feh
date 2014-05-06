@@ -61,7 +61,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gib_imlib.h"
 #include "gib_list.h"
 #include "gib_style.h"
-#include "gib_utils.h"
 
 #include "structs.h"
 #include "menu.h"

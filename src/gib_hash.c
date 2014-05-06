@@ -24,11 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "gib_hash.h"
-#include "gib_utils.h"
+#include "utils.h"
+#include "debug.h"
 
 gib_hash_node *gib_hash_node_new(char *key, void *data)
 {
-	gib_hash_node *node = malloc(sizeof(gib_hash_node));
+	gib_hash_node *node = emalloc(sizeof(gib_hash_node));
 	node->key = strdup(key);
 	GIB_LIST(node)->data = data;
 	GIB_LIST(node)->next = NULL;
@@ -53,7 +54,7 @@ void           gib_hash_node_free_and_data(gib_hash_node *node)
 
 gib_hash *gib_hash_new()
 {
-	gib_hash *hash = malloc(sizeof(gib_hash));
+	gib_hash *hash = emalloc(sizeof(gib_hash));
 	hash->base = gib_hash_node_new("__gib_hash_new",NULL);
 	return hash;
 }

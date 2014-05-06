@@ -24,7 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "gib_imlib.h"
-#include "gib_utils.h"
+#include "utils.h"
+#include "debug.h"
 
 int
 gib_imlib_load_image(Imlib_Image * im, char *filename)
@@ -41,47 +42,47 @@ gib_imlib_load_image(Imlib_Image * im, char *filename)
       switch (err)
       {
         case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-           gib_weprintf("%s - File does not exist", filename);
+           weprintf("%s - File does not exist", filename);
            break;
         case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-           gib_weprintf("%s - Directory specified for image filename", filename);
+           weprintf("%s - Directory specified for image filename", filename);
            break;
         case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-           gib_weprintf("%s - No read access to directory", filename);
+           weprintf("%s - No read access to directory", filename);
            break;
         case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-           gib_weprintf("%s - No Imlib2 loader for that file format", filename);
+           weprintf("%s - No Imlib2 loader for that file format", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-           gib_weprintf("%s - Path specified is too long", filename);
+           weprintf("%s - Path specified is too long", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-           gib_weprintf("%s - Path component does not exist", filename);
+           weprintf("%s - Path component does not exist", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-           gib_weprintf("%s - Path component is not a directory", filename);
+           weprintf("%s - Path component is not a directory", filename);
            break;
         case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-           gib_weprintf("%s - Path points outside address space", filename);
+           weprintf("%s - Path points outside address space", filename);
            break;
         case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-           gib_weprintf("%s - Too many levels of symbolic links", filename);
+           weprintf("%s - Too many levels of symbolic links", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-           gib_eprintf("While loading %s - Out of memory", filename);
+           eprintf("While loading %s - Out of memory", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-           gib_eprintf("While loading %s - Out of file descriptors", filename);
+           eprintf("While loading %s - Out of file descriptors", filename);
            break;
         case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-           gib_weprintf("%s - Cannot write to directory", filename);
+           weprintf("%s - Cannot write to directory", filename);
            break;
         case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-           gib_weprintf("%s - Cannot write - out of disk space", filename);
+           weprintf("%s - Cannot write - out of disk space", filename);
            break;
         case IMLIB_LOAD_ERROR_UNKNOWN:
         default:
-           gib_weprintf
+           weprintf
               ("While loading %s - Unknown error. Attempting to continue",
                filename);
            break;
@@ -628,7 +629,7 @@ void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a)
       }
       else
       {
-         gib_weprintf("unable to parse color %s\n", col);
+         weprintf("unable to parse color %s\n", col);
          return;
       }
    }
@@ -638,7 +639,7 @@ void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a)
       ll = gib_string_split(col, ",");
       if (!ll)
       {
-         gib_weprintf("unable to parse color %s\n", col);
+         weprintf("unable to parse color %s\n", col);
          return;
       }
       len = gib_list_length(ll);
@@ -658,7 +659,7 @@ void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a)
       }
       else
       {
-         gib_weprintf("unable to parse color %s\n", col);
+         weprintf("unable to parse color %s\n", col);
          return;
       }
    }
@@ -695,10 +696,10 @@ gib_imlib_load_font(char *name)
 
    if ((fn = imlib_load_font(name)))
       return fn;
-   gib_weprintf("couldn't load font %s, attempting to fall back to fixed.", name);
+   weprintf("couldn't load font %s, attempting to fall back to fixed.", name);
    if ((fn = imlib_load_font("fixed")))
       return fn;
-   gib_weprintf("failed to even load fixed! Attempting to find any font.");
+   weprintf("failed to even load fixed! Attempting to find any font.");
    return imlib_load_font("*");
 }
 

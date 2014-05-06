@@ -25,14 +25,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <time.h>
 #include "gib_list.h"
-#include "gib_utils.h"
+#include "utils.h"
+#include "debug.h"
 
 gib_list *
 gib_list_new(void)
 {
    gib_list *l;
 
-   l = (gib_list *) malloc(sizeof(gib_list));
+   l = (gib_list *) emalloc(sizeof(gib_list));
    l->data = NULL;
    l->next = NULL;
    l->prev = NULL;
@@ -354,7 +355,7 @@ gib_list_randomize(gib_list * list)
    len = gib_list_length(list);
    if (len <= 1)
       return (list);
-   farray = (gib_list **) malloc(sizeof(gib_list *) * len);
+   farray = (gib_list **) emalloc(sizeof(gib_list *) * len);
    for (f = list, i = 0; f; f = f->next, i++)
    {
       farray[i] = f;
@@ -556,7 +557,7 @@ gib_string_split(const char *string, const char *delimiter)
          char *new_string;
 
          len = s - string;
-         new_string = malloc(sizeof(char) * (len + 1));
+         new_string = emalloc(sizeof(char) * (len + 1));
 
          strncpy(new_string, string, len);
          new_string[len] = 0;
@@ -577,54 +578,3 @@ gib_string_split(const char *string, const char *delimiter)
 
    return string_list;
 }
-
-#if 0
-char *
-gib_strjoin(const char *separator, ...)
-{
-      char *string, *s;
-   va_list args;
-   int len;
-   int separator_len;
-
-   if (separator == NULL)
-      separator = "";
-
-   separator_len = strlen(separator);
-   va_start(args, separator);
-   s = va_arg(args, char *);
-
-   if (s)
-   {
-      len = strlen(s);
-      s = va_arg(args, char *);
-
-      while (s)
-      {
-         len += separator_len + strlen(s);
-         s = va_arg(args, char *);
-      }
-      va_end(args);
-      string = malloc(sizeof(char) * (len + 1));
-
-      *string = 0;
-      va_start(args, separator);
-      s = va_arg(args, char *);
-
-      strcat(string, s);
-      s = va_arg(args, char *);
-
-      while (s)
-      {
-         strcat(string, separator);
-         strcat(string, s);
-         s = va_arg(args, char *);
-      }
-   }
-   else
-      string = strdup("");
-   va_end(args);
-
-   return string;
-}
-#endif
