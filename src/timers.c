@@ -103,7 +103,6 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 	ft->just_added = 1;
 	ft->in = in;
 	D(("ft->in = %f\n", ft->in));
-	tally = 0.0;
 	if (!first_timer) {
 		D(("No first timer\n"));
 		first_timer = ft;

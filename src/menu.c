@@ -239,7 +239,6 @@ void feh_menu_select_prev(feh_menu * selected_menu, feh_menu_item * selected_ite
 		while (1) {
 			i = i->prev;
 			if (!i) {
-				i = selected_menu->items;
 				for (ii = selected_menu->items; ii->next; ii = ii->next);
 				i = ii;
 			}

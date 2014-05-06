@@ -958,7 +958,6 @@ void feh_draw_caption(winwidget w)
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
 	l = lines;
-	x = 0;
 	y = 0;
 	while (l) {
 		p = (char *) l->data;
@@ -1153,7 +1152,6 @@ gib_list *feh_wrap_string(char *text, int wrap_width, Imlib_Font fn, gib_style *
 						list = gib_list_add_end(list, estrdup(line));
 						free(line);
 						line = NULL;
-						line_width = 0;
 					}
 					gib_list_free_and_data(words);
 				}

@@ -39,7 +39,7 @@ void init_slideshow_mode(void)
 	gib_list *l = filelist, *last = NULL;
 	feh_file *file = NULL;
 
-	for (l = filelist; l && opt.start_list_at; l = l->next) {
+	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
 			opt.start_list_at = NULL;
 			break;
