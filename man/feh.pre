@@ -932,6 +932,10 @@ Process ID
 .
 current image zoom
 .
+.It %%
+.
+A literal %
+.
 .El
 .
 .
