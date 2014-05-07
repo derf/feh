@@ -15,19 +15,18 @@ OPTIONS
  -z, --randomize           Randomize the filelist
  --no-jump-on-resort       Don't jump to the first image when the filelist
                            is resorted
- -g, --geometry STRING     Limit the window size to STRING, like \"640x480\"
+ -g, --geometry WxH[+X+Y]  Limit the window size to DIMENSION[+OFFSET]
  -f, --filelist FILE       Load/save images from/to the FILE filelist
- -|, --start-at POSITION   Start at POSITION in the filelist
+ -|, --start-at FILENAME   Start at FILENAME in the filelist
  -p, --preload             Remove unlaodable files from the internal filelist
                            before attempting to display anything
- -., --scale-down          Automatically scale down images to fit the screen
-                           size
+ -., --scale-down          Automatically scale down images to fit screen size
  -F, --fullscreen          Make the window full screen
- -Z, --auto-zoom           Zoom picture to screen size in full screen mode
+ -Z, --auto-zoom           Zoom picture to screen size in fullscreen/geom mode
      --zoom PERCENT        Zooms images by a PERCENT, when in full screen
                            mode or when window geometry is fixed. If combined
                            with --auto-zoom, zooming will be limited to the
-                           the size.
+                           the size. Also support \"max\" and \"fill\"
      --keep-zoom-vp        Keep viewport zoom and settings while changing images
  -w, --multiwindow         Open all files at once, one window per image
  -x, --borderless          Create borderless windows
@@ -49,8 +48,9 @@ OPTIONS
                            name, filename, mtime, width, height, pixels, size,
                            or format
  -n, --reverse             Reverse sort order
- -A, --action ACTION       Specify action to perform when pressing <return>.
+ -A, --action [;]ACTION    Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
+                           reloads image with \";\", switches to next otherwise
      --action[1-9]         Extra actions triggered by pressing keys <1>to <9>
  -G, --draw-actions        Show the defined actions in the image window
      --force-aliasing      Disable antialiasing
@@ -63,9 +63,7 @@ OPTIONS
  -J, --thumb-redraw N      Redraw thumbnail window every N images
  -~, --thumb-title STRING  Title for windows opened from thumbnail mode
  -I, --fullindex           Index mode with additional image information
-     --index-name BOOL     Show/Don't show filename in index/thumbnail mode
-     --index-size BOOL     Show/Don't show filesize in index/thumbnail mode
-     --index-dim BOOL      Show/Don't show dimensions in index/thumbnail mode
+     --index-info FORMAT   Show FORMAT below images in index/thumbnail mode
      --bg-center FILE      Set FILE as centered desktop background
      --bg-fill FILE        Like --bg-scale, but preserves aspect ratio by
                            zooming the image until it fits. May cut off
@@ -87,6 +85,11 @@ OPTIONS
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
  -Y, --hide-pointer        Hide the pointer
+     --magick-timeout INT  Load unknown files with ImageMagick, timeout after
+                           INT seconds (0: no timeout)
+     --min-dimension WxH   Only show images with width >= W and height >= H
+     --max-dimension WxH   Only show images with width <= W and height <= H
+     --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without
@@ -112,17 +115,25 @@ INDEX MODE OPTIONS
 
 FORMAT SPECIFIERS
  %f     image path/filename
- %n     image name
- %s     image size (bytes)
- %p     image pixel size
- %w     image width
+ %F     image path/filename (shell-escaped)
  %h     image height
- %t     image format
- %P     " PACKAGE "
- %v     " PACKAGE " version
- %m     current mode (slideshow, multiwindow...)
  %l     total number of files in the filelist
+ %L     path to temporary copy of filelist
+ %m     current mode (slideshow, multiwindow...)
+ %n     image name
+ %N     image name (shell-escaped)
+ %o     x,y offset of top-left image corner to window in pixels
+ %p     image pixel size
+ %P     image pixel size in kilo-/megapixels
+ %r     image rotation. half right turn == 3.1415 (pi)
+ %s     image size in bytes
+ %S     image size with appropriate unit (kB/MB)
+ %t     image format
  %u     current file number
+ %w     image width
+ %v     " PACKAGE " version
+ %V     process ID
+ %z     current image zoom
  %%     %
  \\n     newline
 
@@ -165,7 +176,7 @@ KEYS
 
 This program is free software, see the file COPYING for licensing info.
 Copyright Tom Gilbert (and various contributors) 1999-2003.
-Copyright Daniel Friesel 2010-2011.
+Copyright Daniel Friesel 2010-2014.
 
 Homepage: http://feh.finalrewind.org
-Report bugs to <derf@finalrewind.org> or #feh on irc.oftc.net.
+Report bugs to <derf+feh@finalrewind.org> or #feh on irc.oftc.net.
