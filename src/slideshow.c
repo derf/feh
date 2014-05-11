@@ -584,7 +584,8 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				break;
 			default:
 				weprintf("Unrecognized format specifier %%%c", *c);
-				strncat(ret, c - 1, 2);
+				if ((strlen(ret) + 3) < sizeof(ret))
+					strncat(ret, c - 1, 2);
 				break;
 			}
 		} else if ((*c == '\\') && (*(c+1) != '\0') && ((strlen(ret) + 3) < sizeof(ret))) {

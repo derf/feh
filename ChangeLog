@@ -10,6 +10,9 @@ git HEAD
       in it, and as I do not have the time to take over giblib development,
       importing the library seems to be the best solution.
     * Fix/improve --randomize for short filelists (closes #151)
+    * Fix a buffer overflow in the printf implementation when handling unknown
+      format specifiers (affects --action, --customlist, --index-info, --info,
+      --thumb-title and --title)
 
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
