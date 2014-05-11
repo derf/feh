@@ -700,7 +700,6 @@ static sighandler_t *enl_ipc_timeout(int sig)
 {
 	timeout = 1;
 	return((sighandler_t *) sig);
-	sig = 0;
 }
 
 char *enl_wait_for_reply(void)
