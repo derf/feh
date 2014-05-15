@@ -138,30 +138,40 @@ FORMAT SPECIFIERS
  \\n     newline
 
 KEYS
- p, <BACKSPACE>, <LEFT>  Go to previous slide
- n, <SPACE>, <RIGHT>     Go to next slide
- r                       Reload image
- v                       Toggle fullscreen
- m                       Show menu
- c                       Enable caption entry mode
- w                       Resize window to current image dimensions
- h                       Pause/Continue the slideshow
- z                       Jump to a random position in the current filelist
  a                       Toggle action display (--draw-actions)
+ A                       Toggle anti-aliasing
+ c                       Enable caption entry mode
  d                       Toggle filename display (--draw-filename)
- s                       Save current image to unique filename
+ e                       Toggle exif tag display (if compiled with exif=1)
  f                       Save current filelist to unique filename
+ h                       pause/continue slideshow
+ i                       Toggle --info display
+ k                       Toggle zoom/viewport freeze when switching images
+ m                       Show menu
+ n, <SPACE>, <RIGHT>     Go to next image
+ o                       Toggle pointer visibility
+ p, <BACKSPACE>, <LEFT>  Go to previous image
+ q, <ESCAPE>             Quit
+ r                       Reload image
+ s                       Save current image to unique filename
+ v                       Toggle fullscreen
+ w                       Resize window to current image dimensions
+ x                       Close current window
+ z                       Jump to a random position in the current filelist
  <, >                    In place editing, rotate 90 degrees right/left
+ _                       In place editing, vertical flip
+ |                       In place editing, horizontal flip
+ 0, <ENTER>              Run action specified by --action option
+ 1-9                     Run action 1-9 specified by --action[1-9] options
  <HOME>                  Go to first slide
  <END>                   Go to last slide
- <ESCAPE>                Quit the slideshow
- +                       Increase reload delay
- -                       Decrease reload delay
+ <PAGEUP>                Go forward 5% of the filelist
+ <PAGEDOWN>              Go backward 5% of the filelist
+ +                       Increase reload delay by 1 second
+ -                       Decrease reload delay by 1 second
  <DELETE>                Remove the currently viewed file from the filelist
  <CTRL+DELETE>           Like <DELETE>, but also removes the file from the
-                         filesystem. Caution: Does _not_ ask for confirmation
- x                       Close current window
- q                       Quit " PACKAGE "
+                         filesystem. Caution: Does not ask for confirmation
  <KEYPAD LEFT>           Move the image to the left
  <KEYPAD RIGHT>          Move the image to the right
  <KEYPAD UP>             Move the image up
@@ -171,8 +181,6 @@ KEYS
  <KEYPAD ->              Zoom out
  <KEYPAD *>              Zoom to 100%
  <KEYPAD />              Zoom to fit the window
- <ENTER>, 0              Run action specified by --action option
- 1-9                     Run action 1-9 specified by --action[1-9] options
 
 This program is free software, see the file COPYING for licensing info.
 Copyright Tom Gilbert (and various contributors) 1999-2003.
