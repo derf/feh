@@ -1,8 +1,8 @@
 git HEAD
 
     * feh-cam and gen-cam-menu are no longer installed by default. Use
-      make install cam=1 to install them or make uninstall cam=1 to remove
-      them permanently
+      'make install cam=1' to install them or 'make uninstall cam=1 && make
+      install cam=0' to remove them permanently
     * feh no longer depends on giblib. Instead, the relevant parts of the
       giblib source were imported into the feh source.
       Rationale: giblib is unmaintained and, as far as I know, only used by
@@ -13,6 +13,7 @@ git HEAD
     * Fix a buffer overflow in the printf implementation when handling unknown
       format specifiers (affects --action, --customlist, --index-info, --info,
       --thumb-title and --title)
+    * Update help (if built with help=1)
 
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
