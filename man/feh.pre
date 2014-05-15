@@ -1660,8 +1660,9 @@ Make zoom options more intuitive
 .
 .Sh LICENSE
 .
+Copyright (C) 1999, 2000 by Paul Duncan.
 Copyright (C) 1999, 2000 by Tom Gilbert (and various contributors).
-Copyright (C) 2010 by Daniel Friesel (and even more contributors).
+Copyright (C) 2010-2014 by Daniel Friesel (and even more contributors).
 .
 .Pp
 .
