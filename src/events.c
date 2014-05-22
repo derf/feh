@@ -110,15 +110,14 @@ void init_buttonbindings(void)
 	feh_set_bb(&buttons.rotate, 4, 2);
 
 	home = getenv("HOME");
-	if (!home)
-		eprintf("No HOME in environment");
-
 	confhome = getenv("XDG_CONFIG_HOME");
 
 	if (confhome)
 		confpath = estrjoin("/", confhome, "feh/buttons", NULL);
-	else
+	else if (home)
 		confpath = estrjoin("/", home, ".config/feh/buttons", NULL);
+	else
+		return;
 
 	conf = fopen(confpath, "r");
 

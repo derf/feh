@@ -132,15 +132,16 @@ static void feh_load_options_for_theme(char *theme)
 	int cont = 0;
 	int bspos;
 
-	if (!home)
-		eprintf("You have no HOME, cannot read themes");
-
-	oldrcpath = estrjoin("/", home, ".fehrc", NULL);
-
 	if (confbase)
 		rcpath = estrjoin("/", confbase, "feh/themes", NULL);
-	else
+	else if (home)
 		rcpath = estrjoin("/", home, ".config/feh/themes", NULL);
+	else {
+		weprintf("You have no HOME, cannot read configuration");
+		return;
+	}
+
+	oldrcpath = estrjoin("/", home, ".fehrc", NULL);
 
 	fp = fopen(rcpath, "r");
 
