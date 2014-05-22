@@ -157,15 +157,14 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.toggle_keep_vp, 0, XK_k, 0, 0, 0, 0);
 
 	home = getenv("HOME");
-	if (!home)
-		eprintf("No HOME in environment");
-
 	confhome = getenv("XDG_CONFIG_HOME");
 
 	if (confhome)
 		confpath = estrjoin("/", confhome, "feh/keys", NULL);
-	else
+	else if (home)
 		confpath = estrjoin("/", home, ".config/feh/keys", NULL);
+	else
+		return;
 
 	conf = fopen(confpath, "r");
 
