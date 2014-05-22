@@ -228,9 +228,19 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	char bgfil[4096];
 	char sendbuf[4096];
 
+	/*
+	 * TODO this re-implements mkstemp (badly). However, it is only needed
+	 * for non-file images and enlightenment. Might be easier to just remove
+	 * it.
+	 */
+
 	snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
 
 	if (!fil && im) {
+		if (getenv("HOME") == NULL) {
+			weprintf("Cannot save wallpaper to temporary file: You have no HOME");
+			return;
+		}
 		snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
 		imlib_context_set_image(im);
 		imlib_image_set_format("png");
