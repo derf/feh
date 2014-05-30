@@ -44,8 +44,6 @@ typedef struct thumbnail {
 } feh_thumbnail;
 
 typedef struct thumbmode_data {
-	/* FIXME: text_area_h not really needed, remove? */
-
 	Imlib_Image im_main;     /* base image which all thumbnails are rendered on */
 	Imlib_Image im_bg;       /* background for the thumbnails */
 
@@ -58,7 +56,7 @@ typedef struct thumbmode_data {
 	int text_area_w, text_area_h; /* space needed for thumbnail description */
 
 	int max_column_w;        /* FIXME: description */
-	int vertical;            /* FIXME: vertical in what way? */
+	int vertical;            /* == !opt.limit_w && opt.limit_h */
 
 	int cache_thumbnails;    /* use cached thumbnails from ~/.thumbnails */
 	int cache_dim;           /* 128 = 128x128 ("normal"), 256 = 256x256 ("large") */
