@@ -57,7 +57,8 @@ void init_parse_options(int argc, char **argv)
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
-	opt.scroll_step = 20;
+	opt.scroll_step = 5;
+	opt.scroll_page_step = 90;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
 	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
@@ -401,6 +402,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"no-fehbg"      , 0, 0, 236},
 		{"keep-zoom-vp"  , 0, 0, 237},
 		{"scroll-step"   , 1, 0, 238},
+		{"scroll-page-step"   , 1, 0, 239},
 
 		{0, 0, 0, 0}
 	};
@@ -735,7 +737,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.keep_zoom_vp = 1;
 			break;
 		case 238:
-			opt.scroll_step = atoi(optarg);
+			opt.scroll_step = atof(optarg);
+			if (opt.scroll_step > 1)
+				opt.scroll_step /= 100;
+			break;
+		case 239:
+			opt.scroll_page_step = atof(optarg);
+			if (opt.scroll_page_step > 1)
+				opt.scroll_page_step /= 100;
 			break;
 		default:
 			break;

@@ -110,8 +110,9 @@ struct __fehoptions {
 	int zoom_mode;
 	unsigned char adjust_reload;
 
-	/* signed in case someone wants to invert scrolling real quick */
-	int scroll_step;
+	/* possible to invert scrolling */
+	float scroll_step;
+	float scroll_page_step;
 
 	unsigned int min_width, min_height, max_width, max_height;
 
