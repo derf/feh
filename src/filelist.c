@@ -600,7 +600,7 @@ void feh_save_filelist()
 	tmpname = feh_unique_filename("", "filelist");
 
 	if (opt.verbose)
-		printf("saving filelist to filename '%s'\n", tmpname);
+		fprintf(stderr, "saving filelist to filename '%s'\n", tmpname);
 
 	feh_write_filelist(filelist, tmpname);
 	free(tmpname);
