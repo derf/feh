@@ -456,7 +456,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
 				} else {
-					fprintf(fp, "#!/bin/bash\n%s\n", fehbg);
+					fprintf(fp, "#!/bin/sh\n%s\n", fehbg);
 					fclose(fp);
 					stat(path, &s);
 					if (chmod(path, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
