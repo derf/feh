@@ -276,7 +276,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	if ((err) || (!im)) {
 		if (opt.verbose && !opt.quiet) {
-			fputs("\n", stdout);
+			fputs("\n", stderr);
 			reset_output = 1;
 		}
 		feh_imlib_print_load_error(file->filename, NULL, err);
@@ -994,7 +994,7 @@ void feh_display_status(char stat)
 	D(("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
 	if (!stat) {
-		putc('\n', stdout);
+		putc('\n', stderr);
 		init_len = 0;
 		i = 0;
 		return;
@@ -1007,24 +1007,24 @@ void feh_display_status(char stat)
 		if (reset_output) {
 			/* There's just been an error message. Unfortunate ;) */
 			for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 7); j++)
-				putc(' ', stdout);
+				putc(' ', stderr);
 		}
 
 		if (!(i % 50)) {
 			int len = gib_list_length(filelist);
 
-			fprintf(stdout, " %5d/%d (%d)\n[%3d%%] ",
+			fprintf(stderr, " %5d/%d (%d)\n[%3d%%] ",
 					i, init_len, len, ((int) ((float) i / init_len * 100)));
 
 		} else if ((!(i % 10)) && (!reset_output))
-			putc(' ', stdout);
+			putc(' ', stderr);
 
 		reset_output = 0;
 	} else
-		fputs("[  0%] ", stdout);
+		fputs("[  0%] ", stderr);
 
-	fprintf(stdout, "%c", stat);
-	fflush(stdout);
+	fprintf(stderr, "%c", stat);
+	fflush(stderr);
 	i++;
 	return;
 }

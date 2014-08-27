@@ -303,7 +303,7 @@ void init_index_mode(void)
 		}
 	}
 	if (opt.verbose)
-		putc('\n', stdout);
+		putc('\n', stderr);
 
 	if (opt.title_font) {
 		int fw, fh, fx, fy;
@@ -336,8 +336,8 @@ void init_index_mode(void)
 
 			tw = gib_imlib_image_get_width(im_main);
 			th = gib_imlib_image_get_height(im_main);
-			fprintf(stdout, PACKAGE " - File saved as %s\n", output_buf);
-			fprintf(stdout,
+			fprintf(stderr, PACKAGE " - File saved as %s\n", output_buf);
+			fprintf(stderr,
 				"    - Image is %dx%d pixels and contains %d thumbnails\n", tw, th, thumbnailcount);
 		}
 	}
