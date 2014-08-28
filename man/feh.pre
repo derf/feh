@@ -769,7 +769,7 @@ can also be used as a background setter.  Unless you pass the
 option, it will store the command line necessary to set the background in
 .Pa ~/.fehbg ,
 so to have your background restored every time you start X, you can add
-.Qq eval $(cat ~/.fehbg)
+.Qq exec ~/.fehbg &
 to your X startup script
 .Pq like Pa ~/.xinitrc .
 .
