@@ -1327,7 +1327,6 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 				opt.keep_zoom_vp = 1;
 			else
 				opt.keep_zoom_vp = 0;
-			winwidget_rerender_all(1);
 			break;
 	}
 	return;
