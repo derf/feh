@@ -766,12 +766,17 @@ be printed.
 .Nm
 can also be used as a background setter.  Unless you pass the
 .Cm --no-fehbg
-option, it will store the command line necessary to set the background in
-.Pa ~/.fehbg ,
-so to have your background restored every time you start X, you can add
-.Qq exec ~/.fehbg &
+option, it will write a script to set the current background to
+.Pa ~/.fehbg .
+So to have your background restored every time you start X, you can add
+.Qq sh ~/.fehbg &
 to your X startup script
-.Pq like Pa ~/.xinitrc .
+.Pq such as Pa ~/.xinitrc .
+As of
+.Nm
+2.13, this script is executable, so
+.Qq ~/.fehbg &
+will work as well.
 .
 .Pp
 .
