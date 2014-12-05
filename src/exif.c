@@ -259,7 +259,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
   else
   {
     /* show normal exif tags. list must be defined in exif_cfg.h  */
-    while ( (Exif_tag_list[i].ifd != EXIF_IFD_COUNT) && (i < USHRT_MAX) )
+    while ( (i < USHRT_MAX) && (Exif_tag_list[i].ifd != EXIF_IFD_COUNT) )
     {
       exif_get_tag(ed, Exif_tag_list[i].ifd, Exif_tag_list[i].tag, buffer + strlen(buffer), maxsize - strlen(buffer));
       i++; 
@@ -281,7 +281,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
         {
           /* show nikon makernote exif tags. list must be defined in exif_cfg.h  */
           i=0;
-          while ( (Exif_makernote_nikon_tag_list[i] != EXIF_NIKON_MAKERNOTE_END) && (i < USHRT_MAX) )
+          while ( (i < USHRT_MAX) && (Exif_makernote_nikon_tag_list[i] != EXIF_NIKON_MAKERNOTE_END) )
           {
             exn_get_mnote_nikon_tags(ed, Exif_makernote_nikon_tag_list[i], 
                                      buffer + strlen(buffer), maxsize - strlen(buffer));
@@ -293,7 +293,7 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
         {
           /* show canon makernote exif tags. list must be defined in exif_cfg.h  */
           i=0;
-          while ( (Exif_makernote_canon_tag_list[i] != EXIF_CANON_MAKERNOTE_END) && (i < USHRT_MAX) )
+          while ( (i < USHRT_MAX) && (Exif_makernote_canon_tag_list[i] != EXIF_CANON_MAKERNOTE_END) )
           {
             exc_get_mnote_canon_tags(ed, Exif_makernote_canon_tag_list[i], 
                                      buffer + strlen(buffer), maxsize - strlen(buffer));
