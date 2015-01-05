@@ -525,7 +525,9 @@ E.g. to sort in reverse width order, use
 .
 .It Cm -. , --scale-down
 .
-When not in fullscreen: Scale images to screen size if they are too big.
+Scale images to fit window geometry (defaults to screen size when no geometry
+was specified).
+This option is ignored when in fullscreen mode.
 .
 .Pp
 .

@@ -408,16 +408,26 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	winwidget_setup_pixmaps(winwid);
 
-	if (!winwid->full_screen && opt.scale_down && ((winwid->w < winwid->im_w)
-						       || (winwid->h < winwid->im_h)) &&
+	if (!winwid->full_screen && opt.scale_down &&
 							  (winwid->type != WIN_TYPE_THUMBNAIL) &&
 							  (winwid->old_zoom == 1.0)) {
-		D(("scaling down image %dx%d\n", winwid->w, winwid->h));
+        int max_w = winwid->w, max_h = winwid->h;
+        if (opt.geom_flags & WidthValue) {
+            max_w = opt.geom_w;
+        }
+        if (opt.geom_flags & HeightValue) {
+            max_h = opt.geom_h;
+        }
+        D(("max: %dx%d, size: %dx%d\n", max_w, max_h, winwid->im_w, winwid->im_h));
+        if (max_w < winwid->im_w || max_h < winwid->im_h) {
+            D(("scaling down image %dx%d\n", max_w, max_h));
 
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
-		if (resize)
-			 winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
-		D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
+            feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h,
+                    max_w, max_h);
+            if (resize)
+                winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
+            D(("after scaling down image %dx%d\n", winwid->w, winwid->h));
+        }
 	}
 
 	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
@@ -433,7 +443,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
-	if (resize && (winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
+	if (resize && !opt.scale_down && (winwid->full_screen
+                     || (opt.geom_flags & (WidthValue | HeightValue)))) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
 
@@ -827,24 +838,24 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-	if (opt.geom_flags & (WidthValue | HeightValue)) {
-		winwid->had_resize = 1;
-		return;
-	}
+    if (!opt.scale_down && opt.geom_flags & (WidthValue | HeightValue)) {
+        winwid->had_resize = 1;
+        return;
+    }
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
 		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
-			winwid->w = (w > scr_width) ? scr_width : w;
-			winwid->h = (h > scr_height) ? scr_height : h;
+            winwid->w = (w > scr_width) ? scr_width : w;
+            winwid->h = (h > scr_height) ? scr_height : h;
 		}
 		if (winwid->full_screen) {
-			XTranslateCoordinates(disp, winwid->win, attributes.root,
-						-attributes.border_width -
-						attributes.x,
-						-attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
-			winwid->x = tc_x;
-			winwid->y = tc_y;
-			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+            XTranslateCoordinates(disp, winwid->win, attributes.root,
+                        -attributes.border_width -
+                        attributes.x,
+                        -attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
+            winwid->x = tc_x;
+            winwid->y = tc_y;
+            XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
 		} else
 			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
 
