@@ -326,7 +326,7 @@ Hide the pointer
 .It Cm -B , --image-bg Ar style
 .
 Use style as background for transparent image parts and the like.
-Accepted values: checks (default), white, black.
+Accepted values: checks (default), white, black, or any valid X color string.
 .
 .It Cm -i , --index
 .
