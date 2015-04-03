@@ -571,7 +571,18 @@ first, reverse the filelist with --reverse.
 .
 Start the filelist at
 .Ar filename .
-See
+.
+Note that at the moment,
+.Ar filename
+must match an
+.Pq expanded
+path in the filelist. So, if the file to be matched is passed via an absolute
+path in the filelist,
+.Ar filename
+must be an absolute path. If the file is passed via a relative path,
+.Ar filename
+must be an identical relative path. This is a known issue.
+See also
 .Sx USAGE EXAMPLES .
 .
 .It Cm -T , --theme Ar theme
