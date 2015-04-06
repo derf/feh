@@ -1161,7 +1161,7 @@ to close the menu.
 .
 .It n , Ao Space Ac , Ao Right Ac Bq next_img
 .
-Show next image
+Show next image. Selects the next image in thumbnail mode.
 .
 .It o Bq toggle_pointer
 .
@@ -1169,7 +1169,7 @@ Toggle pointer visibility
 .
 .It p , Ao Backspace Ac , Ao Left Ac Bq prev_img
 .
-Show previous image
+Show previous image. Selects the previous image in thumbnail mode.
 .
 .It q , Ao Escape Ac Bq quit
 .
@@ -1309,7 +1309,8 @@ Scroll down by one page
 .
 .It R, Ao keypad begin Ac Bq render
 .
-Antialias the image
+Antialias the image.
+Opens the currently selected image in thumbnail mode.
 .
 .It Ao keypad + Ac , Ao Up Ac Bq zoom_in
 .
