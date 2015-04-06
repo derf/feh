@@ -421,6 +421,10 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case '<':
 			XParseGeometry(optarg, &discard, &discard, &opt.max_width, &opt.max_height);
+			if (opt.max_width == 0)
+				opt.max_width = UINT_MAX;
+			if (opt.max_height == 0)
+				opt.max_height = UINT_MAX;
 			break;
 		case '>':
 			XParseGeometry(optarg, &discard, &discard, &opt.min_width, &opt.min_height);

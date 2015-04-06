@@ -1,3 +1,7 @@
+git HEAD
+
+    * --max-dimension: ignore width/height limit of 0 pixels
+
 Thu, 15 May 2014 23:41:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Releasev v2.12

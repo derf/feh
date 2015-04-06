@@ -420,8 +420,8 @@ Only show images with width <=
 .Ar width
 and height <=
 .Ar height .
-If you only care about one parameter, set the other to either something large
-or -1.
+If you only care about one parameter, set the other to 0
+.Pq or a negative value .
 .
 .It Cm -M , --menu-font Ar font
 .
