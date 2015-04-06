@@ -566,6 +566,8 @@ void im_weprintf(winwidget w, char *fmt, ...)
 	if (fmt[0] != '\0' && fmt[strlen(fmt) - 1] == ':')
 		fprintf(stderr, " %s", strerror(errno));
 	fputs("\n", stderr);
+	if (!w)
+		free(errstr);
 }
 
 
