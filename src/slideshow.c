@@ -664,7 +664,7 @@ void slideshow_save_image(winwidget win)
 	if (opt.verbose)
 		fprintf(stderr, "saving image to filename '%s'\n", tmpname);
 
-	ungib_imlib_save_image_with_error_return(win->im, tmpname, &err);
+	gib_imlib_save_image_with_error_return(win->im, tmpname, &err);
 
 	if (err)
 		feh_imlib_print_load_error(tmpname, win, err);

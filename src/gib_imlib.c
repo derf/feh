@@ -527,13 +527,22 @@ void
 gib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
                                        Imlib_Load_Error * error_return)
 {
-   char *tmp;
+    char *tmp;
 
-   imlib_context_set_image(im);
-   tmp = strrchr(file, '.');
-   if (tmp)
-      imlib_image_set_format(tmp + 1);
-   imlib_save_image_with_error_return(file, error_return);
+    imlib_context_set_image(im);
+    tmp = strrchr(file, '.');
+    if (tmp) {
+        char *p, *pp;
+        p = estrdup(tmp + 1);
+        pp = p;
+        while(*pp) {
+            *pp = tolower(*pp);
+            pp++;
+        }
+        imlib_image_set_format(p);
+        free(p);
+    }
+    imlib_save_image_with_error_return(file, error_return);
 }
 
 void

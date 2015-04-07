@@ -148,32 +148,6 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 	return(i);
 }
 
-/*
- * XXX gib_imlib_save_image_with_error_return breaks with *.END and
- * similar because it tries to set the image format, which only works
- * with .end .
- * So we leave that part out.
- */
-void ungib_imlib_save_image_with_error_return(Imlib_Image im, char *file,
-	Imlib_Load_Error * error_return)
-{
-	char *tmp;
-	imlib_context_set_image(im);
-	tmp = strrchr(file, '.');
-	if (tmp) {
-		char *p, *pp;
-		p = estrdup(tmp + 1);
-		pp = p;
-		while(*pp) {
-			*pp = tolower(*pp);
-			pp++;
-		}
-		imlib_image_set_format(p);
-		free(p);
-	}
-	imlib_save_image_with_error_return(file, error_return);
-}
-
 void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 {
 	if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
@@ -1055,7 +1029,7 @@ void feh_edit_inplace(winwidget w, int op)
 			imlib_image_flip_horizontal();
 		} else
 			gib_imlib_image_orientate(old, op);
-		ungib_imlib_save_image_with_error_return(old,
+		gib_imlib_save_image_with_error_return(old,
 			FEH_FILE(w->file->data)->filename, &err);
 		gib_imlib_free_image(old);
 		if (err)

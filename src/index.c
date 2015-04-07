@@ -327,7 +327,7 @@ void init_index_mode(void)
 		else
 			strncpy(output_buf, opt.output_file, 1024);
 
-		ungib_imlib_save_image_with_error_return(im_main, output_buf, &err);
+		gib_imlib_save_image_with_error_return(im_main, output_buf, &err);
 		if (err) {
 			feh_imlib_print_load_error(output_buf, im_main, err);
 		}
