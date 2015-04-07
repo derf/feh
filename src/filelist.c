@@ -332,8 +332,10 @@ gib_list *feh_file_info_preload(gib_list * list)
 		feh_display_status(0);
 
 	if (remove_list) {
-		for (l = remove_list; l; l = l->next)
+		for (l = remove_list; l; l = l->next) {
+			feh_file_free(FEH_FILE(((gib_list *) l->data)->data));
 			filelist = list = gib_list_remove(list, (gib_list *) l->data);
+		}
 
 		gib_list_free(remove_list);
 	}
