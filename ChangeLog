@@ -1,10 +1,14 @@
 git HEAD
 
-    * Handle missing HOME in environment
     * print --verbose output to stderr
     * ~/.fehbg is now a shell script and can be executed directly
       (sourcing it still works)
     * --max-dimension: ignore width/height limit of 0 pixels
+
+Wed, 08 Apr 2015 11:18:41 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.12.1
+    * Handle missing HOME in environment
     * Fix memory leak when a slideshow contains many unloadable images
     * Fix memory leak when --prelaod removes files from the filelist
 
