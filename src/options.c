@@ -236,7 +236,7 @@ static void feh_parse_options_from_string(char *opts)
 
 			list[num - 1] = feh_string_normalize(s);
 			break;
-		} else if (*t == '\"' && last != '\\')
+		} else if (((*t == '\"') || (*t == '\'')) && last != '\\')
 			inquote = !(inquote);
 		last = *t;
 	}
@@ -265,6 +265,9 @@ char *feh_string_normalize(char *str)
 		else if ((*s == '\"') && (last == '\\'))
 			ret[i++] = '\"';
 		else if ((*s == '\"') && (last == 0));
+		else if ((*s == '\'') && (last == '\\'))
+			ret[i++] = '\'';
+		else if ((*s == '\'') && (last == 0));
 		else if ((*s == ' ') && (last == '\\'))
 			ret[i++] = ' ';
 		else
@@ -272,7 +275,7 @@ char *feh_string_normalize(char *str)
 
 		last = *s;
 	}
-	if (i && (ret[i - 1] == '\"'))
+	if (i && ((ret[i - 1] == '\"') || (ret[i - 1] == '\'')))
 		ret[i - 1] = '\0';
 	else
 		ret[i] = '\0';
