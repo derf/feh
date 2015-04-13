@@ -997,10 +997,17 @@ is the name of the entry and
 .Ar options
 are the options which will be applied when the theme is used.
 .
+Note that the options are not parsed by any shell. Therefore, filename expansion
+.Po
+.Qq *.jpg
+and similar
+.Pc
+is not supported. Quoting with both single and double quotes works, though.
+.
 .Pp
 .
 An example entry would be
-.Qq imagemap -rVq --thumb-width 40 --thumb-height 30 .
+.Qq imagemap -rVq --thumb-width 40 --thumb-height 30 --index-info \&'%n\en\&%wx\&%h\&' .
 .
 .Pp
 .
@@ -1008,10 +1015,11 @@ You can use this theme in two ways.  Either call
 .Qo
 .Nm
 -Timagemap *.jpg
-.Qc
+.Qc ,
 or create a symbolic link to
 .Nm
-with the name of the theme you want it to use.  So from the example above:
+with the name of the theme you want it to use.  For the example above,
+this would be
 .Qo
 ln -s `which
 .Nm
@@ -1024,11 +1032,11 @@ to use these options.
 .Pp
 .
 Note that you can split a theme over several lines by placing a backslash at
-the end of a line, like in the shell.
+the end of an unfinished line.
 .
 .Pp
 .
-You can combine these themes with commandline options.
+Command line options always override theme options.
 .
 .
 .Sh KEYS CONFIG SYNTAX
