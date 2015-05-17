@@ -1,5 +1,6 @@
 Sun, 17 May 2015 20:40:36 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.13
     * print --verbose output to stderr
     * Show progress when using --verbose and --loadable / --unloadable
     * ~/.fehbg is now a shell script and can be executed directly
