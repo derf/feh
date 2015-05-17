@@ -1,10 +1,14 @@
-git HEAD
+Sun, 17 May 2015 20:40:36 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
     * print --verbose output to stderr
+    * Show progress when using --verbose and --loadable / --unloadable
     * ~/.fehbg is now a shell script and can be executed directly
       (sourcing it still works)
     * --max-dimension: ignore width/height limit of 0 pixels
+    * Do not re-render images when toggling keep_zoom_vp
     * feh/themes: Support quoting with '' too (previously, only "" worked)
+    * Fix potential out of bounds array access in EXIF code
+      (when built with exif=1)
 
 Wed, 08 Apr 2015 11:18:41 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
@@ -15,7 +19,7 @@ Wed, 08 Apr 2015 11:18:41 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 Thu, 15 May 2014 23:41:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
-* Releasev v2.12
+* Release v2.12
     * feh-cam and gen-cam-menu are no longer installed by default. Use
       'make install cam=1' to install them or 'make uninstall cam=1 && make
       install cam=0' to remove them permanently
@@ -29,7 +33,7 @@ Thu, 15 May 2014 23:41:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix a buffer overflow in the printf implementation when handling unknown
       format specifiers (affects --action, --customlist, --index-info, --info,
       --thumb-title and --title)
-    * Update help (if built with help=1)
+    * Update help (when built with help=1)
 
 Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 

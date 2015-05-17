@@ -110,7 +110,7 @@ void real_loadables_mode(int loadable)
 			}
 			else {
 				if (opt.verbose)
-					feh_display_status('.');
+					feh_display_status('s');
 				ret = 1;
 			}
 		}
