@@ -1,3 +1,7 @@
+git HEAD
+
+    * Fix --scale-down breaking image centering in fullscreen mode
+
 Sun, 17 May 2015 20:40:36 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.13

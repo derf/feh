@@ -443,8 +443,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
-	if (resize && !opt.scale_down && (winwid->full_screen
-                     || (opt.geom_flags & (WidthValue | HeightValue)))) {
+	if (resize && (winwid->full_screen
+                     || (!opt.scale_down && (opt.geom_flags & (WidthValue | HeightValue))))) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
 
