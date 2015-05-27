@@ -533,16 +533,35 @@ This option is ignored when in fullscreen mode.
 .
 In tiling environments, this also causes the image to be centered in the window.
 .
-.It Cm --scroll-step Ar count
+.It Cm --scroll-step Ar percent
 .
-Scroll
-.Ar count
-pixels whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
+.Ar Percent
+of window whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
+Note that this option accepts negative numbers in case you need to inverse the
+scroll direction; see
+.Sx KEYS CONFIG SYNTAX
+to change it permanently. You can give float number to this option. If
+.Ar percent
+is less than 1, then it will be iterpreted as
+.Ar part
+of screen. I.e. .5 and 50 are the same when provided to this option.
+.br
+Default: 5
+.
+.It Cm --scroll-page-step Ar percent
+.
+.Ar Percent
+of window whenever scroll_page_up, scroll_page_down, scroll_page_left or
+scroll_page_right is pressed.
 Note that this option accepts negative numbers in case you need to inverse the
 scroll direction; see
 .Sx KEYS CONFIG SYNTAX
 to change it permanently.
-Default: 20
+For details about what
+.Ar percent
+means and how it could be interpreted see --scroll-step.
+.br
+Default: 90
 .
 .It Cm -D , --slideshow-delay Ar float
 .
