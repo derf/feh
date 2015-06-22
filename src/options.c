@@ -71,6 +71,7 @@ void init_parse_options(int argc, char **argv)
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
 #endif				/* HAVE_LIBXINERAMA */
+	opt.xinerama_index = -1;
 
 	feh_getopt_theme(argc, argv);
 
@@ -404,6 +405,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"no-fehbg"      , 0, 0, 236},
 		{"keep-zoom-vp"  , 0, 0, 237},
 		{"scroll-step"   , 1, 0, 238},
+		{"xinerama-index", 1, 0, 239},
 
 		{0, 0, 0, 0}
 	};
@@ -743,6 +745,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 238:
 			opt.scroll_step = atoi(optarg);
+			break;
+		case 239:
+			opt.xinerama_index = atoi(optarg);
 			break;
 		default:
 			break;

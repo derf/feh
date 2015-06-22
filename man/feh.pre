@@ -470,6 +470,13 @@ managers.
 Disable Xinerama support.  Only makes sense when you have Xinerama support
 compiled in.
 .
+.It Cm --xinerama-index
+.
+Force Xinerama screen index to use.  Only makes sense when you have 
+Xinerama support compiled in and using
+.Nm
+as a background setter.
+.
 .It Cm -j , --output-dir Ar directory
 .
 Save files to
@@ -820,7 +827,12 @@ on screen 0, the second on screen 1, and so on.
 .
 Use
 .Cm --no-xinerama
-to treat the whole X display as one screen when setting wallpapers.
+to treat the whole X display as one screen when setting wallpapers. You
+may also use
+.Cm --xinerama-index
+to use
+.Nm
+as a background setter for a specific screen.
 .
 .Bl -tag -width indent
 .
