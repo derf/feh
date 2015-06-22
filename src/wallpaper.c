@@ -465,8 +465,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				}
 				free(path);
 			}
-			free(fehbg);
 		}
+		
+		if (fehbg) free(fehbg);
 
 		/* create new display, copy pixmap to new display */
 		disp2 = XOpenDisplay(NULL);
