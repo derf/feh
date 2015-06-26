@@ -1,3 +1,10 @@
+git HEAD
+
+    * Add --xinerama-index option for background setting
+      (patch by James Knight)
+    * when removing the last image in slidsehow mode, stay on the last
+      (previously second-to-last) image (patch by Lior Shiponi)
+
 Sun, 24 May 2015 11:45:18 +0200
 
 * Release v2.13.1
