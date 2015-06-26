@@ -109,6 +109,7 @@ struct __fehoptions {
 	int default_zoom;
 	int zoom_mode;
 	unsigned char adjust_reload;
+	int xinerama_index;
 
 	/* signed in case someone wants to invert scrolling real quick */
 	int scroll_step;
