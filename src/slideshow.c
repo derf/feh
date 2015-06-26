@@ -621,7 +621,12 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 			feh_file_rm_and_free(filelist, doomed);
 			exit(0);
 		}
-		slideshow_change_image(winwid, SLIDE_NEXT, 0);
+		if (doomed->next) {
+			slideshow_change_image(winwid, SLIDE_NEXT, 0);
+		}
+		else {
+			slideshow_change_image(winwid, SLIDE_PREV, 0);
+		}
 		if (do_delete)
 			filelist = feh_file_rm_and_free(filelist, doomed);
 		else
