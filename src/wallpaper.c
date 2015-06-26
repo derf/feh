@@ -304,17 +304,17 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char filbuf[4096];
 		char *bgfill = NULL;
 		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
-		
-		if (opt.xinerama)
-		{
-			if (opt.xinerama_index >= 0)
-			{
+
+#ifdef HAVE_LIBXINERAMA
+		if (opt.xinerama) {
+			if (opt.xinerama_index >= 0) {
 				snprintf(fehbg_args, sizeof(fehbg_args),
 					"--xinerama-index %d", opt.xinerama_index);
 			}
 		}
 		else
 			snprintf(fehbg_args, sizeof(fehbg_args), "--no-xinerama");
+#endif			/* HAVE_LIBXINERAMA */
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -366,22 +366,19 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama_index >= 0)
-			{
+			if (opt.xinerama_index >= 0) {
 				if (opt.image_bg == IMAGE_BG_WHITE)
 					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
 				else
 					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 				gc = XCreateGC(disp, root, GCForeground, &gcval);
 				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+				XFreeGC(disp, gc);
 			}
-			
-			if (opt.xinerama && xinerama_screens)
-			{
-				for (i = 0; i < num_xinerama_screens; i++)
-				{
-					if (opt.xinerama_index < 0 || opt.xinerama_index == i)
-					{
+
+			if (opt.xinerama && xinerama_screens) {
+				for (i = 0; i < num_xinerama_screens; i++) {
+					if (opt.xinerama_index < 0 || opt.xinerama_index == i) {
 						feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
 							xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 							xinerama_screens[i].width, xinerama_screens[i].height);
@@ -406,12 +403,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-			{
-				for (i = 0; i < num_xinerama_screens; i++)
-				{
-					if (opt.xinerama_index < 0 || opt.xinerama_index == i)
-					{
+			if (opt.xinerama && xinerama_screens) {
+				for (i = 0; i < num_xinerama_screens; i++) {
+					if (opt.xinerama_index < 0 || opt.xinerama_index == i) {
 						feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
 							xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 							xinerama_screens[i].width, xinerama_screens[i].height);
@@ -432,22 +426,19 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama_index >= 0)
-			{
+			if (opt.xinerama_index >= 0) {
 				if (opt.image_bg == IMAGE_BG_WHITE)
 					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
 				else
 					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 				gc = XCreateGC(disp, root, GCForeground, &gcval);
 				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+				XFreeGC(disp, gc);
 			}
-			
-			if (opt.xinerama && xinerama_screens)
-			{
-				for (i = 0; i < num_xinerama_screens; i++)
-				{
-					if (opt.xinerama_index < 0 || opt.xinerama_index == i)
-					{
+
+			if (opt.xinerama && xinerama_screens) {
+				for (i = 0; i < num_xinerama_screens; i++) {
+					if (opt.xinerama_index < 0 || opt.xinerama_index == i) {
 						feh_wm_set_bg_filled(pmap_d1, im, use_filelist,
 							xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 							xinerama_screens[i].width, xinerama_screens[i].height);
@@ -472,12 +463,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
 #ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens)
-			{
-				for (i = 0; i < num_xinerama_screens; i++)
-				{
-					if (opt.xinerama_index < 0 || opt.xinerama_index == i)
-					{
+			if (opt.xinerama && xinerama_screens) {
+				for (i = 0; i < num_xinerama_screens; i++) {
+					if (opt.xinerama_index < 0 || opt.xinerama_index == i) {
 						feh_wm_set_bg_maxed(pmap_d1, im, use_filelist,
 							xinerama_screens[i].x_org, xinerama_screens[i].y_org,
 							xinerama_screens[i].width, xinerama_screens[i].height);
@@ -524,7 +512,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			}
 		}
 		
-		if (fehbg) free(fehbg);
+		free(fehbg);
 
 		/* create new display, copy pixmap to new display */
 		disp2 = XOpenDisplay(NULL);

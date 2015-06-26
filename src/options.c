@@ -70,8 +70,8 @@ void init_parse_options(int argc, char **argv)
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
-#endif				/* HAVE_LIBXINERAMA */
 	opt.xinerama_index = -1;
+#endif				/* HAVE_LIBXINERAMA */
 
 	feh_getopt_theme(argc, argv);
 
