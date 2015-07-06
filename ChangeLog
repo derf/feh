@@ -4,6 +4,8 @@ git HEAD
       (patch by James Knight)
     * when removing the last image in slidsehow mode, stay on the last
       (previously second-to-last) image (patch by Lior Shiponi)
+    * Allow --sort and --randomize to override each other (most recently
+      specified option wins) instead of always preferring --sort
 
 Sun, 24 May 2015 11:45:18 +0200
 

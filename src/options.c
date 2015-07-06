@@ -530,6 +530,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 						"sort by filename", optarg);
 				opt.sort = SORT_FILENAME;
 			}
+			if (opt.randomize) {
+				weprintf("commandline contains --randomize and --sort. "
+						"--randomize has been unset");
+				opt.randomize = 0;
+			}
 			break;
 		case 'T':
 			theme = estrdup(optarg);
@@ -644,6 +649,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'z':
 			opt.randomize = 1;
+			if (opt.sort != SORT_NONE) {
+				weprintf("commandline contains --sort and --randomize. "
+						"--sort has been unset");
+				opt.sort = SORT_NONE;
+			}
 			break;
 		case '|':
 			opt.start_list_at = estrdup(optarg);
@@ -794,12 +804,6 @@ static void check_options(void)
 
 	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
 		eprintf("You cannot combine --list with other modes");
-	}
-
-	if (opt.sort && opt.randomize) {
-		weprintf("You cant sort AND randomize the filelist...\n"
-				"randomize mode has been unset\n");
-		opt.randomize = 0;
 	}
 
 	if (opt.loadables && opt.unloadables) {
