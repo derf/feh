@@ -13,7 +13,7 @@
 .
 .Nm
 .Op Ar options
-.Ar files or directories or URLs ...
+.Ar files or directories (default ./) or URLs ...
 .
 .
 .Sh VERSION
