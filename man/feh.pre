@@ -13,7 +13,7 @@
 .
 .Nm
 .Op Ar options
-.Ar files or directories or URLs ...
+.Op Ar files No | Ar directories No | Ar URLs ...
 .
 .
 .Sh VERSION
@@ -36,6 +36,10 @@ need a fast image viewer without huge GUI dependencies, though it can also be
 started by
 .Pq graphical
 file managers to view an image.
+By default
+.Pq unless arguments or a filelist are specified
+.Nm
+displays all files in the current directory.
 .
 .Pp
 .
