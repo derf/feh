@@ -1154,9 +1154,8 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i)
 			}
 
 		}
-		if (getenv("XINERAMA_SCREEN"))
-			curr_screen = xinerama_screen =
-				atoi(getenv("XINERAMA_SCREEN"));
+		if (opt.xinerama_index >= 0)
+			curr_screen = xinerama_screen = opt.xinerama_index;
 	}
 #endif				/* HAVE_LIBXINERAMA */
 

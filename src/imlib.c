@@ -78,8 +78,8 @@ void init_xinerama(void)
 		XineramaQueryVersion(disp, &major, &minor);
 		xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
 
-		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+		if (opt.xinerama_index >= 0)
+			xinerama_screen = opt.xinerama_index;
 		else {
 			xinerama_screen = 0;
 			XQueryPointer(disp, root, &dw, &dw, &px, &py, &di, &di, &du);

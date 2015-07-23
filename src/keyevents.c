@@ -731,9 +731,8 @@ void feh_event_handle_keypress(XEvent * ev)
 					break;
 				}
 			}
-			if (getenv("XINERAMA_SCREEN"))
-				curr_screen = xinerama_screen =
-					atoi(getenv("XINERAMA_SCREEN"));
+			if (opt.xinerama_index >= 0)
+				curr_screen = xinerama_screen = opt.xinerama_index;
 		}
 #endif				/* HAVE_LIBXINERAMA */
 		winwid->full_screen = !winwid->full_screen;

@@ -826,8 +826,8 @@ void winwidget_resize(winwidget winwid, int w, int h)
 			}
 
 		}
-		if (getenv("XINERAMA_SCREEN"))
-			xinerama_screen = atoi(getenv("XINERAMA_SCREEN"));
+		if (opt.xinerama_index >= 0)
+			xinerama_screen = opt.xinerama_index;
 
 		scr_width = xinerama_screens[xinerama_screen].width;
 		scr_height = xinerama_screens[xinerama_screen].height;
