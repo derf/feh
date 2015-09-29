@@ -6,6 +6,8 @@ git HEAD
       (previously second-to-last) image (patch by Lior Shiponi)
     * Allow --sort and --randomize to override each other (most recently
       specified option wins) instead of always preferring --sort
+    * Thumbnail mode: Mark image as processed when executing an action
+      (--action) by clicking on an image
 
 Sun, 24 May 2015 11:45:18 +0200
 
