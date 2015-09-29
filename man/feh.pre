@@ -644,6 +644,30 @@ output useful information, progress bars, etc.
 .
 output version information and exit.
 .
+.It Cm --xinerama-index Ar screen
+.
+Override
+.Nm Ns No 's
+idea of the active Xinerama screen. May be useful in certain circumstances
+where the window manager places the feh window on Xinerama screen A while
+.Nm
+assumes that it will be placed on screen B.
+.
+.Pp
+.
+In background setting mode: When used with any option other than
+.Cm --bg-tile :
+Only set wallpaper on
+.Ar screen .
+All other screens will be filled black/white.
+.
+This is most useful in a Xinerama configuration with
+overlapping screens.  For instance, assume you have two overlapping displays
+(index 0 and 1), where index 0 is smaller. To center a background on the
+display with index 0 and fill the extra space on index 1 black/white, use
+.Qq --xinerama-index 0
+when setting the wallpaper.
+.
 .It Cm --zoom Ar percent No | Cm max No | Cm fill
 .
 Zoom images by
@@ -868,21 +892,6 @@ the image in case it is too small for the screen
 Do not write a
 .Pa ~/.fehbg
 file
-.
-.It Cm --xinerama-index Ar screen
-.
-When used with any option other than
-.Cm --bg-tile :
-Only set wallpaper on
-.Ar screen .
-All other screens will be filled black/white.
-.
-This is most useful in a Xinerama configuration with overlapping screens.
-For instance, assume you have two overlapping displays (index 0 and 1), where
-index 0 is smaller. To center a background on the display with index 0 and
-fill the extra space on index 1 black/white, use
-.Qq --xinerama-index 0
-when setting the wallpaper.
 .
 .El
 .
