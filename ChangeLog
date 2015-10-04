@@ -1,13 +1,19 @@
-git HEAD
+Sun, 04 Oct 2015 10:01:20 +0200
 
+* Release v2.14
     * Add --xinerama-index option for background setting
       (patch by James Knight)
-    * when removing the last image in slidsehow mode, stay on the last
+    * When removing the last image in slidsehow mode, stay on the last
       (previously second-to-last) image (patch by Lior Shiponi)
     * Allow --sort and --randomize to override each other (most recently
       specified option wins) instead of always preferring --sort
     * Thumbnail mode: Mark image as processed when executing an action
       (--action) by clicking on an image
+    * It is now possible to override feh's idea of the active xinerama screen
+      using the --xinerama-index option
+    * Remove (undocumented) feature allowing to override feh's idea of the
+      active xinerama screen by setting the XINERAMA_SCREEN environment
+      variable
 
 Sun, 24 May 2015 11:45:18 +0200
 
