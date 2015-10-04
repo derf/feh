@@ -125,9 +125,9 @@ test_win_title( $win, 'feh [1 of 3] - test/ok/png' );
 SendKeys('p');
 test_win_title( $win, 'feh [3 of 3] - test/ok/gif' );
 SendKeys('{DEL}');
-test_win_title( $win, 'feh [1 of 2] - test/ok/png' );
+test_win_title( $win, 'feh [2 of 2] - test/ok/jpg' );
 SendKeys('{DEL}');
-test_win_title( $win, 'feh [1 of 1] - test/ok/jpg' );
+test_win_title( $win, 'feh [1 of 1] - test/ok/png' );
 SendKeys('{DEL}');
 test_no_win("Removed all images from slideshow");
 
