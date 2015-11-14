@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
+#include "events.h"
 
 static void winwidget_unregister(winwidget win);
 static void winwidget_register(winwidget win);
@@ -776,6 +777,15 @@ void winwidget_show(winwidget winwid)
 		/* wait for the window to map */
 		D(("Waiting for window to map\n"));
 		XMaskEvent(disp, StructureNotifyMask, &ev);
+		/* Unfortunately, StructureNotifyMask does not only mask
+		 * the events of type MapNotify (which we want to mask here)
+		 * but also such of type ConfigureNotify (and others, see
+		 * https://tronche.com/gui/x/xlib/events/processing-overview.html),
+		 * which should be handled, especially on tiling wm's. To
+		 * remedy this, the handler is executed explicitly:
+		 */
+		if (ev.type == ConfigureNotify)
+			feh_event_handle_ConfigureNotify(&ev);
 		D(("Window mapped\n"));
 		winwid->visible = 1;
 	}

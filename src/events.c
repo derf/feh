@@ -41,7 +41,6 @@ feh_event_handler *ev_handler[LASTEvent];
 
 static void feh_event_handle_ButtonPress(XEvent * ev);
 static void feh_event_handle_ButtonRelease(XEvent * ev);
-static void feh_event_handle_ConfigureNotify(XEvent * ev);
 static void feh_event_handle_LeaveNotify(XEvent * ev);
 static void feh_event_handle_MotionNotify(XEvent * ev);
 static void feh_event_handle_ClientMessage(XEvent * ev);
@@ -416,7 +415,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 	return;
 }
 
-static void feh_event_handle_ConfigureNotify(XEvent * ev)
+void feh_event_handle_ConfigureNotify(XEvent * ev)
 {
 	while (XCheckTypedWindowEvent(disp, ev->xconfigure.window, ConfigureNotify, ev));
 	if (!menu_root) {
