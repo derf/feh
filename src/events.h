@@ -32,4 +32,6 @@ extern feh_event_handler *ev_handler[];
 
 void feh_event_init(void);
 
+void feh_event_handle_ConfigureNotify(XEvent * ev);
+
 #endif
