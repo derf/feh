@@ -298,7 +298,9 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	XSetCommand(disp, ret->win, cmdargv, cmdargc);
 
 	winwidget_register(ret);
-	if (opt.scale_down) {
+
+	/* do not scale down a thumbnail list window, only those created from it */
+	if (opt.scale_down && (ret->type != WIN_TYPE_THUMBNAIL)) {
 		opt.geom_w = w;
 		opt.geom_h = h;
 		opt.geom_flags |= WidthValue | HeightValue;
