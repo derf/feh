@@ -23,7 +23,7 @@ Recommended
 -----------
 
  * jpegtran  (supplied by the jpeg library, for lossless image rotation)
- * convert  (supplied by ImageMagick, can be used to load unsuppoted formats)
+ * convert  (supplied by ImageMagick, can be used to load unsupported formats)
 
 Installation
 ------------
