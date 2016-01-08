@@ -392,6 +392,12 @@ with
 .Qq Nm
 in the name.
 .
+.It Cm --insecure
+.
+When viewing files with HTTPS, this option disables strict hostname and peer
+checking. This allows images on sites with self-signed certificates to be
+opened, but is no more secure than plain HTTP.
+.
 .It Cm --keep-zoom-vp
 .
 When switching images, keep zoom and viewport settings

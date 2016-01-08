@@ -406,7 +406,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"keep-zoom-vp"  , 0, 0, 237},
 		{"scroll-step"   , 1, 0, 238},
 		{"xinerama-index", 1, 0, 239},
-
+		{"insecure"      , 0, 0, 240},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -759,6 +759,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 239:
 			opt.xinerama_index = atoi(optarg);
 			break;
+		case 240:
+			opt.insecure_ssl = 1;
 		default:
 			break;
 		}
@@ -863,7 +865,7 @@ static void show_usage(void)
 {
 	fputs(
 #ifdef INCLUDE_HELP
-#include "help.inc"
+#include "help.raw"
 #else
 	"See 'man " PACKAGE "'\n"
 #endif

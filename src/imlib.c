@@ -394,7 +394,7 @@ static char *feh_http_load_image(char *url)
 
 	if (strlen(tmpname) > (NAME_MAX-6))
 		tmpname[NAME_MAX-7] = '\0';
-	
+
 	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
 	free(tmpname);
 
@@ -411,6 +411,10 @@ static char *feh_http_load_image(char *url)
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+			if (opt.insecure_ssl) {
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+			}
 
 			res = curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
@@ -631,7 +635,7 @@ void feh_draw_filename(winwidget w)
 	return;
 }
 
-#ifdef HAVE_LIBEXIF  
+#ifdef HAVE_LIBEXIF
 void feh_draw_exif(winwidget w)
 {
 	static Imlib_Font fn = NULL;
@@ -656,13 +660,13 @@ void feh_draw_exif(winwidget w)
 
 	fn = feh_load_font(w);
 
-	if (buffer == NULL) 
+	if (buffer == NULL)
 	{
 		snprintf(buffer, EXIF_MAX_DATA, "%s", estrdup("Failed to run exif command"));
 		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
 		no_lines = 1;
 	}
-	else 
+	else
 	{
 
 		while ( (no_lines < 128) && (pos < EXIF_MAX_DATA) )
@@ -688,9 +692,9 @@ void feh_draw_exif(winwidget w)
 			    pos++;
 			    break;
 			  }
-			        
+
 			   pos++;
-			   pos2++;  
+			   pos2++;
 			}
 
 			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
@@ -720,7 +724,7 @@ void feh_draw_exif(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, width, height);
 
-	for (i = 0; i < no_lines; i++) 
+	for (i = 0; i < no_lines; i++)
 	{
 		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);

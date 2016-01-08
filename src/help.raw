@@ -38,6 +38,7 @@ OPTIONS
      --cycle-once          Exit after one loop through the slideshow
  -R, --reload NUM          Reload images after NUM seconds
  -k, --keep-http           Keep local copies when viewing HTTP/FTP files
+     --insecure            Disable peer/host verification when using HTTPS.
  -K, --caption-path PATH   Path to caption directory, enables caption display
  -j, --output-dir          With -k: Output directory for saved files
  -l, --list                list mode: ls-style output with image information
