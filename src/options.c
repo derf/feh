@@ -865,7 +865,7 @@ static void show_usage(void)
 {
 	fputs(
 #ifdef INCLUDE_HELP
-#include "help.raw"
+#include "help.inc"
 #else
 	"See 'man " PACKAGE "'\n"
 #endif
