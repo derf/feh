@@ -214,6 +214,16 @@ struct __fehbb {
 	struct __fehbutton rotate;
 	struct __fehbutton zoom_in;
 	struct __fehbutton zoom_out;
+	struct __fehbutton action_0;
+	struct __fehbutton action_1;
+	struct __fehbutton action_2;
+	struct __fehbutton action_3;
+	struct __fehbutton action_4;
+	struct __fehbutton action_5;
+	struct __fehbutton action_6;
+	struct __fehbutton action_7;
+	struct __fehbutton action_8;
+	struct __fehbutton action_9;
 };
 
 void init_parse_options(int argc, char **argv);
