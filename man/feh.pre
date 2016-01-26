@@ -353,6 +353,10 @@ below thumbnails in index / thumbnail mode.  See
 .Sx FORMAT SPECIFIERS .
 May contain newlines.
 .
+Use
+.Qq --index-info So Sc
+to display thumbnails without any info text
+.
 .Pp
 .
 Note: If you specify image-related formats
