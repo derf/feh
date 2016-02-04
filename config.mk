@@ -64,6 +64,7 @@ else
 	MAN_EXIF = disabled
 endif
 
+MAN_DATE ?= ${shell date '+%B %d, %Y'}
 
 # Uncomment this to use dmalloc
 #CFLAGS += -DWITH_DMALLOC

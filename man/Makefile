@@ -8,7 +8,7 @@ all: ${TARGETS}
 .pre.1:
 	sed \
 	-e 's/\$$VERSION\$$/${VERSION}/g' \
-	-e 's/\$$DATE\$$/'"$$(date '+%B %d, %Y')"/g \
+	-e 's/\$$DATE\$$/${MAN_DATE}/g' \
 	-e 's/\$$MAN_CURL\$$/${MAN_CURL}/' \
 	-e 's/\$$MAN_DEBUG\$$/${MAN_DEBUG}/' \
 	-e 's/\$$MAN_EXIF\$$/${MAN_EXIF}/' \
