@@ -6,8 +6,6 @@ Thu, 04 Feb 2016 20:31:38 +0100
       <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=812657> and
       <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729> for more
       information
-    * Fix a segfault when combining --scale-down and --thumbnails on a
-      sufficiently large directory
 
 Sun, 04 Oct 2015 10:01:20 +0200
 
