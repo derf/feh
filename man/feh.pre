@@ -1685,6 +1685,15 @@ section.
 .
 .Pp
 .
+On some systems with Imlib2 1.4.7,
+.Nm
+may be unable to load gif images unless they are the only image in the
+filelist. This appears to be caused by a Debian and/or Imlib2 bug. See
+.Aq https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729
+for details.
+.
+.Pp
+.
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
 .
