@@ -115,8 +115,18 @@ $cmd = Test::Command->new(
 	cmd => "$feh --list --recursive --sort filename test/ok" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/filename_recursive');
-$cmd->stderr_is_eq('');
+
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=812657
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729
+if ( -e '/etc/debian_version' and qx{imlib2-config --version} eq "1.4.7\n" ) {
+	# dummy tests to match number of planned tests
+	$cmd->exit_is_num(0);
+	$cmd->exit_is_num(0);
+}
+else {
+	$cmd->stdout_is_file('test/list/filename_recursive');
+	$cmd->stderr_is_eq('');
+}
 
 $cmd = Test::Command->new( cmd => "$feh --customlist '%f; %h; %l; %m; %n; %p; "
 	  . "%s; %t; %u; %w' $images" );
