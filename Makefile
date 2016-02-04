@@ -97,6 +97,8 @@ dist:
 	cp src/deps.mk /tmp/feh-${VERSION}/src/deps.mk
 	sed -i 's/^VERSION ?= .*$$/VERSION ?= ${VERSION}/' \
 		/tmp/feh-${VERSION}/config.mk
+	sed -i 's/^MAN_DATE ?= .*$$/MAN_DATE ?= ${MAN_DATE}/' \
+		/tmp/feh-${VERSION}/config.mk
 	tar -C /tmp -cjf ../feh-${VERSION}.tar.bz2 feh-${VERSION}
 	rm -r /tmp/feh-${VERSION}
 
