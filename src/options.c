@@ -787,10 +787,20 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 static void check_options(void)
 {
 	int i;
+	char *endptr;
+
 	for (i = 0; i < 10; i++) {
 		if (opt.actions[i] && !opt.hold_actions[i] && (opt.actions[i][0] == ';')) {
 			opt.hold_actions[i] = 1;
-			opt.actions[i] = &opt.actions[i][1];
+			opt.actions[i] = opt.actions[i] + 1;
+		}
+		opt.action_titles[i] = opt.actions[i];
+		if (opt.actions[i] && (opt.actions[i][0] == '[')) {
+			if ((endptr = strchr(opt.actions[i], ']')) != NULL) {
+				opt.action_titles[i] = opt.actions[i] + 1;
+				opt.actions[i] = endptr + 1;
+				*endptr = 0;
+			}
 		}
 	}
 

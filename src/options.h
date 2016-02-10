@@ -83,6 +83,7 @@ struct __fehoptions {
 	char *title;
 	char *thumb_title;
 	char *actions[10];
+	char *action_titles[10];
 	char *fontpath;
 	char *filelistfile;
 	char *menu_font;

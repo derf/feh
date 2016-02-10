@@ -1257,9 +1257,9 @@ void feh_draw_actions(winwidget w)
 
 	for (i = 0; i < 10; i++) {
 		if (opt.actions[i]) {
-			line = emalloc(strlen(opt.actions[i]) + 5);
+			line = emalloc(strlen(opt.action_titles[i]) + 5);
 			strcpy(line, "0: ");
-			line = strcat(line, opt.actions[i]);
+			line = strcat(line, opt.action_titles[i]);
 			gib_imlib_get_text_size(fn, line, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 			free(line);
 			if (tw > max_tw)
@@ -1289,13 +1289,13 @@ void feh_draw_actions(winwidget w)
 	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 	for (i = 0; i < 10; i++) {
-		if (opt.actions[i]) {
+		if (opt.action_titles[i]) {
 			cur_action++;
-			line = emalloc(strlen(opt.actions[i]) + 5);
+			line = emalloc(strlen(opt.action_titles[i]) + 5);
 			sprintf(index, "%d", i);
 			strcpy(line, index);
 			strcat(line, ": ");
-			strcat(line, opt.actions[i]);
+			strcat(line, opt.action_titles[i]);
 
 			gib_imlib_text_draw(im, fn, NULL, 2,
 					(cur_action * line_th) + 2, line,
