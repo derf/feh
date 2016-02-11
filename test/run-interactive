@@ -3,6 +3,8 @@
 Xephyr -screen 500x500 :7 > /dev/null 2>&1 &
 pid=${!}
 
+sleep 2
+
 DISPLAY=:7 prove -j1 test/feh-scr-i.t test/feh-i.t
 ret=${?}
 
