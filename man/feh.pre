@@ -1687,10 +1687,14 @@ section.
 .
 On some systems with Imlib2 1.4.7,
 .Nm
-may be unable to load gif images unless they are the only image in the
-filelist. This appears to be caused by a Debian and/or Imlib2 bug. See
+may be unable to load gif images. For affected mips, mipsel and arm devices,
+gif support is completely broken, while on x86 / x86_64 gifs can usually
+only be loaded if they are the first image in the filelist.
+This appears to be caused by a Debian and/or Imlib2 bug. See
 .Aq https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729
-for details.
+for details. Workaround: Use
+.Cm --magick-timeout 5
+.Pq or some other positive value .
 .
 .Pp
 .
