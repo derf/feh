@@ -914,7 +914,7 @@ void feh_menu_init_common()
 		opt.menu_fn = gib_imlib_load_font(opt.menu_font);
 		if (!opt.menu_fn)
 			eprintf
-			    ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistant font?\nDid you tell feh where to find it with --fontpath?",
+			    ("couldn't load menu font %s, did you make install?\nAre you specifying a nonexistent font?\nDid you tell feh where to find it with --fontpath?",
 			     opt.menu_font);
 	}
 
