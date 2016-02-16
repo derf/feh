@@ -1,9 +1,9 @@
 [!] Possibly broken imlib2 / libgif detected - ignoring test results
 
-Imlib2 1.4.7 is unable to load GIF images on Debian stretch/sid systems (and
-maybe other distros too).  On x86 / x86_64 this applies to most gifs which are
-not the first file in the filelist, while on mips/mipsel and (some?) arm boxes
-it is unable to load any gif files. Since feh's tests include gifs, they fail.
+Imlib2 1.4.7 with giflib 5.1.2 is unable to load GIF images.  On x86 / x86_64
+this applies to most gifs which are not the first file in the filelist, while
+on mips/mipsel and (some?) arm boxes it is unable to load any gif files. Since
+feh's tests include gifs, they fail.
 
 As there's nothing we can do about it (and other image formats still work
 fine), we'll just pretend everything's okay.
