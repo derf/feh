@@ -1,3 +1,16 @@
+Thu, 18 Feb 2016 20:40:19 +0100
+
+* Release v2.14.2
+    * make test: Ignore results on arm and mips since they expose a bug in
+      Imlib2 1.4.7 and/or giflib 5.1.2. Note that due to this bug, feh may be
+      unable to display gif images. x86 and amd64 are also affected.
+      Again, see <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729>
+      for more information
+    * -f / --filelist: Do not print useless error message when a correct
+      filelist file is specified
+    * -f / --filelist: Fix bug in "-" / "/dev/stdin" handling affecting feh
+      running in ksh and possibly other environments
+
 Thu, 04 Feb 2016 20:31:38 +0100
 
 * Release v2.14.1
