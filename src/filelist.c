@@ -545,7 +545,13 @@ gib_list *feh_read_filelist(char *filename)
 	opt.magick_timeout = tmp_magick_timeout;
 
 	errno = 0;
-	if ((fp = fopen(filename, "r")) == NULL) {
+
+	if (!strcmp(filename, "/dev/stdin"))
+		fp = stdin;
+	else
+		fp = fopen(filename, "r");
+
+	if (fp == NULL) {
 		/* return quietly, as it's okay to specify a filelist file that doesn't
 		   exist. In that case we create it on exit. */
 		return(NULL);
