@@ -567,7 +567,8 @@ gib_list *feh_read_filelist(char *filename)
 		/* Add it to the new list */
 		list = gib_list_add_front(list, feh_file_new(s1));
 	}
-	fclose(fp);
+	if (strcmp(filename, "/dev/stdin"))
+		fclose(fp);
 
 	return(list);
 }
