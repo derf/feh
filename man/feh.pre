@@ -526,6 +526,11 @@ transitions from last to first image).
 Recursively expand any directories in the commandline arguments
 to the content of those directories, all the way down to the bottom level.
 .
+.It Cm --no-recursive
+.
+Don't recursively expand any directories (enabled by default).
+Useful to override theme options.
+.
 .It Cm -R , --reload Ar int
 .
 Reload filelist and current image after
