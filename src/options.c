@@ -407,6 +407,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"scroll-step"   , 1, 0, 238},
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
+		{"no-recursive"  , 0, 0, 241},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -761,6 +762,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 240:
 			opt.insecure_ssl = 1;
+		case 241:
+			opt.recursive = 0;
 		default:
 			break;
 		}
