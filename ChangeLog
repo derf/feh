@@ -1,3 +1,5 @@
+Sat, 09 Apr 2016 20:42:23 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
 * Release v2.15
     * Patch by William Woodruff: Add --insecure option to disable HTTPS
       certificate checks
@@ -15,7 +17,7 @@
       start with a space. Titles starting with a space are treated as part of
       of the command so that actions like '[ -L %F ] && foo' still work
 
-Thu, 18 Feb 2016 20:40:19 +0100
+Thu, 18 Feb 2016 20:40:19 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14.2
     * make test: Ignore results on arm and mips since they expose a bug in
@@ -28,7 +30,7 @@ Thu, 18 Feb 2016 20:40:19 +0100
     * -f / --filelist: Fix bug in "-" / "/dev/stdin" handling affecting feh
       running in ksh and possibly other environments
 
-Thu, 04 Feb 2016 20:31:38 +0100
+Thu, 04 Feb 2016 20:31:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14.1
     * Skip a small set of build tests on Debian and derivatives, since they
@@ -37,7 +39,7 @@ Thu, 04 Feb 2016 20:31:38 +0100
       <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729> for more
       information
 
-Sun, 04 Oct 2015 10:01:20 +0200
+Sun, 04 Oct 2015 10:01:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14
     * Add --xinerama-index option for background setting
@@ -54,7 +56,7 @@ Sun, 04 Oct 2015 10:01:20 +0200
       active xinerama screen by setting the XINERAMA_SCREEN environment
       variable
 
-Sun, 24 May 2015 11:45:18 +0200
+Sun, 24 May 2015 11:45:18 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.13.1
     * Fix --scale-down breaking image centering in fullscreen mode
