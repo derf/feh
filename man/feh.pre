@@ -160,13 +160,21 @@ executing the action.
 .
 If
 .No [ Ar title ]
-is specified,
+is specified
+.Pq note the literal Qo \&[ Qc and Qo ] Qc ,
 .Cm --draw-actions
 will display
 .Ar title
 instead of
 .Ar action
-in the action list.
+in the action list. Note that
+.Ar title
+must not start with a space. If it does, the action is handled as if it did
+not have a title. This special case exists for backwards compatibility reasons
+and makes sure that actions like
+.Qq \&[ -L %F \&] && foo
+still work.
+.
 .
 .Pp
 .

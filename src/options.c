@@ -799,7 +799,8 @@ static void check_options(void)
 		}
 		opt.action_titles[i] = opt.actions[i];
 		if (opt.actions[i] && (opt.actions[i][0] == '[')) {
-			if ((endptr = strchr(opt.actions[i], ']')) != NULL) {
+			if (((endptr = strchr(opt.actions[i], ']')) != NULL)
+					&& (opt.actions[i][1] != ' ')) {
 				opt.action_titles[i] = opt.actions[i] + 1;
 				opt.actions[i] = endptr + 1;
 				*endptr = 0;

@@ -1,3 +1,20 @@
+* Release v2.15
+    * Patch by William Woodruff: Add --insecure option to disable HTTPS
+      certificate checks
+    * Patch by guraga: Add --no-recursive option to disable recursive directory
+      expansion.  Note that --no-recursive is the default behaviour of feh.
+      This option is mostly useful to override a --recursive set in a theme or
+      shell alias
+    * Patch by Richard Molitor: Improve --scale-down in tiling environments.
+      This fixes flickering when changing images at the cost of slightly
+      less apaptive scale-down behaviour: Window size changes are now only
+      processed when the active image is changed
+    * --action and --action[1..9] now support action titles
+      (e.g. --action '[some title]some-command %F'), which are displayed
+      instead of the specified shell command. Note that the title must not
+      start with a space. Titles starting with a space are treated as part of
+      of the command so that actions like '[ -L %F ] && foo' still work
+
 Thu, 18 Feb 2016 20:40:19 +0100
 
 * Release v2.14.2
