@@ -151,7 +151,11 @@ If
 is
 .Qq \&; ,
 .Nm
-will reload the current image instead of switching to the next one after
+will reload the current image instead of switching to the next one
+.Pq slideshow mode
+or closing the window
+.Pq multiwindow mode
+after
 executing the action.
 .
 If
@@ -167,12 +171,10 @@ in the action list.
 .Pp
 .
 The action will be executed by /bin/sh.  Use format specifiers to refer to
-image info.  See
+image info, see
 .Sx FORMAT SPECIFIERS
-for examples.  E.g.
-.Qq feh -A "mv ~/images/%n" * .
-In slideshow mode, the next image will be shown after running the action, in
-multiwindow mode, the window will be closed.
+for details.  Example usage:
+.Qq feh -A Qo mv ~/images/%N Qc * .
 .
 .It Cm --action1 No .. Cm --action9
 .
