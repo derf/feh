@@ -638,7 +638,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				winwid->im_h = gib_imlib_image_get_height(temp);
 				gib_imlib_free_image_and_decache(temp);
 				if (!winwid->full_screen && !opt.geom_flags)
-					winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+					winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 				winwid->has_rotated = 1;
 			}
 			winwid->im_angle = (ev->xmotion.x - winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;

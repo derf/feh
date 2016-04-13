@@ -1218,7 +1218,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 			if (m->fehwin->has_rotated) {
 				m->fehwin->im_w = gib_imlib_image_get_width(m->fehwin->im);
 				m->fehwin->im_h = gib_imlib_image_get_height(m->fehwin->im);
-				winwidget_resize(m->fehwin, m->fehwin->im_w, m->fehwin->im_h);
+				winwidget_resize(m->fehwin, m->fehwin->im_w, m->fehwin->im_h, 0);
 			}
 			winwidget_reset_image(m->fehwin);
 			winwidget_render_image(m->fehwin, 1, 0);

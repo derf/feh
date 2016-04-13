@@ -401,7 +401,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int need_center = winwid->had_resize;
 
 	if (!winwid->full_screen && resize) {
-		winwidget_resize(winwid, winwid->im_w, winwid->im_h);
+		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 		winwidget_reset_image(winwid);
 	}
 
@@ -792,7 +792,7 @@ void winwidget_move(winwidget winwid, int x, int y)
 	return;
 }
 
-void winwidget_resize(winwidget winwid, int w, int h)
+void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 {
 	XWindowAttributes attributes;
 	int tc_x, tc_y, px, py;
@@ -833,7 +833,7 @@ void winwidget_resize(winwidget winwid, int w, int h)
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-    if (opt.geom_flags & (WidthValue | HeightValue)) {
+    if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
         winwid->had_resize = 1;
         return;
     }
@@ -856,6 +856,11 @@ void winwidget_resize(winwidget winwid, int w, int h)
 
 		winwid->had_resize = 1;
 		XFlush(disp);
+
+		if (force_resize && opt.scale_down && (winwid->type != WIN_TYPE_THUMBNAIL)) {
+			opt.geom_w = winwid->w;
+			opt.geom_h = winwid->h;
+		}
 
 		D(("-> x %d y %d w %d h %d\n", winwid->x, winwid->y, winwid->w,
 			winwid->h));
@@ -1046,7 +1051,7 @@ void winwidget_sanitise_offsets(winwidget winwid)
 
 void winwidget_size_to_image(winwidget winwid)
 {
-	winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom);
+	winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom, 1);
 	winwid->im_x = winwid->im_y = 0;
 	winwidget_render_image(winwid, 0, 0);
 	return;

@@ -128,7 +128,7 @@ void winwidget_center_image(winwidget w);
 void winwidget_render_image(winwidget winwid, int resize, int force_alias);
 void winwidget_rotate_image(winwidget winid, double angle);
 void winwidget_move(winwidget winwid, int x, int y);
-void winwidget_resize(winwidget winwid, int w, int h);
+void winwidget_resize(winwidget winwid, int w, int h, int force_resize);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 void winwidget_update_caption(winwidget winwid);
