@@ -857,7 +857,8 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 		winwid->had_resize = 1;
 		XFlush(disp);
 
-		if (force_resize && opt.scale_down && (winwid->type != WIN_TYPE_THUMBNAIL)) {
+		if (force_resize && (opt.geom_flags & (WidthValue | HeightValue))
+				&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
 			opt.geom_w = winwid->w;
 			opt.geom_h = winwid->h;
 		}

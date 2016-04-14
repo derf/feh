@@ -1269,6 +1269,9 @@ Toggle fullscreen
 .It w Bq size_to_image
 .
 Change window size to fit current image size
+.Pq plus/minus zoom, if set .
+In scale-down and fixed-geometry mode, this also updates the window size
+limits.
 .
 .It x Bq close
 .
