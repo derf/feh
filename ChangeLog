@@ -1,5 +1,6 @@
-git HEAD
+Fri, 15 Apr 2016 10:18:37 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.15.1
     * Fix w (size_to_image) key not updating window size when --scale-down
       or --geometry is active
 
