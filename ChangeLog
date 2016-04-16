@@ -1,3 +1,8 @@
+Sat, 16 Apr 2016 18:32:38 +0200
+
+* Release v2.15.2
+    * Fix --keep-zoom-vp not keeping the viewport x/y offsets (broken by 2.15)
+
 Fri, 15 Apr 2016 10:18:37 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.1
