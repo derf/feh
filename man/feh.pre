@@ -341,8 +341,9 @@ like 640x480 with optional +x+y window offset.
 Note that larger images will be zoomed out to fit, but you can see them at 1:1
 by clicking the zoom button.
 .
-Note that this option does not enforce the geometry, changing it by a tiling
-WM or manually is still possible.
+Also note that this option does not enforce the geometry, changing it by a tiling
+WM or manually is still possible. After each resize, the resulting window size
+is used as the new size limit.
 .
 .It Cm -Y , --hide-pointer
 .
@@ -566,7 +567,9 @@ E.g. to sort in reverse width order, use
 .It Cm -. , --scale-down
 .
 Scale images to fit window geometry (defaults to screen size when no geometry
-was specified).
+was specified). Note that the window geometry is not updated when changing
+images at the moment. This behaviour may change in the future.
+.
 This option is ignored when in fullscreen mode.
 .
 .Pp
