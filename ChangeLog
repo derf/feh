@@ -1,3 +1,11 @@
+git HEAD
+
+    * Rescale image when resizing a window and --scale-down or --geometry is
+      active. This largely fixes the --scale-down issues introduced in
+      2.15. However, note that --scale-down still introduces a fixed window
+      size which will not be updated when changing images (as was the case in
+      feh < 2.15). This may or may not be fixed in the future.
+
 Sat, 16 Apr 2016 18:32:38 +0200
 
 * Release v2.15.2
