@@ -424,8 +424,17 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		feh_draw_checks(winwid);
 
 	if (!winwid->full_screen && opt.zoom_mode
-				     && (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
-				     && (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
+				&& (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
+				&& (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
+		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+
+	/*
+	 * In case of a resize, the geomflags (and im_w, im_h) get updated by
+	 * the ConfigureNotify handler.
+	 */
+	if (need_center && !winwid->full_screen
+				&& (opt.geom_flags & (WidthValue | HeightValue))
+				&& ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
