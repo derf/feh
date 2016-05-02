@@ -292,7 +292,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		Atom prop_root, prop_esetroot, type;
 		int format, i;
 		unsigned long length, after;
-		unsigned char *data_root, *data_esetroot;
+		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
 		gib_list *l;
 
