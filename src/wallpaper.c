@@ -550,6 +550,13 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				}
 			}
 		}
+
+		if (data_root)
+			XFree(data_root);
+	
+		if (data_esetroot)
+			XFree(data_esetroot);
+
 		/* This will locate the property, creating it if it doesn't exist */
 		prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", False);
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", False);
