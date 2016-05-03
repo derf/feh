@@ -601,8 +601,12 @@ void feh_draw_filename(winwidget w)
 		len = snprintf(NULL, 0, "%d of %d",  gib_list_length(filelist),
 				gib_list_length(filelist)) + 1;
 		s = emalloc(len);
-		snprintf(s, len, "%d of %d", gib_list_num(filelist, current_file) +
-				1, gib_list_length(filelist));
+		if (w->file)
+			snprintf(s, len, "%d of %d", gib_list_num(filelist, w->file) +
+					1, gib_list_length(filelist));
+		else
+			snprintf(s, len, "%d of %d", gib_list_num(filelist, current_file) +
+					1, gib_list_length(filelist));
 
 		gib_imlib_get_text_size(fn, s, NULL, &nw, NULL, IMLIB_TEXT_TO_RIGHT);
 
