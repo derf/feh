@@ -1,3 +1,8 @@
+git HEAD
+
+    * Fix toggle_filenames key displaying wrong file numbers in multiwindow
+      mode
+
 Thu, 28 Apr 2016 11:41:04 +0200
 
 * Release v2.15.3
