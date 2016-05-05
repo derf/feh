@@ -196,8 +196,8 @@ void feh_clean_exit(void)
 	free(opt.menu_bg);
 	free(opt.menu_font);
 
-    if(disp)
-        XCloseDisplay(disp);
+	if(disp)
+		XCloseDisplay(disp);
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);
