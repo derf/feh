@@ -1,9 +1,10 @@
-git HEAD
+Fri, 27 May 2016 13:15:49 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.15.4
     * Fix toggle_filenames key displaying wrong file numbers in multiwindow
       mode
 
-Thu, 28 Apr 2016 11:41:04 +0200
+Thu, 28 Apr 2016 11:41:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.3
     * Rescale image when resizing a window and --scale-down or --geometry is
@@ -12,7 +13,7 @@ Thu, 28 Apr 2016 11:41:04 +0200
       size which will not be updated when changing images (as was the case in
       feh < 2.15). This may or may not be fixed in the future.
 
-Sat, 16 Apr 2016 18:32:38 +0200
+Sat, 16 Apr 2016 18:32:38 +0200  Daniel Frisel <derf+feh@finalrewind.org>
 
 * Release v2.15.2
     * Fix --keep-zoom-vp not keeping the viewport x/y offsets (broken by 2.15)
