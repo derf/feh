@@ -178,6 +178,7 @@ void init_keyevents(void) {
 		*k1 = '\0';
 		*k2 = '\0';
 		*k3 = '\0';
+		cur_kb = NULL;
 
 		read = sscanf(line, "%31s %31s %31s %31s\n",
 			(char *) &action, (char *) &k1, (char* ) &k2, (char *) &k3);

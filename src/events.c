@@ -128,6 +128,7 @@ void init_buttonbindings(void)
 	while (fgets(line, sizeof(line), conf)) {
 		*action = '\0';
 		*button = '\0';
+		cur_bb = NULL;
 
 		read = sscanf(line, "%31s %7s\n", (char *) &action, (char *) &button);
 
