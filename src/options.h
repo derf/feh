@@ -153,6 +153,8 @@ struct __fehkb {
 	struct __fehkey jump_back;
 	struct __fehkey quit;
 	struct __fehkey jump_fwd;
+	struct __fehkey prev_dir;
+	struct __fehkey next_dir;
 	struct __fehkey remove;
 	struct __fehkey delete;
 	struct __fehkey jump_first;

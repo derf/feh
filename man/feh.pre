@@ -1284,6 +1284,12 @@ Close current window
 .
 Jump to a random position in the current filelist
 .
+.It \&[, \&] Bq prev_dir, next_dir
+.
+Jump to the first image of the previous or next sequence of images sharing
+a directory name in the current filelist.  Use --sort dirname if you would
+like to ensure that all images in a directory are grouped together.
+.
 .It < , > Bq orient_3 , orient_1
 .
 In place editing - rotate the images 90 degrees (counter)clockwise.
