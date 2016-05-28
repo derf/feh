@@ -600,10 +600,10 @@ in paused mode.
 .
 .It Cm -S , --sort Ar sort_type
 .
-The file list may be sorted according to image parameters.  Allowed sort
-types are: name, filename, mtime, width, height, pixels, size, format.  For sort
-modes other than name, filename, or mtime, a preload run will be necessary,
-causing a delay proportional to the number of images in the list.
+The file list may be sorted according to image parameters.  Allowed sort types
+are: name, filename, dirname, mtime, width, height, pixels, size, format.  For
+sort modes other than name, filename, dirname, or mtime, a preload run will be
+necessary, causing a delay proportional to the number of images in the list.
 .
 .Pp
 .

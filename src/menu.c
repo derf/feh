@@ -67,6 +67,7 @@ enum {
 	CB_BG_FILLED_NOFILE,
 	CB_SORT_FILENAME,
 	CB_SORT_IMAGENAME,
+	CB_SORT_DIRNAME,
 	CB_SORT_MTIME,
 	CB_SORT_FILESIZE,
 	CB_SORT_RANDOMIZE,
@@ -947,6 +948,7 @@ void feh_menu_init_common()
 
 	feh_menu_add_entry(m, "By File Name", NULL, CB_SORT_FILENAME, 0, NULL);
 	feh_menu_add_entry(m, "By Image Name", NULL, CB_SORT_IMAGENAME, 0, NULL);
+	feh_menu_add_entry(m, "By Directory Name", NULL, CB_SORT_DIRNAME, 0, NULL);
 	feh_menu_add_entry(m, "By Modification Date", NULL, CB_SORT_MTIME, 0, NULL);
 	if (opt.preload || (opt.sort > SORT_MTIME))
 		feh_menu_add_entry(m, "By File Size", NULL, CB_SORT_FILESIZE, 0, NULL);
@@ -1273,6 +1275,12 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 			break;
 		case CB_SORT_IMAGENAME:
 			filelist = gib_list_sort(filelist, feh_cmp_name);
+			if (opt.jump_on_resort) {
+				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
+			}
+			break;
+		case CB_SORT_DIRNAME:
+			filelist = gib_list_sort(filelist, feh_cmp_dirname);
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
 			}
