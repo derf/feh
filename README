@@ -83,3 +83,17 @@ $ make test-x11
 
 Be aware that this is quite experimental, so far the X-tests have only been
 run on one machine. So they may or may not work for you.
+
+Docker Build
+------------
+
+feh includes a Dockerfile which will install all of the dependencies for
+compiling feh in a Docker image if desired.
+
+To build feh inside of Docker, you can use the following commands:
+
+$ docker build -t feh .
+$ docker run feh
+
+Then feh can be installed on your local system with the usual "sudo make
+install".
