@@ -53,13 +53,21 @@ struct __feh_file_info {
 };
 
 #define FEH_FILE(l) ((feh_file *) l)
+#define FEH_MAX_DIRNAME_LEN 4096
 
 enum filelist_recurse { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
-enum sort_type { SORT_NONE, SORT_NAME, SORT_FILENAME, SORT_MTIME, SORT_WIDTH,
+enum sort_type {
+	SORT_NONE,
+	SORT_NAME,
+	SORT_FILENAME,
+	SORT_DIRNAME,
+	SORT_MTIME,
+	SORT_WIDTH,
 	SORT_HEIGHT,
 	SORT_PIXELS,
-	SORT_SIZE, SORT_FORMAT
+	SORT_SIZE,
+	SORT_FORMAT
 };
 
 feh_file *feh_file_new(char *filename);
@@ -73,6 +81,7 @@ void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
 gib_list *feh_file_info_preload(gib_list * list);
 int feh_file_info_load(feh_file * file, Imlib_Image im);
+void feh_file_dirname(char *dst, feh_file * f, int maxlen);
 void feh_prepare_filelist(void);
 int feh_write_filelist(gib_list * list, char *filename);
 gib_list *feh_read_filelist(char *filename);
@@ -81,6 +90,7 @@ gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l);
 void feh_save_filelist();
 
 int feh_cmp_name(void *file1, void *file2);
+int feh_cmp_dirname(void *file1, void *file2);
 int feh_cmp_filename(void *file1, void *file2);
 int feh_cmp_mtime(void *file1, void *file2);
 int feh_cmp_width(void *file1, void *file2);

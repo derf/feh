@@ -322,6 +322,44 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			   try the previous file, not another jmp */
 			change = SLIDE_NEXT;
 			break;
+		case SLIDE_JUMP_NEXT_DIR:
+			{
+				char old_dir[FEH_MAX_DIRNAME_LEN], new_dir[FEH_MAX_DIRNAME_LEN];
+				int j;
+
+				feh_file_dirname(old_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+
+				for (j = 0; j < our_filelist_len; j++) {
+					current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+					feh_file_dirname(new_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+					if (strcmp(old_dir, new_dir) != 0)
+						break;
+				}
+			}
+			change = SLIDE_NEXT;
+			break;
+		case SLIDE_JUMP_PREV_DIR:
+			{
+				char old_dir[FEH_MAX_DIRNAME_LEN], new_dir[FEH_MAX_DIRNAME_LEN];
+				int j;
+
+				/* Start the search from the previous file in case we are on
+				   the first file of a directory */
+				current_file = feh_list_jump(filelist, current_file, BACK, 1);
+				feh_file_dirname(old_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+
+				for (j = 0; j < our_filelist_len; j++) {
+					current_file = feh_list_jump(filelist, current_file, BACK, 1);
+					feh_file_dirname(new_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+					if (strcmp(old_dir, new_dir) != 0)
+						break;
+				}
+
+				/* Next file is the first entry of prev_dir */
+				current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+			}
+			change = SLIDE_NEXT;
+			break;
 		default:
 			eprintf("BUG!\n");
 			break;

@@ -110,6 +110,8 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.next_img  , 0, XK_Right     , 0, XK_n         , 0, XK_space);
 	feh_set_kb(&keys.jump_back , 0, XK_Page_Up   , 0, XK_KP_Page_Up, 0, 0);
 	feh_set_kb(&keys.jump_fwd  , 0, XK_Page_Down , 0, XK_KP_Page_Down,0,0);
+	feh_set_kb(&keys.prev_dir  , 0, XK_bracketleft, 0, 0           , 0, 0);
+	feh_set_kb(&keys.next_dir  , 0, XK_bracketright, 0, 0          , 0, 0);
 	feh_set_kb(&keys.jump_random,0, XK_z         , 0, 0            , 0, 0);
 	feh_set_kb(&keys.quit      , 0, XK_Escape    , 0, XK_q         , 0, 0);
 	feh_set_kb(&keys.close     , 0, XK_x         , 0, 0            , 0, 0);
@@ -222,6 +224,10 @@ void init_keyevents(void) {
 			cur_kb = &keys.jump_back;
 		else if (!strcmp(action, "jump_fwd"))
 			cur_kb = &keys.jump_fwd;
+		else if (!strcmp(action, "prev_dir"))
+			cur_kb = &keys.prev_dir;
+		else if (!strcmp(action, "next_dir"))
+			cur_kb = &keys.next_dir;
 		else if (!strcmp(action, "jump_random"))
 			cur_kb = &keys.jump_random;
 		else if (!strcmp(action, "quit"))
@@ -531,6 +537,14 @@ void feh_event_handle_keypress(XEvent * ev)
 			slideshow_change_image(winwid, SLIDE_JUMP_FWD, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, 10);
+	}
+	else if (feh_is_kp(&keys.next_dir, keysym, state)) {
+		if (opt.slideshow)
+			slideshow_change_image(winwid, SLIDE_JUMP_NEXT_DIR, 1);
+	}
+	else if (feh_is_kp(&keys.prev_dir, keysym, state)) {
+		if (opt.slideshow)
+			slideshow_change_image(winwid, SLIDE_JUMP_PREV_DIR, 1);
 	}
 	else if (feh_is_kp(&keys.quit, keysym, state)) {
 		winwidget_destroy_all();
