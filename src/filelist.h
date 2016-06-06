@@ -55,6 +55,16 @@ struct __feh_file_info {
 #define FEH_FILE(l) ((feh_file *) l)
 #define FEH_MAX_DIRNAME_LEN 4096
 
+/*
+ * PATH_MAX may not be defined on all systems. Since we only use it in for a
+ * getcwd call in feh_absolute_path, it isn't really worth the effort to malloc
+ * ever-increasing buffers until it fits. Instead, we just set it to 4096 and
+ * have --filelist and --bg-* hiccup if the path is larger.
+ */
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 enum filelist_recurse { FILELIST_FIRST, FILELIST_CONTINUE, FILELIST_LAST };
 
 enum sort_type {

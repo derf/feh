@@ -623,7 +623,8 @@ char *feh_absolute_path(char *path)
 	/* I SHOULD be able to just use a simple realpath() here, but dumb * 
 	   old Solaris's realpath doesn't return an absolute path if the
 	   path you give it is relative. Linux and BSD get this right... */
-	getcwd(cwd, sizeof(cwd));
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+		eprintf("Cannot determine working directory:");
 	snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
 	if (realpath(temp, fullpath) != NULL) {
 		ret = estrdup(fullpath);
