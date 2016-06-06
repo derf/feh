@@ -53,7 +53,6 @@ struct __feh_file_info {
 };
 
 #define FEH_FILE(l) ((feh_file *) l)
-#define FEH_MAX_DIRNAME_LEN 4096
 
 /*
  * PATH_MAX may not be defined on all systems. Since we only use it in for a

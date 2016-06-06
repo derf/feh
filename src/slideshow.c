@@ -324,14 +324,14 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			break;
 		case SLIDE_JUMP_NEXT_DIR:
 			{
-				char old_dir[FEH_MAX_DIRNAME_LEN], new_dir[FEH_MAX_DIRNAME_LEN];
+				char old_dir[PATH_MAX], new_dir[PATH_MAX];
 				int j;
 
-				feh_file_dirname(old_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+				feh_file_dirname(old_dir, FEH_FILE(current_file->data), PATH_MAX);
 
 				for (j = 0; j < our_filelist_len; j++) {
 					current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
-					feh_file_dirname(new_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+					feh_file_dirname(new_dir, FEH_FILE(current_file->data), PATH_MAX);
 					if (strcmp(old_dir, new_dir) != 0)
 						break;
 				}
@@ -340,17 +340,17 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			break;
 		case SLIDE_JUMP_PREV_DIR:
 			{
-				char old_dir[FEH_MAX_DIRNAME_LEN], new_dir[FEH_MAX_DIRNAME_LEN];
+				char old_dir[PATH_MAX], new_dir[PATH_MAX];
 				int j;
 
 				/* Start the search from the previous file in case we are on
 				   the first file of a directory */
 				current_file = feh_list_jump(filelist, current_file, BACK, 1);
-				feh_file_dirname(old_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+				feh_file_dirname(old_dir, FEH_FILE(current_file->data), PATH_MAX);
 
 				for (j = 0; j < our_filelist_len; j++) {
 					current_file = feh_list_jump(filelist, current_file, BACK, 1);
-					feh_file_dirname(new_dir, FEH_FILE(current_file->data), FEH_MAX_DIRNAME_LEN);
+					feh_file_dirname(new_dir, FEH_FILE(current_file->data), PATH_MAX);
 					if (strcmp(old_dir, new_dir) != 0)
 						break;
 				}

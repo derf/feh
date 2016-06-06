@@ -409,10 +409,10 @@ int feh_cmp_name(void *file1, void *file2)
 
 int feh_cmp_dirname(void *file1, void *file2)
 {
-	char dir1[FEH_MAX_DIRNAME_LEN], dir2[FEH_MAX_DIRNAME_LEN];
+	char dir1[PATH_MAX], dir2[PATH_MAX];
 	int cmp;
-	feh_file_dirname(dir1, FEH_FILE(file1), FEH_MAX_DIRNAME_LEN);
-	feh_file_dirname(dir2, FEH_FILE(file2), FEH_MAX_DIRNAME_LEN);
+	feh_file_dirname(dir1, FEH_FILE(file1), PATH_MAX);
+	feh_file_dirname(dir2, FEH_FILE(file2), PATH_MAX);
 	if ((cmp = strcmp(dir1, dir2)) != 0)
 		return(cmp);
 	return(feh_cmp_name(file1, file2));
