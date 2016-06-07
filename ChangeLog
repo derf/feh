@@ -1,3 +1,15 @@
+git HEAD
+
+    * Fix invalid key/button definitions mis-assigning keys/buttons to other
+      actions
+    * Add sort mode --sort dirname to sort images by directony instead
+      of by name. For example, where a normal recursive run will show images in
+      the order foo/a.jpg -> foo/bar/baz.jpg -> foo/fnord.jpg, a dirname sort
+      will result in foo/a.jpg -> foo/fnord.jpg -> foo/bar/baz.jpg (Patch by
+      Sung Pae)
+    * Add navigation keys next_dir (]) and prev_dir ([) to jump to the first
+      image of the nex/previous directory (Patch by Sung Pae)
+
 Fri, 27 May 2016 13:15:49 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.4
