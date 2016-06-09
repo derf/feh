@@ -1,8 +1,9 @@
-git HEAD
+Thu, 09 Jun 2016 08:59:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.16
     * Fix invalid key/button definitions mis-assigning keys/buttons to other
       actions
-    * Add sort mode --sort dirname to sort images by directony instead
+    * Add sort mode --sort dirname to sort images by directory instead
       of by name. For example, where a normal recursive run will show images in
       the order foo/a.jpg -> foo/bar/baz.jpg -> foo/fnord.jpg, a dirname sort
       will result in foo/a.jpg -> foo/fnord.jpg -> foo/bar/baz.jpg (Patch by
