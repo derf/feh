@@ -326,7 +326,7 @@ static char *feh_magick_load_image(char *filename)
 		setpgid(0, 0);
 
 		execlp("convert", "convert", filename, argv_fd, NULL);
-		exit(1);
+		_exit(1);
 	}
 	else {
 		alarm(opt.magick_timeout);
@@ -1180,8 +1180,8 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 		execlp("jpegtran", "jpegtran", "-copy", "all", op_op, op_value,
 				"-outfile", file_str, file_str, NULL);
 
-		im_weprintf(w, "lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
-		exit(1);
+		weprintf("lossless %s: Is 'jpegtran' installed? Failed to exec:", op_name);
+		_exit(1);
 	}
 	else {
 		waitpid(pid, &status, 0);
@@ -1207,8 +1207,8 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 		dup2(devnull, 1);
 
 		execlp("jpegexiforient", "jpegexiforient", "-1", file_str, NULL);
-		im_weprintf(w, "lossless %s: Failed to exec jpegexiforient:", op_name);
-		exit(1);
+		weprintf("lossless %s: Failed to exec jpegexiforient:", op_name);
+		_exit(1);
 	}
 	else {
 		waitpid(pid, &status, 0);
