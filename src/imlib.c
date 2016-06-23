@@ -1173,7 +1173,8 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 
 	if ((pid = fork()) < 0) {
 		im_weprintf(w, "lossless %s: fork failed:", op_name);
-		exit(1);
+		free(file_str);
+		return;
 	}
 	else if (pid == 0) {
 
@@ -1197,8 +1198,7 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 		}
 	}
 	if ((pid = fork()) < 0) {
-		im_weprintf(w, "lossless %s: cannot fix rotation: fork:", op_name);
-		exit(1);
+		im_weprintf(w, "lossless %s: fork failed while updating EXIF tags:", op_name);
 	}
 	else if (pid == 0) {
 
