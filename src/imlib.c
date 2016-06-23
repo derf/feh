@@ -312,7 +312,13 @@ static char *feh_magick_load_image(char *filename)
 
 	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
 
-	if ((childpid = fork()) == 0) {
+	if ((childpid = fork()) < 0) {
+		weprintf("%s: Can't load with imagemagick. Fork failed:", filename);
+		unlink(sfn);
+		free(sfn);
+		sfn = NULL;
+	}
+	else if (childpid == 0) {
 
 		/* discard convert output */
 		devnull = open("/dev/null", O_WRONLY);

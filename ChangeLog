@@ -2,6 +2,7 @@ git HEAD
 
     * Fix crash when trying to rotate a JPEG image without having
       jpegtran / jpegexiforient installed
+    * Handle failing fork() calls gracefully
 
 Thu, 09 Jun 2016 08:59:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
