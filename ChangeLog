@@ -1,5 +1,6 @@
-git HEAD
+Fri, 24 Jun 2016 00:31:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.16.1
     * Fix crash when trying to rotate a JPEG image without having
       jpegtran / jpegexiforient installed
     * Handle failing fork() calls gracefully
