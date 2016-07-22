@@ -1672,7 +1672,7 @@ Show some EXIF information, extracted by exifprobe/exifgrep
 .
 .It feh --action 'rm %F' -rl --max-dim 1000x800
 .
-Resursively remove all images with dimensions below or equal to 1000x800 pixels
+Recursively remove all images with dimensions below or equal to 1000x800 pixels
 from the current directory.
 .
 .El
