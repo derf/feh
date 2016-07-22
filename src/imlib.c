@@ -1021,11 +1021,28 @@ void feh_display_status(char stat)
 
 void feh_edit_inplace(winwidget w, int op)
 {
-	int ret;
+	int tmp;
 	Imlib_Image old;
 	Imlib_Load_Error err;
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
 		return;
+
+	if (path_is_url(FEH_FILE(w->file->data)->filename)) {
+		if (op == INPLACE_EDIT_FLIP) {
+			imlib_context_set_image(w->im);
+			imlib_image_flip_vertical();
+		} else if (op == INPLACE_EDIT_MIRROR) {
+			imlib_context_set_image(w->im);
+			imlib_image_flip_horizontal();
+		} else {
+			gib_imlib_image_orientate(w->im, op);
+			tmp = w->im_w;
+			FEH_FILE(w->file->data)->info->width = w->im_w = w->im_h;
+			FEH_FILE(w->file->data)->info->height = w->im_h = tmp;
+		}
+		winwidget_render_image(w, 1, 0);
+		return;
+	}
 
 	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
 		feh_edit_inplace_lossless(w, op);
@@ -1033,8 +1050,8 @@ void feh_edit_inplace(winwidget w, int op)
 		return;
 	}
 
-	ret = feh_load_image(&old, FEH_FILE(w->file->data));
-	if (ret) {
+	tmp = feh_load_image(&old, FEH_FILE(w->file->data));
+	if (tmp) {
 		if (op == INPLACE_EDIT_FLIP) {
 			imlib_context_set_image(old);
 			imlib_image_flip_vertical();
