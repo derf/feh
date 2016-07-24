@@ -1022,44 +1022,28 @@ void feh_display_status(char stat)
 void feh_edit_inplace(winwidget w, int op)
 {
 	int tmp;
-	Imlib_Image old;
-	Imlib_Load_Error err;
+	Imlib_Image old = NULL;
+	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
 		return;
 
-	if (path_is_url(FEH_FILE(w->file->data)->filename)) {
-		if (op == INPLACE_EDIT_FLIP) {
-			imlib_context_set_image(w->im);
-			imlib_image_flip_vertical();
-		} else if (op == INPLACE_EDIT_MIRROR) {
-			imlib_context_set_image(w->im);
-			imlib_image_flip_horizontal();
-		} else {
-			gib_imlib_image_orientate(w->im, op);
-			tmp = w->im_w;
-			FEH_FILE(w->file->data)->info->width = w->im_w = w->im_h;
-			FEH_FILE(w->file->data)->info->height = w->im_h = tmp;
-		}
-		winwidget_render_image(w, 1, 0);
-		return;
-	}
-
-	if (!strcmp(gib_imlib_image_format(w->im), "jpeg")) {
+	if (!strcmp(gib_imlib_image_format(w->im), "jpeg") &&
+			!path_is_url(FEH_FILE(w->file->data)->filename)) {
 		feh_edit_inplace_lossless(w, op);
 		feh_reload_image(w, 1, 1);
 		return;
 	}
 
-	tmp = feh_load_image(&old, FEH_FILE(w->file->data));
-	if (tmp) {
-		if (op == INPLACE_EDIT_FLIP) {
-			imlib_context_set_image(old);
+	old = imlib_load_image_with_error_return(FEH_FILE(w->file->data)->filename, &err);
+
+	if ((old != NULL) && (err == IMLIB_LOAD_ERROR_NONE)) {
+		imlib_context_set_image(old);
+		if (op == INPLACE_EDIT_FLIP)
 			imlib_image_flip_vertical();
-		} else if (op == INPLACE_EDIT_MIRROR) {
-			imlib_context_set_image(old);
+		else if (op == INPLACE_EDIT_MIRROR)
 			imlib_image_flip_horizontal();
-		} else
-			gib_imlib_image_orientate(old, op);
+		else
+			imlib_image_orientate(op);
 		gib_imlib_save_image_with_error_return(old,
 			FEH_FILE(w->file->data)->filename, &err);
 		gib_imlib_free_image(old);
@@ -1068,7 +1052,23 @@ void feh_edit_inplace(winwidget w, int op)
 				w, err);
 		feh_reload_image(w, 1, 1);
 	} else {
-		im_weprintf(w, "failed to load image from disk to edit it in place");
+		/*
+		 * Image was opened using curl/magick or has been deleted after
+		 * opening it
+		 */
+		imlib_context_set_image(w->im);
+		if (op == INPLACE_EDIT_FLIP)
+			imlib_image_flip_vertical();
+		else if (op == INPLACE_EDIT_MIRROR)
+			imlib_image_flip_horizontal();
+		else {
+			imlib_image_orientate(op);
+			tmp = w->im_w;
+			FEH_FILE(w->file->data)->info->width = w->im_w = w->im_h;
+			FEH_FILE(w->file->data)->info->height = w->im_h = tmp;
+		}
+		im_weprintf(w, "unable to edit in place. Changes have not been saved.");
+		winwidget_render_image(w, 1, 0);
 	}
 
 	return;
