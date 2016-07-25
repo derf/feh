@@ -1292,7 +1292,7 @@ like to ensure that all images in a directory are grouped together.
 .
 .It < , > Bq orient_3 , orient_1
 .
-In place editing - rotate the images 90 degrees (counter)clockwise.
+In place editing - rotate the image 90 degrees (counter)clockwise.
 The rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.  Rotating in the reverse direction will make them go
 away.  See
@@ -1300,14 +1300,13 @@ away.  See
 for more about lossless JPEG rotation.
 .
 .Em Note:
-jpegtran does not update EXIF orientation tags. However,
 .Nm
-assumes that you use the feature to normalize image orientation and want it to
-be displayed this way everywhere. After every rotation, it will unconditionally
-set the EXIF orientation to 1
-.Pq Qq 0,0 is top left .
-Should you need to reverse this, see
-.Xr jpegexiforient 1 .
+assumes that this feature is used to normalize image orientation. For JPEG
+images, it will unconditionally set the EXIF orientation tag to 1
+.Pq Qq 0,0 is top left
+after every rotation. See
+.Xr jpegexiforient 1
+for details on how to change this flag.
 .
 .It _ Bq flip
 .
@@ -1315,10 +1314,7 @@ In place editing - vertical flip
 .
 .It | Bq mirror
 .
-In place editing - horizontal flip.
-Again, see
-.Xr jpegtran 1
-for more information.
+In place editing - horizontal flip
 .
 .It 0 .. 9 Bq action_0 .. action_9
 .
