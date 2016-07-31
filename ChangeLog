@@ -1,4 +1,6 @@
-git HEAD
+Sun, 31 Jul 2016 16:59:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.16.2
     * Also support in-place editing for images loaded via libcurl or
       imagemagick. Results will not be written back to disk in this case.
 
