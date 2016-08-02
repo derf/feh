@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "events.h"
 #include "thumbnail.h"
+#include "keyevents.h"
 
 #define FEH_JITTER_OFFSET 2
 #define FEH_JITTER_TIME 1
@@ -107,6 +108,16 @@ void init_buttonbindings(void)
 	feh_set_bb(&buttons.next,   0, 5);
 	feh_set_bb(&buttons.blur,   4, 1);
 	feh_set_bb(&buttons.rotate, 4, 2);
+	feh_set_bb(&buttons.action_0, 4, 2);
+	feh_set_bb(&buttons.action_1, 4, 2);
+	feh_set_bb(&buttons.action_2, 4, 2);
+	feh_set_bb(&buttons.action_3, 4, 2);
+	feh_set_bb(&buttons.action_4, 4, 2);
+	feh_set_bb(&buttons.action_5, 4, 2);
+	feh_set_bb(&buttons.action_6, 4, 2);
+	feh_set_bb(&buttons.action_7, 4, 2);
+	feh_set_bb(&buttons.action_8, 4, 2);
+	feh_set_bb(&buttons.action_9, 4, 2);
 
 	home = getenv("HOME");
 	confhome = getenv("XDG_CONFIG_HOME");
@@ -155,6 +166,26 @@ void init_buttonbindings(void)
 			cur_bb = &buttons.zoom_in;
 		else if (!strcmp(action, "zoom_out"))
 			cur_bb = &buttons.zoom_out;
+		else if (!strcmp(action, "action_0"))
+			cur_bb = &buttons.action_0;
+		else if (!strcmp(action, "action_1"))
+			cur_bb = &buttons.action_1;
+		else if (!strcmp(action, "action_2"))
+			cur_bb = &buttons.action_2;
+		else if (!strcmp(action, "action_3"))
+			cur_bb = &buttons.action_3;
+		else if (!strcmp(action, "action_4"))
+			cur_bb = &buttons.action_4;
+		else if (!strcmp(action, "action_5"))
+			cur_bb = &buttons.action_5;
+		else if (!strcmp(action, "action_6"))
+			cur_bb = &buttons.action_6;
+		else if (!strcmp(action, "action_7"))
+			cur_bb = &buttons.action_7;
+		else if (!strcmp(action, "action_8"))
+			cur_bb = &buttons.action_8;
+		else if (!strcmp(action, "action_9"))
+			cur_bb = &buttons.action_9;
 		else
 			weprintf("buttons: Invalid action: %s", action);
 
@@ -318,6 +349,46 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("Next Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
+
+	} else if (feh_is_bb(&buttons.action_0, button, state)) {
+		D(("Action_0 Button Press event\n"));
+		feh_event_invoke_action(winwid, 0);
+
+	} else if (feh_is_bb(&buttons.action_1, button, state)) {
+		D(("Action_1 Button Press event\n"));
+		feh_event_invoke_action(winwid, 1);
+
+	} else if (feh_is_bb(&buttons.action_2, button, state)) {
+		D(("Action_2 Button Press event\n"));
+		feh_event_invoke_action(winwid, 2);
+
+	} else if (feh_is_bb(&buttons.action_3, button, state)) {
+		D(("Action_3 Button Press event\n"));
+		feh_event_invoke_action(winwid, 3);
+
+	} else if (feh_is_bb(&buttons.action_4, button, state)) {
+		D(("Action_4 Button Press event\n"));
+		feh_event_invoke_action(winwid, 4);
+
+	} else if (feh_is_bb(&buttons.action_5, button, state)) {
+		D(("Action_5 Button Press event\n"));
+		feh_event_invoke_action(winwid, 5);
+
+	} else if (feh_is_bb(&buttons.action_6, button, state)) {
+		D(("Action_6 Button Press event\n"));
+		feh_event_invoke_action(winwid, 6);
+
+	} else if (feh_is_bb(&buttons.action_7, button, state)) {
+		D(("Action_7 Button Press event\n"));
+		feh_event_invoke_action(winwid, 7);
+
+	} else if (feh_is_bb(&buttons.action_8, button, state)) {
+		D(("Action_8 Button Press event\n"));
+		feh_event_invoke_action(winwid, 8);
+
+	} else if (feh_is_bb(&buttons.action_9, button, state)) {
+		D(("Action_9 Button Press event\n"));
+		feh_event_invoke_action(winwid, 9);
 
 	} else {
 		D(("Received other ButtonPress event\n"));
