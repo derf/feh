@@ -3,6 +3,7 @@ VERSION ?= ${shell git describe --dirty}
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
+ICON_PREFIX ?= /usr/share/icons
 
 # Directories for manuals, executables, docs, data, etc.
 main_dir = ${DESTDIR}${PREFIX}
@@ -13,6 +14,9 @@ image_dir = ${main_dir}/share/feh/images
 font_dir = ${main_dir}/share/feh/fonts
 example_dir = ${main_dir}/share/doc/feh/examples
 desktop_dir = ${main_dir}/share/applications
+icon_dir = ${ICON_PREFIX}/hicolor
+48_icon_dir = ${icon_dir}/48x48/apps
+scalable_icon_dir = ${icon_dir}/scalable/apps
 
 # default CFLAGS
 CFLAGS ?= -g -O2

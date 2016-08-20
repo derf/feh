@@ -23,7 +23,7 @@ test-x11: all
 	prove test/feh-bg-i.t
 
 install: install-man install-doc install-bin install-font install-img
-install: install-examples install-applications
+install: install-icon install-examples install-applications
 
 ifeq (${cam},1)
 install: install-cam
@@ -72,6 +72,17 @@ install-img:
 	@mkdir -p ${image_dir}
 	@cp share/images/* ${image_dir}
 	@chmod 644 ${image_dir}/*
+
+install-icon:
+	@echo installing icon to ${48_icon_dir}
+	@mkdir -p ${48_icon_dir}
+	@cp share/images/feh.png ${48_icon_dir}
+	@echo installing icon to ${scalable_icon_dir}
+	@mkdir -p ${scalable_icon_dir}
+	@cp share/images/feh.svg ${scalable_icon_dir}
+	@if which gtk-update-icon-cache > /dev/null 2>&1; then \
+		gtk-update-icon-cache ${icon_dir}; \
+	fi
 
 install-examples:
 	@echo installing examples to ${example_dir}
