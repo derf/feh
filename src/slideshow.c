@@ -115,6 +115,8 @@ void cb_reload_timer(void *data)
 		eprintf("No files found to reload.");
 	}
 
+	feh_prepare_filelist();
+
 	/* find the previously current file */
 	for (l = filelist; l; l = l->next)
 		if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
@@ -123,8 +125,6 @@ void cb_reload_timer(void *data)
 		}
 
 	free(current_filename);
-
-	filelist = gib_list_first(gib_list_reverse(filelist));
 
 	if (!current_file)
 		current_file = filelist;
