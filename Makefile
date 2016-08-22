@@ -98,13 +98,23 @@ install-applications:
 
 
 uninstall:
-	rm -f ${man_dir}/man1/feh.1 ${man_dir}/man1/feh-cam.1
-	rm -f ${man_dir}/man1/gen-cam-menu.1
+	rm -f ${man_dir}/man1/feh.1
 	rm -rf ${doc_dir}
-	rm -f ${bin_dir}/feh ${bin_dir}/feh-cam ${bin_dir}/gen-cam-menu
+	rm -f ${bin_dir}/feh
 	rm -f ${desktop_dir}/feh.desktop
 	rm -rf ${font_dir}
 	rm -rf ${image_dir}
+	@if test -e ${48_icon_dir}/feh.png; then \
+		echo rm -f ${48_icon_dir}/feh.png; \
+		rm -f ${48_icon_dir}/feh.png; \
+	fi
+	@if test -e ${scalable_icon_dir}/feh.svg; then \
+		echo rm -f ${scalable_icon_dir}/feh.svg; \
+		rm -f ${scalable_icon_dir}/feh.svg; \
+	fi
+	@if which gtk-update-icon-cache > /dev/null 2>&1; then \
+		gtk-update-icon-cache ${icon_dir}; \
+	fi
 
 dist:
 	mkdir /tmp/feh-${VERSION}
