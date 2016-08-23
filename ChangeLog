@@ -1,3 +1,10 @@
+git HEAD
+
+    * Install feh icon (both 48x48 and scalable SVG) to /usr/share/icons
+      when running make install
+    * Fix --sort not being respected after the first reload when used in
+      conjunction with --reload
+
 Sun, 31 Jul 2016 16:59:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.16.2
