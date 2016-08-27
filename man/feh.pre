@@ -1487,11 +1487,14 @@ For the available modifiers, see
 .Ss BUTTONS
 .
 In an image window, the following buttons may be used
-.Pq The strings in Bo square brackets Bc are the config action names :
+.Pq The strings in Bo square brackets Bc are the config action names .
+Additionally, all actions specified in the
+.Sx KEYS
+section can also be bound to a button.
 .
 .Bl -tag -width indent
 .
-.It Bq reload
+.It unbound Bq reload
 .
 Reload current image
 .
