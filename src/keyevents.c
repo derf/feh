@@ -329,16 +329,22 @@ void init_keyevents(void) {
 	fclose(conf);
 }
 
-static short feh_is_kp(fehkey *key, unsigned int sym, unsigned int state) {
+static short feh_is_kp(fehkey *key, unsigned int state, unsigned int sym, unsigned int button) {
 	int i;
 
-	for (i = 0; i < 3; i++) {
-		if (
-				(key->keysyms[i] == sym) &&
-				(key->keystates[i] == state))
-			return 1;
-		else if (key->keysyms[i] == 0)
-			return 0;
+	if (sym != NoSymbol) {
+		for (i = 0; i < 3; i++) {
+			if (
+					(key->keysyms[i] == sym) &&
+					(key->keystates[i] == state))
+				return 1;
+			else if (key->keysyms[i] == 0)
+				return 0;
+		}
+		return 0;
+	}
+	if ((key->state == state) && (key->button == button)) {
+		return 1;
 	}
 	return 0;
 }
@@ -384,7 +390,6 @@ void feh_event_handle_keypress(XEvent * ev)
 	KeySym keysym;
 	XKeyEvent *kev;
 	winwidget winwid = NULL;
-	int curr_screen = 0;
 	feh_menu_item *selected_item;
 	feh_menu *selected_menu;
 
@@ -405,17 +410,17 @@ void feh_event_handle_keypress(XEvent * ev)
 	/* menus are showing, so this is a menu control keypress */
 	if (ev->xbutton.window == menu_cover) {
 		selected_item = feh_menu_find_selected_r(menu_root, &selected_menu);
-		if (feh_is_kp(&keys.menu_close, keysym, state))
+		if (feh_is_kp(&keys.menu_close, state, keysym, 0))
 			feh_menu_hide(menu_root, True);
-		else if (feh_is_kp(&keys.menu_parent, keysym, state))
+		else if (feh_is_kp(&keys.menu_parent, state, keysym, 0))
 			feh_menu_select_parent(selected_menu);
-		else if (feh_is_kp(&keys.menu_down, keysym, state))
+		else if (feh_is_kp(&keys.menu_down, state, keysym, 0))
 			feh_menu_select_next(selected_menu, selected_item);
-		else if (feh_is_kp(&keys.menu_up, keysym, state))
+		else if (feh_is_kp(&keys.menu_up, state, keysym, 0))
 			feh_menu_select_prev(selected_menu, selected_item);
-		else if (feh_is_kp(&keys.menu_child, keysym, state))
+		else if (feh_is_kp(&keys.menu_child, state, keysym, 0))
 			feh_menu_select_submenu(selected_menu);
-		else if (feh_is_kp(&keys.menu_select, keysym, state))
+		else if (feh_is_kp(&keys.menu_select, state, keysym, 0))
 			feh_menu_item_activate(selected_menu, selected_item);
 		return;
 	}
@@ -474,131 +479,136 @@ void feh_event_handle_keypress(XEvent * ev)
 		}
 		return;
 	}
+	feh_event_handle_generic(winwid, state, keysym, 0);
+}
 
-	if (feh_is_kp(&keys.next_img, keysym, state)) {
+void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button) {
+	int curr_screen = 0;
+
+	if (feh_is_kp(&keys.next_img, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, 1);
 	}
-	else if (feh_is_kp(&keys.prev_img, keysym, state)) {
+	else if (feh_is_kp(&keys.prev_img, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_prev(winwid, 1);
 	}
-	else if (feh_is_kp(&keys.scroll_right, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_right, state, keysym, button)) {
 		winwid->im_x -= opt.scroll_step;;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
-	else if (feh_is_kp(&keys.scroll_left, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_left, state, keysym, button)) {
 		winwid->im_x += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
-	else if (feh_is_kp(&keys.scroll_down, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_down, state, keysym, button)) {
 		winwid->im_y -= opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
-	else if (feh_is_kp(&keys.scroll_up, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_up, state, keysym, button)) {
 		winwid->im_y += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
-	else if (feh_is_kp(&keys.scroll_right_page, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_right_page, state, keysym, button)) {
 		winwid->im_x -= winwid->w;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.scroll_left_page, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_left_page, state, keysym, button)) {
 		winwid->im_x += winwid->w;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.scroll_down_page, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_down_page, state, keysym, button)) {
 		winwid->im_y -= winwid->h;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.scroll_up_page, keysym, state)) {
+	else if (feh_is_kp(&keys.scroll_up_page, state, keysym, button)) {
 		winwid->im_y += winwid->h;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.jump_back, keysym, state)) {
+	else if (feh_is_kp(&keys.jump_back, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_BACK, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_prev(winwid, 10);
 	}
-	else if (feh_is_kp(&keys.jump_fwd, keysym, state)) {
+	else if (feh_is_kp(&keys.jump_fwd, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_FWD, 1);
 		else if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, 10);
 	}
-	else if (feh_is_kp(&keys.next_dir, keysym, state)) {
+	else if (feh_is_kp(&keys.next_dir, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_NEXT_DIR, 1);
 	}
-	else if (feh_is_kp(&keys.prev_dir, keysym, state)) {
+	else if (feh_is_kp(&keys.prev_dir, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_JUMP_PREV_DIR, 1);
 	}
-	else if (feh_is_kp(&keys.quit, keysym, state)) {
+	else if (feh_is_kp(&keys.quit, state, keysym, button)) {
 		winwidget_destroy_all();
 	}
-	else if (feh_is_kp(&keys.delete, keysym, state)) {
+	else if (feh_is_kp(&keys.delete, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
 			feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 1);
 		feh_filelist_image_remove(winwid, 1);
 	}
-	else if (feh_is_kp(&keys.remove, keysym, state)) {
+	else if (feh_is_kp(&keys.remove, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
 			feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 0);
 		feh_filelist_image_remove(winwid, 0);
 	}
-	else if (feh_is_kp(&keys.jump_first, keysym, state)) {
+	else if (feh_is_kp(&keys.jump_first, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_FIRST, 1);
 	}
-	else if (feh_is_kp(&keys.jump_last, keysym, state)) {
+	else if (feh_is_kp(&keys.jump_last, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_LAST, 1);
 	}
-	else if (feh_is_kp(&keys.action_0, keysym, state)) {
+	else if (feh_is_kp(&keys.action_0, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 0);
 	}
-	else if (feh_is_kp(&keys.action_1, keysym, state)) {
+	else if (feh_is_kp(&keys.action_1, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 1);
 	}
-	else if (feh_is_kp(&keys.action_2, keysym, state)) {
+	else if (feh_is_kp(&keys.action_2, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 2);
 	}
-	else if (feh_is_kp(&keys.action_3, keysym, state)) {
+	else if (feh_is_kp(&keys.action_3, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 3);
 	}
-	else if (feh_is_kp(&keys.action_4, keysym, state)) {
+	else if (feh_is_kp(&keys.action_4, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 4);
 	}
-	else if (feh_is_kp(&keys.action_5, keysym, state)) {
+	else if (feh_is_kp(&keys.action_5, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 5);
 	}
-	else if (feh_is_kp(&keys.action_6, keysym, state)) {
+	else if (feh_is_kp(&keys.action_6, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 6);
 	}
-	else if (feh_is_kp(&keys.action_7, keysym, state)) {
+	else if (feh_is_kp(&keys.action_7, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 7);
 	}
-	else if (feh_is_kp(&keys.action_8, keysym, state)) {
+	else if (feh_is_kp(&keys.action_8, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 8);
 	}
-	else if (feh_is_kp(&keys.action_9, keysym, state)) {
+	else if (feh_is_kp(&keys.action_9, state, keysym, button)) {
 		feh_event_invoke_action(winwid, 9);
 	}
-	else if (feh_is_kp(&keys.zoom_in, keysym, state)) {
+	else if (feh_is_kp(&keys.zoom_in, state, keysym, button)) {
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 1.25;
 
@@ -612,7 +622,7 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.zoom_out, keysym, state)) {
+	else if (feh_is_kp(&keys.zoom_out, state, keysym, button)) {
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * 0.80;
 
@@ -626,56 +636,56 @@ void feh_event_handle_keypress(XEvent * ev)
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.zoom_default, keysym, state)) {
+	else if (feh_is_kp(&keys.zoom_default, state, keysym, button)) {
 		winwid->zoom = 1.0;
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.zoom_fit, keysym, state)) {
+	else if (feh_is_kp(&keys.zoom_fit, state, keysym, button)) {
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.render, keysym, state)) {
+	else if (feh_is_kp(&keys.render, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_show_selected();
 		else
 			winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.toggle_actions, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_actions, state, keysym, button)) {
 		opt.draw_actions = !opt.draw_actions;
 		winwidget_rerender_all(0);
 	}
-	else if (feh_is_kp(&keys.toggle_aliasing, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_aliasing, state, keysym, button)) {
 		opt.force_aliasing = !opt.force_aliasing;
 		winwid->force_aliasing = !winwid->force_aliasing;
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.toggle_filenames, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_filenames, state, keysym, button)) {
 		opt.draw_filename = !opt.draw_filename;
 		winwidget_rerender_all(0);
 	}
 #ifdef HAVE_LIBEXIF
-	else if (feh_is_kp(&keys.toggle_exif, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_exif, state, keysym, button)) {
 		opt.draw_exif = !opt.draw_exif;
 		winwidget_rerender_all(0);
 	}
 #endif		
-	else if (feh_is_kp(&keys.toggle_info, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_info, state, keysym, button)) {
 		opt.draw_info = !opt.draw_info;
 		winwidget_rerender_all(0);
 	}
-	else if (feh_is_kp(&keys.toggle_pointer, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_pointer, state, keysym, button)) {
 		winwidget_set_pointer(winwid, opt.hide_pointer);
 		opt.hide_pointer = !opt.hide_pointer;
 	}
-	else if (feh_is_kp(&keys.jump_random, keysym, state)) {
+	else if (feh_is_kp(&keys.jump_random, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_select_next(winwid, rand() % (filelist_len - 1));
 		else
 			slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
-	else if (feh_is_kp(&keys.toggle_caption, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_caption, state, keysym, button)) {
 		if (opt.caption_path) {
 			/*
 			 * editing captions in slideshow mode does not make any sense
@@ -687,44 +697,44 @@ void feh_event_handle_keypress(XEvent * ev)
 		}
 		winwidget_render_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.reload_image, keysym, state)) {
+	else if (feh_is_kp(&keys.reload_image, state, keysym, button)) {
 		feh_reload_image(winwid, 0, 0);
 	}
-	else if (feh_is_kp(&keys.toggle_pause, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_pause, state, keysym, button)) {
 		slideshow_pause_toggle(winwid);
 	}
-	else if (feh_is_kp(&keys.save_image, keysym, state)) {
+	else if (feh_is_kp(&keys.save_image, state, keysym, button)) {
 		slideshow_save_image(winwid);
 	}
-	else if (feh_is_kp(&keys.save_filelist, keysym, state)) {
+	else if (feh_is_kp(&keys.save_filelist, state, keysym, button)) {
 		if ((winwid->type == WIN_TYPE_THUMBNAIL)
 				|| (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER))
 			weprintf("Filelist saving is not supported in thumbnail mode");
 		else
 			feh_save_filelist();
 	}
-	else if (feh_is_kp(&keys.size_to_image, keysym, state)) {
+	else if (feh_is_kp(&keys.size_to_image, state, keysym, button)) {
 		winwidget_size_to_image(winwid);
 	}
-	else if (feh_is_kp(&keys.toggle_menu, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_menu, state, keysym, button)) {
 		winwidget_show_menu(winwid);
 	}
-	else if (feh_is_kp(&keys.close, keysym, state)) {
+	else if (feh_is_kp(&keys.close, state, keysym, button)) {
 		winwidget_destroy(winwid);
 	}
-	else if (feh_is_kp(&keys.orient_1, keysym, state)) {
+	else if (feh_is_kp(&keys.orient_1, state, keysym, button)) {
 		feh_edit_inplace(winwid, 1);
 	}
-	else if (feh_is_kp(&keys.orient_3, keysym, state)) {
+	else if (feh_is_kp(&keys.orient_3, state, keysym, button)) {
 		feh_edit_inplace(winwid, 3);
 	}
-	else if (feh_is_kp(&keys.flip, keysym, state)) {
+	else if (feh_is_kp(&keys.flip, state, keysym, button)) {
 		feh_edit_inplace(winwid, INPLACE_EDIT_FLIP);
 	}
-	else if (feh_is_kp(&keys.mirror, keysym, state)) {
+	else if (feh_is_kp(&keys.mirror, state, keysym, button)) {
 		feh_edit_inplace(winwid, INPLACE_EDIT_MIRROR);
 	}
-	else if (feh_is_kp(&keys.toggle_fullscreen, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_fullscreen, state, keysym, button)) {
 #ifdef HAVE_LIBXINERAMA
 		if (opt.xinerama && xinerama_screens) {
 			int i, rect[4];
@@ -760,19 +770,19 @@ void feh_event_handle_keypress(XEvent * ev)
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	}
-	else if (feh_is_kp(&keys.reload_plus, keysym, state)){ 
+	else if (feh_is_kp(&keys.reload_plus, state, keysym, button)){ 
 		if (opt.reload < SLIDESHOW_RELOAD_MAX)
 			opt.reload++;
 		else if (opt.verbose)
 			weprintf("Cannot set RELOAD higher than %f seconds.", opt.reload);
 	}
-	else if (feh_is_kp(&keys.reload_minus, keysym, state)) {
+	else if (feh_is_kp(&keys.reload_minus, state, keysym, button)) {
 		if (opt.reload > 1)
 			opt.reload--;
 		else if (opt.verbose)
 			weprintf("Cannot set RELOAD lower than 1 second.");
 	}
-	else if (feh_is_kp(&keys.toggle_keep_vp, keysym, state)) {
+	else if (feh_is_kp(&keys.toggle_keep_vp, state, keysym, button)) {
 		opt.keep_zoom_vp = !opt.keep_zoom_vp;
 	}
 	return;

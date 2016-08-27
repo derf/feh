@@ -141,6 +141,7 @@ char *slideshow_create_name(feh_file * file, winwidget winwid);
 void init_keyevents(void);
 void init_buttonbindings(void);
 void feh_event_handle_keypress(XEvent * ev);
+void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button);
 void feh_action_run(feh_file * file, char *action);
 char *format_size(int size);
 char *feh_printf(char *str, feh_file * file, winwidget winwid);
