@@ -36,7 +36,5 @@ typedef _winwidget *winwidget;
 typedef struct __fehoptions fehoptions;
 typedef struct __fehkey fehkey;
 typedef struct __fehkb fehkb;
-typedef struct __fehbutton fehbutton;
-typedef struct __fehbb fehbb;
 
 #endif

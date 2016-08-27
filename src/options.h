@@ -129,8 +129,10 @@ struct __fehoptions {
 };
 
 struct __fehkey {
-	int keysyms[3];
-	int keystates[3];
+	unsigned int keysyms[3];
+	unsigned int keystates[3];
+	unsigned int state;
+	unsigned int button;
 };
 
 struct __fehkb {
@@ -199,24 +201,14 @@ struct __fehkb {
 	struct __fehkey reload_minus;
 	struct __fehkey reload_plus;
 	struct __fehkey toggle_keep_vp;
-};
-
-struct __fehbutton {
-	int modifier;
-	char button;
-};
-
-struct __fehbb {
-	struct __fehbutton pan;
-	struct __fehbutton zoom;
-	struct __fehbutton reload;
-	struct __fehbutton prev;
-	struct __fehbutton next;
-	struct __fehbutton menu;
-	struct __fehbutton blur;
-	struct __fehbutton rotate;
-	struct __fehbutton zoom_in;
-	struct __fehbutton zoom_out;
+	struct __fehkey pan;
+	struct __fehkey zoom;
+	struct __fehkey reload;
+	struct __fehkey prev;
+	struct __fehkey next;
+	struct __fehkey menu;
+	struct __fehkey blur;
+	struct __fehkey rotate;
 };
 
 void init_parse_options(int argc, char **argv);

@@ -32,7 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 fehkb keys;
 
-static void feh_set_kb(fehkey *key, int s0, int y0, int s1, int y1, int s2, int y2) {
+static void feh_set_kb(fehkey *key, unsigned int s0, unsigned int y0, unsigned
+		int s1, unsigned int y1, unsigned int s2, unsigned int y2) {
 	key->keystates[0] = s0;
 	key->keystates[1] = s1;
 	key->keystates[2] = s2;
@@ -131,7 +132,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.action_9  , 0, XK_9         , 0, XK_KP_9      , 0, 0);
 	feh_set_kb(&keys.zoom_in   , 0, XK_Up        , 0, XK_KP_Add    , 0, 0);
 	feh_set_kb(&keys.zoom_out  , 0, XK_Down      , 0, XK_KP_Subtract,0, 0);
-	feh_set_kb(&keys.zoom_default, 0, XK_KP_Multiply, 0, XK_asterisk, 0, 0);
+	feh_set_kb(&keys.zoom_default, 0, XK_KP_Multiply, 0, XK_asterisk,0, 0);
 	feh_set_kb(&keys.zoom_fit  , 0, XK_KP_Divide , 0, XK_slash     , 0, 0);
 	feh_set_kb(&keys.size_to_image, 0, XK_w      , 0, 0            , 0, 0);
 	feh_set_kb(&keys.render    , 0, XK_KP_Begin  , 0, XK_R         , 0, 0);
@@ -328,7 +329,7 @@ void init_keyevents(void) {
 	fclose(conf);
 }
 
-static short feh_is_kp(fehkey *key, int sym, int state) {
+static short feh_is_kp(fehkey *key, unsigned int sym, unsigned int state) {
 	int i;
 
 	for (i = 0; i < 3; i++) {
