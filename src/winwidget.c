@@ -149,9 +149,11 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	XClassHint *xch;
 	MWMHints mwmhints;
 	Atom prop = None;
+	pid_t pid;
 	int x = 0;
 	int y = 0;
 	char *tmpname;
+	char hostname[HOST_NAME_MAX];
 
 	D(("winwidget_create_window %dx%d\n", w, h));
 
@@ -271,6 +273,18 @@ void winwidget_create_window(winwidget ret, int w, int h)
 				PropModeReplace, (unsigned char *) &prop_fs, 1);
 	}
 
+	pid = getpid();
+	prop = XInternAtom(disp, "_NET_WM_PID", False);
+	XChangeProperty(disp, ret->win, prop, XA_CARDINAL, sizeof(pid_t) * 8,
+			PropModeReplace, (const unsigned char *)&pid, 1);
+
+	if (gethostname(hostname, HOST_NAME_MAX) == 0) {
+		hostname[HOST_NAME_MAX-1] = '\0';
+		prop = XInternAtom(disp, "WM_CLIENT_MACHINE", False);
+		XChangeProperty(disp, ret->win, prop, XA_STRING, sizeof(char) * 8,
+				PropModeReplace, (unsigned char *)hostname, strlen(hostname));
+	}
+
 	XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
 	winwidget_update_title(ret);
 	xch = XAllocClassHint();
@@ -311,20 +325,14 @@ void winwidget_create_window(winwidget ret, int w, int h)
 void winwidget_update_title(winwidget ret)
 {
 	char *name;
-	pid_t pid;
 	Atom prop_name = XInternAtom(disp, "_NET_WM_NAME", False);
-	Atom prop_pid = XInternAtom(disp, "_NET_WM_PID", False);
 	Atom prop_icon = XInternAtom(disp, "_NET_WM_ICON_NAME", False);
 	Atom prop_utf8 = XInternAtom(disp, "UTF8_STRING", False);
 
 	D(("winwid->name = %s\n", ret->name));
 	name = ret->name ? ret->name : "feh";
-	pid = getpid();
 	XStoreName(disp, ret->win, name);
 	XSetIconName(disp, ret->win, name);
-
-	XChangeProperty(disp, ret->win, prop_pid, XA_CARDINAL, sizeof(pid_t) * 8,
-			PropModeReplace, (const unsigned char *)&pid, 1);
 
 	XChangeProperty(disp, ret->win, prop_name, prop_utf8, 8,
 			PropModeReplace, (const unsigned char *)name, strlen(name));
