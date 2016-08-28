@@ -161,133 +161,13 @@ void init_buttonbindings(void)
 			cur_bb = &keys.zoom_in;
 		else if (!strcmp(action, "zoom_out"))
 			cur_bb = &keys.zoom_out;
-		else if (!strcmp(action, "menu_close"))
-			cur_bb = &keys.menu_close;
-		else if (!strcmp(action, "menu_parent"))
-			cur_bb = &keys.menu_parent;
-		else if (!strcmp(action, "menu_down"))
-			cur_bb = &keys.menu_down;
-		else if (!strcmp(action, "menu_up"))
-			cur_bb = &keys.menu_up;
-		else if (!strcmp(action, "menu_child"))
-			cur_bb = &keys.menu_child;
-		else if (!strcmp(action, "menu_select"))
-			cur_bb = &keys.menu_select;
-		else if (!strcmp(action, "scroll_right"))
-			cur_bb = &keys.scroll_right;
-		else if (!strcmp(action, "scroll_left"))
-			cur_bb = &keys.scroll_left;
-		else if (!strcmp(action, "scroll_up"))
-			cur_bb = &keys.scroll_up;
-		else if (!strcmp(action, "scroll_down"))
-			cur_bb = &keys.scroll_down;
-		else if (!strcmp(action, "scroll_right_page"))
-			cur_bb = &keys.scroll_right_page;
-		else if (!strcmp(action, "scroll_left_page"))
-			cur_bb = &keys.scroll_left_page;
-		else if (!strcmp(action, "scroll_up_page"))
-			cur_bb = &keys.scroll_up_page;
-		else if (!strcmp(action, "scroll_down_page"))
-			cur_bb = &keys.scroll_down_page;
-		else if (!strcmp(action, "jump_back"))
-			cur_bb = &keys.jump_back;
-		else if (!strcmp(action, "jump_fwd"))
-			cur_bb = &keys.jump_fwd;
-		else if (!strcmp(action, "prev_dir"))
-			cur_bb = &keys.prev_dir;
-		else if (!strcmp(action, "next_dir"))
-			cur_bb = &keys.next_dir;
-		else if (!strcmp(action, "jump_random"))
-			cur_bb = &keys.jump_random;
-		else if (!strcmp(action, "quit"))
-			cur_bb = &keys.quit;
-		else if (!strcmp(action, "close"))
-			cur_bb = &keys.close;
-		else if (!strcmp(action, "remove"))
-			cur_bb = &keys.remove;
-		else if (!strcmp(action, "delete"))
-			cur_bb = &keys.delete;
-		else if (!strcmp(action, "jump_first"))
-			cur_bb = &keys.jump_first;
-		else if (!strcmp(action, "jump_last"))
-			cur_bb = &keys.jump_last;
-		else if (!strcmp(action, "action_0"))
-			cur_bb = &keys.action_0;
-		else if (!strcmp(action, "action_1"))
-			cur_bb = &keys.action_1;
-		else if (!strcmp(action, "action_2"))
-			cur_bb = &keys.action_2;
-		else if (!strcmp(action, "action_3"))
-			cur_bb = &keys.action_3;
-		else if (!strcmp(action, "action_4"))
-			cur_bb = &keys.action_4;
-		else if (!strcmp(action, "action_5"))
-			cur_bb = &keys.action_5;
-		else if (!strcmp(action, "action_6"))
-			cur_bb = &keys.action_6;
-		else if (!strcmp(action, "action_7"))
-			cur_bb = &keys.action_7;
-		else if (!strcmp(action, "action_8"))
-			cur_bb = &keys.action_8;
-		else if (!strcmp(action, "action_9"))
-			cur_bb = &keys.action_9;
-		else if (!strcmp(action, "zoom_in"))
-			cur_bb = &keys.zoom_in;
-		else if (!strcmp(action, "zoom_out"))
-			cur_bb = &keys.zoom_out;
-		else if (!strcmp(action, "zoom_default"))
-			cur_bb = &keys.zoom_default;
-		else if (!strcmp(action, "zoom_fit"))
-			cur_bb = &keys.zoom_fit;
-		else if (!strcmp(action, "size_to_image"))
-			cur_bb = &keys.size_to_image;
-		else if (!strcmp(action, "render"))
-			cur_bb = &keys.render;
-		else if (!strcmp(action, "toggle_actions"))
-			cur_bb = &keys.toggle_actions;
-		else if (!strcmp(action, "toggle_aliasing"))
-			cur_bb = &keys.toggle_aliasing;
-		else if (!strcmp(action, "toggle_filenames"))
-			cur_bb = &keys.toggle_filenames;
-#ifdef HAVE_LIBEXIF
-		else if (!strcmp(action, "toggle_exif"))
-			cur_bb = &keys.toggle_exif;
-#endif
-		else if (!strcmp(action, "toggle_info"))
-			cur_bb = &keys.toggle_info;
-		else if (!strcmp(action, "toggle_pointer"))
-			cur_bb = &keys.toggle_pointer;
-		else if (!strcmp(action, "toggle_caption"))
-			cur_bb = &keys.toggle_caption;
-		else if (!strcmp(action, "toggle_pause"))
-			cur_bb = &keys.toggle_pause;
-		else if (!strcmp(action, "toggle_fullscreen"))
-			cur_bb = &keys.toggle_fullscreen;
-		else if (!strcmp(action, "reload_image"))
-			cur_bb = &keys.reload_image;
-		else if (!strcmp(action, "save_image"))
-			cur_bb = &keys.save_image;
-		else if (!strcmp(action, "save_filelist"))
-			cur_bb = &keys.save_filelist;
-		else if (!strcmp(action, "orient_1"))
-			cur_bb = &keys.orient_1;
-		else if (!strcmp(action, "orient_3"))
-			cur_bb = &keys.orient_3;
-		else if (!strcmp(action, "flip"))
-			cur_bb = &keys.flip;
-		else if (!strcmp(action, "mirror"))
-			cur_bb = &keys.mirror;
-		else if (!strcmp(action, "reload_minus"))
-			cur_bb = &keys.reload_minus;
-		else if (!strcmp(action, "reload_plus"))
-			cur_bb = &keys.reload_plus;
-		else if (!strcmp(action, "toggle_keep_vp"))
-			cur_bb = &keys.toggle_keep_vp;
 		else
-			weprintf("buttons: Invalid action: %s", action);
+			cur_bb = feh_str_to_kb(action);
 
 		if (cur_bb)
 			feh_set_parse_bb_partial(cur_bb, button);
+		else
+			weprintf("buttons: Invalid action: %s", action);
 	}
 	fclose(conf);
 }
