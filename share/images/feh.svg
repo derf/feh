@@ -10,12 +10,12 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="200"
-   height="50"
+   width="100"
+   height="100"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
-   sodipodi:docname="New document 1">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="feh.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -62,8 +62,8 @@
        inkscape:label="Drop shadow"
        width="1.5"
        height="1.5"
-       x="-.25"
-       y="-.25">
+       x="-0.25"
+       y="-0.25">
       <feGaussianBlur
          id="feGaussianBlur3861"
          in="SourceAlpha"
@@ -90,6 +90,33 @@
            in="SourceGraphic" />
       </feMerge>
     </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3659"
+       id="linearGradient3356"
+       gradientUnits="userSpaceOnUse"
+       x1="60.296875"
+       y1="1026.6521"
+       x2="141.11719"
+       y2="1026.6521" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3659"
+       id="linearGradient3358"
+       gradientUnits="userSpaceOnUse"
+       x1="60.296875"
+       y1="1026.6521"
+       x2="141.11719"
+       y2="1026.6521" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3659"
+       id="linearGradient3360"
+       gradientUnits="userSpaceOnUse"
+       x1="60.296875"
+       y1="1026.6521"
+       x2="141.11719"
+       y2="1026.6521" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -99,13 +126,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="96.605459"
-     inkscape:cy="39.75"
+     inkscape:cx="74.605459"
+     inkscape:cy="135"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1022"
-     inkscape:window-height="583"
+     inkscape:window-width="1088"
+     inkscape:window-height="883"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0" />
@@ -125,38 +152,48 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1002.3622)">
+     transform="translate(0,-952.3622)">
     <g
-       style="fill-opacity:1;fill-rule:nonzero;fill:#000000;opacity:1;stroke:none;stroke-opacity:1;filter:url(#filter3859)"
-       id="g3669">
-      <path
-         id="path3671"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:#000000;stroke-opacity:1"
-         d="m 60.296875,1012.072 20.292969,0 0,5.6836 -12.773438,0 0,5.4297 12.011719,0 0,5.6836 -12.011719,0 0,12.3633 -7.519531,0 0,-29.1602" />
-      <path
-         id="path3673"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:#000000;stroke-opacity:1"
-         d="m 87.640625,1012.072 20.292965,0 0,5.6836 -12.77343,0 0,5.4297 12.01172,0 0,5.6836 -12.01172,0 0,6.6797 13.20312,0 0,5.6836 -20.722655,0 0,-29.1602" />
-      <path
-         id="path3675"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:#000000;stroke-opacity:1"
-         d="m 114.98438,1012.072 7.51953,0 0,11.1133 11.09375,0 0,-11.1133 7.51953,0 0,29.1602 -7.51953,0 0,-12.3633 -11.09375,0 0,12.3633 -7.51953,0 0,-29.1602" />
-    </g>
-    <g
-       id="g2834"
-       style="fill-opacity:1;fill-rule:nonzero;fill:url(#linearGradient3667);opacity:1;stroke:none;stroke-opacity:1">
-      <path
-         d="m 60.296875,1012.072 20.292969,0 0,5.6836 -12.773438,0 0,5.4297 12.011719,0 0,5.6836 -12.011719,0 0,12.3633 -7.519531,0 0,-29.1602"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:url(#linearGradient3667);stroke-opacity:1"
-         id="path2825" />
-      <path
-         d="m 87.640625,1012.072 20.292965,0 0,5.6836 -12.77343,0 0,5.4297 12.01172,0 0,5.6836 -12.01172,0 0,6.6797 13.20312,0 0,5.6836 -20.722655,0 0,-29.1602"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:url(#linearGradient3667);stroke-opacity:1"
-         id="path2827" />
-      <path
-         d="m 114.98438,1012.072 7.51953,0 0,11.1133 11.09375,0 0,-11.1133 7.51953,0 0,29.1602 -7.51953,0 0,-12.3633 -11.09375,0 0,12.3633 -7.51953,0 0,-29.1602"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:Catharsis Bedouin Bold;fill-rule:nonzero;fill:url(#linearGradient3667);stroke-opacity:1"
-         id="path2829" />
+       id="g3362"
+       transform="translate(-50.707033,-24.2899)">
+      <g
+         id="g3669"
+         style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1;filter:url(#filter3859)">
+        <path
+           inkscape:connector-curvature="0"
+           d="m 60.296875,1012.072 20.292969,0 0,5.6836 -12.773438,0 0,5.4297 12.011719,0 0,5.6836 -12.011719,0 0,12.3633 -7.519531,0 0,-29.1602"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           id="path3671" />
+        <path
+           inkscape:connector-curvature="0"
+           d="m 87.640625,1012.072 20.292965,0 0,5.6836 -12.77343,0 0,5.4297 12.01172,0 0,5.6836 -12.01172,0 0,6.6797 13.20312,0 0,5.6836 -20.722655,0 0,-29.1602"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           id="path3673" />
+        <path
+           inkscape:connector-curvature="0"
+           d="m 114.98438,1012.072 7.51953,0 0,11.1133 11.09375,0 0,-11.1133 7.51953,0 0,29.1602 -7.51953,0 0,-12.3633 -11.09375,0 0,12.3633 -7.51953,0 0,-29.1602"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           id="path3675" />
+      </g>
+      <g
+         style="opacity:1;fill:url(#linearGradient3667);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+         id="g2834">
+        <path
+           inkscape:connector-curvature="0"
+           id="path2825"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:url(#linearGradient3356);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           d="m 60.296875,1012.072 20.292969,0 0,5.6836 -12.773438,0 0,5.4297 12.011719,0 0,5.6836 -12.011719,0 0,12.3633 -7.519531,0 0,-29.1602" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2827"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:url(#linearGradient3358);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           d="m 87.640625,1012.072 20.292965,0 0,5.6836 -12.77343,0 0,5.4297 12.01172,0 0,5.6836 -12.01172,0 0,6.6797 13.20312,0 0,5.6836 -20.722655,0 0,-29.1602" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2829"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:'DejaVu Sans';-inkscape-font-specification:'Catharsis Bedouin Bold';fill:url(#linearGradient3360);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+           d="m 114.98438,1012.072 7.51953,0 0,11.1133 11.09375,0 0,-11.1133 7.51953,0 0,29.1602 -7.51953,0 0,-12.3633 -11.09375,0 0,12.3633 -7.51953,0 0,-29.1602" />
+      </g>
     </g>
   </g>
 </svg>
