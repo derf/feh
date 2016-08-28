@@ -1,5 +1,6 @@
-git HEAD
+Sun, 28 Aug 2016 21:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.17
     * Install feh icon (both 48x48 and scalable SVG) to /usr/share/icons
       when running "make install app=1"
     * Fix --sort not being respected after the first reload when used in
