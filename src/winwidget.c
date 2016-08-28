@@ -149,9 +149,11 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	XClassHint *xch;
 	MWMHints mwmhints;
 	Atom prop = None;
+	pid_t pid;
 	int x = 0;
 	int y = 0;
 	char *tmpname;
+	char hostname[HOST_NAME_MAX];
 
 	D(("winwidget_create_window %dx%d\n", w, h));
 
@@ -269,6 +271,18 @@ void winwidget_create_window(winwidget ret, int w, int h)
 
 		XChangeProperty(disp, ret->win, prop_state, XA_ATOM, 32,
 				PropModeReplace, (unsigned char *) &prop_fs, 1);
+	}
+
+	pid = getpid();
+	prop = XInternAtom(disp, "_NET_WM_PID", False);
+	XChangeProperty(disp, ret->win, prop, XA_CARDINAL, sizeof(pid_t) * 8,
+			PropModeReplace, (const unsigned char *)&pid, 1);
+
+	if (gethostname(hostname, HOST_NAME_MAX) == 0) {
+		hostname[HOST_NAME_MAX-1] = '\0';
+		prop = XInternAtom(disp, "WM_CLIENT_MACHINE", False);
+		XChangeProperty(disp, ret->win, prop, XA_STRING, sizeof(char) * 8,
+				PropModeReplace, (unsigned char *)hostname, strlen(hostname));
 	}
 
 	XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
