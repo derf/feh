@@ -204,9 +204,6 @@ struct __fehkb {
 	struct __fehkey pan;
 	struct __fehkey zoom;
 	struct __fehkey reload;
-	struct __fehkey prev;
-	struct __fehkey next;
-	struct __fehkey menu;
 	struct __fehkey blur;
 	struct __fehkey rotate;
 };

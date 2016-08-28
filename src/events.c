@@ -101,13 +101,13 @@ void init_buttonbindings(void)
 	FILE *conf = NULL;
 	int read = 0;
 
-	feh_set_bb(&keys.pan,    0, 1);
-	feh_set_bb(&keys.zoom,   0, 2);
-	feh_set_bb(&keys.menu,   0, 3);
-	feh_set_bb(&keys.prev,   0, 4);
-	feh_set_bb(&keys.next,   0, 5);
-	feh_set_bb(&keys.blur,   4, 1);
-	feh_set_bb(&keys.rotate, 4, 2);
+	feh_set_bb(&keys.pan,         0, 1);
+	feh_set_bb(&keys.zoom,        0, 2);
+	feh_set_bb(&keys.toggle_menu, 0, 3);
+	feh_set_bb(&keys.prev_img,    0, 4);
+	feh_set_bb(&keys.next_img,    0, 5);
+	feh_set_bb(&keys.blur,        4, 1);
+	feh_set_bb(&keys.rotate,      4, 2);
 
 	home = getenv("HOME");
 	confhome = getenv("XDG_CONFIG_HOME");
@@ -147,12 +147,12 @@ void init_buttonbindings(void)
 			cur_bb = &keys.pan;
 		else if (!strcmp(action, "zoom"))
 			cur_bb = &keys.zoom;
-		else if (!strcmp(action, "menu"))
-			cur_bb = &keys.menu;
-		else if (!strcmp(action, "prev"))
-			cur_bb = &keys.prev;
-		else if (!strcmp(action, "next"))
-			cur_bb = &keys.next;
+		else if (!strcmp(action, "menu") || !strcmp(action, "toggle_menu"))
+			cur_bb = &keys.toggle_menu;
+		else if (!strcmp(action, "prev") || !strcmp(action, "prev_img"))
+			cur_bb = &keys.prev_img;
+		else if (!strcmp(action, "next") || !strcmp(action, "next_img"))
+			cur_bb = &keys.next_img;
 		else if (!strcmp(action, "blur"))
 			cur_bb = &keys.blur;
 		else if (!strcmp(action, "rotate"))
@@ -189,10 +189,6 @@ void init_buttonbindings(void)
 			cur_bb = &keys.scroll_up_page;
 		else if (!strcmp(action, "scroll_down_page"))
 			cur_bb = &keys.scroll_down_page;
-		else if (!strcmp(action, "prev_img"))
-			cur_bb = &keys.prev_img;
-		else if (!strcmp(action, "next_img"))
-			cur_bb = &keys.next_img;
 		else if (!strcmp(action, "jump_back"))
 			cur_bb = &keys.jump_back;
 		else if (!strcmp(action, "jump_fwd"))
@@ -265,8 +261,6 @@ void init_buttonbindings(void)
 			cur_bb = &keys.toggle_caption;
 		else if (!strcmp(action, "toggle_pause"))
 			cur_bb = &keys.toggle_pause;
-		else if (!strcmp(action, "toggle_menu"))
-			cur_bb = &keys.toggle_menu;
 		else if (!strcmp(action, "toggle_fullscreen"))
 			cur_bb = &keys.toggle_fullscreen;
 		else if (!strcmp(action, "reload_image"))
@@ -343,7 +337,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	state = ev->xbutton.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 	button = ev->xbutton.button;
 
-	if (!opt.no_menus && feh_is_bb(&keys.menu, button, state)) {
+	if (!opt.no_menus && feh_is_bb(&keys.toggle_menu, button, state)) {
 		D(("Menu Button Press event\n"));
 		winwidget_show_menu(winwid);
 
@@ -443,12 +437,12 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("Reload Button Press event\n"));
 			feh_reload_image(winwid, 0, 1);
 
-	} else if (feh_is_bb(&keys.prev, button, state)) {
+	} else if (feh_is_bb(&keys.prev_img, button, state)) {
 		D(("Prev Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
 
-	} else if (feh_is_bb(&keys.next, button, state)) {
+	} else if (feh_is_bb(&keys.next_img, button, state)) {
 		D(("Next Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);

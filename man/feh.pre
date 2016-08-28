@@ -1506,15 +1506,15 @@ pan the current image
 .
 Zoom the current image
 .
-.It 3 Ao right mouse button Ac Bq menu
+.It 3 Ao right mouse button Ac Bq toggle_menu
 .
 Toggle menu
 .
-.It 4 Ao mousewheel down Ac Bq prev
+.It 4 Ao mousewheel down Ac Bq prev_img
 .
 Show previous image
 .
-.It 5 Ao mousewheel up Ac Bq next
+.It 5 Ao mousewheel up Ac Bq next_img
 .
 Show next image
 .
