@@ -1,9 +1,17 @@
 git HEAD
 
     * Install feh icon (both 48x48 and scalable SVG) to /usr/share/icons
-      when running make install
+      when running "make install app=1"
     * Fix --sort not being respected after the first reload when used in
       conjunction with --reload
+    * All key actions can now also be bound to a button by specifying them
+      in .config/feh/buttons. However, note that button actions can not be
+      bound to keys.
+    * Rename "menu" key action to "toggle_menu", "prev" to "prev_img" and
+      "next" to "next_img". The old names are still supported, but no longer
+      documented.
+    * feh now also sets the X11 _NET_WM_PID and WM_CLIENT_MACHINE window
+      properties
 
 Sun, 31 Jul 2016 16:59:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
