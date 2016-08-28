@@ -45,8 +45,8 @@ displays all files in the current directory.
 .
 .Nm
 supports filelists, various image sorting modes, image captions, HTTP and more.
-Configurable keyboard shortcuts are used to control it; the mouse is also
-supported, but only required for very few actions.
+Configurable keyboard and mouse shortcuts are used to control it; by default,
+the mouse is only required for very few actions.
 .
 .Pp
 .
@@ -568,7 +568,7 @@ E.g. to sort in reverse width order, use
 .
 Scale images to fit window geometry (defaults to screen size when no geometry
 was specified). Note that the window geometry is not updated when changing
-images at the moment. This behaviour may change in the future.
+images at the moment. This option is recommended for tiling window managers.
 .
 This option is ignored when in fullscreen mode.
 .
@@ -1159,13 +1159,12 @@ without any keys unbinds it (i.e. the default bindings are removed).
 .Pp
 .
 .Em Note :
-Do not use the same keybinding for multiple actions.
+Do not use the same keybinding for multiple actions. When binding an action
+to a new key
+.Pq or mouse button ,
+make sure to unbind it from its previous action, if present.
 .Nm
 does not check for conflicting bindings, so their behaviour is undefined.
-.
-Either unbind the unwanted action, or bind it to another unused key.
-.
-The order in which you bind / unbind does not matter, though.
 .
 .Pp
 .
@@ -1460,7 +1459,7 @@ This works like the keys config file: the entries are of the form
 .
 Each
 .Ar binding
-is a button name.  It may optionally start with modifiers for things like
+is a button number.  It may optionally start with modifiers for things like
 Control, in which case
 .Ar binding
 looks like
@@ -1675,32 +1674,6 @@ Recursively remove all images with dimensions below or equal to 1000x800 pixels
 from the current directory.
 .
 .El
-.
-.
-.Sh TILING WINDOW MANAGERS
-.
-.Nm
-was created with a floating window layout in mind.  However, as of 2.0.1, it
-has limited support for tiling window managers.
-.
-.Pp
-.
-Specifically, the
-.Cm --scale-down No and Cm --auto-zoom
-options will detect a tiling environment and scale the image up / down to the
-current window size.  Unfortunately, this causes every image to be rendered
-twice: First in a normal fashion, and then
-.Pq after noticing that the window is being tiled
-again with the correct zoom level.
-.
-.Pp
-.
-This is a known bug and will hopefully get fixed some time. For now, it can be
-avoided by using
-.Cm --geometry 500x500 Pq or any other geometry .
-This will have the same behaviour as
-.Cm --scale-down ,
-but without the flickering.
 .
 .
 .Sh DEPENDENCIES
