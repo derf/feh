@@ -1,9 +1,21 @@
 PACKAGE ?= feh
 VERSION ?= ${shell git describe --dirty}
 
+app ?= 0
+cam ?= 0
+curl ?= 1
+debug ?= 0
+help ?= 0
+xinerama ?= 1
+exif ?= 0
+
 # Prefix for all installed files
 PREFIX ?= /usr/local
-ICON_PREFIX ?= /usr/share/icons
+ICON_PREFIX ?= ${DESTDIR}${PREFIX}/share/icons
+
+ifeq (${app},1)
+	ICON_PREFIX = /usr/share/icons
+endif
 
 # Directories for manuals, executables, docs, data, etc.
 main_dir = ${DESTDIR}${PREFIX}
@@ -21,13 +33,6 @@ scalable_icon_dir = ${icon_dir}/scalable/apps
 # default CFLAGS
 CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -pedantic
-
-cam ?= 0
-curl ?= 1
-debug ?= 0
-help ?= 0
-xinerama ?= 1
-exif ?= 0
 
 ifeq (${curl},1)
 	CFLAGS += -DHAVE_LIBCURL
