@@ -1,3 +1,9 @@
+Wed, 31 Aug 2016 20:27:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.17.1
+    * Fix compilation on systems where HOST_NAME_MAX is not defined, such as
+      FreeBSD (patch by Niclas Zeising)
+
 Sun, 28 Aug 2016 21:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.17
