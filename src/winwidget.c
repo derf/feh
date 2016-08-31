@@ -294,7 +294,6 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	if ((host_name_max = sysconf(_SC_HOST_NAME_MAX)) != -1 ) {
 		if ((hostname = calloc(1, host_name_max + 1)) != NULL ) {
 			if (gethostname(hostname, host_name_max) == 0) {
-				hostname[host_name_max] = '\0';
 				prop = XInternAtom(disp, "WM_CLIENT_MACHINE", False);
 				XChangeProperty(disp, ret->win, prop, XA_STRING, sizeof(char) * 8,
 						PropModeReplace, (unsigned char *)hostname, strlen(hostname));
