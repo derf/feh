@@ -152,9 +152,13 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	pid_t pid;
 	int x = 0;
 	int y = 0;
-	long host_name_max;
 	char *tmpname;
+#ifdef HOST_NAME_MAX
+	char hostname[HOST_NAME_MAX];
+#else /* ! HOST_NAME_MAX */
+	long host_name_max;
 	char *hostname;
+#endif /* HOST_NAME_MAX */
 
 	D(("winwidget_create_window %dx%d\n", w, h));
 
@@ -279,6 +283,14 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	XChangeProperty(disp, ret->win, prop, XA_CARDINAL, sizeof(pid_t) * 8,
 			PropModeReplace, (const unsigned char *)&pid, 1);
 
+#ifdef HOST_NAME_MAX
+	if (gethostname(hostname, HOST_NAME_MAX) == 0) {
+		hostname[HOST_NAME_MAX-1] = '\0';
+		prop = XInternAtom(disp, "WM_CLIENT_MACHINE", False);
+		XChangeProperty(disp, ret->win, prop, XA_STRING, sizeof(char) * 8,
+				PropModeReplace, (unsigned char *)hostname, strlen(hostname));
+	}
+#else /* ! HOST_NAME_MAX */
 	if ((host_name_max = sysconf(_SC_HOST_NAME_MAX)) != -1 ) {
 		if ((hostname = calloc(1, host_name_max + 1)) != NULL ) {
 			if (gethostname(hostname, host_name_max) == 0) {
@@ -287,9 +299,10 @@ void winwidget_create_window(winwidget ret, int w, int h)
 				XChangeProperty(disp, ret->win, prop, XA_STRING, sizeof(char) * 8,
 						PropModeReplace, (unsigned char *)hostname, strlen(hostname));
 			}
-				free(hostname);
+			free(hostname);
 		}
 	}
+#endif /* HOST_NAME_MAX */
 
 	XSetWMProtocols(disp, ret->win, &wmDeleteWindow, 1);
 	winwidget_update_title(ret);
