@@ -37,7 +37,7 @@ started by
 .Pq graphical
 file managers to view an image.
 By default
-.Pq unless arguments or a filelist are specified
+.Pq unless arguments or a filelist are specified ,
 .Nm
 displays all files in the current directory.
 .
@@ -45,8 +45,7 @@ displays all files in the current directory.
 .
 .Nm
 supports filelists, various image sorting modes, image captions, HTTP and more.
-Configurable keyboard and mouse shortcuts are used to control it; by default,
-the mouse is only required for very few actions.
+Configurable keyboard and mouse shortcuts are used to control it.
 .
 .Pp
 .
@@ -58,9 +57,11 @@ can also be used as wallpaper setter.
 EXIF tags are supported either using exiv2 / exifgrep via
 .Cm --info
 .Pq see the Sx USAGE EXAMPLES No section ,
-or by compiling
+or as a builtin feature by compiling
 .Nm
-with exif=1.
+with exif=1. In this build of
+.Nm ,
+builtin EXIF support is $MAN_EXIF$$MAN_DEBUG$.
 .
 .
 .Sh MODES
@@ -71,11 +72,12 @@ options.
 .
 .Pp
 .
-Slideshow mode is the default.  It opens one window and displays the first
-image in it, the keyboard and mouse can be used to change slides
-.Pq images .
+Slideshow mode is the default.  It opens a window and displays the first
+image in it; the slideshow position can be advanced
+.Pq or otherwise changed
+using keyboard and mouse shortcuts.
 In slideshow mode, images can be deleted either from the filelist or from the
-disk, the new filelist can then be saved to the disk and reopened at a later
+disk, a changed filelist can also be saved to the disk and reopened at a later
 time.
 An image can also be read from stdin via
 .Qq feh - .
@@ -104,23 +106,25 @@ in one window.  Don't use with a large filelist ;)
 .
 .Pp
 .
-List mode doesn't display images.  Outputs an
-.Cm ls - No style
-listing of the files in the filelist, including image info such as size,
-pixels, type, etc.  Customlist mode will display whatever image info you want,
-in the format you choose.
+List mode doesn't display images.  Instead, it outputs an
+.Cm ls Ns No - Ns style
+listing of the files in the filelist, including image info such as size, number
+of pixels, type, etc.  There is also a Customlist mode which prints image info
+in a custom format specified by a printf-like format string.
 .
 .Pp
 .
 .Nm
 can also list either all the loadable files in a filelist or all the
-unloadable files.  Useful for preening a directory.
+unloadable files.  This is useful for preening a directory.
 .
 .
 .Sh SUPPORTED FORMATS
 .
 .Nm
-can open any format supported by Imlib2, most notably jpeg and png.
+can open any format supported by Imlib2, most notable jpeg, png,
+pnm, tiff, and bmp. The gif format is also supported, but only for static
+images. In case of animations, only the first frame will be shown.
 .
 If the convert binary
 .Pq supplied by ImageMagick
@@ -128,8 +132,6 @@ is available, it also has limited support for many other filetypes, such as
 svg, xcf and otf. Use
 .Cm --magick-timeout Ar num
 with a non-negative value to enable it.
-.
-For animated images, only the first frame is shown.
 .
 .
 .Sh OPTIONS
@@ -184,7 +186,7 @@ image info, see
 for details.  Example usage:
 .Qq feh -A Qo mv ~/images/%N Qc * .
 .
-.It Cm --action1 No .. Cm --action9
+.It Cm --action1 No .. Cm --action9 Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
 Extra actions which can be set and triggered using the appropriate number key.
 .
