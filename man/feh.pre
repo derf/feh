@@ -61,7 +61,7 @@ or as a builtin feature by compiling
 .Nm
 with exif=1. In this build of
 .Nm ,
-builtin EXIF support is $MAN_EXIF$$MAN_DEBUG$.
+builtin EXIF support is $MAN_EXIF$.
 .
 .
 .Sh MODES
