@@ -175,6 +175,7 @@ struct __fehkb {
 	struct __fehkey zoom_out;
 	struct __fehkey zoom_default;
 	struct __fehkey zoom_fit;
+	struct __fehkey zoom_fill;
 	struct __fehkey render;
 	struct __fehkey toggle_actions;
 	struct __fehkey toggle_filenames;

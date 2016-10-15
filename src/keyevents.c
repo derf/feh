@@ -140,7 +140,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.toggle_aliasing, 0, XK_A, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_filenames, 0, XK_d, 0, 0, 0, 0);
 #ifdef HAVE_LIBEXIF
-	feh_set_kb(&keys.toggle_exif, 0, XK_e, 0, 0, 0, 0);	
+	feh_set_kb(&keys.toggle_exif, 0, XK_e, 0, 0, 0, 0);
 #endif
 	feh_set_kb(&keys.toggle_info, 0, XK_i, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_pointer, 0, XK_o, 0, 0, 0, 0);
@@ -439,6 +439,8 @@ fehkey *feh_str_to_kb(char *action)
 		return &keys.zoom_default;
 	else if (!strcmp(action, "zoom_fit"))
 		return &keys.zoom_fit;
+	else if (!strcmp(action, "zoom_fill"))
+		return &keys.zoom_fill;
 	else if (!strcmp(action, "size_to_image"))
 		return &keys.size_to_image;
 	else if (!strcmp(action, "render"))
@@ -653,6 +655,14 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
+	else if (feh_is_kp(&keys.zoom_fill, state, keysym, button)) {
+		int save_zoom = opt.zoom_mode;
+		opt.zoom_mode = ZOOM_MODE_FILL;
+		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+		winwidget_center_image(winwid);
+		winwidget_render_image(winwid, 0, 0);
+		opt.zoom_mode = save_zoom;
+	}
 	else if (feh_is_kp(&keys.render, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL)
 			feh_thumbnail_show_selected();
@@ -677,7 +687,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		opt.draw_exif = !opt.draw_exif;
 		winwidget_rerender_all(0);
 	}
-#endif		
+#endif
 	else if (feh_is_kp(&keys.toggle_info, state, keysym, button)) {
 		opt.draw_info = !opt.draw_info;
 		winwidget_rerender_all(0);
@@ -777,7 +787,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		}
 #endif				/* HAVE_LIBXINERAMA */
 	}
-	else if (feh_is_kp(&keys.reload_plus, state, keysym, button)){ 
+	else if (feh_is_kp(&keys.reload_plus, state, keysym, button)){
 		if (opt.reload < SLIDESHOW_RELOAD_MAX)
 			opt.reload++;
 		else if (opt.verbose)
