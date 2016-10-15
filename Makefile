@@ -51,8 +51,8 @@ install-man:
 install-doc:
 	@echo installing docs to ${doc_dir}
 	@mkdir -p ${doc_dir}
-	@cp AUTHORS ChangeLog README TODO ${doc_dir}
-	@chmod 644 ${doc_dir}/AUTHORS ${doc_dir}/ChangeLog ${doc_dir}/README \
+	@cp AUTHORS ChangeLog README.md TODO ${doc_dir}
+	@chmod 644 ${doc_dir}/AUTHORS ${doc_dir}/ChangeLog ${doc_dir}/README.md \
 		${doc_dir}/TODO
 
 install-bin:

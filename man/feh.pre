@@ -1414,6 +1414,11 @@ Zoom to 100%
 .
 Zoom to fit the window size
 .
+.It Ao keypad 5 Ac Bq zoom_fill
+.
+Zoom to fill the window size like
+.Cm --bg-fill
+.
 .El
 .
 .Ss MENU KEYS
