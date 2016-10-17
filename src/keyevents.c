@@ -134,6 +134,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.zoom_out  , 0, XK_Down      , 0, XK_KP_Subtract,0, 0);
 	feh_set_kb(&keys.zoom_default, 0, XK_KP_Multiply, 0, XK_asterisk,0, 0);
 	feh_set_kb(&keys.zoom_fit  , 0, XK_KP_Divide , 0, XK_slash     , 0, 0);
+	feh_set_kb(&keys.zoom_fill , 0, XK_exclam    , 0, 0            , 0, 0);
 	feh_set_kb(&keys.size_to_image, 0, XK_w      , 0, 0            , 0, 0);
 	feh_set_kb(&keys.render    , 0, XK_KP_Begin  , 0, XK_R         , 0, 0);
 	feh_set_kb(&keys.toggle_actions, 0, XK_a, 0, 0, 0, 0);
