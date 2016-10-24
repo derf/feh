@@ -144,6 +144,7 @@ void init_thumbnail_mode(void)
 
 	index_image_width = td.w;
 	index_image_height = td.h + title_area_h;
+	D(("imlib_create_image(%d, %d)", index_image_width, index_image_height));
 	td.im_main = imlib_create_image(index_image_width, index_image_height);
 	gib_imlib_image_set_has_alpha(td.im_main, 1);
 
