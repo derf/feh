@@ -264,7 +264,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	if (exifData) {
 		ExifByteOrder byteOrder = exif_data_get_byte_order(exifData);
 		ExifEntry *exifEntry = exif_data_get_entry(exifData, EXIF_TAG_ORIENTATION);
-		if (exifEntry)
+		if (exifEntry && opt.auto_rotate)
 			orientation = exif_get_short(exifEntry->data, byteOrder);
 	}
 	file->ed = exifData;

@@ -51,6 +51,7 @@ struct __fehoptions {
 	unsigned char draw_filename;
 #ifdef HAVE_LIBEXIF
 	unsigned char draw_exif;
+	unsigned char auto_rotate;
 #endif
 	unsigned char list;
 	unsigned char quiet;
