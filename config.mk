@@ -7,7 +7,7 @@ curl ?= 1
 debug ?= 0
 help ?= 0
 xinerama ?= 1
-exif ?= 0
+exif ?= 1
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
