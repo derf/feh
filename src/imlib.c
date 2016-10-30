@@ -258,8 +258,8 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		return(0);
 	}
 
-	int orientation = 0;
 #ifdef HAVE_LIBEXIF
+	int orientation = 0;
 	ExifData *exifData = exif_data_new_from_file(file->filename);
 	if (exifData) {
 		ExifByteOrder byteOrder = exif_data_get_byte_order(exifData);
@@ -268,7 +268,6 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			orientation = exif_get_short(exifEntry->data, byteOrder);
 	}
 	file->ed = exifData;
-#endif
 
 	if (orientation == 3)
 		gib_imlib_image_orientate(*im, 2);
@@ -276,6 +275,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		gib_imlib_image_orientate(*im, 1);
 	else if (orientation == 8)
 		gib_imlib_image_orientate(*im, 3);
+#endif
 
 	D(("Loaded ok\n"));
 	return(1);
