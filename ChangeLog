@@ -1,3 +1,11 @@
+git HEAD
+
+    * Move README to README.md
+    * New key binding: ! / zoom_fill (zoom to fill window, may cut off image
+      parts)
+    * Only for builds with exif=1: Disable EXIF-based auto rotation by
+      default, add --auto-rotate option to enable it (Patch by Elliot Wolk)
+
 Wed, 31 Aug 2016 20:27:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.17.1
