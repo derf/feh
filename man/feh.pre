@@ -190,6 +190,11 @@ for details.  Example usage:
 .
 Extra actions which can be set and triggered using the appropriate number key.
 .
+.It Cm -Z , --auto-rotate
+.
+.Pq only if compiled with exif=1
+Automatically rotate images based on EXIF data. Does not alter the image files.
+.
 .It Cm -Z , --auto-zoom
 .
 Zoom pictures to screen size in fullscreen / fixed geometry mode.
