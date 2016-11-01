@@ -1,5 +1,6 @@
-git HEAD
+Tue, 01 Nov 2016 10:55:04 +0100
 
+* Release v2.18
     * Move README to README.md
     * New key binding: ! / zoom_fill (zoom to fill window, may cut off image
       parts)

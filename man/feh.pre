@@ -122,7 +122,7 @@ unloadable files.  This is useful for preening a directory.
 .Sh SUPPORTED FORMATS
 .
 .Nm
-can open any format supported by Imlib2, most notable jpeg, png,
+can open any format supported by Imlib2, most notably jpeg, png,
 pnm, tiff, and bmp. The gif format is also supported, but only for static
 images. In case of animations, only the first frame will be shown.
 .
@@ -190,7 +190,7 @@ for details.  Example usage:
 .
 Extra actions which can be set and triggered using the appropriate number key.
 .
-.It Cm -Z , --auto-rotate
+.It Cm --auto-rotate
 .
 .Pq only if compiled with exif=1
 Automatically rotate images based on EXIF data. Does not alter the image files.
