@@ -49,6 +49,7 @@ Configurable keyboard and mouse shortcuts are used to control it.
 .
 .Pp
 .
+In many desktop environments,
 .Nm
 can also be used as wallpaper setter.
 .
@@ -850,6 +851,7 @@ be printed.
 .
 .Sh BACKGROUND SETTING
 .
+In many desktop environments,
 .Nm
 can also be used as a background setter.  Unless you pass the
 .Cm --no-fehbg
@@ -864,6 +866,15 @@ As of
 2.13, this script is executable, so
 .Qq ~/.fehbg &
 will work as well.
+.
+.Pp
+.
+Note that
+.Nm
+does not support setting the wallpaper of GNOME shell desktops. In this
+environment, you can use
+.Qq gsettings set org.gnome.desktop.background picture-uri file:/// Ns Ar path
+instead.
 .
 .Pp
 .
