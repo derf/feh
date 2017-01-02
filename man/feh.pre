@@ -370,33 +370,9 @@ The default for windowed mode is checks, while fullscreen defaults to black.
 Enable Index mode.  Index mode is similar to montage mode, and accepts the
 same options.  It creates an index print of thumbnails, printing the image
 name beneath each thumbnail.  Index mode enables certain other options, see
-.Sx INDEX MODE OPTIONS
+.Sx INDEX AND THUMBNAIL MODE OPTIONS
 and
 .Sx MONTAGE MODE OPTIONS .
-.
-.It Cm --index-info Ar format
-.
-Show image information based on
-.Ar format
-below thumbnails in index / thumbnail mode.  See
-.Sx FORMAT SPECIFIERS .
-May contain newlines.
-.
-Use
-.Qq --index-info So Sc
-to display thumbnails without any info text
-.
-.Pp
-.
-Note: If you specify image-related formats
-.Pq such as \&%w or \&%s ,
-.Nm
-needs to load all images to calculate the dimensions of its own window.
-So when using them with many files, it will take a while before a
-.Nm
-window becomes visible.  Use
-.Cm --preload
-to get a progress bar.
 .
 .It Cm --info Oo Ar flag Oc Ns Ar commandline
 .
@@ -661,6 +637,8 @@ and
 do not affect the thumbnail window. They do, however, work for image windows
 launched from thumbnail mode.
 Also supports
+.Sx INDEX AND THUMBNAIL MODE OPTIONS
+as well as
 .Sx MONTAGE MODE OPTIONS .
 .
 .It Cm -~ , --thumb-title Ar string
@@ -838,9 +816,33 @@ will only redraw once all thumbnails are loaded.
 .El
 .
 .
-.Sh INDEX MODE OPTIONS
+.Sh INDEX AND THUMBNAIL MODE OPTIONS
 .
 .Bl -tag -width indent
+.
+.It Cm --index-info Ar format
+.
+Show image information based on
+.Ar format
+below thumbnails in index / thumbnail mode.  See
+.Sx FORMAT SPECIFIERS .
+May contain newlines.
+.
+Use
+.Qq --index-info ''
+to display thumbnails without any info text
+.
+.Pp
+.
+Note: If you specify image-related formats
+.Pq such as \&%w or \&%s ,
+.Nm
+needs to load all images to calculate the dimensions of its own window.
+So when using them with many files, it will take a while before a
+.Nm
+window becomes visible.  Use
+.Cm --preload
+to get a progress bar.
 .
 .It Cm -@ , --title-font Ar font
 .
