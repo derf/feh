@@ -615,6 +615,8 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				if (winwid) {
 					snprintf(buf, sizeof(buf), "%.2f", winwid->zoom);
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
+				} else {
+					strncat(ret, "1.00", sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case '%':

@@ -634,6 +634,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_info(winwid);
 		if (winwid->errstr)
 			feh_draw_errstr(winwid);
+		if (opt.title) {
+			/* title might contain e.g. the zoom specifier -> rewrite */
+			char *s = slideshow_create_name(FEH_FILE(current_file->data), winwid);
+			winwidget_rename(winwid, s);
+			free(s);
+		}
 	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);
 
