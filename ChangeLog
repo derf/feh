@@ -1,3 +1,8 @@
+git HEAD
+
+    * Fix image-specific format specifiers not being updated correctly
+      (e.g. %z not displaying the correct zoom value after zooming in / out)
+
 Tue, 01 Nov 2016 10:55:04 +0100
 
 * Release v2.18
