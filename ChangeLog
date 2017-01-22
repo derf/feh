@@ -1,9 +1,10 @@
-git HEAD
+Sun, 22 Jan 2017 19:11:32 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.18.1
     * Fix image-specific format specifiers not being updated correctly
       (e.g. %z not displaying the correct zoom value after zooming in / out)
 
-Tue, 01 Nov 2016 10:55:04 +0100
+Tue, 01 Nov 2016 10:55:04 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18
     * Move README to README.md
