@@ -319,7 +319,6 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		xsz.x = x;
 		xsz.y = y;
 		XSetWMNormalHints(disp, ret->win, &xsz);
-		XMoveWindow(disp, ret->win, x, y);
 	}
 	if (opt.hide_pointer)
 		winwidget_set_pointer(ret, 0);
@@ -804,8 +803,9 @@ void winwidget_show(winwidget winwid)
 	/* feh_debug_print_winwid(winwid); */
 	if (!winwid->visible) {
 		XMapWindow(disp, winwid->win);
-		if (opt.full_screen)
-			XMoveWindow(disp, winwid->win, 0, 0);
+
+		if (opt.geom_flags || opt.full_screen)
+			XMoveWindow(disp, winwid->win, winwid->x, winwid->y);
 		/* wait for the window to map */
 		D(("Waiting for window to map\n"));
 		XMaskEvent(disp, StructureNotifyMask, &ev);
