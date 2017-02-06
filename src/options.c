@@ -409,6 +409,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
+		{"begin-top"      , 0, 0, 242},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -770,6 +771,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.insecure_ssl = 1;
 		case 241:
 			opt.recursive = 0;
+		case 242:
+			opt.begin_top = 1;
+			break;
 		default:
 			break;
 		}

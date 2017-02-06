@@ -432,10 +432,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int antialias = 0;
 	int need_center = winwid->had_resize;
 
+	/* Causes horrible "tearing" (render picture big/small if auto-zoom is on),
+	 * if you switch fast between images (slideshow).
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 		winwidget_reset_image(winwid);
-	}
+	}*/
 
 	/* bounds checks for panning */
 	if (winwid->im_x > winwid->w)
@@ -563,6 +565,9 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			&& (winwid->type != WIN_TYPE_THUMBNAIL) && !opt.keep_zoom_vp) {
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
+
+		if (opt.begin_top)
+			winwid->im_y = 0;
 	}
 
 	/* Now we ensure only to render the area we're looking at */
