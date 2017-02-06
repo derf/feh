@@ -563,10 +563,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	}
 	else if (need_center && !winwid->full_screen
 			&& (winwid->type != WIN_TYPE_THUMBNAIL) && !opt.keep_zoom_vp) {
+			int smaller;
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 
-		if (opt.begin_top)
+		smaller = ((winwid->im_w < winwid->w)
+				&& (winwid->im_h < winwid->h));
+
+		if (!smaller && opt.begin_top)
 			winwid->im_y = 0;
 	}
 
