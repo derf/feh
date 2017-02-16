@@ -1,3 +1,9 @@
+Thu, 16 Feb 2017 23:05:39 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.18.2
+    * Fix crash when using both --thumbnails and --title. This bug was
+      introduced in v2.18.1.
+
 Sun, 22 Jan 2017 19:11:32 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18.1
