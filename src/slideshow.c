@@ -686,6 +686,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 			filelist = feh_file_rm_and_free(filelist, winwid->file);
 		else
 			filelist = feh_file_remove_from_list(filelist, winwid->file);
+		winwid->file = NULL;
 		winwidget_destroy(winwid);
 	}
 }
