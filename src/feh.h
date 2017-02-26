@@ -138,6 +138,7 @@ void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change, int render);
 void slideshow_pause_toggle(winwidget w);
 char *slideshow_create_name(feh_file * file, winwidget winwid);
+char *thumbnail_create_name(feh_file * file, winwidget winwid);
 void init_keyevents(void);
 void init_buttonbindings(void);
 void feh_event_handle_keypress(XEvent * ev);

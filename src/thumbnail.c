@@ -876,3 +876,16 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 
 	return status;
 }
+
+char *thumbnail_create_name(feh_file * file, winwidget winwid)
+{
+	char *s = NULL;
+
+	if (!opt.thumb_title) {
+		s = estrdup(file->filename);
+	} else {
+		s = estrdup(feh_printf(opt.thumb_title, file, winwid));
+	}
+
+	return(s);
+}

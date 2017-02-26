@@ -634,9 +634,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_info(winwid);
 		if (winwid->errstr)
 			feh_draw_errstr(winwid);
-		if (opt.title && (current_file != NULL)) {
-			/* title might contain e.g. the zoom specifier -> rewrite */
-			char *s = slideshow_create_name(FEH_FILE(current_file->data), winwid);
+		if (opt.title && (winwid->type != WIN_TYPE_THUMBNAIL_VIEWER) &&
+				(winwid->file != NULL)) {
+			char *s = slideshow_create_name(FEH_FILE(winwid->file->data), winwid);
+			winwidget_rename(winwid, s);
+			free(s);
+		} else if (opt.thumb_title && (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) &&
+				(winwid->file != NULL)) {
+			char *s = thumbnail_create_name(FEH_FILE(winwid->file->data), winwid);
 			winwidget_rename(winwid, s);
 			free(s);
 		}
