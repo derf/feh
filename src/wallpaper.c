@@ -349,7 +349,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 				for (in = 0; fil[in] && out < 4092; in++) {
 
-					if (fil[in] == '\'')
+					if (fil[in] == '\'' || fil[in] == ' ')
 						filbuf[out++] = '\\';
 					filbuf[out++] = fil[in];
 				}
