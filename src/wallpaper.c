@@ -795,7 +795,7 @@ char *enl_ipc_get(const char *msg_data)
 {
 
 	static char *message = NULL;
-	static unsigned short len = 0;
+	static size_t len = 0;
 	char buff[13], *ret_msg = NULL;
 	register unsigned char i;
 	unsigned char blen;
