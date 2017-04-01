@@ -1,3 +1,12 @@
+git HEAD
+
+    * Fix double-free/OOB-write in E17 IPC. This only affects the
+      background setting options and requires a malicious X11 app to run
+      alongside feh and pretend to be an E17 window manager.
+    * Fix image-specific format specifiers not being updated correctly in
+      thumbnail mode window titles
+    * Fix memory leak when closing images opened from thumbnail mode
+
 Thu, 16 Feb 2017 23:05:39 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18.2
