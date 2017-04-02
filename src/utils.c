@@ -183,14 +183,14 @@ char *ereadfile(char *path)
 {
 	char buffer[4096];
 	FILE *fp;
-	int count;
+	size_t count;
 
 	fp = fopen(path, "r");
 	if (!fp)
 		return NULL;
 
 	count = fread(buffer, sizeof(char), sizeof(buffer) - 1, fp);
-	if (buffer[count - 1] == '\n')
+	if (count > 0 && buffer[count - 1] == '\n')
 		buffer[count - 1] = '\0';
 	else
 		buffer[count] = '\0';
