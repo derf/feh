@@ -169,9 +169,11 @@ char *feh_unique_filename(char *path, char *basename)
 	ppid = getpid();
 	snprintf(cppid, sizeof(cppid), "%06ld", (long) ppid);
 
+	tmpname = NULL;
 	/* make sure file doesn't exist */
 	do {
 		snprintf(num, sizeof(num), "%06ld", i++);
+		free(tmpname);
 		tmpname = estrjoin("", path, "feh_", cppid, "_", num, "_", basename, NULL);
 	}
 	while (stat(tmpname, &st) == 0);
