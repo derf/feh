@@ -122,7 +122,7 @@ char *estrjoin(const char *separator, ...)
 			s = va_arg(args, char *);
 		}
 		va_end(args);
-		string = _emalloc(sizeof(char) * (len + 1));
+		string = emalloc(sizeof(char) * (len + 1));
 
 		*string = 0;
 		va_start(args, separator);

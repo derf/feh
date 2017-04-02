@@ -95,7 +95,7 @@ void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 
 	D(("adding timer %s for %f seconds time\n", name, in));
 	feh_remove_timer(name);
-	ft = malloc(sizeof(_fehtimer));
+	ft = emalloc(sizeof(_fehtimer));
 	ft->next = NULL;
 	ft->func = func;
 	ft->data = data;
