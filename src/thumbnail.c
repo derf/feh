@@ -381,8 +381,10 @@ void init_thumbnail_mode(void)
 
 		if (opt.output_dir)
 			snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
-		else
-			strncpy(output_buf, opt.output_file, 1024);
+		else {
+			strncpy(output_buf, opt.output_file, 1023);
+			output_buf[1023] = '\0';
+		}
 		gib_imlib_save_image_with_error_return(td.im_main, output_buf, &err);
 		if (err) {
 			feh_imlib_print_load_error(output_buf, td.im_main, err);
