@@ -3,9 +3,16 @@ git HEAD
     * Fix double-free/OOB-write in E17 IPC. This only affects the
       background setting options and requires a malicious X11 app to run
       alongside feh and pretend to be an E17 window manager.
+      (patch by Tobias Stoeckmann)
     * Fix image-specific format specifiers not being updated correctly in
       thumbnail mode window titles
     * Fix memory leak when closing images opened from thumbnail mode
+    * Fix a possible out of bounds read caused by an unterminated string when
+      using --output to save images in long paths. (patch by Tobias Stoeckmann)
+    * Fix out of bounds read/write when handling empty or broken caption files.
+      (patch by Tobias Stoeckmann)
+    * Fix memory leak when saving a filelist or image whose target filename
+      already exists. (patch by Tobias Stoeckmann)
 
 Thu, 16 Feb 2017 23:05:39 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
