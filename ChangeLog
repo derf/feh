@@ -1,5 +1,6 @@
-git HEAD
+Tue, 04 Apr 2017 21:22:16 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.18.3
     * Fix double-free/OOB-write in E17 IPC. This only affects the
       background setting options and requires a malicious X11 app to run
       alongside feh and pretend to be an E17 window manager.
