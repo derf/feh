@@ -673,6 +673,8 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 	Imlib_Image im_temp;
 	struct stat sb;
 	char c_width[8], c_height[8];
+	char *tmp_thumb_file, *prefix;
+	int tmp_fd;
 
 	if (feh_load_image(&im_temp, file) != 0) {
 		*orig_w = w = gib_imlib_image_get_width(im_temp);
@@ -696,10 +698,20 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 			sprintf(c_mtime, "%d", (int)sb.st_mtime);
 			snprintf(c_width, 8, "%d", w);
 			snprintf(c_height, 8, "%d", h);
-			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri,
+			prefix = feh_thumbnail_get_prefix();
+			tmp_thumb_file = estrjoin("/", prefix, ".feh_thumbnail_XXXXXX", NULL);
+			free(prefix);
+			tmp_fd = mkstemp(tmp_thumb_file);
+			if (!feh_png_write_png_fd(*image, tmp_fd, "Thumb::URI", uri,
 					"Thumb::MTime", c_mtime,
 					"Thumb::Image::Width", c_width,
-					"Thumb::Image::Height", c_height);
+					"Thumb::Image::Height", c_height)) { 
+				rename(tmp_thumb_file, thumb_file);
+			} else {
+				unlink(tmp_thumb_file);
+			}
+			close(tmp_fd);
+			free(tmp_thumb_file);
 		}
 
 		gib_imlib_free_image_and_decache(im_temp);

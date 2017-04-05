@@ -94,7 +94,7 @@ gib_hash *feh_png_read_comments(char *file)
 }
 
 /* grab image data from image and write info file with comments ... */
-int feh_png_write_png(Imlib_Image image, char *file, ...)
+int feh_png_write_png_fd(Imlib_Image image, int fd, ...)
 {
 	FILE *fp;
 	int i, w, h;
@@ -111,7 +111,7 @@ int feh_png_write_png(Imlib_Image image, char *file, ...)
 	char *pair_key, *pair_text;
 #endif				/* PNG_TEXT_SUPPORTED */
 
-	if (!(fp = fopen(file, "wb")))
+	if (!(fp = fdopen(fd, "wb")))
 		return 0;
 
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -155,7 +155,7 @@ int feh_png_write_png(Imlib_Image image, char *file, ...)
 	png_set_sBIT(png_ptr, info_ptr, &sig_bit);
 
 #ifdef PNG_TEXT_SUPPORTED
-	va_start(args, file);
+	va_start(args, fd);
 	for (i = 0; i < FEH_PNG_NUM_COMMENTS; i++) {
 		if ((pair_key = va_arg(args, char *))
 		    && (pair_text = va_arg(args, char *))) {
