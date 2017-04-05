@@ -657,7 +657,7 @@ char *feh_thumbnail_get_name_md5(char *uri)
 	md5_finish(&pms, digest);
 
 	/* print the md5 as hex to a string */
-	md5_name = emalloc(32 + 4 + 1 * sizeof(char));	/* md5 + .png + '\0' */
+	md5_name = emalloc(32 + 4 + 1);	/* md5 + .png + '\0' */
 	for (i = 0, pos = md5_name; i < 16; i++, pos += 2) {
 		sprintf(pos, "%02x", digest[i]);
 	}
