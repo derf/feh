@@ -586,7 +586,7 @@ static char *feh_thumbnail_get_prefix()
 {
 	char *dir = NULL, *home, *xdg_cache_home;
 
-        // TODO: perhaps make sure that either of those paths aren't /-terminated
+	// TODO: perhaps make sure that either of those paths aren't /-terminated
 
 	xdg_cache_home = getenv("XDG_CACHE_HOME");
 	if (xdg_cache_home && xdg_cache_home[0] == '/') {
@@ -607,12 +607,12 @@ char *feh_thumbnail_get_name(char *uri)
 
 	/* FIXME: make sure original file isn't under ~/.thumbnails */
 
-        prefix = feh_thumbnail_get_prefix();
-        if (prefix) {
+	prefix = feh_thumbnail_get_prefix();
+	if (prefix) {
 		md5_name = feh_thumbnail_get_name_md5(uri);
 		thumb_file = estrjoin("/", prefix, md5_name, NULL);
 		free(md5_name);
-                free(prefix);
+		free(prefix);
 	}
 
 	return thumb_file;
@@ -705,7 +705,7 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 			if (!feh_png_write_png_fd(*image, tmp_fd, "Thumb::URI", uri,
 					"Thumb::MTime", c_mtime,
 					"Thumb::Image::Width", c_width,
-					"Thumb::Image::Height", c_height)) { 
+					"Thumb::Image::Height", c_height)) {
 				rename(tmp_thumb_file, thumb_file);
 			} else {
 				unlink(tmp_thumb_file);
@@ -879,7 +879,7 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 	struct stat sb;
 	char *dir, *p;
 
-        dir = feh_thumbnail_get_prefix();
+	dir = feh_thumbnail_get_prefix();
 
 	if (dir) {
 		if (!stat(dir, &sb)) {
