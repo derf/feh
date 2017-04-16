@@ -341,6 +341,13 @@ screen size. The only exception is a
 of 100, in which case images will always be shown at 100% zoom, no matter
 their dimensions.
 .
+.Pp
+.
+When combined with
+.Cm --thumbnails ,
+this option only affects images opened from the thumbnail overview. The
+thumbnail list itself will still be windowed.
+.
 .It Cm -g , --geometry Oo Ar width No x Ar height Oc Op + Ar x No + Ar y
 .
 Limit (and don't change) the window size.  Takes an X-style geometry
@@ -554,7 +561,7 @@ Scale images to fit window geometry (defaults to screen size when no geometry
 was specified). Note that the window geometry is not updated when changing
 images at the moment. This option is recommended for tiling window managers.
 .
-This option is ignored when in fullscreen mode.
+This option is ignored when in fullscreen and thumbnail list mode.
 .
 .Pp
 .
