@@ -566,6 +566,12 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file,
 	if (td.cache_thumbnails) {
 		uri = feh_thumbnail_get_name_uri(file->filename);
 		thumb_file = feh_thumbnail_get_name(uri);
+
+		if (thumb_file == NULL) {
+			free(uri);
+			return feh_load_image(image, file);
+		}
+
 		status = feh_thumbnail_get_generated(image, file, thumb_file,
 			orig_w, orig_h);
 
@@ -582,20 +588,38 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file,
 	return status;
 }
 
+static char *feh_thumbnail_get_prefix()
+{
+	char *dir = NULL, *home, *xdg_cache_home;
+
+	// TODO: perhaps make sure that either of those paths aren't /-terminated
+
+	xdg_cache_home = getenv("XDG_CACHE_HOME");
+	if (xdg_cache_home && xdg_cache_home[0] == '/') {
+		dir = estrjoin("/", xdg_cache_home, "thumbnails", td.cache_dir, NULL);
+	} else {
+		home = getenv("HOME");
+		if (home && home[0] == '/') {
+			dir = estrjoin("/", home, ".cache/thumbnails", td.cache_dir, NULL);
+		}
+	}
+
+	return dir;
+}
+
 char *feh_thumbnail_get_name(char *uri)
 {
-	char *home = NULL, *thumb_file = NULL, *md5_name = NULL;
+	char *prefix, *thumb_file = NULL, *md5_name;
 
 	/* FIXME: make sure original file isn't under ~/.thumbnails */
 
-	md5_name = feh_thumbnail_get_name_md5(uri);
-
-	home = getenv("HOME");
-	if (home) {
-		thumb_file = estrjoin("/", home, ".thumbnails", td.cache_dir, md5_name, NULL);
+	prefix = feh_thumbnail_get_prefix();
+	if (prefix) {
+		md5_name = feh_thumbnail_get_name_md5(uri);
+		thumb_file = estrjoin("/", prefix, md5_name, NULL);
+		free(md5_name);
+		free(prefix);
 	}
-
-	free(md5_name);
 
 	return thumb_file;
 }
@@ -639,7 +663,7 @@ char *feh_thumbnail_get_name_md5(char *uri)
 	md5_finish(&pms, digest);
 
 	/* print the md5 as hex to a string */
-	md5_name = emalloc(32 + 4 + 1 * sizeof(char));	/* md5 + .png + '\0' */
+	md5_name = emalloc(32 + 4 + 1);	/* md5 + .png + '\0' */
 	for (i = 0, pos = md5_name; i < 16; i++, pos += 2) {
 		sprintf(pos, "%02x", digest[i]);
 	}
@@ -655,6 +679,8 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 	Imlib_Image im_temp;
 	struct stat sb;
 	char c_width[8], c_height[8];
+	char *tmp_thumb_file, *prefix;
+	int tmp_fd;
 
 	if (feh_load_image(&im_temp, file) != 0) {
 		*orig_w = w = gib_imlib_image_get_width(im_temp);
@@ -678,18 +704,32 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 			sprintf(c_mtime, "%d", (int)sb.st_mtime);
 			snprintf(c_width, 8, "%d", w);
 			snprintf(c_height, 8, "%d", h);
-			feh_png_write_png(*image, thumb_file, "Thumb::URI", uri,
+			prefix = feh_thumbnail_get_prefix();
+			if (prefix == NULL) {
+				gib_imlib_free_image_and_decache(im_temp);
+				return 0;
+			}
+			tmp_thumb_file = estrjoin("/", prefix, ".feh_thumbnail_XXXXXX", NULL);
+			free(prefix);
+			tmp_fd = mkstemp(tmp_thumb_file);
+			if (!feh_png_write_png_fd(*image, tmp_fd, "Thumb::URI", uri,
 					"Thumb::MTime", c_mtime,
 					"Thumb::Image::Width", c_width,
-					"Thumb::Image::Height", c_height);
+					"Thumb::Image::Height", c_height)) {
+				rename(tmp_thumb_file, thumb_file);
+			} else {
+				unlink(tmp_thumb_file);
+			}
+			close(tmp_fd);
+			free(tmp_thumb_file);
 		}
 
 		gib_imlib_free_image_and_decache(im_temp);
 
-		return (1);
+		return 1;
 	}
 
-	return (0);
+	return 0;
 }
 
 int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
@@ -847,31 +887,36 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 {
 	int status = 0;
 	struct stat sb;
-	char *dir, *dir_thumbnails, *home;
+	char *dir, *p;
 
-	home = getenv("HOME");
-	if (home != NULL) {
-		dir = estrjoin("/", home, ".thumbnails", td.cache_dir, NULL);
+	dir = feh_thumbnail_get_prefix();
 
+	if (dir) {
 		if (!stat(dir, &sb)) {
 			if (S_ISDIR(sb.st_mode))
 				status = 1;
 			else
 				weprintf("%s should be a directory", dir);
 		} else {
-			dir_thumbnails = estrjoin("/", home, ".thumbnails", NULL);
+			for (p = dir + 1; *p; p++) {
+				if (*p != '/') {
+					continue;
+				}
 
-			if (stat(dir_thumbnails, &sb) != 0) {
-				if (mkdir(dir_thumbnails, 0700) == -1)
-					weprintf("unable to create directory %s", dir_thumbnails);
+				*p = 0;
+				if (stat(dir, &sb) != 0) {
+					if (mkdir(dir, 0700) == -1) {
+						weprintf("unable to create directory %s", dir);
+					}
+				}
+				*p = '/';
 			}
 
-			free(dir_thumbnails);
-
-			if (mkdir(dir, 0700) == -1)
-				weprintf("unable to create directory %s", dir);
-			else
-				status = 1;
+			if (stat(dir, &sb) != 0) {
+				if (mkdir(dir, 0700) == -1) {
+					weprintf("unable to create directory %s", dir);
+				}
+			}
 		}
 		free(dir);
 	}

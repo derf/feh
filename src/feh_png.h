@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdarg.h>
 
 gib_hash *feh_png_read_comments(char *file);
-int feh_png_write_png(Imlib_Image image, char *file, ...);
+int feh_png_write_png_fd(Imlib_Image image, int fd, ...);
 
 int feh_png_file_is_png(FILE * fp);
 
