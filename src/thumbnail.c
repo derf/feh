@@ -566,6 +566,12 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file,
 	if (td.cache_thumbnails) {
 		uri = feh_thumbnail_get_name_uri(file->filename);
 		thumb_file = feh_thumbnail_get_name(uri);
+
+		if (thumb_file == NULL) {
+			free(uri);
+			return feh_load_image(image, file);
+		}
+
 		status = feh_thumbnail_get_generated(image, file, thumb_file,
 			orig_w, orig_h);
 
@@ -699,6 +705,10 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 			snprintf(c_width, 8, "%d", w);
 			snprintf(c_height, 8, "%d", h);
 			prefix = feh_thumbnail_get_prefix();
+			if (prefix == NULL) {
+				gib_imlib_free_image_and_decache(im_temp);
+				return 0;
+			}
 			tmp_thumb_file = estrjoin("/", prefix, ".feh_thumbnail_XXXXXX", NULL);
 			free(prefix);
 			tmp_fd = mkstemp(tmp_thumb_file);
@@ -716,10 +726,10 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 
 		gib_imlib_free_image_and_decache(im_temp);
 
-		return (1);
+		return 1;
 	}
 
-	return (0);
+	return 0;
 }
 
 int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
