@@ -152,8 +152,10 @@ KEYS
  i                       Toggle --info display
  k                       Toggle zoom/viewport freeze when switching images
  m                       Show menu
+ N                       Move the image down or go to next image
  n, <SPACE>, <RIGHT>     Go to next image
  o                       Toggle pointer visibility
+ P                       Move the image up or go to previous image
  p, <BACKSPACE>, <LEFT>  Go to previous image
  q, <ESCAPE>             Quit
  r                       Reload image

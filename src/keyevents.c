@@ -103,10 +103,14 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.scroll_right,0,XK_KP_Right  , 4, XK_Right     , 0, 0);
 	feh_set_kb(&keys.scroll_down,0, XK_KP_Down   , 4, XK_Down      , 0, 0);
 	feh_set_kb(&keys.scroll_up , 0, XK_KP_Up     , 4, XK_Up        , 0, 0);
+	feh_set_kb(&keys.scroll_down_or_next_img, 0, XK_N, 0, 0        , 0, 0);
+	feh_set_kb(&keys.scroll_up_or_prev_img  , 0, XK_P, 0, 0        , 0, 0);
 	feh_set_kb(&keys.scroll_left_page , 8, XK_Left , 0, 0          , 0, 0);
 	feh_set_kb(&keys.scroll_right_page, 8, XK_Right, 0, 0          , 0, 0);
 	feh_set_kb(&keys.scroll_down_page , 8, XK_Down , 0, 0          , 0, 0);
 	feh_set_kb(&keys.scroll_up_page   , 8, XK_Up   , 0, 0          , 0, 0);
+	feh_set_kb(&keys.scroll_down_page_or_next_img, 4, XK_N, 0, 0   , 0, 0);
+	feh_set_kb(&keys.scroll_up_page_or_prev_img  , 4, XK_P, 0, 0   , 0, 0);
 	feh_set_kb(&keys.prev_img  , 0, XK_Left      , 0, XK_p         , 0, XK_BackSpace);
 	feh_set_kb(&keys.next_img  , 0, XK_Right     , 0, XK_n         , 0, XK_space);
 	feh_set_kb(&keys.jump_back , 0, XK_Page_Up   , 0, XK_KP_Page_Up, 0, 0);
@@ -378,6 +382,10 @@ fehkey *feh_str_to_kb(char *action)
 		return &keys.scroll_up;
 	else if (!strcmp(action, "scroll_down"))
 		return &keys.scroll_down;
+	else if (!strcmp(action, "scroll_up_or_prev_img"))
+		return &keys.scroll_up_or_prev_img;
+	else if (!strcmp(action, "scroll_down_or_next_img"))
+		return &keys.scroll_down_or_next_img;
 	else if (!strcmp(action, "scroll_right_page"))
 		return &keys.scroll_right_page;
 	else if (!strcmp(action, "scroll_left_page"))
@@ -386,6 +394,10 @@ fehkey *feh_str_to_kb(char *action)
 		return &keys.scroll_up_page;
 	else if (!strcmp(action, "scroll_down_page"))
 		return &keys.scroll_down_page;
+	else if (!strcmp(action, "scroll_up_page_or_prev_img"))
+		return &keys.scroll_up_page_or_prev_img;
+	else if (!strcmp(action, "scroll_down_page_or_next_img"))
+		return &keys.scroll_down_page_or_next_img;
 	else if (!strcmp(action, "prev_img"))
 		return &keys.prev_img;
 	else if (!strcmp(action, "next_img"))
@@ -492,6 +504,48 @@ fehkey *feh_str_to_kb(char *action)
 	return NULL;
 }
 
+static void feh_scroll_or_next(winwidget winwid, int next, int scroll_step)
+{
+	if (next == (scroll_step > 0)) {
+		/* if bottom of view */
+		if (winwid->h < winwid->im_h && winwid->h - (winwid->im_h * winwid->zoom) != winwid->im_y) {
+			winwid->im_y -= scroll_step;
+			if (winwid->h - (winwid->im_h * winwid->zoom) > winwid->im_y) {
+				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom);
+			}
+			winwidget_render_image(winwid, 0, 1);
+		}
+		else if (opt.slideshow) {
+			slideshow_change_image(winwid, SLIDE_NEXT, 1);
+			if (winwid->h < winwid->im_h && winwid->im_y != 0) {
+				winwid->im_y = 0;
+				winwidget_render_image(winwid, 0, 1);
+			}
+		}
+		else if (winwid->type == WIN_TYPE_THUMBNAIL)
+			feh_thumbnail_select_next(winwid, 1);
+	}
+	else {
+		/* if top of view */
+		if (winwid->h < winwid->im_h && winwid->im_y) {
+			winwid->im_y += scroll_step;
+			if (winwid->im_y > 0) {
+				winwid->im_y = 0;
+			}
+			winwidget_render_image(winwid, 0, 1);
+		}
+		else if (opt.slideshow) {
+			slideshow_change_image(winwid, SLIDE_PREV, 1);
+			if (winwid->h < winwid->im_h && winwid->im_y != winwid->h - (winwid->im_h * winwid->zoom)) {
+				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom);
+				winwidget_render_image(winwid, 0, 1);
+			}
+		}
+		else if (winwid->type == WIN_TYPE_THUMBNAIL)
+			feh_thumbnail_select_prev(winwid, 1);
+	}
+}
+
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button) {
 	int curr_screen = 0;
 
@@ -522,10 +576,16 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
 	}
+	else if (feh_is_kp(&keys.scroll_down_or_next_img, state, keysym, button)) {
+		feh_scroll_or_next(winwid, 1, opt.scroll_step);
+	}
 	else if (feh_is_kp(&keys.scroll_up, state, keysym, button)) {
 		winwid->im_y += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 1);
+	}
+	else if (feh_is_kp(&keys.scroll_up_or_prev_img, state, keysym, button)) {
+		feh_scroll_or_next(winwid, 0, opt.scroll_step);
 	}
 	else if (feh_is_kp(&keys.scroll_right_page, state, keysym, button)) {
 		winwid->im_x -= winwid->w;
@@ -542,10 +602,16 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
+	else if (feh_is_kp(&keys.scroll_down_page_or_next_img, state, keysym, button)) {
+		feh_scroll_or_next(winwid, 1, winwid->h);
+	}
 	else if (feh_is_kp(&keys.scroll_up_page, state, keysym, button)) {
 		winwid->im_y += winwid->h;
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
+	}
+	else if (feh_is_kp(&keys.scroll_up_page_or_prev_img, state, keysym, button)) {
+		feh_scroll_or_next(winwid, 0, winwid->h);
 	}
 	else if (feh_is_kp(&keys.jump_back, state, keysym, button)) {
 		if (opt.slideshow)
