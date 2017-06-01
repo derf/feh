@@ -401,12 +401,10 @@ toggle_info key.
 When viewing files using HTTP,
 .Nm
 normally deletes the local copies after viewing, or, if caching, on exit.
-This option prevents this so that you get to keep the local copies.
-They will be in
-.Pa /tmp
-with
-.Qq Nm
-in the name.
+This option permanently stores them on disk, either in the directory
+specified by
+.Cm --output-dir ,
+or in the current working directory.
 .
 .It Cm --insecure
 .
@@ -501,7 +499,8 @@ compiled in.
 .
 Save files to
 .Ar directory
-.Pq only useful with -k
+.Pq only useful with -k .
+By default, files are saved in the current working directory.
 .
 .It Cm -p , --preload
 .
