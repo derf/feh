@@ -77,9 +77,11 @@ install-icon:
 	@echo installing icon to ${48_icon_dir}
 	@mkdir -p ${48_icon_dir}
 	@cp share/images/feh.png ${48_icon_dir}
+	@chmod 644 ${48_icon_dir}/feh.png
 	@echo installing icon to ${scalable_icon_dir}
 	@mkdir -p ${scalable_icon_dir}
 	@cp share/images/feh.svg ${scalable_icon_dir}
+	@chmod 644 ${scalable_icon_dir}/feh.svg
 	@if test "${app}" = 1 && which gtk-update-icon-cache > /dev/null 2>&1; then \
 		gtk-update-icon-cache ${icon_dir}; \
 	fi
