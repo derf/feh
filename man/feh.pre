@@ -1272,7 +1272,7 @@ Show next image. Selects the next image in thumbnail mode.
 .
 Toggle pointer visibility
 .
-.It p , Ao Backspace Ac , Ao Left Ac Bq prev_img
+.It p , Ao BackSpace Ac , Ao Left Ac Bq prev_img
 .
 Show previous image. Selects the previous image in thumbnail mode.
 .
@@ -1383,11 +1383,11 @@ Remove current file from filelist
 .
 Remove current file from filelist and delete it
 .
-.It Ao keypad left Ac , Ao Ctrl+Left Ac Bq scroll_left
+.It Ao keypad Left Ac , Ao Ctrl+Left Ac Bq scroll_left
 .
 Scroll to the left
 .
-.It Ao keypad right Ac , Ao Ctrl+Right Ac Bq scroll_right
+.It Ao keypad Right Ac , Ao Ctrl+Right Ac Bq scroll_right
 .
 Scroll to the right
 .
@@ -1395,7 +1395,7 @@ Scroll to the right
 .
 Scroll up
 .
-.It Ao keypad down Ac , Ao Ctrl+Down Ac Bq scroll_down
+.It Ao keypad Down Ac , Ao Ctrl+Down Ac Bq scroll_down
 .
 Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons,
