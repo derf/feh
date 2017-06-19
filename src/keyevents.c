@@ -73,7 +73,7 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 	}
 
 	key->keysyms[index] = XStringToKeysym(cur);
-	if (isascii(key->keysyms[index]))
+	if (isprint(key->keysyms[index]) && !isspace(key->keysyms[index]))
 		mod &= ~ShiftMask;
 	key->keystates[index] = mod;
 
@@ -278,7 +278,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
 	state = kev->state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 
-	if (isascii(keysym))
+	if (isprint(keysym) && !isspace(keysym))
 		state &= ~ShiftMask;
 
 	/* menus are showing, so this is a menu control keypress */
