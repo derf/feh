@@ -1198,6 +1198,14 @@ For a list of the
 .Ar action
 names, see
 .Sx KEYS .
+Note that not all of the key names used there correspond to X11 keysyms.
+Most notably, page up
+.Pq Prior / Page_Up ,
+page down
+.Pq Next / Page_Down
+and the keypad keys
+.Pq KP_*
+do not.
 .
 .
 .Sh KEYS
@@ -1224,7 +1232,7 @@ has been specified, then this enables caption editing.  The caption at the
 bottom of the screen will turn yellow and can be edited.  Hit return to confirm
 and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
-.Aq CTRL+return .
+.Aq Ctrl+return .
 .
 .It d Bq toggle_filenames
 .
@@ -1264,7 +1272,7 @@ Show menu.  Use the arrow keys and return to select items,
 .Aq escape
 to close the menu.
 .
-.It n , Ao Space Ac , Ao Right Ac Bq next_img
+.It n , Ao space Ac , Ao Right Ac Bq next_img
 .
 Show next image. Selects the next image in thumbnail mode.
 .
@@ -1351,11 +1359,11 @@ Execute the corresponding action
 Run the command defined by
 .Cm --action
 .
-.It Ao home Ac Bq jump_first
+.It Ao Home Ac Bq jump_first
 .
 Show first image
 .
-.It Ao end Ac Bq jump_last
+.It Ao End Ac Bq jump_last
 .
 Show last image
 .
@@ -1375,11 +1383,11 @@ Increase reload delay by 1 second
 .
 Decrease reload delay by 1 second
 .
-.It Ao delete Ac Bq remove
+.It Ao Delete Ac Bq remove
 .
 Remove current file from filelist
 .
-.It Ao CTRL+delete Ac Bq delete
+.It Ao Ctrl+Delete Ac Bq delete
 .
 Remove current file from filelist and delete it
 .
@@ -1473,7 +1481,7 @@ Highlight parent menu item
 .
 Highlight child menu item
 .
-.It Ao Return Ac , Ao Space Ac Bq menu_select
+.It Ao Return Ac , Ao space Ac Bq menu_select
 .
 Select highlighted menu item
 .
@@ -1586,9 +1594,9 @@ and mouse button 3 opens the menu.
 .
 .Pp
 .
-CTRL+Button 1 blurs or sharpens the image
+Ctrl+Button 1 blurs or sharpens the image
 .Pq drag left to blur, right to sharpen ;
-CTRL+Button 2 rotates the image around the center point.
+Ctrl+Button 2 rotates the image around the center point.
 .
 .Pp
 .
