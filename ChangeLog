@@ -1,5 +1,6 @@
-git HEAD
+Tue, 25 Jul 2017 18:40:33 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.19.1
     * Fix Shift modifier not being recognized for tab, space and similar keys.
       This lead to keybindings like Shift+Tab or Shift+Space being parsed as if
       the Shift modifier had not been specified
