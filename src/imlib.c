@@ -323,11 +323,13 @@ static char *feh_magick_load_image(char *filename)
 	}
 	else if (childpid == 0) {
 
-		/* discard convert output */
 		devnull = open("/dev/null", O_WRONLY);
 		dup2(devnull, 0);
-		dup2(devnull, 1);
-		dup2(devnull, 2);
+		if (opt.quiet) {
+			/* discard convert output */
+			dup2(devnull, 1);
+			dup2(devnull, 2);
+		}
 
 		/*
 		 * convert only accepts SIGINT via killpg, a normal kill doesn't work
