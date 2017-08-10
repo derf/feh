@@ -42,6 +42,15 @@ static void feh_set_kb(fehkey *key, unsigned int s0, unsigned int y0, unsigned
 	key->keysyms[2] = y2;
 }
 
+static inline int ignore_space(int keysym) {
+	/*
+	 * Passing values which do not find inside a signed 8bit char to isprint,
+	 * isspace and the likes is undefined behaviour... which glibc (for some
+	 * values) implements as a segmentation fault. So let's not do that.
+	 */
+	return ((keysym <= 127) && (keysym >= -128) && isprint(keysym) && !isspace(keysym));
+}
+
 static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 	char *cur = ks;
 	int mod = 0;
@@ -73,7 +82,7 @@ static void feh_set_parse_kb_partial(fehkey *key, int index, char *ks) {
 	}
 
 	key->keysyms[index] = XStringToKeysym(cur);
-	if (isprint(key->keysyms[index]) && !isspace(key->keysyms[index]))
+	if (ignore_space(key->keysyms[index]))
 		mod &= ~ShiftMask;
 	key->keystates[index] = mod;
 
@@ -278,7 +287,7 @@ void feh_event_handle_keypress(XEvent * ev)
 	XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
 	state = kev->state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 
-	if (isprint(keysym) && !isspace(keysym))
+	if (ignore_space(keysym))
 		state &= ~ShiftMask;
 
 	/* menus are showing, so this is a menu control keypress */
