@@ -1,3 +1,9 @@
+Sat, 12 Aug 2017 05:05:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.19.2
+    * Show ImageMagick loader errors unless --quiet is specified
+    * Fix crash when handling certain media keys (introduced in 2.19.1)
+
 Tue, 25 Jul 2017 18:40:33 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.1

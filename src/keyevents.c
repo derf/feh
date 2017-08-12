@@ -44,7 +44,7 @@ static void feh_set_kb(fehkey *key, unsigned int s0, unsigned int y0, unsigned
 
 static inline int ignore_space(int keysym) {
 	/*
-	 * Passing values which do not find inside a signed 8bit char to isprint,
+	 * Passing values which do not fit inside a signed 8bit char to isprint,
 	 * isspace and the likes is undefined behaviour... which glibc (for some
 	 * values) implements as a segmentation fault. So let's not do that.
 	 */
