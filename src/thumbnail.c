@@ -144,12 +144,14 @@ void init_thumbnail_mode(void)
 
 	index_image_width = td.w;
 	index_image_height = td.h + title_area_h;
-	D(("imlib_create_image(%d, %d)", index_image_width, index_image_height));
+	D(("imlib_create_image(%d, %d)\n", index_image_width, index_image_height));
 	td.im_main = imlib_create_image(index_image_width, index_image_height);
-	gib_imlib_image_set_has_alpha(td.im_main, 1);
 
 	if (!td.im_main)
-		eprintf("Imlib error creating index image, are you low on RAM?");
+		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+
+	gib_imlib_image_set_has_alpha(td.im_main, 1);
 
 	if (td.im_bg)
 		gib_imlib_blend_image_onto_image(td.im_main, td.im_bg,

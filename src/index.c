@@ -149,7 +149,8 @@ void init_index_mode(void)
 	im_main = imlib_create_image(index_image_width, index_image_height);
 
 	if (!im_main)
-		eprintf("Imlib error creating index image, are you low on RAM?");
+		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
 
 	if (bg_im)
 		gib_imlib_blend_image_onto_image(im_main, bg_im,
