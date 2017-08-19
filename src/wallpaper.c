@@ -300,6 +300,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		char *fehbg = NULL;
 		char fehbg_args[512];
 		fehbg_args[0] = '\0';
+		char *argptr = fehbg_args;
 		char *home;
 		char filbuf[4096];
 		char *bgfill = NULL;
@@ -308,13 +309,26 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #ifdef HAVE_LIBXINERAMA
 		if (opt.xinerama) {
 			if (opt.xinerama_index >= 0) {
-				snprintf(fehbg_args, sizeof(fehbg_args),
+				snprintf(argptr, sizeof(fehbg_args),
 					"--xinerama-index %d", opt.xinerama_index);
 			}
 		}
 		else
-			snprintf(fehbg_args, sizeof(fehbg_args), "--no-xinerama");
+			snprintf(argptr, sizeof(fehbg_args), "--no-xinerama");
+		argptr += strlen(argptr);
 #endif			/* HAVE_LIBXINERAMA */
+		if ((opt.geom_flags & XValue) && (sizeof(fehbg_args) - strlen(fehbg_args) > 20)) {
+			snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), " --geometry %c%d",
+					opt.geom_flags & XNegative ? '-' : '+',
+					opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
+			argptr += strlen(argptr);
+			if (opt.geom_flags & YValue) {
+				snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), "%c%d",
+						opt.geom_flags & YNegative ? '-' : '+',
+						opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
+				argptr += strlen(argptr);
+			}
+		}
 
 		/* local display to set closedownmode on */
 		Display *disp2;
