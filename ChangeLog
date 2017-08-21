@@ -1,3 +1,10 @@
+Mon, 21 Aug 2017 19:04:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.19.3
+    * Save geometry data in .fehbg when setting a wallpaper with --geometry
+    * Fix Imlib2 developer warning and improve out-of-memory error message
+      when using --thumbnails / --index on large directories
+
 Sat, 12 Aug 2017 05:05:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.2

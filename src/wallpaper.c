@@ -317,7 +317,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			snprintf(argptr, sizeof(fehbg_args), "--no-xinerama");
 		argptr += strlen(argptr);
 #endif			/* HAVE_LIBXINERAMA */
-		if ((opt.geom_flags & XValue) && (sizeof(fehbg_args) - strlen(fehbg_args) > 20)) {
+		if ((opt.geom_flags & XValue) && (sizeof(fehbg_args) - strlen(fehbg_args) > 60)) {
 			snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), " --geometry %c%d",
 					opt.geom_flags & XNegative ? '-' : '+',
 					opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
