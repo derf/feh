@@ -142,6 +142,7 @@ char *thumbnail_create_name(feh_file * file, winwidget winwid);
 void init_keyevents(void);
 void init_buttonbindings(void);
 void feh_event_handle_keypress(XEvent * ev);
+void feh_event_handle_stdin();
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button);
 fehkey *feh_str_to_kb(char * action);
 void feh_action_run(feh_file * file, char *action, winwidget winwid);

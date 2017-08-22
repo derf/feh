@@ -266,6 +266,21 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 	return;
 }
 
+void feh_event_handle_stdin()
+{
+	char stdin_buf[2];
+	if (read(STDIN_FILENO, &stdin_buf, 1) == -1) {
+		weprintf("reading a command from stdin failed");
+		return;
+	}
+	stdin_buf[1] = '\0';
+
+	KeySym keysym = XStringToKeysym(stdin_buf);
+
+	if (window_num)
+		feh_event_handle_generic(windows[0], 0, keysym, 0);
+}
+
 void feh_event_handle_keypress(XEvent * ev)
 {
 	int state;

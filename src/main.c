@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "events.h"
 #include "signals.h"
 #include "wallpaper.h"
+#include <termios.h>
 
 char **cmdargv = NULL;
 int cmdargc = 0;
@@ -91,6 +92,7 @@ int feh_main_iteration(int block)
 	static int xfd = 0;
 	static int fdsize = 0;
 	static double pt = 0.0;
+	static int read_stdin = 0;
 	XEvent ev;
 	struct timeval tval;
 	fd_set fdset;
@@ -107,6 +109,15 @@ int feh_main_iteration(int block)
 		fdsize = xfd + 1;
 		pt = feh_get_time();
 		first = 0;
+		if (isatty(STDIN_FILENO)) {
+			read_stdin = 1;
+			struct termios ctrl;
+			if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
+				eprintf("tcgetattr failed");
+			ctrl.c_lflag &= ~ICANON;
+			if (tcsetattr(STDIN_FILENO, TCSANOW, &ctrl) == -1)
+				eprintf("tcsetattr failed");
+		}
 	}
 
 	/* Timers */
@@ -127,6 +138,8 @@ int feh_main_iteration(int block)
 
 	FD_ZERO(&fdset);
 	FD_SET(xfd, &fdset);
+	if (read_stdin)
+		FD_SET(STDIN_FILENO, &fdset);
 
 	/* Timers */
 	ft = first_timer;
@@ -170,6 +183,8 @@ int feh_main_iteration(int block)
 				   in that */
 				feh_handle_timer();
 			}
+			else if (count && (FD_ISSET(0, &fdset)))
+				feh_event_handle_stdin();
 		}
 	} else {
 		/* Don't block if there are events in the queue. That's a bit rude ;-) */
@@ -181,6 +196,8 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
+			else if (count && (FD_ISSET(0, &fdset)))
+				feh_event_handle_stdin();
 		}
 	}
 	if (window_num == 0)
