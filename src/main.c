@@ -38,6 +38,9 @@ char **cmdargv = NULL;
 int cmdargc = 0;
 char *mode = NULL;
 
+struct termios old_term_settings;
+int control_via_stdin = 0;
+
 int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
@@ -92,7 +95,6 @@ int feh_main_iteration(int block)
 	static int xfd = 0;
 	static int fdsize = 0;
 	static double pt = 0.0;
-	static int read_stdin = 0;
 	XEvent ev;
 	struct timeval tval;
 	fd_set fdset;
@@ -110,11 +112,18 @@ int feh_main_iteration(int block)
 		pt = feh_get_time();
 		first = 0;
 		if (isatty(STDIN_FILENO)) {
-			read_stdin = 1;
+			control_via_stdin = 1;
 			struct termios ctrl;
+			if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
+				eprintf("tcgetattr failed");
 			if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
 				eprintf("tcgetattr failed");
-			ctrl.c_lflag &= ~ICANON;
+			ctrl.c_iflag &= ~(PARMRK | ISTRIP
+					| INLCR | IGNCR | ICRNL | IXON);
+			ctrl.c_oflag &= ~OPOST;
+			ctrl.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+			ctrl.c_cflag &= ~(CSIZE | PARENB);
+			ctrl.c_cflag |= CS8;
 			if (tcsetattr(STDIN_FILENO, TCSANOW, &ctrl) == -1)
 				eprintf("tcsetattr failed");
 		}
@@ -138,7 +147,7 @@ int feh_main_iteration(int block)
 
 	FD_ZERO(&fdset);
 	FD_SET(xfd, &fdset);
-	if (read_stdin)
+	if (control_via_stdin)
 		FD_SET(STDIN_FILENO, &fdset);
 
 	/* Timers */
@@ -215,6 +224,10 @@ void feh_clean_exit(void)
 
 	if(disp)
 		XCloseDisplay(disp);
+
+	if (control_via_stdin)
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
+			eprintf("tcsetattr failed");
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);
