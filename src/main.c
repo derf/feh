@@ -119,8 +119,7 @@ int feh_main_iteration(int block)
 			if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
 				eprintf("tcgetattr failed");
 			ctrl.c_iflag &= ~(PARMRK | ISTRIP
-					| INLCR | IGNCR | ICRNL | IXON);
-			ctrl.c_oflag &= ~OPOST;
+					| INLCR | IGNCR | IXON);
 			ctrl.c_lflag &= ~(ECHO | ICANON | IEXTEN);
 			ctrl.c_cflag &= ~(CSIZE | PARENB);
 			ctrl.c_cflag |= CS8;
