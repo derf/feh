@@ -116,6 +116,10 @@ struct __winwidget {
 	time_t click_start_time;
 
 	unsigned char has_rotated;
+
+#ifdef HAVE_INOTIFY
+	int inotify_wd;
+#endif
 };
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);

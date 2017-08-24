@@ -25,7 +25,8 @@ $VERSION$
 .Pp
 .
 Compile-time switches: libcurl support $MAN_CURL$, Xinerama support
-$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
+$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$, inotify support
+$MAN_INOTIFY$$MAN_DEBUG$
 .
 .
 .Sh DESCRIPTION
@@ -395,6 +396,11 @@ is set to
 .Qo ; Qc ,
 the output will not be displayed by default, but has to be enabled by the
 toggle_info key.
+.
+.It Cm --inotify
+.
+.Pq only if compiled with inotify=1
+automatically reload shown image if file was changed
 .
 .It Cm -k , --keep-http
 .

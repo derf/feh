@@ -409,6 +409,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
+#ifdef HAVE_INOTIFY
+		{"inotify"       , 0, 0, 243},
+#endif
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -735,6 +738,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.auto_rotate = 1;
 			break;
 #endif
+#ifdef HAVE_INOTIFY
+		case 243:
+			opt.inotify = 1;
+			break;
+#endif
 		case 224:
 			opt.cycle_once = 1;
 			break;
@@ -850,6 +858,10 @@ static void show_version(void)
 
 #ifdef HAVE_LIBEXIF
 		"exif "
+#endif
+
+#ifdef HAVE_INOTIFY
+		"inotify "
 #endif
 
 #ifdef INCLUDE_HELP

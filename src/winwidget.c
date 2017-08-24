@@ -30,6 +30,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "events.h"
 
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
+
 static void winwidget_unregister(winwidget win);
 static void winwidget_register(winwidget win);
 static winwidget winwidget_allocate(void);
@@ -77,6 +81,10 @@ static winwidget winwidget_allocate(void)
 	ret->click_offset_x = 0;
 	ret->click_offset_y = 0;
 	ret->has_rotated = 0;
+
+#ifdef HAVE_INOTIFY
+    ret->inotify_wd = -1;
+#endif
 
 	return(ret);
 }
@@ -755,6 +763,14 @@ void winwidget_destroy_xwin(winwidget winwid)
 
 void winwidget_destroy(winwidget winwid)
 {
+#ifdef HAVE_INOTIFY
+    if (winwid->inotify_wd >= 0) {
+        D(("Removing inotify watch\n"));
+        if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
+            eprintf("inotify_rm_watch failed");
+        winwid->inotify_wd = -1;
+    }
+#endif
 	winwidget_destroy_xwin(winwid);
 	if (winwid->name)
 		free(winwid->name);
@@ -767,6 +783,34 @@ void winwidget_destroy(winwidget winwid)
 	free(winwid);
 	return;
 }
+
+#ifdef HAVE_INOTIFY
+#define INOTIFY_BUFFER_LEN (1024 * (sizeof (struct inotify_event)) + 16)
+void feh_event_handle_inotify(void)
+{
+    D(("Received inotify events\n"));
+    char buf[INOTIFY_BUFFER_LEN];
+    int i = 0;
+    int len = read (opt.inotify_fd, buf, INOTIFY_BUFFER_LEN);
+    if (len < 0) {
+        if (errno != EINTR)
+            eprintf("inotify event read failed");
+    } else if (!len)
+        eprintf("inotify event read failed");
+    while (i < len) {
+        struct inotify_event *event;
+        event = (struct inotify_event *) &buf[i];
+        for (int i = 0; i < window_num; i++) {
+            if(windows[i]->inotify_wd == event->wd) {
+                windows[i]->inotify_wd = -1;
+                feh_reload_image(windows[i], 0, 1);
+                break;
+            }
+        }
+        i += sizeof(struct inotify_event) + event->len;
+    }
+}
+#endif
 
 void winwidget_destroy_all(void)
 {
@@ -801,7 +845,28 @@ winwidget winwidget_get_first_window_of_type(unsigned int type)
 int winwidget_loadimage(winwidget winwid, feh_file * file)
 {
 	D(("filename %s\n", file->filename));
-	return(feh_load_image(&(winwid->im), file));
+#ifdef HAVE_INOTIFY
+    if (winwid->inotify_wd >= 0) {
+        D(("Removing inotify watch\n"));
+        if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
+            eprintf("inotify_rm_watch failed");
+        winwid->inotify_wd = -1;
+    }
+#endif
+    int res = feh_load_image(&(winwid->im), file);
+#ifdef HAVE_INOTIFY
+    if (res) {
+        if (opt.inotify) {
+            D(("Adding inotify watch for %s\n", file->filename));
+            winwid->inotify_wd = inotify_add_watch(opt.inotify_fd,
+                                                   file->filename,
+                                                   IN_CLOSE_WRITE);
+            if (winwid->inotify_wd < 0)
+                eprintf("inotify_add_watch failed");
+        }
+    }
+#endif
+	return(res);
 }
 
 void winwidget_show(winwidget winwid)

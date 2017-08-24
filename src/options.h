@@ -53,6 +53,10 @@ struct __fehoptions {
 	unsigned char draw_exif;
 	unsigned char auto_rotate;
 #endif
+#ifdef HAVE_INOTIFY
+	unsigned char inotify;
+    int inotify_fd;
+#endif
 	unsigned char list;
 	unsigned char quiet;
 	unsigned char preload;
