@@ -111,7 +111,7 @@ int feh_main_iteration(int block)
 		fdsize = xfd + 1;
 		pt = feh_get_time();
 		first = 0;
-		if (isatty(STDIN_FILENO)) {
+		if (isatty(STDIN_FILENO) && !opt.multiwindow) {
 			control_via_stdin = 1;
 			struct termios ctrl;
 			if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
