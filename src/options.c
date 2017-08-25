@@ -768,6 +768,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 240:
 			opt.insecure_ssl = 1;
+			break;
 		case 241:
 			opt.recursive = 0;
 		default:
