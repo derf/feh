@@ -157,7 +157,7 @@ char *feh_unique_filename(char *path, char *basename)
 {
 	char *tmpname;
 	char num[10];
-	char cppid[10];
+	char cppid[12];
 	static long int i = 1;
 	struct stat st;
 	pid_t ppid;
