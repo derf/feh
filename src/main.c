@@ -111,7 +111,17 @@ int feh_main_iteration(int block)
 		fdsize = xfd + 1;
 		pt = feh_get_time();
 		first = 0;
-		if (isatty(STDIN_FILENO) && !opt.multiwindow) {
+		/*
+		 * Only accept commands from stdin if
+		 * - stdin is a terminal (otherwise it's probably used as an image / filelist)
+		 * - we aren't running in multiwindow mode (cause it's not clear which
+		 *   window commands should be applied to in that case)
+		 * - we're in the same process group as stdin, AKA we're not running
+		 *   in the background. Background processes are stopped with SIGTTOU
+		 *   if they try to write to stdout or change terminal attributes. They
+		 *   also don't get input from stdin anyway.
+		 */
+		if (isatty(STDIN_FILENO) && !opt.multiwindow && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
 			control_via_stdin = 1;
 			struct termios ctrl;
 			if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
