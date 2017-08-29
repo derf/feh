@@ -234,7 +234,7 @@ void feh_clean_exit(void)
 	if(disp)
 		XCloseDisplay(disp);
 
-	if (control_via_stdin)
+	if (control_via_stdin && isatty(STDIN_FILENO))
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
 			eprintf("tcsetattr failed");
 

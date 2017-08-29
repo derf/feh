@@ -271,7 +271,8 @@ void feh_event_handle_stdin()
 	char stdin_buf[2];
 	KeySym keysym = NoSymbol;
 	if (read(STDIN_FILENO, &stdin_buf, 1) == -1) {
-		weprintf("reading a command from stdin failed");
+		if (control_via_stdin)
+			weprintf("reading a command from stdin failed");
 		return;
 	}
 	stdin_buf[1] = '\0';

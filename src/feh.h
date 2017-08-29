@@ -201,4 +201,6 @@ extern char *mode;		/* label for the current mode */
 /* to terminate long-running children with SIGALRM */
 extern int childpid;
 
+extern int control_via_stdin;
+
 #endif
