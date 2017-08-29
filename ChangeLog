@@ -1,3 +1,11 @@
+git HEAD
+
+    * Fix clang/gcc warnings (Patches by orbea)
+    * Add support for control via terminal input. feh will read key presses
+      from the controlling terminal and handle them like X11 key presses
+      inside the feh window. Note that at the moment, only lower / upper case
+      ASCII letters and a very small set of additional keys are supported.
+
 Mon, 21 Aug 2017 19:04:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.3
