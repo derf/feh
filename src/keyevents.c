@@ -281,6 +281,8 @@ void feh_event_handle_stdin()
 		keysym = XK_space;
 	else if (stdin_buf[0] == '\n')
 		keysym = XK_Return;
+	else if ((stdin_buf[0] == '\b') || (stdin_buf[0] == 127))
+		keysym = XK_BackSpace;
 	else
 		keysym = XStringToKeysym(stdin_buf);
 
@@ -333,57 +335,6 @@ void feh_event_handle_keypress(XEvent * ev)
 	if (winwid == NULL)
 		return;
 
-	if (winwid->caption_entry) {
-		switch (keysym) {
-		case XK_Return:
-			if (state & ControlMask) {
-				/* insert actual newline */
-				ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, "\n");
-				winwidget_render_image_cached(winwid);
-			} else {
-				/* finish caption entry, write to captions file */
-				FILE *fp;
-				char *caption_filename;
-				caption_filename =
-					build_caption_filename(FEH_FILE(winwid->file->data), 1);
-				winwid->caption_entry = 0;
-				winwidget_render_image_cached(winwid);
-				XFreePixmap(disp, winwid->bg_pmap_cache);
-				winwid->bg_pmap_cache = 0;
-				fp = fopen(caption_filename, "w");
-				if (!fp) {
-					eprintf("couldn't write to captions file %s:", caption_filename);
-					return;
-				}
-				fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);
-				free(caption_filename);
-				fclose(fp);
-			}
-			break;
-		case XK_Escape:
-			/* cancel, revert caption */
-			winwid->caption_entry = 0;
-			free(FEH_FILE(winwid->file->data)->caption);
-			FEH_FILE(winwid->file->data)->caption = NULL;
-			winwidget_render_image_cached(winwid);
-			XFreePixmap(disp, winwid->bg_pmap_cache);
-			winwid->bg_pmap_cache = 0;
-			break;
-		case XK_BackSpace:
-			/* backspace */
-			ESTRTRUNC(FEH_FILE(winwid->file->data)->caption, 1);
-			winwidget_render_image_cached(winwid);
-			break;
-		default:
-			if (isascii(keysym)) {
-				/* append to caption */
-				ESTRAPPEND_CHAR(FEH_FILE(winwid->file->data)->caption, keysym);
-				winwidget_render_image_cached(winwid);
-			}
-			break;
-		}
-		return;
-	}
 	feh_event_handle_generic(winwid, state, keysym, 0);
 }
 
@@ -525,6 +476,58 @@ fehkey *feh_str_to_kb(char *action)
 
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button) {
 	int curr_screen = 0;
+
+	if (winwid->caption_entry && (keysym != NoSymbol)) {
+		switch (keysym) {
+		case XK_Return:
+			if (state & ControlMask) {
+				/* insert actual newline */
+				ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, "\n");
+				winwidget_render_image_cached(winwid);
+			} else {
+				/* finish caption entry, write to captions file */
+				FILE *fp;
+				char *caption_filename;
+				caption_filename =
+					build_caption_filename(FEH_FILE(winwid->file->data), 1);
+				winwid->caption_entry = 0;
+				winwidget_render_image_cached(winwid);
+				XFreePixmap(disp, winwid->bg_pmap_cache);
+				winwid->bg_pmap_cache = 0;
+				fp = fopen(caption_filename, "w");
+				if (!fp) {
+					eprintf("couldn't write to captions file %s:", caption_filename);
+					return;
+				}
+				fprintf(fp, "%s", FEH_FILE(winwid->file->data)->caption);
+				free(caption_filename);
+				fclose(fp);
+			}
+			break;
+		case XK_Escape:
+			/* cancel, revert caption */
+			winwid->caption_entry = 0;
+			free(FEH_FILE(winwid->file->data)->caption);
+			FEH_FILE(winwid->file->data)->caption = NULL;
+			winwidget_render_image_cached(winwid);
+			XFreePixmap(disp, winwid->bg_pmap_cache);
+			winwid->bg_pmap_cache = 0;
+			break;
+		case XK_BackSpace:
+			/* backspace */
+			ESTRTRUNC(FEH_FILE(winwid->file->data)->caption, 1);
+			winwidget_render_image_cached(winwid);
+			break;
+		default:
+			if (isascii(keysym)) {
+				/* append to caption */
+				ESTRAPPEND_CHAR(FEH_FILE(winwid->file->data)->caption, keysym);
+				winwidget_render_image_cached(winwid);
+			}
+			break;
+		}
+		return;
+	}
 
 	if (feh_is_kp(&keys.next_img, state, keysym, button)) {
 		if (opt.slideshow)
