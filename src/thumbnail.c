@@ -790,7 +790,13 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 		free(thumbwin->file);
 		thumbwin->file = gib_list_add_front(NULL, thumbfile);
 		winwidget_rename(thumbwin, s);
+#ifdef HAVE_INOTIFY
+        winwidget_inotify_remove(thumbwin);
+#endif
 		feh_reload_image(thumbwin, 1, 1);
+#ifdef HAVE_INOTIFY
+        winwidget_inotify_add(thumbwin, thumbfile->filename);
+#endif
 	}
 }
 

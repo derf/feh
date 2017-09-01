@@ -122,6 +122,11 @@ struct __winwidget {
 #endif
 };
 
+#ifdef HAVE_INOTIFY
+void winwidget_inotify_remove(winwidget winwid);
+void winwidget_inotify_add(winwidget winwid, char *filename);
+#endif
+
 int winwidget_loadimage(winwidget winwid, feh_file * filename);
 void winwidget_show(winwidget winwid);
 void winwidget_show_menu(winwidget winwid);

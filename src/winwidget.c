@@ -764,12 +764,7 @@ void winwidget_destroy_xwin(winwidget winwid)
 void winwidget_destroy(winwidget winwid)
 {
 #ifdef HAVE_INOTIFY
-    if (winwid->inotify_wd >= 0) {
-        D(("Removing inotify watch\n"));
-        if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
-            eprintf("inotify_rm_watch failed");
-        winwid->inotify_wd = -1;
-    }
+    winwidget_inotify_remove(winwid);
 #endif
 	winwidget_destroy_xwin(winwid);
 	if (winwid->name)
@@ -783,6 +778,32 @@ void winwidget_destroy(winwidget winwid)
 	free(winwid);
 	return;
 }
+
+#ifdef HAVE_INOTIFY
+void winwidget_inotify_remove(winwidget winwid)
+{
+    if (winwid->inotify_wd >= 0) {
+        D(("Removing inotify watch\n"));
+        if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
+            eprintf("inotify_rm_watch failed");
+        winwid->inotify_wd = -1;
+    }
+}
+#endif
+
+#ifdef HAVE_INOTIFY
+void winwidget_inotify_add(winwidget winwid, char *filename)
+{
+    if (opt.inotify) {
+        D(("Adding inotify watch for %s\n", filename));
+        winwid->inotify_wd = inotify_add_watch(opt.inotify_fd,
+                                               filename,
+                                               IN_CLOSE_WRITE);
+        if (winwid->inotify_wd < 0)
+            eprintf("inotify_add_watch failed");
+    }
+}
+#endif
 
 #ifdef HAVE_INOTIFY
 #define INOTIFY_BUFFER_LEN (1024 * (sizeof (struct inotify_event)) + 16)
@@ -802,7 +823,6 @@ void feh_event_handle_inotify(void)
         event = (struct inotify_event *) &buf[i];
         for (int i = 0; i < window_num; i++) {
             if(windows[i]->inotify_wd == event->wd) {
-                windows[i]->inotify_wd = -1;
                 feh_reload_image(windows[i], 0, 1);
                 break;
             }
@@ -846,24 +866,12 @@ int winwidget_loadimage(winwidget winwid, feh_file * file)
 {
 	D(("filename %s\n", file->filename));
 #ifdef HAVE_INOTIFY
-    if (winwid->inotify_wd >= 0) {
-        D(("Removing inotify watch\n"));
-        if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
-            eprintf("inotify_rm_watch failed");
-        winwid->inotify_wd = -1;
-    }
+    winwidget_inotify_remove(winwid);
 #endif
     int res = feh_load_image(&(winwid->im), file);
 #ifdef HAVE_INOTIFY
     if (res) {
-        if (opt.inotify) {
-            D(("Adding inotify watch for %s\n", file->filename));
-            winwid->inotify_wd = inotify_add_watch(opt.inotify_fd,
-                                                   file->filename,
-                                                   IN_CLOSE_WRITE);
-            if (winwid->inotify_wd < 0)
-                eprintf("inotify_add_watch failed");
-        }
+        winwidget_inotify_add(winwid, file->filename);
     }
 #endif
 	return(res);
