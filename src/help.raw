@@ -94,7 +94,7 @@ OPTIONS
      --min-dimension WxH   Only show images with width >= W and height >= H
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
-     --inotify             automatically reload shown image if file was changed
+     --auto-reload         automatically reload shown image if file was changed
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without

@@ -192,6 +192,11 @@ for details.  Example usage:
 .
 Extra actions which can be set and triggered using the appropriate number key.
 .
+.It Cm --auto-reload
+.
+.Pq only if compiled with inotify=1
+automatically reload shown image if file was changed
+.
 .It Cm --auto-rotate
 .
 .Pq only if compiled with exif=1
@@ -396,11 +401,6 @@ is set to
 .Qo ; Qc ,
 the output will not be displayed by default, but has to be enabled by the
 toggle_info key.
-.
-.It Cm --inotify
-.
-.Pq only if compiled with inotify=1
-automatically reload shown image if file was changed
 .
 .It Cm -k , --keep-http
 .

@@ -59,10 +59,10 @@ int main(int argc, char **argv)
 		init_keyevents();
 		init_buttonbindings();
 #ifdef HAVE_INOTIFY
-        if (opt.inotify) {
+        if (opt.auto_reload) {
             opt.inotify_fd = inotify_init();
             if (opt.inotify_fd < 0) {
-                opt.inotify = 0;
+                opt.auto_reload = 0;
                 eprintf("inotify_init failed");
             }
         }
@@ -162,7 +162,7 @@ int feh_main_iteration(int block)
 	if (control_via_stdin)
 		FD_SET(STDIN_FILENO, &fdset);
 #ifdef HAVE_INOTIFY
-    if (opt.inotify) {
+    if (opt.auto_reload) {
         FD_SET(opt.inotify_fd, &fdset);
         if (opt.inotify_fd >= fdsize)
             fdsize = opt.inotify_fd + 1;
@@ -250,7 +250,7 @@ void feh_clean_exit(void)
 	free(opt.menu_font);
 
 #ifdef HAVE_INOTIFY
-    if (opt.inotify)
+    if (opt.auto_reload)
         if (close(opt.inotify_fd))
             eprintf("inotify close failed");
 #endif

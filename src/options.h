@@ -54,7 +54,7 @@ struct __fehoptions {
 	unsigned char auto_rotate;
 #endif
 #ifdef HAVE_INOTIFY
-	unsigned char inotify;
+	unsigned char auto_reload;
     int inotify_fd;
 #endif
 	unsigned char list;

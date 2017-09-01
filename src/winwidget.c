@@ -794,7 +794,7 @@ void winwidget_inotify_remove(winwidget winwid)
 #ifdef HAVE_INOTIFY
 void winwidget_inotify_add(winwidget winwid, char *filename)
 {
-    if (opt.inotify) {
+    if (opt.auto_reload) {
         D(("Adding inotify watch for %s\n", filename));
         winwid->inotify_wd = inotify_add_watch(opt.inotify_fd,
                                                filename,
