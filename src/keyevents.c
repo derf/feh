@@ -768,7 +768,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	else if (feh_is_kp(&keys.size_to_image, state, keysym, button)) {
 		winwidget_size_to_image(winwid);
 	}
-	else if (feh_is_kp(&keys.toggle_menu, state, keysym, button)) {
+	else if (!opt.no_menus && feh_is_kp(&keys.toggle_menu, state, keysym, button)) {
 		winwidget_show_menu(winwid);
 	}
 	else if (feh_is_kp(&keys.close, state, keysym, button)) {
