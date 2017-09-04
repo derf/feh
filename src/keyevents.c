@@ -234,12 +234,15 @@ static short feh_is_kp(fehkey *key, unsigned int state, unsigned int sym, unsign
 
 void feh_event_invoke_action(winwidget winwid, unsigned char action)
 {
+	struct stat st;
 	if (opt.actions[action]) {
 		if (opt.slideshow) {
 			feh_action_run(FEH_FILE(winwid->file->data), opt.actions[action], winwid);
 
 			if (opt.hold_actions[action])
 				feh_reload_image(winwid, 1, 1);
+			else if (stat(FEH_FILE(winwid->file->data)->filename, &st) == -1)
+				feh_filelist_image_remove(winwid, 0);
 			else
 				slideshow_change_image(winwid, SLIDE_NEXT, 1);
 
