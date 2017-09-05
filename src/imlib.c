@@ -283,7 +283,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 static char *feh_magick_load_image(char *filename)
 {
-	char argv_fd[12];
+	char *argv_fn;
 	char *basename;
 	char *tmpname;
 	char *sfn;
@@ -310,10 +310,17 @@ static char *feh_magick_load_image(char *filename)
 
 	fd = mkstemp(sfn);
 
-	if (fd == -1)
+	if (fd == -1) {
+		free(sfn);
 		return NULL;
+	}
 
-	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
+	/*
+	 * We could use png:fd:(whatever mkstemp returned) as target filename
+	 * for convert, but this seems to be broken in some ImageMagick versions.
+	 * So we resort to png:(sfn) instead.
+	 */
+	argv_fn = estrjoin(":", "png", sfn, NULL);
 
 	if ((childpid = fork()) < 0) {
 		weprintf("%s: Can't load with imagemagick. Fork failed:", filename);
@@ -336,7 +343,7 @@ static char *feh_magick_load_image(char *filename)
 		 */
 		setpgid(0, 0);
 
-		execlp("convert", "convert", filename, argv_fd, NULL);
+		execlp("convert", "convert", filename, argv_fn, NULL);
 		_exit(1);
 	}
 	else {
@@ -369,6 +376,7 @@ static char *feh_magick_load_image(char *filename)
 		childpid = 0;
 	}
 
+	free(argv_fn);
 	return sfn;
 }
 
