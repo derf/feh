@@ -5,6 +5,10 @@ git HEAD
       from the controlling terminal and handle them like X11 key presses
       inside the feh window. Note that at the moment, only lower / upper case
       ASCII letters and a very small set of additional keys are supported.
+    * Fix broken ImageMagick support (see --magick-timeout) when using some
+      ImageMagick versions <https://github.com/derf/feh/issues/323>
+    * Remove images from the filelist if they were removed by executing a
+      user-defined action <https://github.com/derf/feh/issues/322>
 
 Mon, 21 Aug 2017 19:04:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
