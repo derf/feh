@@ -45,7 +45,8 @@ displays all files in the current directory.
 .
 .Nm
 supports filelists, various image sorting modes, image captions, HTTP and more.
-Configurable keyboard and mouse shortcuts are used to control it.
+It can be controlled by configurable keyboard and mouse shortcuts, terminal
+input and signals.
 .
 .Pp
 .
@@ -1210,8 +1211,16 @@ do not.
 .
 .Sh KEYS
 .
-In an image window, the following keys may be used
-.Pq The strings in Bo square brackets Bc are the config action names :
+The following actions and default key bindings can be used in an image window.
+.Pq The strings in Bo square brackets Bc are the config action names .
+.
+If
+.Nm
+is running inside a terminal and its standard input is not used for images or
+filelists, key input from the terminal is also accepted. However, terminal
+input support is currently limited to most alphanumeric characters
+.Pq 0-9 a-z A-Z and some more ,
+return and backspace.
 .
 .Bl -tag -width indent
 .
