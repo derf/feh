@@ -1,5 +1,6 @@
-git HEAD
+Thu, 07 Sep 2017 20:20:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v2.20
     * Fix clang/gcc warnings (Patches by orbea)
     * Add support for control via terminal input. feh will read key presses
       from the controlling terminal and handle them like X11 key presses
