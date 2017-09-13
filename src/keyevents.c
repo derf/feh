@@ -29,8 +29,36 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
+#include <termios.h>
 
 fehkb keys;
+struct termios old_term_settings;
+unsigned char control_via_stdin = 0;
+
+void setup_stdin() {
+	struct termios ctrl;
+
+	control_via_stdin = 1;
+
+	if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
+		eprintf("tcgetattr failed");
+	if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
+		eprintf("tcgetattr failed");
+
+	ctrl.c_iflag &= ~(PARMRK | ISTRIP
+			| INLCR | IGNCR | IXON);
+	ctrl.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+	ctrl.c_cflag &= ~(CSIZE | PARENB);
+	ctrl.c_cflag |= CS8;
+
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &ctrl) == -1)
+		eprintf("tcsetattr failed");
+}
+
+void restore_stdin() {
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
+		eprintf("tcsetattr failed");
+}
 
 static void feh_set_kb(fehkey *key, unsigned int s0, unsigned int y0, unsigned
 		int s1, unsigned int y1, unsigned int s2, unsigned int y2) {
@@ -274,8 +302,11 @@ void feh_event_handle_stdin()
 	char stdin_buf[2];
 	KeySym keysym = NoSymbol;
 	if (read(STDIN_FILENO, &stdin_buf, 1) == -1) {
-		if (control_via_stdin)
-			weprintf("reading a command from stdin failed");
+		control_via_stdin = 0;
+		if (isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
+			weprintf("reading a command from stdin failed - disabling control via stdin");
+			restore_stdin();
+		}
 		return;
 	}
 	stdin_buf[1] = '\0';

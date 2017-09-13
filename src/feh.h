@@ -141,6 +141,8 @@ char *slideshow_create_name(feh_file * file, winwidget winwid);
 char *thumbnail_create_name(feh_file * file, winwidget winwid);
 void init_keyevents(void);
 void init_buttonbindings(void);
+void setup_stdin(void);
+void restore_stdin(void);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_event_handle_stdin();
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button);
@@ -201,6 +203,6 @@ extern char *mode;		/* label for the current mode */
 /* to terminate long-running children with SIGALRM */
 extern int childpid;
 
-extern int control_via_stdin;
+extern unsigned char control_via_stdin;
 
 #endif

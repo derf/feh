@@ -38,9 +38,6 @@ char **cmdargv = NULL;
 int cmdargc = 0;
 char *mode = NULL;
 
-struct termios old_term_settings;
-int control_via_stdin = 0;
-
 int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
@@ -122,19 +119,7 @@ int feh_main_iteration(int block)
 		 *   also don't get input from stdin anyway.
 		 */
 		if (isatty(STDIN_FILENO) && !opt.multiwindow && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
-			control_via_stdin = 1;
-			struct termios ctrl;
-			if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
-				eprintf("tcgetattr failed");
-			if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
-				eprintf("tcgetattr failed");
-			ctrl.c_iflag &= ~(PARMRK | ISTRIP
-					| INLCR | IGNCR | IXON);
-			ctrl.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-			ctrl.c_cflag &= ~(CSIZE | PARENB);
-			ctrl.c_cflag |= CS8;
-			if (tcsetattr(STDIN_FILENO, TCSANOW, &ctrl) == -1)
-				eprintf("tcsetattr failed");
+			setup_stdin();
 		}
 	}
 
@@ -243,8 +228,7 @@ void feh_clean_exit(void)
 	 *   around with it) <https://github.com/derf/feh/issues/324>
 	 */
 	if (control_via_stdin && isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO)))
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
-			eprintf("tcsetattr failed");
+		restore_stdin();
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);
