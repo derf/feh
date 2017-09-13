@@ -234,7 +234,15 @@ void feh_clean_exit(void)
 	if(disp)
 		XCloseDisplay(disp);
 
-	if (control_via_stdin && isatty(STDIN_FILENO))
+	/*
+	 * Only restore the old terminal settings if
+	 * - we changed them in the first place
+	 * - stdin still is a terminal (it might have been closed)
+	 * - stdin still belongs to us (we might have been detached from the
+	 *   controlling terminal, in that case we probably shouldn't be messing
+	 *   around with it) <https://github.com/derf/feh/issues/324>
+	 */
+	if (control_via_stdin && isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO)))
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
 			eprintf("tcsetattr failed");
 
