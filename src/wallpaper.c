@@ -779,10 +779,11 @@ void enl_ipc_send(char *str)
 	return;
 }
 
-static sighandler_t *enl_ipc_timeout(int sig)
+void enl_ipc_timeout(int sig)
 {
-	timeout = 1;
-	return((sighandler_t *) sig);
+	if (sig == SIGALRM)
+		timeout = 1;
+	return;
 }
 
 char *enl_wait_for_reply(void)
@@ -842,7 +843,8 @@ char *enl_ipc_get(const char *msg_data)
 char *enl_send_and_wait(char *msg)
 {
 	char *reply = IPC_TIMEOUT;
-	sighandler_t old_alrm;
+	struct sigaction e17_sh, feh_sh;
+	sigset_t e17_ss;
 
 	/*
 	 * Shortcut this func and return IPC_FAKE
@@ -861,7 +863,19 @@ char *enl_send_and_wait(char *msg)
 				sleep(1);
 		}
 	}
-	old_alrm = (sighandler_t) signal(SIGALRM, (sighandler_t) enl_ipc_timeout);
+
+	if ((sigemptyset(&e17_ss) == -1) || sigaddset(&e17_ss, SIGALRM) == -1) {
+		weprintf("Failed to set up temporary E17 signal masks");
+		return reply;
+	}
+	e17_sh.sa_handler = enl_ipc_timeout;
+	e17_sh.sa_mask = e17_ss;
+	e17_sh.sa_flags = 0;
+	if (sigaction(SIGALRM, &e17_sh, &feh_sh) == -1) {
+		weprintf("Failed to set up temporary E17 signal handler");
+		return reply;
+	}
+
 	for (; reply == IPC_TIMEOUT;) {
 		timeout = 0;
 		enl_ipc_send(msg);
@@ -873,6 +887,8 @@ char *enl_send_and_wait(char *msg)
 			ipc_win = None;
 		}
 	}
-	signal(SIGALRM, old_alrm);
+	if (sigaction(SIGALRM, &feh_sh, NULL) == -1) {
+		weprintf("Failed to restore signal handler");
+	}
 	return(reply);
 }
