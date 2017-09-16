@@ -1422,21 +1422,37 @@ Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons,
 hit the render key after scrolling to antialias the image.
 .
-.It Aq Alt+Left Bq scroll_left_page
+.It P Bq scroll_up_or_prev_img
+.
+Scroll up or show previous image. Selects the previous image in thumbnail mode.
+.
+.It N Bq scroll_down_or_next_img
+.
+Scroll down or show next image. Selects the next image in thumbnail mode.
+.
+.It Ao Alt+Left Ac Bq scroll_left_page
 .
 Scroll to the left by one page
 .
-.It Aq Alt+Right Bq scroll_right_page
+.It Ao Alt+Right Ac Bq scroll_right_page
 .
 Scroll to the right by one page
 .
-.It Aq Alt+Up Bq scroll_up_page
+.It Ao Alt+Up Ac Bq scroll_up_page
 .
 Scroll up by one page
 .
-.It Aq Alt+Down Bq scroll_down_page
+.It Ao Alt+Down Ac Bq scroll_down_page
 .
 Scroll down by one page
+.
+.It Ao Ctrl+P Ac Bq scroll_up_page_or_prev_img
+.
+Scroll up by one page or show previous image
+.
+.It Ao Ctrl+N Ac Bq scroll_down_page_or_next_img
+.
+Scroll down by one page or show next image
 .
 .It R, Ao keypad begin Ac Bq render
 .
