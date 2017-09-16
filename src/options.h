@@ -208,6 +208,7 @@ struct __fehkb {
 	struct __fehkey reload;
 	struct __fehkey blur;
 	struct __fehkey rotate;
+	struct __fehkey toggle_fixed_geometry;
 };
 
 void init_parse_options(int argc, char **argv);

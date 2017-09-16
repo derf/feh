@@ -1258,6 +1258,10 @@ Toggle EXIF tag display
 Save the current filelist as
 .Qq feh_PID_ID_filelist
 .
+.It g Bq toggle_fixed_geometry
+.
+Enable/Disable automatic window resize when changing images.
+.
 .It h Bq toggle_pause
 .
 Pause/Continue the slideshow.  When it is paused, it will not automatically

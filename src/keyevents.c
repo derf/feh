@@ -196,6 +196,7 @@ void init_keyevents(void) {
 	feh_set_kb(&keys.reload_minus, 0, XK_minus, 0, 0, 0, 0);
 	feh_set_kb(&keys.reload_plus, 0, XK_plus, 0, 0, 0, 0);
 	feh_set_kb(&keys.toggle_keep_vp, 0, XK_k, 0, 0, 0, 0);
+	feh_set_kb(&keys.toggle_fixed_geometry, 0, XK_g, 0, 0, 0, 0);
 
 	home = getenv("HOME");
 	confhome = getenv("XDG_CONFIG_HOME");
@@ -504,6 +505,8 @@ fehkey *feh_str_to_kb(char *action)
 		return &keys.reload_plus;
 	else if (!strcmp(action, "toggle_keep_vp"))
 		return &keys.toggle_keep_vp;
+	else if (!strcmp(action, "toggle_fixed_geometry"))
+		return &keys.toggle_fixed_geometry;
 
 	return NULL;
 }
@@ -870,6 +873,15 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	}
 	else if (feh_is_kp(&keys.toggle_keep_vp, state, keysym, button)) {
 		opt.keep_zoom_vp = !opt.keep_zoom_vp;
+	}
+	else if (feh_is_kp(&keys.toggle_fixed_geometry, state, keysym, button)) {
+		if (opt.geom_flags & ((WidthValue | HeightValue))) {
+			opt.geom_flags &= ~(WidthValue | HeightValue);
+		} else {
+			opt.geom_flags |= (WidthValue | HeightValue);
+			opt.geom_w = winwid->w;
+			opt.geom_h = winwid->h;
+		}
 	}
 	return;
 }
