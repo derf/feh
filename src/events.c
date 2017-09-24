@@ -35,7 +35,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define FEH_JITTER_OFFSET 2
 #define FEH_JITTER_TIME 1
 
-extern fehkb keys;
+extern struct __fehkey keys[EVENT_LIST_END];
+fehkey *feh_str_to_kb(char *action);
 
 feh_event_handler *ev_handler[LASTEvent];
 
@@ -45,10 +46,10 @@ static void feh_event_handle_LeaveNotify(XEvent * ev);
 static void feh_event_handle_MotionNotify(XEvent * ev);
 static void feh_event_handle_ClientMessage(XEvent * ev);
 
-static void feh_set_bb(fehkey *bb, int modifier, char button)
+static void feh_set_bb(unsigned int bb_index, int modifier, char button)
 {
-	bb->state  = modifier;
-	bb->button = button;
+	keys[bb_index].state  = modifier;
+	keys[bb_index].button = button;
 }
 
 static void feh_set_parse_bb_partial(fehkey *button, char *binding)
@@ -101,13 +102,13 @@ void init_buttonbindings(void)
 	FILE *conf = NULL;
 	int read = 0;
 
-	feh_set_bb(&keys.pan,         0, 1);
-	feh_set_bb(&keys.zoom,        0, 2);
-	feh_set_bb(&keys.toggle_menu, 0, 3);
-	feh_set_bb(&keys.prev_img,    0, 4);
-	feh_set_bb(&keys.next_img,    0, 5);
-	feh_set_bb(&keys.blur,        4, 1);
-	feh_set_bb(&keys.rotate,      4, 2);
+	feh_set_bb(EVENT_pan,         0, 1);
+	feh_set_bb(EVENT_zoom,        0, 2);
+	feh_set_bb(EVENT_toggle_menu, 0, 3);
+	feh_set_bb(EVENT_prev_img,    0, 4);
+	feh_set_bb(EVENT_next_img,    0, 5);
+	feh_set_bb(EVENT_blur,        4, 1);
+	feh_set_bb(EVENT_rotate,      4, 2);
 
 	home = getenv("HOME");
 	confhome = getenv("XDG_CONFIG_HOME");
@@ -136,34 +137,17 @@ void init_buttonbindings(void)
 		if ((read == EOF) || (read == 0) || (line[0] == '#'))
 			continue;
 
-		/*
-		 * Note: This isn't really good code. But it works, and since it only
-		 * runs once for each button config line the runtime penalty compared to
-		 * e.g. a hash table is negligible in this case.
-		 */
-		if (!strcmp(action, "reload"))
-			cur_bb = &keys.reload;
-		else if (!strcmp(action, "pan"))
-			cur_bb = &keys.pan;
-		else if (!strcmp(action, "zoom"))
-			cur_bb = &keys.zoom;
-		else if (!strcmp(action, "menu") || !strcmp(action, "toggle_menu"))
-			cur_bb = &keys.toggle_menu;
-		else if (!strcmp(action, "prev") || !strcmp(action, "prev_img"))
-			cur_bb = &keys.prev_img;
-		else if (!strcmp(action, "next") || !strcmp(action, "next_img"))
-			cur_bb = &keys.next_img;
-		else if (!strcmp(action, "blur"))
-			cur_bb = &keys.blur;
-		else if (!strcmp(action, "rotate"))
-			cur_bb = &keys.rotate;
-		else if (!strcmp(action, "zoom_in"))
-			cur_bb = &keys.zoom_in;
-		else if (!strcmp(action, "zoom_out"))
-			cur_bb = &keys.zoom_out;
-		else
-			cur_bb = feh_str_to_kb(action);
-
+		cur_bb = feh_str_to_kb(action);
+		if (cur_bb == NULL) {
+			if (!strcmp(action, "reload"))
+				cur_bb = &keys[EVENT_reload_image];
+			else if (!strcmp(action, "menu"))
+				cur_bb = &keys[EVENT_toggle_menu];
+			else if (!strcmp(action, "prev"))
+				cur_bb = &keys[EVENT_prev_img];
+			else if (!strcmp(action, "next"))
+				cur_bb = &keys[EVENT_next_img];
+		}
 		if (cur_bb)
 			feh_set_parse_bb_partial(cur_bb, button);
 		else
@@ -172,9 +156,9 @@ void init_buttonbindings(void)
 	fclose(conf);
 }
 
-static short feh_is_bb(fehkey *bb, unsigned int button, unsigned int mod)
+static short feh_is_bb(unsigned int key_index, unsigned int button, unsigned int mod)
 {
-	if ((bb->state == mod) && (bb->button == button))
+	if ((keys[key_index].state == mod) && (keys[key_index].button == button))
 		return 1;
 	return 0;
 }
@@ -217,23 +201,23 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	state = ev->xbutton.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 	button = ev->xbutton.button;
 
-	if (!opt.no_menus && feh_is_bb(&keys.toggle_menu, button, state)) {
+	if (!opt.no_menus && feh_is_bb(EVENT_toggle_menu, button, state)) {
 		D(("Menu Button Press event\n"));
 		winwidget_show_menu(winwid);
 
-	} else if (feh_is_bb(&keys.rotate, button, state)
+	} else if (feh_is_bb(EVENT_rotate, button, state)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)) {
 		opt.mode = MODE_ROTATE;
 		winwid->mode = MODE_ROTATE;
 		D(("rotate starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
 
-	} else if (feh_is_bb(&keys.blur, button, state)
+	} else if (feh_is_bb(EVENT_blur, button, state)
 		   && (winwid->type != WIN_TYPE_THUMBNAIL)) {
 		opt.mode = MODE_BLUR;
 		winwid->mode = MODE_BLUR;
 		D(("blur starting at %d, %d\n", ev->xbutton.x, ev->xbutton.y));
 
-	} else if (feh_is_bb(&keys.pan, button, state)) {
+	} else if (feh_is_bb(EVENT_pan, button, state)) {
 		D(("Next button, but could be pan mode\n"));
 		opt.mode = MODE_NEXT;
 		winwid->mode = MODE_NEXT;
@@ -242,7 +226,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
 		winwid->click_start_time = time(NULL);
 
-	} else if (feh_is_bb(&keys.zoom, button, state)) {
+	} else if (feh_is_bb(EVENT_zoom, button, state)) {
 		D(("Zoom Button Press event\n"));
 		opt.mode = MODE_ZOOM;
 		winwid->mode = MODE_ZOOM;
@@ -257,7 +241,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		winwid->im_click_offset_y = (winwid->click_offset_y
 				- winwid->im_y) / winwid->old_zoom;
 
-	} else if (feh_is_bb(&keys.zoom_in, button, state)) {
+	} else if (feh_is_bb(EVENT_zoom_in, button, state)) {
 		D(("Zoom_In Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
 		winwid->click_offset_x = ev->xbutton.x;
@@ -285,7 +269,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 
-	} else if (feh_is_bb(&keys.zoom_out, button, state)) {
+	} else if (feh_is_bb(EVENT_zoom_out, button, state)) {
 		D(("Zoom_Out Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
 		winwid->click_offset_x = ev->xbutton.x;
@@ -313,16 +297,16 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 
-	} else if (feh_is_bb(&keys.reload, button, state)) {
+	} else if (feh_is_bb(EVENT_reload_image, button, state)) {
 		D(("Reload Button Press event\n"));
 			feh_reload_image(winwid, 0, 1);
 
-	} else if (feh_is_bb(&keys.prev_img, button, state)) {
+	} else if (feh_is_bb(EVENT_prev_img, button, state)) {
 		D(("Prev Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_PREV, 1);
 
-	} else if (feh_is_bb(&keys.next_img, button, state)) {
+	} else if (feh_is_bb(EVENT_next_img, button, state)) {
 		D(("Next Button Press event\n"));
 		if (winwid->type == WIN_TYPE_SLIDESHOW)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
@@ -363,7 +347,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 		return;
 	}
 
-	if (feh_is_bb(&keys.pan, button, state)) {
+	if (feh_is_bb(EVENT_pan, button, state)) {
 		if (opt.mode == MODE_PAN) {
 			D(("Disabling pan mode\n"));
 			opt.mode = MODE_NORMAL;
@@ -401,13 +385,13 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			winwid->mode = MODE_NORMAL;
 		}
 
-	} else if (feh_is_bb(&keys.rotate, button, state)
-			|| feh_is_bb(&keys.zoom, button, state)) {
+	} else if (feh_is_bb(EVENT_rotate, button, state)
+			|| feh_is_bb(EVENT_zoom, button, state)) {
 		D(("Disabling mode\n"));
 		opt.mode = MODE_NORMAL;
 		winwid->mode = MODE_NORMAL;
 
-		if ((feh_is_bb(&keys.zoom, button, state))
+		if ((feh_is_bb(EVENT_zoom, button, state))
 				&& (ev->xbutton.x == winwid->click_offset_x)
 				&& (ev->xbutton.y == winwid->click_offset_y)) {
 			winwid->zoom = 1.0;
@@ -417,7 +401,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 
 		winwidget_render_image(winwid, 0, 0);
 
-	} else if (feh_is_bb(&keys.blur, button, state)) {
+	} else if (feh_is_bb(EVENT_blur, button, state)) {
 		D(("Disabling Blur mode\n"));
 		opt.mode = MODE_NORMAL;
 		winwid->mode = MODE_NORMAL;
