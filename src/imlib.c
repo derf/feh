@@ -207,10 +207,6 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	char *tmpname = NULL;
 	char *real_filename = NULL;
 
-#ifdef HAVE_LIBEXIF
-	ExifEntry *entry;
-#endif
-
 	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
