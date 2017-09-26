@@ -207,10 +207,6 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	char *tmpname = NULL;
 	char *real_filename = NULL;
 
-#ifdef HAVE_LIBEXIF
-	ExifEntry *entry;
-#endif
-
 	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
@@ -683,11 +679,12 @@ void feh_draw_exif(winwidget w)
 
 	fn = feh_load_font(w);
 
-	if (buffer == NULL)
+	if (buffer[0] == '\0')
 	{
 		snprintf(buffer, EXIF_MAX_DATA, "%s", estrdup("Failed to run exif command"));
-		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
-		no_lines = 1;
+		gib_imlib_get_text_size(fn, buffer, NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+		info_buf[no_lines] = estrdup(buffer);
+		no_lines++;
 	}
 	else
 	{
