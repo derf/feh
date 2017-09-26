@@ -31,8 +31,13 @@ icon_dir = ${ICON_PREFIX}/hicolor
 scalable_icon_dir = ${icon_dir}/scalable/apps
 
 # default CFLAGS
-CFLAGS ?= -g -O2
+CFLAGS ?= -g -O2 
 CFLAGS += -Wall -Wextra -pedantic
+
+ifeq (${centos},1)
+  CFLAGS += -std=c11
+  CFLAGS += -D_XOPEN_SOURCE
+endif
 
 ifeq (${curl},1)
 	CFLAGS += -DHAVE_LIBCURL

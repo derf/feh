@@ -20,6 +20,11 @@ If built with exif=1:
  * libexif-dev
  * libexif12
 
+On Centos7:
+
+ * above packages (-devel versions)
+ * libXt-devel
+
 Recommended
 ---
 
@@ -80,6 +85,7 @@ Available flags are:
 | cam  | 0 | install deprecated feh-cam und gen-cam-menu scripts |
 | curl | 1 | use libcurl to view http:// and similar images |
 | debug | 0 | debug build, enables `--debug` |
+| centos | 0 | additional flags for centos |
 | exif | 0 | Builtin EXIF tag display support |
 | help | 0 | include help text (refers to the manpage otherwise) |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
