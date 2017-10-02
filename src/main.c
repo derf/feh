@@ -73,10 +73,13 @@ int main(int argc, char **argv)
 		feh_wm_set_bg_filelist(opt.bgmode);
 		exit(0);
 	}
-	else {
+	else if (opt.display){
 		/* Slideshow mode is the default. Because it's spiffy */
 		opt.slideshow = 1;
 		init_slideshow_mode();
+	}
+	else {
+		eprintf("Invalid option combination");
 	}
 
 	/* main event loop */
