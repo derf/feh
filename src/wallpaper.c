@@ -296,39 +296,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		Pixmap pmap_d1, pmap_d2;
 		gib_list *l;
 
-		/* string for sticking in ~/.fehbg */
-		char *fehbg = NULL;
-		char fehbg_args[512];
-		fehbg_args[0] = '\0';
-		char *argptr = fehbg_args;
 		char *home;
 		char filbuf[4096];
 		char *bgfill = NULL;
 		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
-
-#ifdef HAVE_LIBXINERAMA
-		if (opt.xinerama) {
-			if (opt.xinerama_index >= 0) {
-				snprintf(argptr, sizeof(fehbg_args),
-					"--xinerama-index %d", opt.xinerama_index);
-			}
-		}
-		else
-			snprintf(argptr, sizeof(fehbg_args), "--no-xinerama");
-		argptr += strlen(argptr);
-#endif			/* HAVE_LIBXINERAMA */
-		if ((opt.geom_flags & XValue) && (sizeof(fehbg_args) - strlen(fehbg_args) > 60)) {
-			snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), " --geometry %c%d",
-					opt.geom_flags & XNegative ? '-' : '+',
-					opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
-			argptr += strlen(argptr);
-			if (opt.geom_flags & YValue) {
-				snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), "%c%d",
-						opt.geom_flags & YNegative ? '-' : '+',
-						opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
-				argptr += strlen(argptr);
-			}
-		}
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -403,7 +374,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #endif			/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
 					0, 0, scr->width, scr->height);
-			fehbg = estrjoin(" ", "feh", fehbg_args, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
 
 			D(("centering\n"));
@@ -432,8 +402,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					0, 0, scr->width, scr->height);
 
 			XFreeGC(disp, gc);
-
-			fehbg = estrjoin(" ", "feh", fehbg_args, bgfill, "--bg-center", filbuf, NULL);
 
 		} else if (filled == 1) {
 
@@ -464,8 +432,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				feh_wm_set_bg_filled(pmap_d1, im, use_filelist
 					, 0, 0, scr->width, scr->height);
 
-			fehbg = estrjoin(" ", "feh", fehbg_args, "--bg-fill", filbuf, NULL);
-
 		} else if (filled == 2) {
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
@@ -493,8 +459,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			XFreeGC(disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_args, bgfill, "--bg-max", filbuf, NULL);
-
 		} else {
 			if (use_filelist)
 				feh_wm_load_next(&im);
@@ -502,10 +466,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			h = gib_imlib_image_get_height(im);
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
 			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
-			fehbg = estrjoin(" ", "feh --bg-tile", filbuf, NULL);
 		}
 
-		if (fehbg && !opt.no_fehbg) {
+		if (!opt.no_fehbg) {
 			home = getenv("HOME");
 			if (home) {
 				FILE *fp;
@@ -515,7 +478,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
 				} else {
-					fprintf(fp, "#!/bin/sh\n%s\n", fehbg);
+					fputs("#!/bin/sh\n", fp);
+					for (int i = 0; i < cmdargc; i++) {
+						fputs(shell_escape(cmdargv[i]), fp);
+						fputc(' ', fp);
+					}
+					fputc('\n', fp);
 					fclose(fp);
 					stat(path, &s);
 					if (chmod(path, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
@@ -526,8 +494,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			}
 		}
 		
-		free(fehbg);
-
 		/* create new display, copy pixmap to new display */
 		disp2 = XOpenDisplay(NULL);
 		if (!disp2)
