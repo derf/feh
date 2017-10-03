@@ -464,29 +464,6 @@ void feh_action_run(feh_file * file, char *action, winwidget winwid)
 	return;
 }
 
-char *shell_escape(char *input)
-{
-	static char ret[1024];
-	unsigned int out = 0, in = 0;
-
-	ret[out++] = '\'';
-	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
-		if (input[in] == '\'') {
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
-		}
-		else
-			ret[out++] = input[in];
-	}
-	ret[out++] = '\'';
-	ret[out++] = '\0';
-
-	return ret;
-}
-
 char *format_size(int size)
 {
 	static char ret[5];

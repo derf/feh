@@ -201,3 +201,26 @@ char *ereadfile(char *path)
 
 	return estrdup(buffer);
 }
+
+char *shell_escape(char *input)
+{
+	static char ret[1024];
+	unsigned int out = 0, in = 0;
+
+	ret[out++] = '\'';
+	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
+		if (input[in] == '\'') {
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+		}
+		else
+			ret[out++] = input[in];
+	}
+	ret[out++] = '\'';
+	ret[out++] = '\0';
+
+	return ret;
+}
