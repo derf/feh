@@ -14,7 +14,7 @@ PREFIX ?= /usr/local
 ICON_PREFIX ?= ${DESTDIR}${PREFIX}/share/icons
 
 ifeq (${app},1)
-	ICON_PREFIX = /usr/share/icons
+	ICON_PREFIX = ${PREFIX}/share/icons
 endif
 
 # Directories for manuals, executables, docs, data, etc.
