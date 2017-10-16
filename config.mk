@@ -13,6 +13,9 @@ exif ?= 0
 PREFIX ?= /usr/local
 ICON_PREFIX ?= ${DESTDIR}${PREFIX}/share/icons
 
+# icons in /usr/share/local/icons (and other prefixes != /usr) are not
+# generally supported. So ignore PREFIX and always install icons into
+# /usr/share/icons if the user wants to install feh on their local machine.
 ifeq (${app},1)
 	ICON_PREFIX = /usr/share/icons
 endif
