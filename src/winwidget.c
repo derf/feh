@@ -821,9 +821,16 @@ void feh_event_handle_inotify(void)
     while (i < len) {
         struct inotify_event *event;
         event = (struct inotify_event *) &buf[i];
-        for (int i = 0; i < window_num; i++) {
-            if(windows[i]->inotify_wd == event->wd) {
-                feh_reload_image(windows[i], 0, 1);
+        for (int j = 0; j < window_num; j++) {
+            if(windows[j]->inotify_wd == event->wd) {
+                if (event->mask & IN_IGNORED) {
+                    D(("Inotify watch was implicitely removed\n"));
+                    feh_reload_image(windows[j], 0, 1);
+                    winwidget_inotify_add(windows[j], FEH_FILE(windows[j]->file->data)->filename);
+                } else if (event->mask & IN_CLOSE_WRITE) {
+                    D(("Inotify says file changed\n"));
+                    feh_reload_image(windows[j], 0, 1);
+                }
                 break;
             }
         }
