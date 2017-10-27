@@ -82,6 +82,7 @@ Available flags are:
 | debug | 0 | debug build, enables `--debug` |
 | exif | 0 | Builtin EXIF tag display support |
 | help | 0 | include help text (refers to the manpage otherwise) |
+| inotify | 0 | enable inotify, needed for `--auto-reload` |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
