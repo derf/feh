@@ -294,10 +294,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
-		gib_list *l;
 
 		char *home;
-		char filbuf[4096];
 		char *bgfill = NULL;
 		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
 
@@ -305,47 +303,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		Display *disp2;
 		Window root2;
 		int depth2;
-		int in, out, w, h;
+		int w, h;
 
 		D(("Falling back to XSetRootWindowPixmap\n"));
-
-		/* Put the filename in filbuf between ' and escape ' in the filename */
-		out = 0;
-
-		if (fil && !use_filelist) {
-			filbuf[out++] = '\'';
-
-			fil = feh_absolute_path(fil);
-
-			for (in = 0; fil[in] && out < 4092; in++) {
-
-				if (fil[in] == '\'')
-					filbuf[out++] = '\\';
-				filbuf[out++] = fil[in];
-			}
-			filbuf[out++] = '\'';
-			free(fil);
-
-		} else {
-			for (l = filelist; l && out < 4092; l = l->next) {
-				filbuf[out++] = '\'';
-
-				fil = feh_absolute_path(FEH_FILE(l->data)->filename);
-
-				for (in = 0; fil[in] && out < 4092; in++) {
-
-					if (fil[in] == '\'')
-						filbuf[out++] = '\\';
-					filbuf[out++] = fil[in];
-				}
-				filbuf[out++] = '\'';
-				filbuf[out++] = ' ';
-				free(fil);
-			}
-		}
-
-
-		filbuf[out++] = 0;
 
 		if (scaled) {
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
@@ -478,10 +438,31 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
 				} else {
-					fputs("#!/bin/sh\n", fp);
-					for (int i = 0; i < cmdargc; i++) {
-						fputs(shell_escape(cmdargv[i]), fp);
+					fputs("#!/bin/sh\nexec ", fp);
+					if (use_filelist) {
+						for (int i = 0; i < cmdargc; i++) {
+							fputs(shell_escape(cmdargv[i]), fp);
+							fputc(' ', fp);
+						}
+					} else if (fil) {
+						fputs("feh --bg-", fp);
+						if (centered)
+							fputs("center", fp);
+						else if (scaled)
+							fputs("scale", fp);
+						else if (filled)
+							fputs("fill", fp);
+						else
+							fputs("tile", fp);
+
+						if (opt.force_aliasing)
+							fputs(" --force-aliasing", fp);
+#ifdef HAVE_LIBXINERAMA
+						if (!opt.xinerama)
+							fputs(" --no-xinerama", fp);
+#endif
 						fputc(' ', fp);
+						fputs(shell_escape(fil), fp);
 					}
 					fputc('\n', fp);
 					fclose(fp);
