@@ -1,4 +1,9 @@
-Tue, 07 Nov 2017 07:51:48 +0100
+Tue, 07 Nov 2017 17:36:26 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.22.2
+    * Fix HTTPS certificate errors on some systems (broken in 2.22)
+
+Tue, 07 Nov 2017 07:51:48 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22.1
     * Allow ~/.fehbg to be sourced (instead of executed) from other shell
