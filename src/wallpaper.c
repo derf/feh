@@ -436,7 +436,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
 				} else {
-					fputs("#!/bin/sh\nexec ", fp);
+					fputs("#!/bin/sh\n", fp);
 					if (use_filelist) {
 						for (int i = 0; i < cmdargc; i++) {
 							fputs(shell_escape(cmdargv[i]), fp);

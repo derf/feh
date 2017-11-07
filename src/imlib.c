@@ -467,7 +467,7 @@ static char *feh_http_load_image(char *url)
 char *feh_http_load_image(char *url)
 {
 	weprintf(
-		"Cannot load image %s\n Please recompile with libcurl support",
+		"Cannot load image %s\nPlease recompile feh with libcurl support",
 		url
 	);
 	return NULL;

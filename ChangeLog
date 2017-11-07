@@ -1,3 +1,9 @@
+Tue, 07 Nov 2017 07:51:48 +0100
+
+* Release v2.22.1
+    * Allow ~/.fehbg to be sourced (instead of executed) from other shell
+      scripts again (broken in 2.22)
+
 Sat, 04 Nov 2017 14:55:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22
