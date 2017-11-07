@@ -429,7 +429,7 @@ static char *feh_http_load_image(char *url)
 			if (opt.insecure_ssl) {
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
-			} else {
+			} else if (getenv("CURL_CA_BUNDLE") != NULL) {
 				// Allow the user to specify custom CA certificates.
 				curl_easy_setopt(curl, CURLOPT_CAINFO,
 						getenv("CURL_CA_BUNDLE"));
