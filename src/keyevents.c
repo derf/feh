@@ -657,7 +657,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	}
 	else if (feh_is_kp(EVENT_jump_random, state, keysym, button)) {
 		if (winwid->type == WIN_TYPE_THUMBNAIL)
-			feh_thumbnail_select_next(winwid, rand() % (filelist_len - 1));
+			feh_thumbnail_select_next(winwid, ((double) rand() / RAND_MAX) * (filelist_len - 1));
 		else
 			slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
