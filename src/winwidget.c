@@ -455,7 +455,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
 
-	if (!winwid->full_screen && opt.zoom_mode
+	if (!winwid->full_screen && opt.zoom_mode && (winwid->type != WIN_TYPE_THUMBNAIL)
 				&& (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
 				&& (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -464,14 +464,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	 * In case of a resize, the geomflags (and im_w, im_h) get updated by
 	 * the ConfigureNotify handler.
 	 */
-	if (need_center && !winwid->full_screen
+	if (need_center && !winwid->full_screen && (winwid->type != WIN_TYPE_THUMBNAIL)
 				&& (opt.geom_flags & (WidthValue | HeightValue))
 				&& ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
-	if (resize && (winwid->full_screen
-                     || (opt.geom_flags & (WidthValue | HeightValue)))) {
+	if (resize && (winwid->type != WIN_TYPE_THUMBNAIL) &&
+			(winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
 
