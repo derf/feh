@@ -20,7 +20,7 @@ OPTIONS
  -g, --geometry WxH[+X+Y]  Limit the window size to DIMENSION[+OFFSET]
  -f, --filelist FILE       Load/save images from/to the FILE filelist
  -|, --start-at FILENAME   Start at FILENAME in the filelist
- -p, --preload             Remove unlaodable files from the internal filelist
+ -p, --preload             Remove unloadable files from the internal filelist
                            before attempting to display anything
  -., --scale-down          Automatically scale down images to fit screen size
  -F, --fullscreen          Make the window full screen
