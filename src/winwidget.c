@@ -455,7 +455,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
 
-	if (!winwid->full_screen && opt.zoom_mode && (winwid->type != WIN_TYPE_THUMBNAIL)
+	if (!opt.keep_zoom_vp && !winwid->full_screen && opt.zoom_mode && (winwid->type != WIN_TYPE_THUMBNAIL)
 				&& (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
 				&& (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -464,7 +464,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	 * In case of a resize, the geomflags (and im_w, im_h) get updated by
 	 * the ConfigureNotify handler.
 	 */
-	if (need_center && !winwid->full_screen && (winwid->type != WIN_TYPE_THUMBNAIL)
+	if (!opt.keep_zoom_vp && need_center && !winwid->full_screen && (winwid->type != WIN_TYPE_THUMBNAIL)
 				&& (opt.geom_flags & (WidthValue | HeightValue))
 				&& ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -564,6 +564,9 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
+
+	if (opt.keep_zoom_vp)
+		winwidget_sanitise_offsets(winwid);
 
 	/* Now we ensure only to render the area we're looking at */
 	dx = winwid->im_x;
