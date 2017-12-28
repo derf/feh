@@ -256,6 +256,16 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		return(0);
 	}
 
+	/*
+	 * By default, Imlib2 unconditionally loads a cached file without checking
+	 * if it was modified on disk. However, feh (or rather its users) should
+	 * expect image changes to appear at the next reload. So we tell Imlib2 to
+	 * always check the file modification time and only use a cached image if
+	 * the mtime was not changed. The performance penalty is usually negligible.
+	 */
+	imlib_context_set_image(*im);
+	imlib_image_set_changes_on_disk();
+
 #ifdef HAVE_LIBEXIF
 	int orientation = 0;
 	ExifData *exifData = exif_data_new_from_file(file->filename);
