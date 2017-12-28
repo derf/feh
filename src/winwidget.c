@@ -498,12 +498,6 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			   && (winwid->im_h < max_h));
 
 		if (!smaller || opt.zoom_mode) {
-			double ratio = 0.0;
-
-			/* Image is larger than the screen (so wants shrinking), or it's
-			   smaller but wants expanding to fill it */
-			ratio = feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, max_w, max_h);
-
 			/* contributed by Jens Laas <jens.laas@data.slu.se>
 			 * What it does:
 			 * zooms images by a fixed amount but never larger than the screen.
@@ -535,6 +529,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				winwid->im_y = ((int)
 						(max_h - (winwid->im_h * winwid->zoom))) >> 1;
 			} else {
+				/* Image is larger than the screen (so wants shrinking), or it's
+				   smaller but wants expanding to fill it */
+				double ratio = feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, max_w, max_h);
+
 				if (ratio > 1.0) {
 					/* height is the factor */
 					winwid->im_x = 0;
