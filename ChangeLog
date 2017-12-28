@@ -1,3 +1,11 @@
+Thu, 28 Dec 2017 19:26:29 +0100
+
+* Release v2.23
+    * Fix broken thumbnail/index windows when using --scale-down
+    * Use Imlib2 in-memory image cache (default cache size: 4MiB). This allows
+      for significant performance improvements especially in small slideshows
+    * Add --cache-size option to set Imlib2 image cache size
+
 Tue, 07 Nov 2017 17:36:26 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22.2
