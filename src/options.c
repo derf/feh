@@ -68,6 +68,7 @@ void init_parse_options(int argc, char **argv)
 	opt.jump_on_resort = 1;
 
 	opt.screen_clip = 1;
+	opt.cache_size = 4;
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
@@ -410,6 +411,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
+		{"cache-size"    , 1, 0, 243},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -772,6 +774,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 241:
 			opt.recursive = 0;
+			break;
+		case 243:
+			opt.cache_size = atoi(optarg);
+			if (opt.cache_size < 0)
+				opt.cache_size = 0;
+			if (opt.cache_size > 2048)
+				opt.cache_size = 2048;
+			break;
 		default:
 			break;
 		}

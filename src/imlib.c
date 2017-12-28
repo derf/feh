@@ -131,6 +131,8 @@ void init_x_and_imlib(void)
 	imlib_context_set_operation(IMLIB_OP_COPY);
 	wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
+	imlib_set_cache_size(opt.cache_size * 1024 * 1024);
+
 	/* Initialise random numbers */
 	srand(getpid() * time(NULL) % ((unsigned int) -1));
 
