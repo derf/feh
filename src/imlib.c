@@ -131,6 +131,8 @@ void init_x_and_imlib(void)
 	imlib_context_set_operation(IMLIB_OP_COPY);
 	wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
+	imlib_set_cache_size(opt.cache_size * 1024 * 1024);
+
 	/* Initialise random numbers */
 	srand(getpid() * time(NULL) % ((unsigned int) -1));
 
@@ -253,6 +255,16 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		D(("Load *failed*\n"));
 		return(0);
 	}
+
+	/*
+	 * By default, Imlib2 unconditionally loads a cached file without checking
+	 * if it was modified on disk. However, feh (or rather its users) should
+	 * expect image changes to appear at the next reload. So we tell Imlib2 to
+	 * always check the file modification time and only use a cached image if
+	 * the mtime was not changed. The performance penalty is usually negligible.
+	 */
+	imlib_context_set_image(*im);
+	imlib_image_set_changes_on_disk();
 
 #ifdef HAVE_LIBEXIF
 	int orientation = 0;

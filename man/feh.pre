@@ -205,6 +205,16 @@ Zoom pictures to screen size in fullscreen / fixed geometry mode.
 .
 Create borderless windows.
 .
+.It Cm --cache-size Ar size
+.
+Set Imlib2 in-memory cache to
+.Ar size
+MiB. A higher cache size can
+significantly improve performance especially for small slide shows, however at
+the cost of increased memory consumption.
+.Ar size
+must be between 0 and 2048 MiB and defaults to 4.
+.
 .It Cm -P , --cache-thumbnails
 .
 Enable thumbnail caching in

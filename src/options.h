@@ -117,6 +117,9 @@ struct __fehoptions {
 	/* signed in case someone wants to invert scrolling real quick */
 	int scroll_step;
 
+	// imlib cache size in mebibytes
+	int cache_size;
+
 	unsigned int min_width, min_height, max_width, max_height;
 
 	unsigned char mode;
