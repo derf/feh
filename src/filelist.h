@@ -112,5 +112,6 @@ extern gib_list *filelist;
 extern gib_list *original_file_items;
 extern int filelist_len;
 extern gib_list *current_file;
+extern gib_list *next_file;
 
 #endif

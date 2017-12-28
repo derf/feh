@@ -35,7 +35,7 @@ scalable_icon_dir = ${icon_dir}/scalable/apps
 
 # default CFLAGS
 CFLAGS ?= -g -O2
-CFLAGS += -Wall -Wextra -pedantic
+CFLAGS += -Wall -Wextra -pedantic -pthread
 
 # Settings for glibc >= 2.19 - may need to be adjusted for other systems
 CFLAGS += -std=c11 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=500

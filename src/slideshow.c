@@ -31,6 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "signals.h"
 
+#include <pthread.h>
+
 void init_slideshow_mode(void)
 {
 	winwidget w = NULL;
@@ -244,9 +246,26 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	return;
 }
 
+static void *thread_start(void *arg)
+{
+	feh_file *file = (feh_file*)arg;
+
+	// Hack to prevent segfault when scrolling quickly through already cached images
+	nanosleep((const struct timespec[]){{0, 1000000L}}, NULL);
+
+	Imlib_Image im = imlib_load_image_immediately(file->filename);
+	if (im) {
+		imlib_context_set_image(im);
+		imlib_free_image();
+	}
+
+	return NULL;
+}
+
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
 	gib_list *last = NULL;
+	gib_list *next_file = NULL;
 	int i = 0;
 	int jmp = 1;
 	/* We can't use filelist_len in the for loop, since that changes when we
@@ -283,9 +302,11 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		switch (change) {
 		case SLIDE_NEXT:
 			current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+			next_file = feh_list_jump(filelist, current_file, FORWARD, 1);
 			break;
 		case SLIDE_PREV:
 			current_file = feh_list_jump(filelist, current_file, BACK, 1);
+			next_file = feh_list_jump(filelist, current_file, BACK, 1);
 			break;
 		case SLIDE_RAND:
 			if (filelist_len > 1) {
@@ -413,6 +434,12 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	}
 	if (last)
 		filelist = feh_file_remove_from_list(filelist, last);
+
+	if (next_file) {
+		pthread_t thread_id;
+		feh_file *file = FEH_FILE(next_file->data);
+		pthread_create(&thread_id, NULL, &thread_start, file);
+	}
 
 	if (filelist_len == 0)
 		eprintf("No more slides in show");
