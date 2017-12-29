@@ -426,7 +426,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
-		winwidget_reset_image(winwid);
+		if (!opt.keep_zoom_vp)
+			winwidget_reset_image(winwid);
 	}
 
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",

@@ -223,10 +223,8 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		w->im_x = tim_x;
 		w->im_y = tim_y;
 		w->zoom = tzoom;
-		winwidget_render_image(w, 0, 0);
-	} else {
-		winwidget_render_image(w, resize, 0);
 	}
+	winwidget_render_image(w, resize, 0);
 
 	return;
 }
@@ -386,11 +384,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 				winwid->zoom = tzoom;
 			}
 			if (render) {
-				if (opt.keep_zoom_vp) {
-					winwidget_render_image(winwid, 0, 0);
-				} else {
-					winwidget_render_image(winwid, 1, 0);
-				}
+				winwidget_render_image(winwid, 1, 0);
 			}
 			break;
 		} else
