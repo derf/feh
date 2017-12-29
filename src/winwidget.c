@@ -434,7 +434,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
-		winwidget_reset_image(winwid);
+		if (!opt.keep_zoom_vp)
+			winwidget_reset_image(winwid);
 	}
 
 	/* bounds checks for panning */
@@ -470,7 +471,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
 
-	if (resize && (winwid->type != WIN_TYPE_THUMBNAIL) &&
+	if (!opt.keep_zoom_vp && resize && (winwid->type != WIN_TYPE_THUMBNAIL) &&
 			(winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
 		int smaller;	/* Is the image smaller than screen? */
 		int max_w = 0, max_h = 0;
