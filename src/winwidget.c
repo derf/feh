@@ -328,6 +328,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		opt.geom_h = h;
 		opt.geom_flags |= WidthValue | HeightValue;
 	}
+
 	return;
 }
 
@@ -422,7 +423,6 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
 	int antialias = 0;
-	int need_center = winwid->had_resize;
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
@@ -438,6 +438,9 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
 	      resize, force_alias, winwid->im_w, winwid->im_h));
 
+	/* winwidget_setup_pixmaps(winwid) resets the winwid->had_resize flag */
+	int had_resize = winwid->had_resize || resize;
+
 	winwidget_setup_pixmaps(winwid);
 
 	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
@@ -447,110 +450,19 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
 
-	if (!winwid->full_screen && opt.zoom_mode && (winwid->type != WIN_TYPE_THUMBNAIL)
-				&& (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
-				&& (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+	if (had_resize && !opt.keep_zoom_vp && (winwid->type != WIN_TYPE_THUMBNAIL)) {
+		double required_zoom = 1.0;
+		feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
-	/*
-	 * In case of a resize, the geomflags (and im_w, im_h) get updated by
-	 * the ConfigureNotify handler.
-	 */
-	if (need_center && !winwid->full_screen && (winwid->type != WIN_TYPE_THUMBNAIL)
-				&& (opt.geom_flags & (WidthValue | HeightValue))
-				&& ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+		winwid->zoom = opt.default_zoom ? (0.01 * opt.default_zoom) : 1.0;
 
+		if ((opt.scale_down || (winwid->full_screen && !opt.default_zoom))
+				&& winwid->zoom > required_zoom)
+			winwid->zoom = required_zoom;
+		else if ((opt.zoom_mode && required_zoom > 1)
+				&& (!opt.default_zoom || required_zoom < winwid->zoom))
+			winwid->zoom = required_zoom;
 
-	if (resize && (winwid->type != WIN_TYPE_THUMBNAIL) &&
-			(winwid->full_screen || (opt.geom_flags & (WidthValue | HeightValue)))) {
-		int smaller;	/* Is the image smaller than screen? */
-		int max_w = 0, max_h = 0;
-
-		if (winwid->full_screen) {
-			max_w = scr->width;
-			max_h = scr->height;
-#ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens) {
-				max_w = xinerama_screens[xinerama_screen].width;
-				max_h = xinerama_screens[xinerama_screen].height;
-			}
-#endif				/* HAVE_LIBXINERAMA */
-		} else {
-			if (opt.geom_flags & WidthValue) {
-				max_w = opt.geom_w;
-			}
-			if (opt.geom_flags & HeightValue) {
-				max_h = opt.geom_h;
-			}
-		}
-
-		D(("Calculating for fullscreen/fixed geom render\n"));
-		smaller = ((winwid->im_w < max_w)
-			   && (winwid->im_h < max_h));
-
-		if (!smaller || opt.zoom_mode) {
-			/* contributed by Jens Laas <jens.laas@data.slu.se>
-			 * What it does:
-			 * zooms images by a fixed amount but never larger than the screen.
-			 *
-			 * Why:
-			 * This is nice if you got a collection of images where some
-			 * are small and can stand a small zoom. Large images are unaffected.
-			 *
-			 * When does it work, and how?
-			 * You have to be in fullscreen mode _and_ have auto-zoom turned on.
-			 *   "feh -FZ --zoom 130 imagefile" will do the trick.
-			 *        -zoom percent - the new switch.
-			 *                        100 = orignal size,
-			 *                        130 is 30% larger.
-			 */
-			if (opt.default_zoom) {
-				double old_zoom = winwid->zoom;
-
-				winwid->zoom = 0.01 * opt.default_zoom;
-				if (opt.default_zoom != 100) {
-					if ((winwid->im_h * winwid->zoom) > max_h)
-						winwid->zoom = old_zoom;
-					else if ((winwid->im_w * winwid->zoom) > max_w)
-						winwid->zoom = old_zoom;
-				}
-
-				winwid->im_x = ((int)
-						(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-				winwid->im_y = ((int)
-						(max_h - (winwid->im_h * winwid->zoom))) >> 1;
-			} else {
-				/* Image is larger than the screen (so wants shrinking), or it's
-				   smaller but wants expanding to fill it */
-				double ratio = feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, max_w, max_h);
-
-				if (ratio > 1.0) {
-					/* height is the factor */
-					winwid->im_x = 0;
-					winwid->im_y = ((int)
-							(max_h - (winwid->im_h * winwid->zoom))) >> 1;
-				} else {
-					/* width is the factor */
-					winwid->im_x = ((int)
-							(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-					winwid->im_y = 0;
-				}
-			}
-		} else {
-			/* my modification to jens hack, allow --zoom without auto-zoom mode */
-			if (opt.default_zoom) {
-				winwid->zoom = 0.01 * opt.default_zoom;
-			} else {
-				winwid->zoom = 1.0;
-			}
-			/* Just center the image in the window */
-			winwid->im_x = (int) (max_w - (winwid->im_w * winwid->zoom)) >> 1;
-			winwid->im_y = (int) (max_h - (winwid->im_h * winwid->zoom)) >> 1;
-		}
-	}
-	else if (need_center && !winwid->full_screen
-			&& (winwid->type != WIN_TYPE_THUMBNAIL) && !opt.keep_zoom_vp) {
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
@@ -564,7 +476,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	 * solution considering a future refactoring of this function.
 	 */
 
-	if (need_center || resize) {
+	if (had_resize) {
 		if ((opt.offset_flags & XValue) && (winwid->im_w * winwid->zoom) > winwid->w) {
 			if (opt.offset_flags & XNegative) {
 				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.offset_x;
@@ -580,6 +492,11 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			}
 		}
 	}
+
+	winwid->had_resize = 0;
+
+	if (opt.keep_zoom_vp)
+		winwidget_sanitise_offsets(winwid);
 
 	/* Now we ensure only to render the area we're looking at */
 	dx = winwid->im_x;
