@@ -31,7 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "signals.h"
 
+#ifdef HAVE_LIBPTHREAD
 #include <pthread.h>
+#endif
 
 void init_slideshow_mode(void)
 {
@@ -246,6 +248,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	return;
 }
 
+#ifdef HAVE_LIBPTHREAD
 static void *thread_start(void *arg)
 {
 	feh_file *file = (feh_file*)arg;
@@ -261,11 +264,14 @@ static void *thread_start(void *arg)
 
 	return NULL;
 }
+#endif
 
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
 	gib_list *last = NULL;
+#ifdef HAVE_LIBPTHREAD
 	gib_list *next_file = NULL;
+#endif
 	int i = 0;
 	int jmp = 1;
 	/* We can't use filelist_len in the for loop, since that changes when we
@@ -302,11 +308,15 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		switch (change) {
 		case SLIDE_NEXT:
 			current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+#ifdef HAVE_LIBPTHREAD
 			next_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+#endif
 			break;
 		case SLIDE_PREV:
 			current_file = feh_list_jump(filelist, current_file, BACK, 1);
+#ifdef HAVE_LIBPTHREAD
 			next_file = feh_list_jump(filelist, current_file, BACK, 1);
+#endif
 			break;
 		case SLIDE_RAND:
 			if (filelist_len > 1) {
@@ -435,11 +445,13 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	if (last)
 		filelist = feh_file_remove_from_list(filelist, last);
 
+#ifdef HAVE_LIBPTHREAD
 	if (next_file) {
 		pthread_t thread_id;
 		feh_file *file = FEH_FILE(next_file->data);
 		pthread_create(&thread_id, NULL, &thread_start, file);
 	}
+#endif
 
 	if (filelist_len == 0)
 		eprintf("No more slides in show");
