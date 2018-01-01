@@ -415,6 +415,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
 		{"cache-size"    , 1, 0, 243},
+		{"no-cycle"      , 0, 0, 244},
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
@@ -784,6 +785,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.cache_size = 0;
 			if (opt.cache_size > 2048)
 				opt.cache_size = 2048;
+			break;
+		case 244:
+			opt.no_cycle = 1;
 			break;
 		case 245:
 			opt.conversion_timeout = atoi(optarg);

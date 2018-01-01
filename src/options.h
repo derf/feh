@@ -69,6 +69,7 @@ struct __fehoptions {
 	unsigned char draw_info;
 	unsigned char cache_thumbnails;
 	unsigned char cycle_once;
+	unsigned char no_cycle;
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
 	unsigned char no_fehbg;
