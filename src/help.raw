@@ -38,6 +38,7 @@ OPTIONS
      --auto-rotate         Rotate images according to Exif info (if compiled with exif=1)
  -^, --title TITLE         Set window title (see FORMAT SPECIFIERS)
  -D, --slideshow-delay NUM Set delay between automatically changing slides
+     --no-cycle            Stop at both ends of the filelist 
      --cycle-once          Exit after one loop through the slideshow
  -R, --reload NUM          Reload images after NUM seconds
  -k, --keep-http           Keep local copies when viewing HTTP/FTP files

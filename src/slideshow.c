@@ -215,6 +215,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
 	gib_list *last = NULL;
+	gib_list *previous_file = current_file;
 	int i = 0;
 	int jmp = 1;
 	/* We can't use filelist_len in the for loop, since that changes when we
@@ -330,6 +331,12 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
+		}
+
+		if (opt.no_cycle &&
+			((current_file == filelist && change == SLIDE_NEXT) ||
+			(previous_file == filelist && change == SLIDE_PREV))) {
+				current_file = previous_file;
 		}
 
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
