@@ -92,6 +92,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
+				fflush(stdout);
 				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {
@@ -106,6 +107,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
+				fflush(stdout);
 				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {
