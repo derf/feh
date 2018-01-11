@@ -429,12 +429,6 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		winwidget_reset_image(winwid);
 	}
 
-	/* bounds checks for panning */
-	if (winwid->im_x > winwid->w)
-		winwid->im_x = winwid->w;
-	if (winwid->im_y > winwid->h)
-		winwid->im_y = winwid->h;
-
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
 	      resize, force_alias, winwid->im_w, winwid->im_h));
 
