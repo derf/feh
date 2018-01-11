@@ -443,14 +443,6 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	winwidget_setup_pixmaps(winwid);
 
-	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
-				     || (opt.geom_flags & (WidthValue | HeightValue))
-				     || (winwid->im_x || winwid->im_y)
-				     || (winwid->w > winwid->im_w * winwid->zoom)
-				     || (winwid->h > winwid->im_h * winwid->zoom)
-				     || (winwid->has_rotated)))
-		feh_draw_checks(winwid);
-
 	if (had_resize && !opt.keep_zoom_vp && (winwid->type != WIN_TYPE_THUMBNAIL)) {
 		double required_zoom = 1.0;
 		feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
@@ -498,6 +490,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (opt.keep_zoom_vp)
 		winwidget_sanitise_offsets(winwid);
+
+	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
+				     || (opt.geom_flags & (WidthValue | HeightValue))
+				     || (winwid->im_x || winwid->im_y)
+				     || (winwid->w > winwid->im_w * winwid->zoom)
+				     || (winwid->h > winwid->im_h * winwid->zoom)
+				     || (winwid->has_rotated)))
+		feh_draw_checks(winwid);
 
 	/* Now we ensure only to render the area we're looking at */
 	dx = winwid->im_x;
