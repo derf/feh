@@ -444,25 +444,27 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	winwidget_setup_pixmaps(winwid);
 
 	if (had_resize && !opt.keep_zoom_vp && (winwid->type != WIN_TYPE_THUMBNAIL)) {
-		if (opt.default_zoom)
-			winwid->zoom = 0.01 * opt.default_zoom;
-		else
-			winwid->zoom = 1.0;
+		if (!winwid->had_force_resize) {
+			if (opt.default_zoom)
+				winwid->zoom = 0.01 * opt.default_zoom;
+			else
+				winwid->zoom = 1.0;
 
-		double required_zoom = 1.0;
-		feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+			double required_zoom = 1.0;
+			feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
-		if (opt.scale_down && winwid->zoom > required_zoom)
-			winwid->zoom = required_zoom;
-		else if ((opt.zoom_mode && required_zoom > 1)
-				&& (!opt.default_zoom || required_zoom < winwid->zoom))
-			winwid->zoom = required_zoom;
-
+			if (opt.scale_down && winwid->zoom > required_zoom)
+				winwid->zoom = required_zoom;
+			else if ((opt.zoom_mode && required_zoom > 1)
+					&& (!opt.default_zoom || required_zoom < winwid->zoom))
+				winwid->zoom = required_zoom;
+		}
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
 
 	winwid->had_resize = 0;
+	winwid->had_force_resize = 0;
 
 	if (opt.keep_zoom_vp)
 		winwidget_sanitise_offsets(winwid);
@@ -793,45 +795,61 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 	}
 #endif
 
-
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-    if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
-        winwid->had_resize = 1;
-        return;
-    }
-	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		/* winwidget_clear_background(winwid); */
-		if (opt.screen_clip) {
-            winwid->w = (w > scr_width) ? scr_width : w;
-            winwid->h = (h > scr_height) ? scr_height : h;
-		}
-		if (winwid->full_screen) {
-            XTranslateCoordinates(disp, winwid->win, attributes.root,
-                        -attributes.border_width -
-                        attributes.x,
-                        -attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
-            winwid->x = tc_x;
-            winwid->y = tc_y;
-            XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
-		} else
-			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
+	int max_width  = scr_width  - 200;
+	int max_height = scr_height - 200;
 
-		winwid->had_resize = 1;
+	if (winwid->full_screen) {
+		XTranslateCoordinates(disp, winwid->win, attributes.root,
+					-attributes.border_width - attributes.x,
+					-attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
+		winwid->x = tc_x;
+		winwid->y = tc_y;
+		XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
 		XFlush(disp);
-
-		if (force_resize && (opt.geom_flags & (WidthValue | HeightValue))
-				&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
-			opt.geom_w = winwid->w;
-			opt.geom_h = winwid->h;
+	} else if (force_resize) {
+		if (opt.geom_flags & (WidthValue | HeightValue)) {
+			// Fixed-geometry mode: Keep previous center
+			XTranslateCoordinates(disp, winwid->win, attributes.root, 0, 0, &tc_x, &tc_y, &dw);
+			tc_x = tc_x + (winwid->w - w) / 2;
+			tc_y = tc_y + (winwid->h - h) / 2;
+		} else {
+			// Center on screen
+			tc_x = (scr_width  - w) / 2;
+			tc_y = (scr_height - h) / 2;
 		}
-
-		D(("-> x %d y %d w %d h %d\n", winwid->x, winwid->y, winwid->w,
-			winwid->h));
-
-	} else {
-		D(("No resize actually needed\n"));
+		winwid->w = w;
+		winwid->h = h;
+		winwid->had_resize = 1;
+		winwid->had_force_resize = 1;
+		XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+		XFlush(disp);
+	} else if (!(opt.geom_flags & (WidthValue | HeightValue))) {
+		int zoomed_w = !opt.default_zoom ? w : (double)w * 0.01 * opt.default_zoom;
+		int zoomed_h = !opt.default_zoom ? h : (double)h * 0.01 * opt.default_zoom;
+		if (opt.screen_clip && (zoomed_w > max_width || zoomed_h > max_height)) {
+			double w_zoom = (double)max_width  / (double)zoomed_w;
+			double h_zoom = (double)max_height / (double)zoomed_h;
+			if (w_zoom < h_zoom) {
+				winwid->w = max_width;
+				winwid->h = (double)zoomed_h * w_zoom;
+				winwid->zoom = w_zoom;
+			} else {
+				winwid->w = (double)zoomed_w * h_zoom;
+				winwid->h = max_height;
+				winwid->zoom = h_zoom;
+			}
+		} else {
+			winwid->w = zoomed_w;
+			winwid->h = zoomed_h;
+		}
+		winwid->had_resize = 1;
+		tc_x = (scr_width  - winwid->w) / 2;
+		tc_y = (scr_height - winwid->h) / 2;
+		XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+		XFlush(disp);
 	}
 
 	return;

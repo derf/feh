@@ -84,7 +84,7 @@ struct __winwidget {
 	int force_aliasing;
 	double im_angle;
 	enum win_type type;
-	unsigned char had_resize, full_screen;
+	unsigned char had_force_resize, had_resize, full_screen;
 	Imlib_Image im;
 	GC gc;
 	Pixmap bg_pmap;
