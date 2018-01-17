@@ -806,10 +806,10 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-    if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
-        winwid->had_resize = 1;
-        return;
-    }
+	if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
+		winwid->had_resize = 1;
+		return;
+	}
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
 		if (opt.screen_clip) {
 			double required_zoom = 1.0;
@@ -820,13 +820,12 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 			winwid->h = winwid->im_h * required_zoom;
 		}
 		if (winwid->full_screen) {
-            XTranslateCoordinates(disp, winwid->win, attributes.root,
-                        -attributes.border_width -
-                        attributes.x,
-                        -attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
-            winwid->x = tc_x;
-            winwid->y = tc_y;
-            XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+			XTranslateCoordinates(disp, winwid->win, attributes.root,
+						-attributes.border_width - attributes.x,
+						-attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
+			winwid->x = tc_x;
+			winwid->y = tc_y;
+			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
 		} else
 			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
 
