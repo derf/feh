@@ -645,13 +645,6 @@ Pixmap feh_create_checks(void)
 	return(checks_pmap);
 }
 
-void winwidget_clear_background(winwidget w)
-{
-	XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
-	/* XClearWindow(disp, w->win); */
-	return;
-}
-
 void feh_draw_checks(winwidget win)
 {
 	static GC gc = None;
@@ -818,7 +811,6 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
         return;
     }
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
 			double required_zoom = 1.0;
 			int max_w = (w > scr_width) ? scr_width : w;
