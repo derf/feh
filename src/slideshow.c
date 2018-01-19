@@ -35,9 +35,7 @@ void init_slideshow_mode(void)
 {
 	winwidget w = NULL;
 	int success = 0;
-	char *s = NULL;
 	gib_list *l = filelist, *last = NULL;
-	feh_file *file = NULL;
 
 	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
@@ -52,15 +50,12 @@ void init_slideshow_mode(void)
 
 	mode = "slideshow";
 	for (; l; l = l->next) {
-		file = FEH_FILE(l->data);
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
 		current_file = l;
-		s = slideshow_create_name(file, NULL);
-		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL) {
-			free(s);
+		if ((w = winwidget_create_from_file(l, NULL, WIN_TYPE_SLIDESHOW)) != NULL) {
 			success = 1;
 			winwidget_show(w);
 			if (opt.slideshow_delay > 0.0)
@@ -69,7 +64,6 @@ void init_slideshow_mode(void)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 			break;
 		} else {
-			free(s);
 			last = l;
 		}
 	}
