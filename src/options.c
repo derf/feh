@@ -55,6 +55,7 @@ void init_parse_options(int argc, char **argv)
 	opt.display = 1;
 	opt.aspect = 1;
 	opt.slideshow_delay = 0.0;
+	opt.dcraw_timeout = -1;
 	opt.magick_timeout = -1;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
@@ -415,6 +416,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
 		{"cache-size"    , 1, 0, 243},
+		{"dcraw-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{0, 0, 0, 0}
 	};
@@ -780,6 +782,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.cache_size = 0;
 			if (opt.cache_size > 2048)
 				opt.cache_size = 2048;
+			break;
+		case 245:
+			opt.dcraw_timeout = atoi(optarg);
 			break;
 		case 246:
 			opt.version_sort = 1;
