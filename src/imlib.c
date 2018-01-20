@@ -231,7 +231,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	if ((image_source != SRC_IMLIB) && tmpname) {
 		*im = imlib_load_image_with_error_return(tmpname, &err);
-		if (im) {
+		if (!err && im) {
 			real_filename = file->filename;
 			file->filename = tmpname;
 			feh_file_info_load(file, *im);
@@ -240,7 +240,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((image_source == SRC_MAGICK) || !opt.keep_http)
+		if ((image_source != SRC_HTTP) || !opt.keep_http)
 			unlink(tmpname);
 
 		free(tmpname);
@@ -357,30 +357,17 @@ static char *feh_magick_load_image(char *filename)
 	else {
 		alarm(opt.magick_timeout);
 		waitpid(childpid, &status, 0);
-		alarm(0);
-		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
-			close(fd);
+		kill(childpid, SIGKILL);
+		if (opt.magick_timeout > 0 && !alarm(0)) {
 			unlink(sfn);
 			free(sfn);
 			sfn = NULL;
 
 			if (!opt.quiet) {
-				if (WIFSIGNALED(status))
-					weprintf("%s - Conversion took too long, skipping",
-						filename);
+				weprintf("%s - Conversion took too long, skipping", filename);
 			}
-
-			/*
-			 * Reap child.  The previous waitpid call was interrupted by
-			 * alarm, but convert doesn't terminate immediately.
-			 * XXX
-			 * normally, if (WIFSIGNALED(status)) waitpid(childpid, &status, 0);
-			 * would suffice. However, as soon as feh has its own window,
-			 * this doesn't work anymore and the following workaround is
-			 * required. Hm.
-			 */
-			waitpid(-1, &status, 0);
 		}
+		close(fd);
 		childpid = 0;
 	}
 
