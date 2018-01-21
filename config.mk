@@ -8,6 +8,7 @@ debug ?= 0
 help ?= 0
 xinerama ?= 1
 exif ?= 0
+pthread ?= 0
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
@@ -77,6 +78,14 @@ ifeq (${exif},1)
 	MAN_EXIF = enabled
 else
 	MAN_EXIF = disabled
+endif
+
+ifeq (${pthread},1)
+	CFLAGS += -DHAVE_LIBPTHREAD
+	LDLIBS += -lpthread
+	MAN_PTHREAD = enabled
+else
+	MAN_PTHREAD = disabled
 endif
 
 MAN_DATE ?= ${shell date '+%B %d, %Y'}
