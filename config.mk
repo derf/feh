@@ -8,7 +8,7 @@ debug ?= 0
 help ?= 0
 xinerama ?= 1
 exif ?= 0
-pthread ?= 1
+pthread ?= 0
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
