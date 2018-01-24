@@ -81,7 +81,7 @@ static winwidget winwidget_allocate(void)
 	return(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image im, char type)
 {
 	winwidget ret = NULL;
 
@@ -95,11 +95,6 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
 	ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
 
-	if (name)
-		ret->name = estrdup(name);
-	else
-		ret->name = estrdup(PACKAGE);
-
 	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
 		ret->full_screen = True;
 	winwidget_create_window(ret, ret->w, ret->h);
@@ -108,7 +103,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	return(ret);
 }
 
-winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
+winwidget winwidget_create_from_file(gib_list * list, char type)
 {
 	winwidget ret = NULL;
 	feh_file *file = FEH_FILE(list->data);
@@ -119,10 +114,6 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 	ret = winwidget_allocate();
 	ret->file = list;
 	ret->type = type;
-	if (name)
-		ret->name = estrdup(name);
-	else
-		ret->name = estrdup(file->filename);
 
 	if (winwidget_loadimage(ret, file) == 0) {
 		winwidget_destroy(ret);
@@ -632,16 +623,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_info(winwid);
 		if (winwid->errstr)
 			feh_draw_errstr(winwid);
-		if (opt.title && (winwid->type != WIN_TYPE_THUMBNAIL_VIEWER) &&
-				(winwid->file != NULL)) {
-			char *s = slideshow_create_name(FEH_FILE(winwid->file->data), winwid);
-			winwidget_rename(winwid, s);
-			free(s);
-		} else if (opt.thumb_title && (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) &&
-				(winwid->file != NULL)) {
-			char *s = thumbnail_create_name(FEH_FILE(winwid->file->data), winwid);
-			winwidget_rename(winwid, s);
-			free(s);
+		if (winwid->file != NULL) {
+			if (opt.title && winwid->type != WIN_TYPE_THUMBNAIL_VIEWER) {
+				winwidget_rename(winwid, feh_printf(opt.title, FEH_FILE(winwid->file->data), winwid));
+			} else if (opt.thumb_title && winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) {
+				winwidget_rename(winwid, feh_printf(opt.thumb_title, FEH_FILE(winwid->file->data), winwid));
+			}
 		}
 	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);

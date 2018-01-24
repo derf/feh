@@ -59,7 +59,6 @@ void init_index_mode(void)
 	int lineno;
 	unsigned char trans_bg = 0;
 	int index_image_width, index_image_height;
-	char *s;
 	gib_list *line, *lines;
 
 	if (opt.montage) {
@@ -164,15 +163,9 @@ void init_index_mode(void)
 		gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0, 0, 255);
 	}
 
-	/* Create the window title at this point */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [index mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+		winwid = winwidget_create_from_image(im_main, WIN_TYPE_SINGLE);
+		winwidget_rename(winwid, PACKAGE " [index mode]");
 		winwidget_show(winwid);
 	}
 
@@ -348,7 +341,6 @@ void init_index_mode(void)
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
 
-	free(s);
 	return;
 }
 
