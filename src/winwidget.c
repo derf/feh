@@ -426,8 +426,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
-		if (!opt.keep_zoom_vp)
-			winwidget_reset_image(winwid);
+		winwidget_reset_image(winwid);
 	}
 
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
@@ -953,10 +952,12 @@ void feh_debug_print_winwid(winwidget w)
 
 void winwidget_reset_image(winwidget winwid)
 {
-	winwid->zoom = 1.0;
-	winwid->old_zoom = 1.0;
-	winwid->im_x = 0;
-	winwid->im_y = 0;
+	if (!opt.keep_zoom_vp) {
+		winwid->zoom = 1.0;
+		winwid->old_zoom = 1.0;
+		winwid->im_x = 0;
+		winwid->im_y = 0;
+	}
 	winwid->im_angle = 0.0;
 	winwid->has_rotated = 0;
 	return;
