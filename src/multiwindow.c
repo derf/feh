@@ -34,25 +34,14 @@ void init_multiwindow_mode(void)
 {
 	winwidget w = NULL;
 	gib_list *l;
-	feh_file *file = NULL;
+
+	if (!opt.title)
+		opt.title = PACKAGE " - %f";
 
 	mode = "multiwindow";
 
 	for (l = filelist; l; l = l->next) {
-		char *s = NULL;
-		int len = 0;
-		file = FEH_FILE(l->data);
-		current_file = l;
-
-		if (!opt.title) {
-			len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
-			s = emalloc(len);
-			snprintf(s, len, PACKAGE " - %s", file->filename);
-		} else {
-			s = estrdup(feh_printf(opt.title, file, w));
-		}
-
-		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SINGLE)) != NULL) {
+		if ((w = winwidget_create_from_file(l, WIN_TYPE_SINGLE)) != NULL) {
 			winwidget_show(w);
 			if (opt.reload > 0)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
@@ -62,7 +51,6 @@ void init_multiwindow_mode(void)
 			D(("EEEK. Couldn't load image in multiwindow mode. "
 						"I 'm not sure if this is a problem\n"));
 		}
-		free(s);
 	}
 
 	return;

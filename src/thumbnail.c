@@ -71,7 +71,6 @@ void init_thumbnail_mode(void)
 	gib_list *l, *last = NULL;
 	int lineno;
 	int index_image_width, index_image_height;
-	char *s;
 	unsigned int thumb_counter = 0;
 	gib_list *line, *lines;
 
@@ -91,6 +90,9 @@ void init_thumbnail_mode(void)
 
 	td.vertical = 0;
 	td.max_column_w = 0;
+
+	if (!opt.thumb_title)
+		opt.thumb_title = "%n";
 
 	mode = "thumbnail";
 
@@ -168,15 +170,9 @@ void init_thumbnail_mode(void)
 				td.h + title_area_h, 0, 0, 0, 255);
 	}
 
-	/* Create title now */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [thumbnail mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(td.im_main, s, WIN_TYPE_THUMBNAIL);
+		winwid = winwidget_create_from_image(td.im_main, WIN_TYPE_THUMBNAIL);
+		winwidget_rename(winwid, PACKAGE " [thumbnail mode]");
 		winwidget_show(winwid);
 	}
 
@@ -415,8 +411,6 @@ void init_thumbnail_mode(void)
 		}
 	}
 
-
-	free(s);
 	return;
 }
 
@@ -772,24 +766,17 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 {
 	winwidget thumbwin = NULL;
-	char *s;
 
-	if (!opt.thumb_title)
-		s = thumbfile->name;
-	else
-		s = feh_printf(opt.thumb_title, thumbfile, NULL);
-	
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
 	if (!thumbwin) {
 		thumbwin = winwidget_create_from_file(
 				gib_list_add_front(NULL, thumbfile),
-				s, WIN_TYPE_THUMBNAIL_VIEWER);
+				WIN_TYPE_THUMBNAIL_VIEWER);
 		if (thumbwin)
 			winwidget_show(thumbwin);
 	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
 		free(thumbwin->file);
 		thumbwin->file = gib_list_add_front(NULL, thumbfile);
-		winwidget_rename(thumbwin, s);
 		feh_reload_image(thumbwin, 1, 1);
 	}
 }
@@ -924,17 +911,4 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 	}
 
 	return status;
-}
-
-char *thumbnail_create_name(feh_file * file, winwidget winwid)
-{
-	char *s = NULL;
-
-	if (!opt.thumb_title) {
-		s = estrdup(file->filename);
-	} else {
-		s = estrdup(feh_printf(opt.thumb_title, file, winwid));
-	}
-
-	return(s);
 }
