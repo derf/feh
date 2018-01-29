@@ -450,6 +450,11 @@ of zero causes
 .Nm
 to try indefinitely. By default, magick support is disabled.
 .
+Note that feh may clutter
+.Pa /tmp
+with temporary files created by ImageMagick for each failed conversion attempt.
+This is a known bug.
+.
 .It Cm --max-dimension Ar width No x Ar height
 .
 Only show images with width <=
@@ -1787,6 +1792,14 @@ as it could be.
 does not take window decorations into account and may therefore make the
 window slightly too large.
 .
+.Pp
+.
+When enabled,
+.Cm --magick-timeout
+may clutter
+.Pa /tmp
+with temporary files produced by ImageMagick. This happens whenever an image
+is not loaded due to the conversion taking longer than the specified timeout.
 .
 .Ss REPORTING BUGS
 .
