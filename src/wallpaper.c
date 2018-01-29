@@ -24,12 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <limits.h>
+#include <sys/stat.h>
+
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
 #include "wallpaper.h"
-#include <limits.h>
-#include <sys/stat.h>
+
 Window ipc_win = None;
 Window my_ipc_win = None;
 Atom ipc_atom = None;

@@ -24,10 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <strings.h>
+
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
-#include <strings.h>
 
 static void check_options(void);
 static void feh_getopt_theme(int argc, char **argv);

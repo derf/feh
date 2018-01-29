@@ -23,12 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "feh_png.h"
-
 #include <png.h>
 
 #include <stdio.h>
 #include <stdarg.h>
+
+#include "feh_png.h"
 
 #define FEH_PNG_COMPRESSION 3
 #define FEH_PNG_NUM_COMMENTS 4
