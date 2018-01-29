@@ -51,9 +51,9 @@ include deps.mk
 fehrc.inc: fehrc.raw
 help.inc: help.raw
 
-
+# CFLAGS might contain include paths needed to resolve includes in headers
 deps.mk: ${TARGETS} ${I_DSTS}
-	${CC} ${CPPFLAGS} -MM ${TARGETS} > $@
+	${CC} ${CFLAGS} -MM ${TARGETS} > $@
 
 clean:
 	rm -f feh *.o *.inc
