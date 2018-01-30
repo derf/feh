@@ -1670,56 +1670,56 @@ Here are some examples of useful option combinations. See also:
 .
 .Bl -tag -width indent
 .
-.It feh /opt/images
+.It feh ~/Pictures
 .
-Show all images in /opt/images
+Show all images in ~/Pictures
 .
-.It feh -r /opt/images
+.It feh -r ~/Pictures
 .
-Recursively show all images found in /opt/images and subdirectories
+Recursively show all images found in ~/Pictures and subdirectories
 .
-.It feh -rSfilename /opt/images
+.It feh -rSfilename ~/Pictures
 .
 Same as above, but sort by filename. By default, feh will show files in the
 order it finds them on the hard disk, which is usually somewhat random.
 .
-.It feh -t -Sfilename -E 128 -y 128 -W 1024 /opt/images
+.It feh -t -Sfilename -E 128 -y 128 -W 1024 ~/Pictures
 .
 Show 128x128 pixel thumbnails, limit window width to 1024 pixels.
 .
-.It feh -t -Sfilename -E 128 -y 128 -W 1024 -P -C /usr/share/fonts/truetype/ttf-dejavu/ -e DejaVuSans/8 /opt/images
+.It feh -t -Sfilename -E 128 -y 128 -W 1024 -P -C /usr/share/fonts/truetype/ttf-dejavu/ -e DejaVuSans/8 ~/Pictures
 .
 Same as above, but enable thumbnail caching in ~/.thumbnails and use a smaller
 font.
 .
-.It feh -irFarial/14 -O index.jpg /opt/images
+.It feh -irFarial/14 -O index.jpg ~/Pictures
 .
-Make an index print of /opt/images and all directories below it, using 14 point
+Make an index print of ~/Pictures and all directories below it, using 14 point
 Arial to write the image info under each thumbnail.  Save the image as
 index.jpg and don't display it, just exit.  Note that this even works without
 a running X server
 .
-.It feh --unloadable -r /opt/images
+.It feh --unloadable -r ~/Pictures
 .
-Print all unloadable images in /opt/images, recursively
+Print all unloadable images in ~/Pictures, recursively
 .
 .It feh -f by_width -S width --reverse --list \&.
 .
 Write a list of all images in the directory to by_width, sorted by width
 .Pq widest images first
 .
-.It feh -w /opt/images/holidays
+.It feh -w ~/Pictures/holidays
 .
-Open each image in /opt/images/holidays in its own window
+Open each image in ~/Pictures/holidays in its own window
 .
-.It feh -FD5 -Sname /opt/images/presentation
+.It feh -FD5 -Sname ~/Pictures/presentation
 .
 Show the images in .../presentation, sorted by name, in fullscreen,
 automatically change to the next image after 5 seconds
 .
-.It feh -rSwidth -A Qo mv %F ~/images/\&%N Qc /opt/images
+.It feh -rSwidth -A Qo mv %F ~/images/\&%N Qc ~/Pictures
 .
-View all images in /opt/images and below, sorted by width, move an image to
+View all images in ~/Pictures and below, sorted by width, move an image to
 ~/image/image_name when enter is pressed
 .
 .It feh --start-at ./foo.jpg \&.
