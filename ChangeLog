@@ -1,3 +1,12 @@
+Wed, 31 Jan 2018 17:38:25 +0100
+
+* Release v2.23.1
+    * The Makefile no longer honors CPPFLAGS and instead consistently uses
+      CFLAGS for user-provided include paths
+    * Fix %u format specifier in multiwindow and list modes (patch by ulteq)
+    * Minor performance improvements (patches by ulteq)
+    * Stability improvements when using --magick-timeout (patch by ulteq)
+
 Thu, 28 Dec 2017 19:26:29 +0100
 
 * Release v2.23
