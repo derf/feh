@@ -434,10 +434,11 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	/* Causes horrible "tearing" (render picture big/small if auto-zoom is on),
 	 * if you switch fast between images (slideshow).
+	 */
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 		winwidget_reset_image(winwid);
-	}*/
+	}
 
 	/* bounds checks for panning */
 	if (winwid->im_x > winwid->w)
