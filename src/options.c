@@ -214,7 +214,7 @@ static void feh_parse_options_from_string(char *opts)
 	char *s;
 	char *t;
 	char last = 0;
-	int inquote = 0;
+	char inquote = 0;
 	int i = 0;
 
 	/* So we don't reinvent the wheel (not again, anyway), we use the
@@ -229,7 +229,7 @@ static void feh_parse_options_from_string(char *opts)
 			eprintf(PACKAGE " does not support more than 64 words per "
 					"theme definition.\n Please shorten your lines.");
 
-		if ((*t == ' ') && !(inquote)) {
+		if ((*t == ' ') && !inquote) {
 			*t = '\0';
 			num++;
 
@@ -240,8 +240,10 @@ static void feh_parse_options_from_string(char *opts)
 
 			list[num - 1] = feh_string_normalize(s);
 			break;
-		} else if (((*t == '\"') || (*t == '\'')) && last != '\\')
-			inquote = !(inquote);
+		} else if ((*t == inquote) && (last != '\\')) {
+			inquote = 0;
+		} else if (((*t == '\"') || (*t == '\'')) && (last != '\\') && !inquote)
+			inquote = *t;
 		last = *t;
 	}
 
