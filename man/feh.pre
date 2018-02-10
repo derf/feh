@@ -1111,16 +1111,27 @@ is the name of the entry and
 .Ar options
 are the options which will be applied when the theme is used.
 .
-Note that the options are not parsed by any shell. Therefore, filename expansion
-.Po
-.Qq *.jpg
-and similar
-.Pc
-is not supported. Quoting with both single and double quotes works, though.
+.Pp
+.
+Note that the option parser does not behave like a normal shell: filename
+expansion and backslash escape sequences are not supported and passed to
+feh's option parser as-is. However, quoting of arguments is respected
+and can be used for arguments with whitespace.
+.
+So, the sequence
+.Qq --info Qq foo bar
+works as intended
+.Pq that is, it display the string Qq foo bar ,
+whereas the option string
+.Qq --info foo\e bar
+will only display
+.Qq foo\e
+and complain about the file bar not existing.
+Please keep this in mind when writing theme files.
 .
 .Pp
 .
-An example entry would be
+An example entry is
 .Qq imagemap -rVq --thumb-width 40 --thumb-height 30 --index-info \&'%n\en\&%wx\&%h\&' .
 .
 .Pp
