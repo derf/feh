@@ -1,4 +1,9 @@
-Wed, 31 Jan 2018 17:38:25 +0100
+Mon, 12 Feb 2018 22:11:55 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.23.2
+    * Fix support for nested quotes in .confeg/feh/themes
+
+Wed, 31 Jan 2018 17:38:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23.1
     * The Makefile no longer honors CPPFLAGS and instead consistently uses
@@ -7,7 +12,7 @@ Wed, 31 Jan 2018 17:38:25 +0100
     * Minor performance improvements (patches by ulteq)
     * Stability improvements when using --magick-timeout (patch by ulteq)
 
-Thu, 28 Dec 2017 19:26:29 +0100
+Thu, 28 Dec 2017 19:26:29 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23
     * Fix broken thumbnail/index windows when using --scale-down
