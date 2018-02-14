@@ -115,7 +115,7 @@ winwidget winwidget_create_from_file(gib_list * list, char type)
 	ret->file = list;
 	ret->type = type;
 
-	if (winwidget_loadimage(ret, file) == 0) {
+	if ((winwidget_loadimage(ret, file) == 0) || feh_should_ignore_image(ret->im)) {
 		winwidget_destroy(ret);
 		return(NULL);
 	}

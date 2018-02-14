@@ -139,6 +139,18 @@ void init_x_and_imlib(void)
 	return;
 }
 
+int feh_should_ignore_image(Imlib_Image * im)
+{
+	if (opt.filter_by_dimensions) {
+		unsigned int w = gib_imlib_image_get_width(im);
+		unsigned int h = gib_imlib_image_get_height(im);
+		if (w < opt.min_width || w > opt.max_width || h < opt.min_height || h > opt.max_height) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int feh_load_image_char(Imlib_Image * im, char *filename)
 {
 	feh_file *file;

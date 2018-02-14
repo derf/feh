@@ -360,16 +360,20 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			tzoom = winwid->zoom;
 		}
 
-		if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
-		    != 0) {
+		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
+			int w = gib_imlib_image_get_width(winwid->im);
+			int h = gib_imlib_image_get_height(winwid->im);
+			if (feh_should_ignore_image(winwid->im)) {
+				last = current_file;
+				continue;
+			}
 			winwid->mode = MODE_NORMAL;
 			winwid->file = current_file;
-			if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))
-			    || (winwid->im_h != gib_imlib_image_get_height(winwid->im)))
+			if ((winwid->im_w != w) || (winwid->im_h != h))
 				winwid->had_resize = 1;
 			winwidget_reset_image(winwid);
-			winwid->im_w = gib_imlib_image_get_width(winwid->im);
-			winwid->im_h = gib_imlib_image_get_height(winwid->im);
+			winwid->im_w = w;
+			winwid->im_h = h;
 			if (opt.keep_zoom_vp) {
 				/* put back in: */
 				winwid->mode = tmode;

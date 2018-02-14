@@ -464,9 +464,17 @@ int feh_cmp_format(void *file1, void *file2)
 
 void feh_prepare_filelist(void)
 {
-	if (opt.list || opt.customlist || (opt.sort > SORT_MTIME)
-			|| opt.preload || opt.min_width || opt.min_height
-			|| (opt.max_width != UINT_MAX) || (opt.max_height != UINT_MAX)) {
+	/*
+	 * list and customlist mode as well as the somewhat more fancy sort modes
+	 * need access to file infos. Preloading them is also useful for
+	 * list/customlist as --min-dimension/--max-dimension may filter images
+	 * which should not be processed.
+	 * Finally, if --min-dimension/--max-dimension (-> opt.filter_by_dimensions)
+	 * is set and we're in thumbnail mode, we need to filter images first so
+	 * we can create a properly sized thumbnail list.
+	 */
+	if (opt.list || opt.preload || opt.customlist || (opt.sort > SORT_MTIME)
+			|| (opt.filter_by_dimensions && (opt.index || opt.collage || opt.thumbs || opt.bgmode))) {
 		/* For these sort options, we have to preload images */
 		filelist = feh_file_info_preload(filelist);
 		if (!gib_list_length(filelist))
