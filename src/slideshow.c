@@ -361,17 +361,15 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		}
 
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
-			unsigned int w = gib_imlib_image_get_width(winwid->im);
-			unsigned int h = gib_imlib_image_get_height(winwid->im);
-			if (opt.min_width || opt.min_height || (opt.max_width != UINT_MAX) || (opt.max_height != UINT_MAX)) {
-				if (w < opt.min_width || w > opt.max_width || h < opt.min_height || h > opt.max_height) {
-					last = current_file;
-					continue;
-				}
+			int w = gib_imlib_image_get_width(winwid->im);
+			int h = gib_imlib_image_get_height(winwid->im);
+			if (feh_should_ignore_image(winwid->im)) {
+				last = current_file;
+				continue;
 			}
 			winwid->mode = MODE_NORMAL;
 			winwid->file = current_file;
-			if ((winwid->im_w != (int)w) || (winwid->im_h != (int)h))
+			if ((winwid->im_w != w) || (winwid->im_h != h))
 				winwid->had_resize = 1;
 			winwidget_reset_image(winwid);
 			winwid->im_w = w;
