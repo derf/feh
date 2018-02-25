@@ -484,7 +484,8 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				}
 				break;
 			case 'm':
-				strncat(ret, mode, sizeof(ret) - strlen(ret) - 1);
+				if (mode)
+					strncat(ret, mode, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'n':
 				if (file)
