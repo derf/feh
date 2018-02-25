@@ -49,7 +49,7 @@ void init_slideshow_mode(void)
 				opt.start_list_at);
 
 	if (!opt.title)
-		opt.title = PACKAGE " [%u of %l] - %f",
+		opt.title = PACKAGE " [%u of %l] - %f";
 
 	mode = "slideshow";
 	for (; l; l = l->next) {
