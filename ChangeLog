@@ -1,3 +1,12 @@
+Mon, 26 Feb 2018 21:41:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.24
+    * Improve performance when using --{max,min}-dimension in slideshow mode
+      (patch by ulteq)
+    * Fix crash when using %m format specifier in slideshow mode
+      (introduced in feh 2.23.1)
+
+
 Mon, 12 Feb 2018 22:11:55 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23.2
@@ -192,7 +201,7 @@ Thu, 28 Apr 2016 11:41:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       size which will not be updated when changing images (as was the case in
       feh < 2.15). This may or may not be fixed in the future.
 
-Sat, 16 Apr 2016 18:32:38 +0200  Daniel Frisel <derf+feh@finalrewind.org>
+Sat, 16 Apr 2016 18:32:38 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.2
     * Fix --keep-zoom-vp not keeping the viewport x/y offsets (broken by 2.15)
@@ -764,7 +773,7 @@ Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
       malicious URLs containing shell metacharacters (but only if those URLs
       led to a valid file)
     * Don't add ?randomnumber to URLs when downloading them, it confuses some
-      servers and is not really neccessary in general
+      servers and is not really necessary in general
 
 Thu Jun 10 12:12:04 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 
