@@ -382,17 +382,18 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			if (winwid->gc == None) {
 				XGCValues gcval;
 
-				if (opt.image_bg == IMAGE_BG_WHITE) {
-					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+				if (!opt.image_bg || !strcmp(opt.image_bg, "default")) {
+					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
-				}
-				else if (opt.image_bg == IMAGE_BG_CHECKS) {
+				} else if (!strcmp(opt.image_bg, "checks")) {
 					gcval.tile = feh_create_checks();
 					gcval.fill_style = FillTiled;
 					winwid->gc = XCreateGC(disp, winwid->win, GCTile | GCFillStyle, &gcval);
-				}
-				else {
-					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+				} else {
+					XColor color;
+					Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
+					XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+					gcval.foreground = color.pixel;
 					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
 				}
 			}
@@ -687,14 +688,15 @@ Pixmap feh_create_checks(void)
 		if (!checks)
 			eprintf("Unable to create a teeny weeny imlib image. I detect problems");
 
-		if (opt.image_bg == IMAGE_BG_WHITE)
-			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 255, 255, 255, 255);
-		else if (opt.image_bg == IMAGE_BG_BLACK)
-			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
-		else {
+		if (!opt.image_bg || !strcmp(opt.image_bg, "default") || !strcmp(opt.image_bg, "checks")) {
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 144, 144, 144, 255);
 			gib_imlib_image_fill_rectangle(checks, 0, 0,  8,  8, 100, 100, 100, 255);
 			gib_imlib_image_fill_rectangle(checks, 8, 8,  8,  8, 100, 100, 100, 255);
+		} else {
+			XColor color;
+			Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
+			XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, color.red, color.green, color.blue, 255);
 		}
 
 		checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);

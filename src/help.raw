@@ -84,7 +84,7 @@ OPTIONS
                            can be used multiple times to add multiple paths.
  -M, --menu-font FONT      Use FONT for the font in menus.
  -B, --image-bg STYLE      Set background for transparent images and the like.
-                           Accepted values: white, black, default
+                           Accepted values: default, checks, or a XColor (eg. #428bdd)
  -N, --no-menus            Don't load or show any menus.
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
