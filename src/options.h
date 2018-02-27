@@ -71,7 +71,6 @@ struct __fehoptions {
 	unsigned char cycle_once;
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
-	unsigned char image_bg;
 	unsigned char no_fehbg;
 	unsigned char keep_zoom_vp;
 	unsigned char insecure_ssl;
@@ -80,6 +79,7 @@ struct __fehoptions {
 	char *output_file;
 	char *output_dir;
 	char *bg_file;
+	char *image_bg;
 	char *font;
 	char *title_font;
 	char *title;
