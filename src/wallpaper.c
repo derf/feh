@@ -91,7 +91,7 @@ static void feh_wm_set_bg_scaled(Pixmap pmap, Imlib_Image im, int use_filelist,
 		feh_wm_load_next(&im);
 
 	gib_imlib_render_image_on_drawable_at_size(pmap, im, x, y, w, h,
-			1, 0, !opt.force_aliasing);
+			1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -132,7 +132,7 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 		y + ((offset_y > 0) ? offset_y : 0),
 		w,
 		h,
-		1, 0, 0);
+		1, 1, 0);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -212,7 +212,7 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 	gib_imlib_render_image_on_drawable_at_size(pmap, im,
 		render_x, render_y,
 		render_w, render_h,
-		1, 0, !opt.force_aliasing);
+		1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -420,7 +420,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
-			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
+			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 1, 0);
 		}
 
 		if (!opt.no_fehbg) {
