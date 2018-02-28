@@ -958,7 +958,8 @@ as a background setter for a specific screen.
 .It Cm --bg-center
 .
 Center the file on the background.  If it is too small, it will be surrounded
-by a black border
+by a border as specified by
+.Cm --image-bg .
 .
 .It Cm --bg-fill
 .
@@ -971,7 +972,9 @@ horizontal or a vertical part of the image will be cut off
 .
 Like
 .Cm --bg-fill ,
-but scale the image to the maximum size that fits the screen with black borders on one side.
+but scale the image to the maximum size that fits the screen with borders on one side.
+The border color can be set using
+.Cm --image-bg .
 .
 .It Cm --bg-scale
 .
