@@ -107,6 +107,10 @@ void cb_reload_timer(void *data)
 			add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
 	else if (!opt.filelistfile && !opt.bgmode)
 		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+
+	if (opt.filelistfile) {
+		filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
+	}
 	
 	if (!(filelist_len = gib_list_length(filelist))) {
 		eprintf("No files found to reload.");
