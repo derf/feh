@@ -24,7 +24,8 @@ $VERSION$
 .
 .Pp
 .
-Compile-time switches: libcurl support $MAN_CURL$, Xinerama support
+Compile-time switches: libcurl support $MAN_CURL$, natural sorting support
+$MAN_VERSCMP$, Xinerama support
 $MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
 .
 .
@@ -194,7 +195,7 @@ Extra actions which can be set and triggered using the appropriate number key.
 .
 .It Cm --auto-rotate
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Automatically rotate images based on EXIF data. Does not alter the image files.
 .
 .It Cm -Z , --auto-zoom
@@ -253,7 +254,7 @@ Draw the defined actions and what they do at the top-left of the image.
 .
 .It Cm --draw-exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 display some EXIF information in the bottom left corner, similar to using
 .Cm --info
 with exiv2 / exifgrep .
@@ -514,8 +515,8 @@ managers.
 .
 .It Cm --no-xinerama
 .
-Disable Xinerama support.  Only makes sense when you have Xinerama support
-compiled in.
+.Pq optional feature, $MAN_XINERAMA$ in this build
+Disable Xinerama support.
 .
 .It Cm -j , --output-dir Ar directory
 .
@@ -696,8 +697,18 @@ output useful information, progress bars, etc.
 .
 output version information and exit.
 .
+.It Cm --version-sort
+.
+.Pq optional feature, $MAN_VERSCMP$ in this build
+Use natural sorting for file and directory names. In this mode, filenames are
+sorted as an ordinary human would expect, e.g.
+.Qq 2.jpg
+comes before
+.Qq 10.jpg .
+.
 .It Cm --xinerama-index Ar screen
 .
+.Pq optional feature, $MAN_XINERAMA$ in this build
 Override
 .Nm Ns No 's
 idea of the active Xinerama screen. May be useful in certain circumstances
@@ -1282,7 +1293,7 @@ Toggle filename display
 .
 .It e Bq toggle_exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Toggle EXIF tag display
 .
 .It f Bq save_filelist
@@ -1695,10 +1706,14 @@ Show all images in ~/Pictures
 .
 Recursively show all images found in ~/Pictures and subdirectories
 .
-.It feh -rSfilename ~/Pictures
+.It feh -rSfilename --version-sort ~/Pictures
 .
-Same as above, but sort by filename. By default, feh will show files in the
-order it finds them on the hard disk, which is usually somewhat random.
+Same as above, but sort naturally. By default, feh will show files in the
+string order of their names, meaning e.g.
+.Qq foo 10.jpg
+will come before
+.Qq foo 2.jpg .
+In this case, they are instead ordered as a human would expect.
 .
 .It feh -t -Sfilename -E 128 -y 128 -W 1024 ~/Pictures
 .

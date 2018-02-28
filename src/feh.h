@@ -27,6 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FEH_H
 #define FEH_H
 
+/*
+ * strverscmp(3) is a GNU extension. In most supporting C libraries it
+ * requires _GNU_SOURCE to be defined.
+ */
+#ifdef HAVE_VERSCMP
+#define _GNU_SOURCE
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>

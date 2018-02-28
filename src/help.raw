@@ -52,6 +52,7 @@ OPTIONS
                            name, filename, mtime, width, height, pixels, size,
                            or format
  -n, --reverse             Reverse sort order
+     --version-sort        Natural sort of (version) numbers within text
  -A, --action [;]ACTION    Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
                            reloads image with \";\", switches to next otherwise
