@@ -832,30 +832,16 @@ Set thumbnail height.
 .
 Set thumbnail width.
 .
-.It Cm -J , --thumb-redraw Ar n
-.
-Only relevant for
-.Cm --thumbnails :
-Redraw thumbnail window every
-.Ar n
-images.  In
-.Nm
-<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
-.Pq so, it updated immediately .
-However, since the redrawing takes quite long
-.Pq especially for thumbnail mode on a large filelist ,
-this turned out to be a major performance penalty.
-As a workaround, the thumbnail image is redrawn every 10th image now by
-default. Set
-.Ar n No = 1
-to get the old behaviour,
-.Ar n No = 0
-will only redraw once all thumbnails are loaded.
-.
 .El
 .
 .
 .Sh INDEX AND THUMBNAIL MODE OPTIONS
+.
+In addition to
+.Sx MONTAGE MODE OPTIONS
+.Cm --alpha , --bg , --limit-height , --limit-width , --output , --output-only ,
+.Cm --thumb-height , --thumb-width ,
+the following options can be used.
 .
 .Bl -tag -width indent
 .
@@ -887,6 +873,25 @@ to get a progress bar.
 .
 Set font to print a title on the index, if no font is specified, no title will
 be printed.
+.
+.It Cm -J , --thumb-redraw Ar n
+.
+Redraw thumbnail window every
+.Ar n
+images.  In
+.Nm
+<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
+.Pq so, it updated immediately .
+However, since the redrawing takes quite long
+.Pq especially for thumbnail mode on a large filelist ,
+this turned out to be a major performance penalty.
+As a workaround, the thumbnail image is redrawn every 10th image now by
+default. Set
+.Ar n No = 1
+to get the old behaviour,
+.Ar n No = 0
+will only redraw once all thumbnails are loaded.
+.
 .El
 .
 .
