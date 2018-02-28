@@ -697,6 +697,15 @@ output useful information, progress bars, etc.
 .
 output version information and exit.
 .
+.It Cm --version-sort
+.
+.Pq optional feature, $MAN_VERSCMP$ in this build
+Use natural sorting for file and directory names. In this mode, filenames are
+sorted as an ordinary human would expect, e.g.
+.Qq 2.jpg
+comes before
+.Qq 10.jpg .
+.
 .It Cm --xinerama-index Ar screen
 .
 .Pq optional feature, $MAN_XINERAMA$ in this build
@@ -1697,10 +1706,14 @@ Show all images in ~/Pictures
 .
 Recursively show all images found in ~/Pictures and subdirectories
 .
-.It feh -rSfilename ~/Pictures
+.It feh -rSfilename --version-sort ~/Pictures
 .
-Same as above, but sort by filename. By default, feh will show files in the
-order it finds them on the hard disk, which is usually somewhat random.
+Same as above, but sort naturally. By default, feh will show files in the
+string order of their names, meaning e.g.
+.Qq foo 10.jpg
+will come before
+.Qq foo 2.jpg .
+In this case, they are instead ordered as a human would expect.
 .
 .It feh -t -Sfilename -E 128 -y 128 -W 1024 ~/Pictures
 .
