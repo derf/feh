@@ -399,12 +399,18 @@ void feh_file_dirname(char *dst, feh_file * f, int maxlen)
 
 int feh_cmp_filename(void *file1, void *file2)
 {
-	return(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+	if (!opt.version_sort)
+		return(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+	else
+		return(strverscmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int feh_cmp_name(void *file1, void *file2)
 {
-	return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+	if (!opt.version_sort)
+		return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+	else
+		return(strverscmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int feh_cmp_dirname(void *file1, void *file2)
@@ -413,8 +419,13 @@ int feh_cmp_dirname(void *file1, void *file2)
 	int cmp;
 	feh_file_dirname(dir1, FEH_FILE(file1), PATH_MAX);
 	feh_file_dirname(dir2, FEH_FILE(file2), PATH_MAX);
-	if ((cmp = strcmp(dir1, dir2)) != 0)
-		return(cmp);
+	if (!opt.version_sort) {
+		if ((cmp = strcmp(dir1, dir2)) != 0)
+			return(cmp);
+	} else {
+		if ((cmp = strverscmp(dir1, dir2)) != 0)
+			return(cmp);
+	}
 	return(feh_cmp_name(file1, file2));
 }
 
