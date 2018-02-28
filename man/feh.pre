@@ -194,7 +194,7 @@ Extra actions which can be set and triggered using the appropriate number key.
 .
 .It Cm --auto-rotate
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Automatically rotate images based on EXIF data. Does not alter the image files.
 .
 .It Cm -Z , --auto-zoom
@@ -253,7 +253,7 @@ Draw the defined actions and what they do at the top-left of the image.
 .
 .It Cm --draw-exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 display some EXIF information in the bottom left corner, similar to using
 .Cm --info
 with exiv2 / exifgrep .
@@ -514,8 +514,8 @@ managers.
 .
 .It Cm --no-xinerama
 .
-Disable Xinerama support.  Only makes sense when you have Xinerama support
-compiled in.
+.Pq optional feature, $MAN_XINERAMA$ in this build
+Disable Xinerama support.
 .
 .It Cm -j , --output-dir Ar directory
 .
@@ -698,6 +698,7 @@ output version information and exit.
 .
 .It Cm --xinerama-index Ar screen
 .
+.Pq optional feature, $MAN_XINERAMA$ in this build
 Override
 .Nm Ns No 's
 idea of the active Xinerama screen. May be useful in certain circumstances
@@ -1282,7 +1283,7 @@ Toggle filename display
 .
 .It e Bq toggle_exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Toggle EXIF tag display
 .
 .It f Bq save_filelist
