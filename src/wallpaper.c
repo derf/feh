@@ -160,11 +160,36 @@ static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int use_filelist,
 	render_x = (  cut_x ? ((img_w - render_w) >> 1) : 0);
 	render_y = ( !cut_x ? ((img_h - render_h) >> 1) : 0);
 
+	if ((opt.geom_flags & XValue) && cut_x) {
+		if (opt.geom_flags & XNegative) {
+			render_x = img_w - render_w + opt.geom_x;
+		} else {
+			render_x = opt.geom_x;
+		}
+		if (render_x < 0) {
+			render_x = 0;
+		} else if (render_x + render_w > img_w) {
+			render_x = img_w - render_w;
+		}
+	}
+	else if ((opt.geom_flags & YValue) && !cut_x) {
+		if (opt.geom_flags & YNegative) {
+			render_y = img_h - render_h + opt.geom_y;
+		} else {
+			render_y = opt.geom_y;
+		}
+		if (render_y < 0) {
+			render_y = 0;
+		} else if (render_y + render_h > img_h) {
+			render_y = img_h - render_h;
+		}
+	}
+
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		render_x, render_y,
 		render_w, render_h,
 		x, y, w, h,
-		1, 0, !opt.force_aliasing);
+		1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);

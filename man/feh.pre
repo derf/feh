@@ -919,13 +919,13 @@ instead.
 .
 .Pp
 .
-For the
-.Cm --bg-center
+For
+.Cm --bg-center , --bg-fill ,
 and
-.Cm --bg-max
-options, you can use the
+.Cm --bg-max ,
+you can use
 .Cm --geometry
-option to specify an offset from one side of the screen instead of
+to specify an offset from one side of the screen instead of
 centering the image.  Positive values will offset from the left/top
 side, negative values from the bottom/right.  +0 and -0 are both
 valid and distinct values.
