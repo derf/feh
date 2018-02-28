@@ -189,6 +189,7 @@ enum key_action {
 	EVENT_render,
 	EVENT_toggle_actions,
 	EVENT_toggle_aliasing,
+	EVENT_toggle_auto_zoom,
 #ifdef HAVE_LIBEXIF
 	EVENT_toggle_exif,
 #endif

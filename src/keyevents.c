@@ -185,6 +185,7 @@ void init_keyevents(void) {
 	feh_set_kb("render"    , 0, XK_KP_Begin  , 0, XK_R         , 0, 0);
 	feh_set_kb("toggle_actions" , 0, XK_a, 0, 0, 0, 0);
 	feh_set_kb("toggle_aliasing" , 0, XK_A, 0, 0, 0, 0);
+	feh_set_kb("toggle_auto_zoom" , 0, XK_Z, 0, 0, 0, 0);
 #ifdef HAVE_LIBEXIF
 	feh_set_kb("toggle_exif" , 0, XK_e, 0, 0, 0, 0);
 #endif
@@ -636,6 +637,10 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		opt.force_aliasing = !opt.force_aliasing;
 		winwid->force_aliasing = !winwid->force_aliasing;
 		winwidget_render_image(winwid, 0, 0);
+	}
+	else if (feh_is_kp(EVENT_toggle_auto_zoom, state, keysym, button)) {
+		opt.zoom_mode = (opt.zoom_mode == 0 ? ZOOM_MODE_MAX : 0);
+		winwidget_rerender_all(1);
 	}
 	else if (feh_is_kp(EVENT_toggle_filenames, state, keysym, button)) {
 		opt.draw_filename = !opt.draw_filename;

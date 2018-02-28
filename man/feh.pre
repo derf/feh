@@ -1376,6 +1376,10 @@ Close current window
 .
 Jump to a random position in the current filelist
 .
+.It Z Bq toggle_auto_zoom
+.
+Toggle auto-zoom.
+.
 .It \&[, \&] Bq prev_dir, next_dir
 .
 Jump to the first image of the previous or next sequence of images sharing
