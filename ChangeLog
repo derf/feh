@@ -1,3 +1,13 @@
+git HEAD
+    * Add --version-sort option to enable natural sorting of file and directory
+      names. This requires a libc with strverscmp support, which is a
+      non-POSIX GNU extension. Use the new build flag `verscmp=0` to disable
+      this feature on systems which do not ship strverscmp
+      (patch by ulteq)
+    * Allow arbitrary X11 colors as -B/--image-bg argument (patch by ulteq)
+    * Respect --geometry settings in --bg-fill mode
+    * Add keybinding toggle_auto_zoom (default "Z") to toggle --auto-zoom
+
 Mon, 26 Feb 2018 21:41:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.24
