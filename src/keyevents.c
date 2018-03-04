@@ -774,6 +774,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			opt.geom_w = winwid->w;
 			opt.geom_h = winwid->h;
 		}
+		winwidget_render_image(winwid, 1, 0);
 	}
 	return;
 }
