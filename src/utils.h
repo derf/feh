@@ -46,6 +46,7 @@ char *estrjoin(const char *separator, ...);
 char path_is_url(char *path);
 char *feh_unique_filename(char *path, char *basename);
 char *ereadfile(char *path);
+char *shell_escape(char *input);
 
 #define ESTRAPPEND(a,b) \
   {\

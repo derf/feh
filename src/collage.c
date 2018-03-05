@@ -41,7 +41,6 @@ void init_collage_mode(void)
 	feh_file *file = NULL;
 	unsigned char trans_bg = 0;
 	gib_list *l, *last = NULL;
-	char *s;
 
 	mode = "collage";
 
@@ -105,15 +104,9 @@ void init_collage_mode(void)
 		gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
 	}
 
-	/* Create the title string */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [collage mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+		winwid = winwidget_create_from_image(im_main, WIN_TYPE_SINGLE);
+		winwidget_rename(winwid, PACKAGE " [collage mode]");
 		winwidget_show(winwid);
 	}
 
@@ -191,8 +184,10 @@ void init_collage_mode(void)
 		char output_buf[1024];
 		if (opt.output_dir)
 			snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
-		else
-			strncpy(output_buf, opt.output_file, 1024);
+		else {
+			strncpy(output_buf, opt.output_file, 1023);
+			output_buf[1023] = '\0';
+		}
 		gib_imlib_save_image(im_main, output_buf);
 		if (opt.verbose) {
 			int tw, th;
@@ -208,7 +203,6 @@ void init_collage_mode(void)
 
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
-	free(s);
 
 	return;
 }

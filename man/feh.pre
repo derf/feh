@@ -24,7 +24,8 @@ $VERSION$
 .
 .Pp
 .
-Compile-time switches: libcurl support $MAN_CURL$, Xinerama support
+Compile-time switches: libcurl support $MAN_CURL$, natural sorting support
+$MAN_VERSCMP$, Xinerama support
 $MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
 .
 .
@@ -45,7 +46,8 @@ displays all files in the current directory.
 .
 .Nm
 supports filelists, various image sorting modes, image captions, HTTP and more.
-Configurable keyboard and mouse shortcuts are used to control it.
+It can be controlled by configurable keyboard and mouse shortcuts, terminal
+input and signals.
 .
 .Pp
 .
@@ -193,7 +195,7 @@ Extra actions which can be set and triggered using the appropriate number key.
 .
 .It Cm --auto-rotate
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Automatically rotate images based on EXIF data. Does not alter the image files.
 .
 .It Cm -Z , --auto-zoom
@@ -203,6 +205,16 @@ Zoom pictures to screen size in fullscreen / fixed geometry mode.
 .It Cm -x , --borderless
 .
 Create borderless windows.
+.
+.It Cm --cache-size Ar size
+.
+Set Imlib2 in-memory cache to
+.Ar size
+MiB. A higher cache size can
+significantly improve performance especially for small slide shows, however at
+the cost of increased memory consumption.
+.Ar size
+must be between 0 and 2048 MiB and defaults to 4.
 .
 .It Cm -P , --cache-thumbnails
 .
@@ -242,7 +254,7 @@ Draw the defined actions and what they do at the top-left of the image.
 .
 .It Cm --draw-exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 display some EXIF information in the bottom left corner, similar to using
 .Cm --info
 with exiv2 / exifgrep .
@@ -341,6 +353,13 @@ screen size. The only exception is a
 of 100, in which case images will always be shown at 100% zoom, no matter
 their dimensions.
 .
+.Pp
+.
+When combined with
+.Cm --thumbnails ,
+this option only affects images opened from the thumbnail overview. The
+thumbnail list itself will still be windowed.
+.
 .It Cm -g , --geometry Oo Ar width No x Ar height Oc Op + Ar x No + Ar y
 .
 Limit (and don't change) the window size.  Takes an X-style geometry
@@ -360,10 +379,16 @@ Hide the pointer
 .
 .It Cm -B , --image-bg Ar style
 .
-Use style as background for transparent image parts and the like.
-Accepted values: checks, white, black.
+Use
+.Ar style
+as background for transparent image parts and the like.
+Accepted values: default, checks, or an XColor
+.Pq eg. Qo black Qc or Qo #428bdd Qc .
 .
-The default for windowed mode is checks, while fullscreen defaults to black.
+In windowed mode, the default is checks
+.Pq a checkered background so transparent image parts are easy to see .
+In fullscreen and background setting mode, checks is not accepted and the
+default is black.
 .
 .It Cm -i , --index
 .
@@ -394,12 +419,10 @@ toggle_info key.
 When viewing files using HTTP,
 .Nm
 normally deletes the local copies after viewing, or, if caching, on exit.
-This option prevents this so that you get to keep the local copies.
-They will be in
-.Pa /tmp
-with
-.Qq Nm
-in the name.
+This option permanently stores them on disk, either in the directory
+specified by
+.Cm --output-dir ,
+or in the current working directory.
 .
 .It Cm --insecure
 .
@@ -433,6 +456,11 @@ seconds. A negative value disables covert / magick support altogether, a value
 of zero causes
 .Nm
 to try indefinitely. By default, magick support is disabled.
+.
+Note that feh may clutter
+.Pa /tmp
+with temporary files created by ImageMagick for each failed conversion attempt.
+This is a known bug.
 .
 .It Cm --max-dimension Ar width No x Ar height
 .
@@ -487,14 +515,15 @@ managers.
 .
 .It Cm --no-xinerama
 .
-Disable Xinerama support.  Only makes sense when you have Xinerama support
-compiled in.
+.Pq optional feature, $MAN_XINERAMA$ in this build
+Disable Xinerama support.
 .
 .It Cm -j , --output-dir Ar directory
 .
 Save files to
 .Ar directory
-.Pq only useful with -k
+.Pq only useful with -k .
+By default, files are saved in the current working directory.
 .
 .It Cm -p , --preload
 .
@@ -554,7 +583,7 @@ Scale images to fit window geometry (defaults to screen size when no geometry
 was specified). Note that the window geometry is not updated when changing
 images at the moment. This option is recommended for tiling window managers.
 .
-This option is ignored when in fullscreen mode.
+This option is ignored when in fullscreen and thumbnail list mode.
 .
 .Pp
 .
@@ -668,8 +697,18 @@ output useful information, progress bars, etc.
 .
 output version information and exit.
 .
+.It Cm --version-sort
+.
+.Pq optional feature, $MAN_VERSCMP$ in this build
+Use natural sorting for file and directory names. In this mode, filenames are
+sorted as an ordinary human would expect, e.g.
+.Qq 2.jpg
+comes before
+.Qq 10.jpg .
+.
 .It Cm --xinerama-index Ar screen
 .
+.Pq optional feature, $MAN_XINERAMA$ in this build
 Override
 .Nm Ns No 's
 idea of the active Xinerama screen. May be useful in certain circumstances
@@ -793,30 +832,16 @@ Set thumbnail height.
 .
 Set thumbnail width.
 .
-.It Cm -J , --thumb-redraw Ar n
-.
-Only relevant for
-.Cm --thumbnails :
-Redraw thumbnail window every
-.Ar n
-images.  In
-.Nm
-<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
-.Pq so, it updated immediately .
-However, since the redrawing takes quite long
-.Pq especially for thumbnail mode on a large filelist ,
-this turned out to be a major performance penalty.
-As a workaround, the thumbnail image is redrawn every 10th image now by
-default. Set
-.Ar n No = 1
-to get the old behaviour,
-.Ar n No = 0
-will only redraw once all thumbnails are loaded.
-.
 .El
 .
 .
 .Sh INDEX AND THUMBNAIL MODE OPTIONS
+.
+In addition to
+.Sx MONTAGE MODE OPTIONS
+.Cm --alpha , --bg , --limit-height , --limit-width , --output , --output-only ,
+.Cm --thumb-height , --thumb-width ,
+the following options can be used.
 .
 .Bl -tag -width indent
 .
@@ -848,6 +873,25 @@ to get a progress bar.
 .
 Set font to print a title on the index, if no font is specified, no title will
 be printed.
+.
+.It Cm -J , --thumb-redraw Ar n
+.
+Redraw thumbnail window every
+.Ar n
+images.  In
+.Nm
+<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
+.Pq so, it updated immediately .
+However, since the redrawing takes quite long
+.Pq especially for thumbnail mode on a large filelist ,
+this turned out to be a major performance penalty.
+As a workaround, the thumbnail image is redrawn every 10th image now by
+default. Set
+.Ar n No = 1
+to get the old behaviour,
+.Ar n No = 0
+will only redraw once all thumbnails are loaded.
+.
 .El
 .
 .
@@ -880,13 +924,13 @@ instead.
 .
 .Pp
 .
-For the
-.Cm --bg-center
+For
+.Cm --bg-center , --bg-fill ,
 and
-.Cm --bg-max
-options, you can use the
+.Cm --bg-max ,
+you can use
 .Cm --geometry
-option to specify an offset from one side of the screen instead of
+to specify an offset from one side of the screen instead of
 centering the image.  Positive values will offset from the left/top
 side, negative values from the bottom/right.  +0 and -0 are both
 valid and distinct values.
@@ -919,7 +963,8 @@ as a background setter for a specific screen.
 .It Cm --bg-center
 .
 Center the file on the background.  If it is too small, it will be surrounded
-by a black border
+by a border as specified by
+.Cm --image-bg .
 .
 .It Cm --bg-fill
 .
@@ -932,7 +977,9 @@ horizontal or a vertical part of the image will be cut off
 .
 Like
 .Cm --bg-fill ,
-but scale the image to the maximum size that fits the screen with black borders on one side.
+but scale the image to the maximum size that fits the screen with borders on one side.
+The border color can be set using
+.Cm --image-bg .
 .
 .It Cm --bg-scale
 .
@@ -1089,16 +1136,27 @@ is the name of the entry and
 .Ar options
 are the options which will be applied when the theme is used.
 .
-Note that the options are not parsed by any shell. Therefore, filename expansion
-.Po
-.Qq *.jpg
-and similar
-.Pc
-is not supported. Quoting with both single and double quotes works, though.
+.Pp
+.
+Note that the option parser does not behave like a normal shell: filename
+expansion and backslash escape sequences are not supported and passed to
+feh's option parser as-is. However, quoting of arguments is respected
+and can be used for arguments with whitespace.
+.
+So, the sequence
+.Qq --info Qq foo bar
+works as intended
+.Pq that is, it display the string Qq foo bar ,
+whereas the option string
+.Qq --info foo\e bar
+will only display
+.Qq foo\e
+and complain about the file bar not existing.
+Please keep this in mind when writing theme files.
 .
 .Pp
 .
-An example entry would be
+An example entry is
 .Qq imagemap -rVq --thumb-width 40 --thumb-height 30 --index-info \&'%n\en\&%wx\&%h\&' .
 .
 .Pp
@@ -1192,12 +1250,28 @@ For a list of the
 .Ar action
 names, see
 .Sx KEYS .
+Note that not all of the key names used there correspond to X11 keysyms.
+Most notably, page up
+.Pq Prior / Page_Up ,
+page down
+.Pq Next / Page_Down
+and the keypad keys
+.Pq KP_*
+do not.
 .
 .
 .Sh KEYS
 .
-In an image window, the following keys may be used
-.Pq The strings in Bo square brackets Bc are the config action names :
+The following actions and default key bindings can be used in an image window.
+.Pq The strings in Bo square brackets Bc are the config action names .
+.
+If
+.Nm
+is running inside a terminal and its standard input is not used for images or
+filelists, key input from the terminal is also accepted. However, terminal
+input support is currently limited to most alphanumeric characters
+.Pq 0-9 a-z A-Z and some more ,
+return and backspace.
 .
 .Bl -tag -width indent
 .
@@ -1218,7 +1292,7 @@ has been specified, then this enables caption editing.  The caption at the
 bottom of the screen will turn yellow and can be edited.  Hit return to confirm
 and save the caption, or escape to cancel editing.  Note that you can insert
 an actual newline into the caption using
-.Aq CTRL+return .
+.Aq Ctrl+return .
 .
 .It d Bq toggle_filenames
 .
@@ -1227,13 +1301,17 @@ Toggle filename display
 .
 .It e Bq toggle_exif
 .
-.Pq only if compiled with exif=1
+.Pq optional feature, $MAN_EXIF$ in this build
 Toggle EXIF tag display
 .
 .It f Bq save_filelist
 .
 Save the current filelist as
 .Qq feh_PID_ID_filelist
+.
+.It g Bq toggle_fixed_geometry
+.
+Enable/Disable automatic window resize when changing images.
 .
 .It h Bq toggle_pause
 .
@@ -1258,7 +1336,7 @@ Show menu.  Use the arrow keys and return to select items,
 .Aq escape
 to close the menu.
 .
-.It n , Ao Space Ac , Ao Right Ac Bq next_img
+.It n , Ao space Ac , Ao Right Ac Bq next_img
 .
 Show next image. Selects the next image in thumbnail mode.
 .
@@ -1266,7 +1344,7 @@ Show next image. Selects the next image in thumbnail mode.
 .
 Toggle pointer visibility
 .
-.It p , Ao Backspace Ac , Ao Left Ac Bq prev_img
+.It p , Ao BackSpace Ac , Ao Left Ac Bq prev_img
 .
 Show previous image. Selects the previous image in thumbnail mode.
 .
@@ -1302,6 +1380,10 @@ Close current window
 .It z Bq jump_random
 .
 Jump to a random position in the current filelist
+.
+.It Z Bq toggle_auto_zoom
+.
+Toggle auto-zoom.
 .
 .It \&[, \&] Bq prev_dir, next_dir
 .
@@ -1345,11 +1427,11 @@ Execute the corresponding action
 Run the command defined by
 .Cm --action
 .
-.It Ao home Ac Bq jump_first
+.It Ao Home Ac Bq jump_first
 .
 Show first image
 .
-.It Ao end Ac Bq jump_last
+.It Ao End Ac Bq jump_last
 .
 Show last image
 .
@@ -1369,19 +1451,19 @@ Increase reload delay by 1 second
 .
 Decrease reload delay by 1 second
 .
-.It Ao delete Ac Bq remove
+.It Ao Delete Ac Bq remove
 .
 Remove current file from filelist
 .
-.It Ao CTRL+delete Ac Bq delete
+.It Ao Ctrl+Delete Ac Bq delete
 .
 Remove current file from filelist and delete it
 .
-.It Ao keypad left Ac , Ao Ctrl+Left Ac Bq scroll_left
+.It Ao keypad Left Ac , Ao Ctrl+Left Ac Bq scroll_left
 .
 Scroll to the left
 .
-.It Ao keypad right Ac , Ao Ctrl+Right Ac Bq scroll_right
+.It Ao keypad Right Ac , Ao Ctrl+Right Ac Bq scroll_right
 .
 Scroll to the right
 .
@@ -1389,7 +1471,7 @@ Scroll to the right
 .
 Scroll up
 .
-.It Ao keypad down Ac , Ao Ctrl+Down Ac Bq scroll_down
+.It Ao keypad Down Ac , Ao Ctrl+Down Ac Bq scroll_down
 .
 Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons,
@@ -1467,7 +1549,7 @@ Highlight parent menu item
 .
 Highlight child menu item
 .
-.It Ao Return Ac , Ao Space Ac Bq menu_select
+.It Ao Return Ac , Ao space Ac Bq menu_select
 .
 Select highlighted menu item
 .
@@ -1580,9 +1662,9 @@ and mouse button 3 opens the menu.
 .
 .Pp
 .
-CTRL+Button 1 blurs or sharpens the image
+Ctrl+Button 1 blurs or sharpens the image
 .Pq drag left to blur, right to sharpen ;
-CTRL+Button 2 rotates the image around the center point.
+Ctrl+Button 2 rotates the image around the center point.
 .
 .Pp
 .
@@ -1628,56 +1710,60 @@ Here are some examples of useful option combinations. See also:
 .
 .Bl -tag -width indent
 .
-.It feh /opt/images
+.It feh ~/Pictures
 .
-Show all images in /opt/images
+Show all images in ~/Pictures
 .
-.It feh -r /opt/images
+.It feh -r ~/Pictures
 .
-Recursively show all images found in /opt/images and subdirectories
+Recursively show all images found in ~/Pictures and subdirectories
 .
-.It feh -rSfilename /opt/images
+.It feh -rSfilename --version-sort ~/Pictures
 .
-Same as above, but sort by filename. By default, feh will show files in the
-order it finds them on the hard disk, which is usually somewhat random.
+Same as above, but sort naturally. By default, feh will show files in the
+string order of their names, meaning e.g.
+.Qq foo 10.jpg
+will come before
+.Qq foo 2.jpg .
+In this case, they are instead ordered as a human would expect.
 .
-.It feh -t -Sfilename -E 128 -y 128 -W 1024 /opt/images
+.It feh -t -Sfilename -E 128 -y 128 -W 1024 ~/Pictures
 .
 Show 128x128 pixel thumbnails, limit window width to 1024 pixels.
 .
-.It feh -t -Sfilename -E 128 -y 128 -W 1024 -P -C /usr/share/fonts/truetype/ttf-dejavu/ -e DejaVuSans/8 /opt/images
+.It feh -t -Sfilename -E 128 -y 128 -W 1024 -P -C /usr/share/fonts/truetype/ttf-dejavu/ -e DejaVuSans/8 ~/Pictures
 .
 Same as above, but enable thumbnail caching in ~/.thumbnails and use a smaller
 font.
 .
-.It feh -irFarial/14 -O index.jpg /opt/images
+.It feh -irFarial/14 -O index.jpg ~/Pictures
 .
-Make an index print of /opt/images and all directories below it, using 14 point
+Make an index print of ~/Pictures and all directories below it, using 14 point
 Arial to write the image info under each thumbnail.  Save the image as
 index.jpg and don't display it, just exit.  Note that this even works without
 a running X server
 .
-.It feh --unloadable -r /opt/images
+.It feh --unloadable -r ~/Pictures
 .
-Print all unloadable images in /opt/images, recursively
+Print all unloadable images in ~/Pictures, recursively
 .
 .It feh -f by_width -S width --reverse --list \&.
 .
 Write a list of all images in the directory to by_width, sorted by width
 .Pq widest images first
 .
-.It feh -w /opt/images/holidays
+.It feh -w ~/Pictures/holidays
 .
-Open each image in /opt/images/holidays in its own window
+Open each image in ~/Pictures/holidays in its own window
 .
-.It feh -FD5 -Sname /opt/images/presentation
+.It feh -FD5 -Sname ~/Pictures/presentation
 .
 Show the images in .../presentation, sorted by name, in fullscreen,
 automatically change to the next image after 5 seconds
 .
-.It feh -rSwidth -A Qo mv %F ~/images/\&%N Qc /opt/images
+.It feh -rSwidth -A Qo mv %F ~/images/\&%N Qc ~/Pictures
 .
-View all images in /opt/images and below, sorted by width, move an image to
+View all images in ~/Pictures and below, sorted by width, move an image to
 ~/image/image_name when enter is pressed
 .
 .It feh --start-at ./foo.jpg \&.
@@ -1750,6 +1836,14 @@ as it could be.
 does not take window decorations into account and may therefore make the
 window slightly too large.
 .
+.Pp
+.
+When enabled,
+.Cm --magick-timeout
+may clutter
+.Pa /tmp
+with temporary files produced by ImageMagick. This happens whenever an image
+is not loaded due to the conversion taking longer than the specified timeout.
 .
 .Ss REPORTING BUGS
 .

@@ -122,7 +122,7 @@ char *estrjoin(const char *separator, ...)
 			s = va_arg(args, char *);
 		}
 		va_end(args);
-		string = malloc(sizeof(char) * (len + 1));
+		string = emalloc(sizeof(char) * (len + 1));
 
 		*string = 0;
 		va_start(args, separator);
@@ -157,7 +157,7 @@ char *feh_unique_filename(char *path, char *basename)
 {
 	char *tmpname;
 	char num[10];
-	char cppid[10];
+	char cppid[12];
 	static long int i = 1;
 	struct stat st;
 	pid_t ppid;
@@ -169,9 +169,11 @@ char *feh_unique_filename(char *path, char *basename)
 	ppid = getpid();
 	snprintf(cppid, sizeof(cppid), "%06ld", (long) ppid);
 
+	tmpname = NULL;
 	/* make sure file doesn't exist */
 	do {
 		snprintf(num, sizeof(num), "%06ld", i++);
+		free(tmpname);
 		tmpname = estrjoin("", path, "feh_", cppid, "_", num, "_", basename, NULL);
 	}
 	while (stat(tmpname, &st) == 0);
@@ -183,14 +185,14 @@ char *ereadfile(char *path)
 {
 	char buffer[4096];
 	FILE *fp;
-	int count;
+	size_t count;
 
 	fp = fopen(path, "r");
 	if (!fp)
 		return NULL;
 
 	count = fread(buffer, sizeof(char), sizeof(buffer) - 1, fp);
-	if (buffer[count - 1] == '\n')
+	if (count > 0 && buffer[count - 1] == '\n')
 		buffer[count - 1] = '\0';
 	else
 		buffer[count] = '\0';
@@ -198,4 +200,27 @@ char *ereadfile(char *path)
 	fclose(fp);
 
 	return estrdup(buffer);
+}
+
+char *shell_escape(char *input)
+{
+	static char ret[1024];
+	unsigned int out = 0, in = 0;
+
+	ret[out++] = '\'';
+	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
+		if (input[in] == '\'') {
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+		}
+		else
+			ret[out++] = input[in];
+	}
+	ret[out++] = '\'';
+	ret[out++] = '\0';
+
+	return ret;
 }

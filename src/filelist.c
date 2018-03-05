@@ -397,14 +397,26 @@ void feh_file_dirname(char *dst, feh_file * f, int maxlen)
 	dst[n] = '\0';
 }
 
+#ifdef HAVE_VERSCMP
+inline int strcmp_or_strverscmp(const char *s1, const char *s2)
+{
+	if (!opt.version_sort)
+		return(strcmp(s1, s2));
+	else
+		return(strverscmp(s1, s2));
+}
+#else
+#define strcmp_or_strverscmp strcmp
+#endif
+
 int feh_cmp_filename(void *file1, void *file2)
 {
-	return(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
+	return(strcmp_or_strverscmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int feh_cmp_name(void *file1, void *file2)
 {
-	return(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
+	return(strcmp_or_strverscmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int feh_cmp_dirname(void *file1, void *file2)
@@ -413,7 +425,7 @@ int feh_cmp_dirname(void *file1, void *file2)
 	int cmp;
 	feh_file_dirname(dir1, FEH_FILE(file1), PATH_MAX);
 	feh_file_dirname(dir2, FEH_FILE(file2), PATH_MAX);
-	if ((cmp = strcmp(dir1, dir2)) != 0)
+	if ((cmp = strcmp_or_strverscmp(dir1, dir2)) != 0)
 		return(cmp);
 	return(feh_cmp_name(file1, file2));
 }
@@ -464,9 +476,17 @@ int feh_cmp_format(void *file1, void *file2)
 
 void feh_prepare_filelist(void)
 {
-	if (opt.list || opt.customlist || (opt.sort > SORT_MTIME)
-			|| opt.preload || opt.min_width || opt.min_height
-			|| (opt.max_width != UINT_MAX) || (opt.max_height != UINT_MAX)) {
+	/*
+	 * list and customlist mode as well as the somewhat more fancy sort modes
+	 * need access to file infos. Preloading them is also useful for
+	 * list/customlist as --min-dimension/--max-dimension may filter images
+	 * which should not be processed.
+	 * Finally, if --min-dimension/--max-dimension (-> opt.filter_by_dimensions)
+	 * is set and we're in thumbnail mode, we need to filter images first so
+	 * we can create a properly sized thumbnail list.
+	 */
+	if (opt.list || opt.preload || opt.customlist || (opt.sort > SORT_MTIME)
+			|| (opt.filter_by_dimensions && (opt.index || opt.collage || opt.thumbs || opt.bgmode))) {
 		/* For these sort options, we have to preload images */
 		filelist = feh_file_info_preload(filelist);
 		if (!gib_list_length(filelist))

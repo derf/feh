@@ -40,7 +40,8 @@ void setup_signal_handlers()
 		(sigaddset(&feh_ss, SIGALRM) == -1) ||
 		(sigaddset(&feh_ss, SIGTERM) == -1) ||
 		(sigaddset(&feh_ss, SIGQUIT) == -1) ||
-		(sigaddset(&feh_ss, SIGINT) == -1))
+		(sigaddset(&feh_ss, SIGINT) == -1) ||
+		(sigaddset(&feh_ss, SIGTTIN) == -1))
 	{
 		weprintf("Failed to set up signal masks");
 		return;
@@ -56,7 +57,8 @@ void setup_signal_handlers()
 		(sigaction(SIGALRM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGTERM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGQUIT, &feh_sh, NULL) == -1) ||
-		(sigaction(SIGINT, &feh_sh, NULL) == -1))
+		(sigaction(SIGINT, &feh_sh, NULL) == -1) ||
+		(sigaction(SIGTTIN, &feh_sh, NULL) == -1))
 	{
 		weprintf("Failed to set up signal handler");
 		return;
@@ -74,6 +76,10 @@ void feh_handle_signal(int signo)
 		case SIGALRM:
 			if (childpid)
 				killpg(childpid, SIGINT);
+			return;
+		case SIGTTIN:
+			// we were probably backgrounded while we were running
+			control_via_stdin = 0;
 			return;
 		case SIGINT:
 		case SIGTERM:

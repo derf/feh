@@ -83,6 +83,7 @@ Available flags are:
 | exif | 0 | Builtin EXIF tag display support |
 | help | 0 | include help text (refers to the manpage otherwise) |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
+| verscmp | 1 | Support naturing sorting (`--version-sort`). Requires a GNU-compatible libc exposing `strverscmp` |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
 So, by default **libcurl** and **Xinerama** are enabled, the rest is disabled.

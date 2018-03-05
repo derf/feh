@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "events.h"
 #include "signals.h"
 #include "wallpaper.h"
+#include <termios.h>
 
 char **cmdargv = NULL;
 int cmdargc = 0;
@@ -72,10 +73,13 @@ int main(int argc, char **argv)
 		feh_wm_set_bg_filelist(opt.bgmode);
 		exit(0);
 	}
-	else {
+	else if (opt.display){
 		/* Slideshow mode is the default. Because it's spiffy */
 		opt.slideshow = 1;
 		init_slideshow_mode();
+	}
+	else {
+		eprintf("Invalid option combination");
 	}
 
 	/* main event loop */
@@ -107,6 +111,19 @@ int feh_main_iteration(int block)
 		fdsize = xfd + 1;
 		pt = feh_get_time();
 		first = 0;
+		/*
+		 * Only accept commands from stdin if
+		 * - stdin is a terminal (otherwise it's probably used as an image / filelist)
+		 * - we aren't running in multiwindow mode (cause it's not clear which
+		 *   window commands should be applied to in that case)
+		 * - we're in the same process group as stdin, AKA we're not running
+		 *   in the background. Background processes are stopped with SIGTTOU
+		 *   if they try to write to stdout or change terminal attributes. They
+		 *   also don't get input from stdin anyway.
+		 */
+		if (isatty(STDIN_FILENO) && !opt.multiwindow && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
+			setup_stdin();
+		}
 	}
 
 	/* Timers */
@@ -127,6 +144,8 @@ int feh_main_iteration(int block)
 
 	FD_ZERO(&fdset);
 	FD_SET(xfd, &fdset);
+	if (control_via_stdin)
+		FD_SET(STDIN_FILENO, &fdset);
 
 	/* Timers */
 	ft = first_timer;
@@ -170,6 +189,8 @@ int feh_main_iteration(int block)
 				   in that */
 				feh_handle_timer();
 			}
+			else if (count && (FD_ISSET(0, &fdset)))
+				feh_event_handle_stdin();
 		}
 	} else {
 		/* Don't block if there are events in the queue. That's a bit rude ;-) */
@@ -181,6 +202,8 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
+			else if (count && (FD_ISSET(0, &fdset)))
+				feh_event_handle_stdin();
 		}
 	}
 	if (window_num == 0)
@@ -198,6 +221,17 @@ void feh_clean_exit(void)
 
 	if(disp)
 		XCloseDisplay(disp);
+
+	/*
+	 * Only restore the old terminal settings if
+	 * - we changed them in the first place
+	 * - stdin still is a terminal (it might have been closed)
+	 * - stdin still belongs to us (we might have been detached from the
+	 *   controlling terminal, in that case we probably shouldn't be messing
+	 *   around with it) <https://github.com/derf/feh/issues/324>
+	 */
+	if (control_via_stdin && isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO)))
+		restore_stdin();
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);

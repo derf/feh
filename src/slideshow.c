@@ -35,9 +35,7 @@ void init_slideshow_mode(void)
 {
 	winwidget w = NULL;
 	int success = 0;
-	char *s = NULL;
 	gib_list *l = filelist, *last = NULL;
-	feh_file *file = NULL;
 
 	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
@@ -50,17 +48,17 @@ void init_slideshow_mode(void)
 		eprintf("--start-at %s: File not found in filelist",
 				opt.start_list_at);
 
+	if (!opt.title)
+		opt.title = PACKAGE " [%u of %l] - %f";
+
 	mode = "slideshow";
 	for (; l; l = l->next) {
-		file = FEH_FILE(l->data);
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
 		current_file = l;
-		s = slideshow_create_name(file, NULL);
-		if ((w = winwidget_create_from_file(l, s, WIN_TYPE_SLIDESHOW)) != NULL) {
-			free(s);
+		if ((w = winwidget_create_from_file(l, WIN_TYPE_SLIDESHOW)) != NULL) {
 			success = 1;
 			winwidget_show(w);
 			if (opt.slideshow_delay > 0.0)
@@ -69,7 +67,6 @@ void init_slideshow_mode(void)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 			break;
 		} else {
-			free(s);
 			last = l;
 		}
 	}
@@ -110,6 +107,10 @@ void cb_reload_timer(void *data)
 			add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
 	else if (!opt.filelistfile && !opt.bgmode)
 		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+
+	if (opt.filelistfile) {
+		filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
+	}
 	
 	if (!(filelist_len = gib_list_length(filelist))) {
 		eprintf("No files found to reload.");
@@ -130,13 +131,6 @@ void cb_reload_timer(void *data)
 		current_file = filelist;
 	w->file = current_file;
 
-	/* reset window name in case of current file order,
-	 * filename, or filelist_length has changed.
-	 */
-	current_filename = slideshow_create_name(FEH_FILE(current_file->data), w);
-	winwidget_rename(w, current_filename);
-	free(current_filename);
-
 	feh_reload_image(w, 1, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 	return;
@@ -144,7 +138,7 @@ void cb_reload_timer(void *data)
 
 void feh_reload_image(winwidget w, int resize, int force_new)
 {
-	char *title, *new_title;
+	char *new_title;
 	int len;
 	Imlib_Image tmp;
 	int old_w, old_h;
@@ -173,8 +167,8 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	len = strlen(w->name) + sizeof("Reloading: ") + 1;
 	new_title = emalloc(len);
 	snprintf(new_title, len, "Reloading: %s", w->name);
-	title = estrdup(w->name);
 	winwidget_rename(w, new_title);
+	free(new_title);
 
 	old_w = gib_imlib_image_get_width(w->im);
 	old_h = gib_imlib_image_get_height(w->im);
@@ -195,9 +189,6 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 			im_weprintf(w, "Couldn't reload image. Is it still there?");
 			winwidget_render_image(w, 0, 0);
 		}
-		winwidget_rename(w, title);
-		free(title);
-		free(new_title);
 		return;
 	}
 
@@ -237,10 +228,6 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		winwidget_render_image(w, resize, 0);
 	}
 
-	winwidget_rename(w, title);
-	free(title);
-	free(new_title);
-
 	return;
 }
 
@@ -253,7 +240,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	 * encounter invalid images.
 	 */
 	int our_filelist_len = filelist_len;
-	char *s;
 
 	unsigned char tmode =0;
 	int tim_x =0;
@@ -378,16 +364,20 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			tzoom = winwid->zoom;
 		}
 
-		if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
-		    != 0) {
+		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
+			int w = gib_imlib_image_get_width(winwid->im);
+			int h = gib_imlib_image_get_height(winwid->im);
+			if (feh_should_ignore_image(winwid->im)) {
+				last = current_file;
+				continue;
+			}
 			winwid->mode = MODE_NORMAL;
 			winwid->file = current_file;
-			if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))
-			    || (winwid->im_h != gib_imlib_image_get_height(winwid->im)))
+			if ((winwid->im_w != w) || (winwid->im_h != h))
 				winwid->had_resize = 1;
 			winwidget_reset_image(winwid);
-			winwid->im_w = gib_imlib_image_get_width(winwid->im);
-			winwid->im_h = gib_imlib_image_get_height(winwid->im);
+			winwid->im_w = w;
+			winwid->im_h = h;
 			if (opt.keep_zoom_vp) {
 				/* put back in: */
 				winwid->mode = tmode;
@@ -402,11 +392,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 					winwidget_render_image(winwid, 1, 0);
 				}
 			}
-
-			s = slideshow_create_name(FEH_FILE(current_file->data), winwid);
-			winwidget_rename(winwid, s);
-			free(s);
-
 			break;
 		} else
 			last = current_file;
@@ -433,23 +418,6 @@ void slideshow_pause_toggle(winwidget w)
 	winwidget_rename(w, NULL);
 }
 
-char *slideshow_create_name(feh_file * file, winwidget winwid)
-{
-	char *s = NULL;
-	int len = 0;
-
-	if (!opt.title) {
-		len = strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
-		s = emalloc(len);
-		snprintf(s, len, PACKAGE " [%d of %d] - %s",
-			gib_list_num(filelist, current_file) + 1, gib_list_length(filelist), file->filename);
-	} else {
-		s = estrdup(feh_printf(opt.title, file, winwid));
-	}
-
-	return(s);
-}
-
 void feh_action_run(feh_file * file, char *action, winwidget winwid)
 {
 	if (action) {
@@ -462,29 +430,6 @@ void feh_action_run(feh_file * file, char *action, winwidget winwid)
 		system(sys);
 	}
 	return;
-}
-
-char *shell_escape(char *input)
-{
-	static char ret[1024];
-	unsigned int out = 0, in = 0;
-
-	ret[out++] = '\'';
-	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
-		if (input[in] == '\'') {
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
-			ret[out++] = '"';
-			ret[out++] = '\'';
-		}
-		else
-			ret[out++] = input[in];
-	}
-	ret[out++] = '\'';
-	ret[out++] = '\0';
-
-	return ret;
 }
 
 char *format_size(int size)
@@ -509,6 +454,7 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 
 	ret[0] = '\0';
 	filelist_tmppath = NULL;
+	gib_list *f;
 
 	for (c = str; *c != '\0'; c++) {
 		if ((*c == '%') && (*(c+1) != '\0')) {
@@ -593,9 +539,8 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				}
 				break;
 			case 'u':
-				snprintf(buf, sizeof(buf), "%d",
-					 current_file != NULL ? gib_list_num(filelist, current_file)
-					 + 1 : 0);
+				f = current_file ? current_file : gib_list_find_by_data(filelist, file);
+				snprintf(buf, sizeof(buf), "%d", f ? gib_list_num(filelist, f) + 1 : 0);
 				strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				break;
 			case 'v':
@@ -649,7 +594,6 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 void feh_filelist_image_remove(winwidget winwid, char do_delete)
 {
 	if (winwid->type == WIN_TYPE_SLIDESHOW) {
-		char *s;
 		gib_list *doomed;
 
 		doomed = current_file;
@@ -676,9 +620,6 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 			winwidget_destroy(winwid);
 			return;
 		}
-		s = slideshow_create_name(FEH_FILE(winwid->file->data), winwid);
-		winwidget_rename(winwid, s);
-		free(s);
 		winwidget_render_image(winwid, 1, 0);
 	} else if ((winwid->type == WIN_TYPE_SINGLE)
 		   || (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)) {
@@ -686,6 +627,7 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 			filelist = feh_file_rm_and_free(filelist, winwid->file);
 		else
 			filelist = feh_file_remove_from_list(filelist, winwid->file);
+		winwid->file = NULL;
 		winwidget_destroy(winwid);
 	}
 }

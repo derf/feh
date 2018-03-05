@@ -23,20 +23,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "feh_png.h"
-
 #include <png.h>
 
 #include <stdio.h>
 #include <stdarg.h>
+
+#include "feh_png.h"
 
 #define FEH_PNG_COMPRESSION 3
 #define FEH_PNG_NUM_COMMENTS 4
 
 gib_hash *feh_png_read_comments(char *file)
 {
-	gib_hash *hash = NULL;
-
 	FILE *fp;
 	int i, sig_bytes, comments = 0;
 
@@ -45,31 +43,31 @@ gib_hash *feh_png_read_comments(char *file)
 	png_textp text_ptr;
 
 	if (!(fp = fopen(file, "rb")))
-		return hash;
+		return NULL;
 
 	if (!(sig_bytes = feh_png_file_is_png(fp))) {
 		fclose(fp);
-		return hash;
+		return NULL;
 	}
 
 	/* initialize data structures */
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (!png_ptr) {
 		fclose(fp);
-		return hash;
+		return NULL;
 	}
 
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr) {
 		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
 		fclose(fp);
-		return hash;
+		return NULL;
 	}
 
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 		fclose(fp);
-		return hash;
+		return NULL;
 	}
 
 	/* initialize reading */
@@ -77,6 +75,8 @@ gib_hash *feh_png_read_comments(char *file)
 	png_set_sig_bytes(png_ptr, sig_bytes);
 
 	png_read_info(png_ptr, info_ptr);
+
+	gib_hash *hash = NULL;
 
 #ifdef PNG_TEXT_SUPPORTED
 	png_get_text(png_ptr, info_ptr, &text_ptr, &comments);
@@ -94,7 +94,7 @@ gib_hash *feh_png_read_comments(char *file)
 }
 
 /* grab image data from image and write info file with comments ... */
-int feh_png_write_png(Imlib_Image image, char *file, ...)
+int feh_png_write_png_fd(Imlib_Image image, int fd, ...)
 {
 	FILE *fp;
 	int i, w, h;
@@ -111,7 +111,7 @@ int feh_png_write_png(Imlib_Image image, char *file, ...)
 	char *pair_key, *pair_text;
 #endif				/* PNG_TEXT_SUPPORTED */
 
-	if (!(fp = fopen(file, "wb")))
+	if (!(fp = fdopen(fd, "wb")))
 		return 0;
 
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -155,7 +155,7 @@ int feh_png_write_png(Imlib_Image image, char *file, ...)
 	png_set_sBIT(png_ptr, info_ptr, &sig_bit);
 
 #ifdef PNG_TEXT_SUPPORTED
-	va_start(args, file);
+	va_start(args, fd);
 	for (i = 0; i < FEH_PNG_NUM_COMMENTS; i++) {
 		if ((pair_key = va_arg(args, char *))
 		    && (pair_text = va_arg(args, char *))) {

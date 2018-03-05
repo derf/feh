@@ -59,7 +59,6 @@ void init_index_mode(void)
 	int lineno;
 	unsigned char trans_bg = 0;
 	int index_image_width, index_image_height;
-	char *s;
 	gib_list *line, *lines;
 
 	if (opt.montage) {
@@ -149,7 +148,8 @@ void init_index_mode(void)
 	im_main = imlib_create_image(index_image_width, index_image_height);
 
 	if (!im_main)
-		eprintf("Imlib error creating index image, are you low on RAM?");
+		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
 
 	if (bg_im)
 		gib_imlib_blend_image_onto_image(im_main, bg_im,
@@ -163,15 +163,9 @@ void init_index_mode(void)
 		gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0, 0, 255);
 	}
 
-	/* Create the window title at this point */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [index mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+		winwid = winwidget_create_from_image(im_main, WIN_TYPE_SINGLE);
+		winwidget_rename(winwid, PACKAGE " [index mode]");
 		winwidget_show(winwid);
 	}
 
@@ -324,8 +318,10 @@ void init_index_mode(void)
 
 		if (opt.output_dir)
 			snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
-		else
-			strncpy(output_buf, opt.output_file, 1024);
+		else {
+			strncpy(output_buf, opt.output_file, 1023);
+			output_buf[1023] = '\0';
+		}
 
 		gib_imlib_save_image_with_error_return(im_main, output_buf, &err);
 		if (err) {
@@ -345,7 +341,6 @@ void init_index_mode(void)
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
 
-	free(s);
 	return;
 }
 

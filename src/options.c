@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <strings.h>
+
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
@@ -67,6 +69,7 @@ void init_parse_options(int argc, char **argv)
 	opt.jump_on_resort = 1;
 
 	opt.screen_clip = 1;
+	opt.cache_size = 4;
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
@@ -211,7 +214,7 @@ static void feh_parse_options_from_string(char *opts)
 	char *s;
 	char *t;
 	char last = 0;
-	int inquote = 0;
+	char inquote = 0;
 	int i = 0;
 
 	/* So we don't reinvent the wheel (not again, anyway), we use the
@@ -226,7 +229,7 @@ static void feh_parse_options_from_string(char *opts)
 			eprintf(PACKAGE " does not support more than 64 words per "
 					"theme definition.\n Please shorten your lines.");
 
-		if ((*t == ' ') && !(inquote)) {
+		if ((*t == ' ') && !inquote) {
 			*t = '\0';
 			num++;
 
@@ -237,8 +240,10 @@ static void feh_parse_options_from_string(char *opts)
 
 			list[num - 1] = feh_string_normalize(s);
 			break;
-		} else if (((*t == '\"') || (*t == '\'')) && last != '\\')
-			inquote = !(inquote);
+		} else if ((*t == inquote) && (last != '\\')) {
+			inquote = 0;
+		} else if (((*t == '\"') || (*t == '\'')) && (last != '\\') && !inquote)
+			inquote = *t;
 		last = *t;
 	}
 
@@ -410,6 +415,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
 		{"begin-top"      , 0, 0, 242},
+		{"cache-size"    , 1, 0, 243},
+		{"version-sort"  , 0, 0, 246},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -428,6 +435,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.debug = 1;
 			break;
 		case '<':
+			opt.filter_by_dimensions = 1;
 			XParseGeometry(optarg, &discard, &discard, &opt.max_width, &opt.max_height);
 			if (opt.max_width == 0)
 				opt.max_width = UINT_MAX;
@@ -435,6 +443,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.max_height = UINT_MAX;
 			break;
 		case '>':
+			opt.filter_by_dimensions = 1;
 			XParseGeometry(optarg, &discard, &discard, &opt.min_width, &opt.min_height);
 			break;
 		case '.':
@@ -447,14 +456,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.actions[0] = estrdup(optarg);
 			break;
 		case 'B':
-			if (!strcmp(optarg, "checks"))
-				opt.image_bg = IMAGE_BG_CHECKS;
-			else if (!strcmp(optarg, "white"))
-				opt.image_bg = IMAGE_BG_WHITE;
-			else if (!strcmp(optarg, "black"))
-				opt.image_bg = IMAGE_BG_BLACK;
-			else
-				weprintf("Unknown argument to --image-bg: %s", optarg);
+			opt.image_bg = estrdup(optarg);
 			break;
 		case 'C':
 			D(("adding fontpath %s\n", optarg));
@@ -769,10 +771,21 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 240:
 			opt.insecure_ssl = 1;
+			break;
 		case 241:
 			opt.recursive = 0;
 		case 242:
 			opt.begin_top = 1;
+			break;
+		case 243:
+			opt.cache_size = atoi(optarg);
+			if (opt.cache_size < 0)
+				opt.cache_size = 0;
+			if (opt.cache_size > 2048)
+				opt.cache_size = 2048;
+			break;
+		case 246:
+			opt.version_sort = 1;
 			break;
 		default:
 			break;
