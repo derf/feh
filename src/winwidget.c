@@ -432,9 +432,6 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int antialias = 0;
 	int need_center = winwid->had_resize;
 
-	/* Causes horrible "tearing" (render picture big/small if auto-zoom is on),
-	 * if you switch fast between images (slideshow).
-	 */
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 		winwidget_reset_image(winwid);
@@ -564,14 +561,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	}
 	else if (need_center && !winwid->full_screen
 			&& (winwid->type != WIN_TYPE_THUMBNAIL) && !opt.keep_zoom_vp) {
-			int smaller;
+			int image_smaller;
 		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 
-		smaller = ((winwid->im_w < winwid->w)
+		image_smaller = ((winwid->im_w < winwid->w)
 				&& (winwid->im_h < winwid->h));
 
-		if (!smaller && opt.begin_top)
+		if (!image_smaller && opt.begin_top)
 			winwid->im_y = 0;
 	}
 
