@@ -398,7 +398,7 @@ void feh_file_dirname(char *dst, feh_file * f, int maxlen)
 }
 
 #ifdef HAVE_VERSCMP
-inline int strcmp_or_strverscmp(const char *s1, const char *s2)
+static inline int strcmp_or_strverscmp(const char *s1, const char *s2)
 {
 	if (!opt.version_sort)
 		return(strcmp(s1, s2));
