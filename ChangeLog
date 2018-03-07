@@ -1,3 +1,9 @@
+Wed, 07 Mar 2018 17:49:52 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.25.1
+    * Fix compilation issues when using CFLAGS=-m64 on some gcc versions
+    * Re-render current image when toggle_fixed_geometry is input
+
 Sun, 04 Mar 2018 08:53:50 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.25
