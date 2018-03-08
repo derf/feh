@@ -555,6 +555,32 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 	}
 
+	/*
+	 * Adjust X/Y offset if the image is larger than the window and
+	 * --inner-geometry is set. This will cause odd behaviour when
+	 * zooming an already large image in --inner-geometry mode, but in most
+	 * cases this should be what the user wants. Plus, it doesn't require
+	 * fiddling around in two or three places above, so it's the best
+	 * solution considering a future refactoring of this function.
+	 */
+
+	if (need_center || resize) {
+		if ((opt.inner_geom_flags & XValue) && (winwid->im_w * winwid->zoom) > winwid->w) {
+			if (opt.inner_geom_flags & XNegative) {
+				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.inner_geom_x;
+			} else {
+				winwid->im_x = - opt.inner_geom_x * winwid->zoom;
+			}
+		}
+		if ((opt.inner_geom_flags & YValue) && (winwid->im_h * winwid->zoom) > winwid->h) {
+			if (opt.inner_geom_flags & YNegative) {
+				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.inner_geom_y;
+			} else {
+				winwid->im_y = - opt.inner_geom_y * winwid->zoom;
+			}
+		}
+	}
+
 	/* Now we ensure only to render the area we're looking at */
 	dx = winwid->im_x;
 	dy = winwid->im_y;

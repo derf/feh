@@ -111,6 +111,11 @@ struct __fehoptions {
 	int geom_y;
 	unsigned int geom_w;
 	unsigned int geom_h;
+	int inner_geom_flags;
+	int inner_geom_x;
+	int inner_geom_y;
+	unsigned int inner_geom_w;
+	unsigned int inner_geom_h;
 	int default_zoom;
 	int zoom_mode;
 	unsigned char adjust_reload;
