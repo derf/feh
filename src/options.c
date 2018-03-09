@@ -416,7 +416,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"no-recursive"  , 0, 0, 241},
 		{"cache-size"    , 1, 0, 243},
 		{"version-sort"  , 0, 0, 246},
-		{"inner-geometry", 1, 0, 247},
+		{"offset"        , 1, 0, 247},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -786,8 +786,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.version_sort = 1;
 			break;
 		case 247:
-			opt.inner_geom_flags = XParseGeometry(optarg, &opt.inner_geom_x,
-					&opt.inner_geom_y, &opt.inner_geom_w, &opt.inner_geom_h);
+			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
+					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
 			break;
 		default:
 			break;

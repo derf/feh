@@ -565,18 +565,18 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	 */
 
 	if (need_center || resize) {
-		if ((opt.inner_geom_flags & XValue) && (winwid->im_w * winwid->zoom) > winwid->w) {
-			if (opt.inner_geom_flags & XNegative) {
-				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.inner_geom_x;
+		if ((opt.offset_flags & XValue) && (winwid->im_w * winwid->zoom) > winwid->w) {
+			if (opt.offset_flags & XNegative) {
+				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.offset_x;
 			} else {
-				winwid->im_x = - opt.inner_geom_x * winwid->zoom;
+				winwid->im_x = - opt.offset_x * winwid->zoom;
 			}
 		}
-		if ((opt.inner_geom_flags & YValue) && (winwid->im_h * winwid->zoom) > winwid->h) {
-			if (opt.inner_geom_flags & YNegative) {
-				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.inner_geom_y;
+		if ((opt.offset_flags & YValue) && (winwid->im_h * winwid->zoom) > winwid->h) {
+			if (opt.offset_flags & YNegative) {
+				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.offset_y;
 			} else {
-				winwid->im_y = - opt.inner_geom_y * winwid->zoom;
+				winwid->im_y = - opt.offset_y * winwid->zoom;
 			}
 		}
 	}
