@@ -106,6 +106,7 @@ struct __fehoptions {
 	int sort;
 	int version_sort;
 	int debug;
+	int geom_enabled;
 	int geom_flags;
 	int geom_x;
 	int geom_y;
