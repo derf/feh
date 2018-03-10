@@ -42,6 +42,8 @@ int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
 
+	srand(getpid() * time(NULL) % ((unsigned int) -1));
+
 	setup_signal_handlers();
 	init_parse_options(argc, argv);
 
