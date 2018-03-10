@@ -276,7 +276,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		case SLIDE_RAND:
 			if (filelist_len > 1) {
 				current_file = feh_list_jump(filelist, current_file, FORWARD,
-					(rand() % (filelist_len - 1)) + 1);
+					( ((double) rand() / RAND_MAX) * (filelist_len - 1)) + 1);
 				change = SLIDE_NEXT;
 			}
 			break;
