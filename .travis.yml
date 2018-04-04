@@ -8,7 +8,9 @@ addons:
       - libimlib2-dev
       - libxinerama-dev
       - libjpeg-progs
-build:
+      - libtest-command-perl
+      - libtest-simple-perl
+script:
   - make
   - make test
 compiler:
