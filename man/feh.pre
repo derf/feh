@@ -330,8 +330,8 @@ will read the filelist from its standard input.
 .It Cm -e , --font Ar font
 .
 Set global font.
-Should be a truetype font, resident in the current directory or the directory,
-and should be defined in the form fontname/points, like
+Should be a truetype font, resident in the current directory or the font
+directory, and should be defined in the form fontname/points, like
 .Qq myfont/12 .
 .
 .It Cm -C , --fontpath Ar path
@@ -456,7 +456,7 @@ or in the current working directory.
 .
 When viewing files with HTTPS, this option disables strict hostname and peer
 checking.
-This allows images on sites with self-signed certificates to be opened, bu is
+This allows images on sites with self-signed certificates to be opened, but is
 no more secure than plain HTTP.
 .
 .It Cm --keep-zoom-vp
@@ -1989,7 +1989,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 .
