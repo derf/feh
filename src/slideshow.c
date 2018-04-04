@@ -468,6 +468,12 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				if (file)
 					strncat(ret, shell_escape(file->filename), sizeof(ret) - strlen(ret) - 1);
 				break;
+			case 'g':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%d,%d", winwid->w, winwid->h);
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
 			case 'h':
 				if (file && (file->info || !feh_file_info_load(file, NULL))) {
 					snprintf(buf, sizeof(buf), "%d", file->info->height);
@@ -562,6 +568,12 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				} else {
 					strncat(ret, "1.00", sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
+			case 'Z':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%f", winwid->zoom);
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case '%':

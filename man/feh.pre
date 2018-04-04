@@ -1014,6 +1014,10 @@ Image path/filename
 Escaped image path/filename
 .Pq for use in shell commands
 .
+.It %g
+.
+w,h window dimensions in pixels (mnemonic: geometry)
+.
 .It %h
 .
 Image height
@@ -1048,8 +1052,9 @@ Number of image pixels
 .
 .It \&%P
 .
-Number of image pixels
+Number of image pixels in human-readable format with k/M
 .Pq kilopixels / megapixels
+suffix
 .
 .It %r
 .
@@ -1087,7 +1092,11 @@ Process ID
 .
 .It %z
 .
-current image zoom
+Current image zoom, rounded to two decimal places
+.
+.It %Z
+.
+Current image zoom, higher precision
 .
 .It %%
 .
