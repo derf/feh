@@ -1,3 +1,5 @@
+[![build status](https://travis-ci.org/derf/feh.svg?branch=master)](https://travis-ci.org/derf/feh)
+
 # feh
 Imlib2 based image viewer
 ---
