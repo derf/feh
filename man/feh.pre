@@ -13,7 +13,7 @@
 .
 .Nm
 .Op Ar options
-.Op Ar files No | Ar directories No | Ar URLs ...
+.Op Ar files | Ar directories | Ar URLs ...
 .
 .
 .Sh VERSION
@@ -176,7 +176,7 @@ after
 executing the action.
 .
 If
-.No [ Ar title ]
+.Ar [ title ]
 is specified
 .Pq note the literal Qo \&[ Qc and Qo ] Qc ,
 .Cm --draw-actions
@@ -384,7 +384,7 @@ When combined with
 this option only affects images opened from the thumbnail overview.
 The thumbnail list itself will still be windowed.
 .
-.It Cm -g , --geometry Ar width Cm x Ar height No | Cm + Ar x Cm + Ar y | Ar width Cm x Ar height Cm + Ar x Cm + Ar y
+.It Cm -g , --geometry Ar width Cm x Ar height | Cm + Ar x Cm + Ar y | Ar width Cm x Ar height Cm + Ar x Cm + Ar y
 .
 Limit (and don't change) the window size.
 Takes an X-style geometry
@@ -782,7 +782,7 @@ on index 1 black/white, use
 .Qq --xinerama-index 0
 when setting the wallpaper.
 .
-.It Cm --zoom Ar percent No | Cm max No | Cm fill
+.It Cm --zoom Ar percent | Cm max | Cm fill
 .
 Zoom images by
 .Ar percent
@@ -820,7 +820,7 @@ When drawing thumbnails onto the background, set their transparency level to
 .Ar int
 .Pq 0 - 255 .
 .
-.It Cm -b , --bg Ar file No | Cm trans
+.It Cm -b , --bg Ar file | Cm trans
 .
 Use
 .Ar file
