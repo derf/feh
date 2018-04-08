@@ -1308,7 +1308,7 @@ without any keys unbinds it (i.e. the default bindings are removed).
 .
 .Pp
 .
-.Em Note :
+.Em Note:\&
 Do not use the same keybinding for multiple actions.
 When binding an action to a new key
 .Pq or mouse button ,
@@ -1480,7 +1480,7 @@ See
 .Xr jpegtran 1
 for more about lossless JPEG rotation.
 .
-.Em Note:
+.Em Note:\&
 .Nm
 assumes that this feature is used to normalize image orientation.
 For JPEG images, it will unconditionally set the EXIF orientation
@@ -1657,7 +1657,7 @@ looks like
 .
 .Pp
 .
-.Em Note :
+.Em Note:\&
 Do not use the same button for multiple actions.
 .Nm
 does not check for conflicting bindings, so their behaviour is undefined.
@@ -1893,8 +1893,6 @@ section.
 .
 .
 .Sh BUGS
-.
-.Pp
 .
 On systems with giflib 5.1.2,
 .Nm
