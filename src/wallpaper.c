@@ -453,7 +453,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			if (home) {
 				FILE *fp;
 				char *path;
+				char *absolute_path;
 				struct stat s;
+				gib_list *filelist_pos = filelist;
 				path = estrjoin("/", home, ".fehbg", NULL);
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
@@ -461,7 +463,16 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					fputs("#!/bin/sh\n", fp);
 					if (use_filelist) {
 						for (int i = 0; i < cmdargc; i++) {
-							fputs(shell_escape(cmdargv[i]), fp);
+							if (filelist_pos && !strcmp(FEH_FILE(filelist_pos->data)->filename, cmdargv[i])) {
+								/* argument is a file */
+								absolute_path = feh_absolute_path(cmdargv[i]);
+								fputs(shell_escape(absolute_path), fp);
+								filelist_pos = filelist_pos->next;
+								free(absolute_path);
+							} else {
+								/* argument is an option / option arg */
+								fputs(shell_escape(cmdargv[i]), fp);
+							}
 							fputc(' ', fp);
 						}
 					} else if (fil) {
@@ -482,7 +493,9 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 							fputs(" --no-xinerama", fp);
 #endif
 						fputc(' ', fp);
-						fputs(shell_escape(fil), fp);
+						absolute_path = feh_absolute_path(fil);
+						fputs(shell_escape(absolute_path), fp);
+						free(absolute_path);
 					}
 					fputc('\n', fp);
 					fclose(fp);
