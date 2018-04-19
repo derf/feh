@@ -1,3 +1,11 @@
+Thu, 19 Apr 2018 21:43:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26
+    * Save absolute file paths in ~/.fehbg, similar to the behaviour prior to
+      feh 2.21
+    * Add %g (window dimensions) and %Z (precise zoom level) format specifiers
+    * Improve -z/--randomize randomness
+
 Wed, 07 Mar 2018 17:49:52 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.25.1
