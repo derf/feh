@@ -965,14 +965,6 @@ So to have your background restored every time you start X, you can add
 .Qq ~/.fehbg &
 to your X startup script
 .Pq such as Pa ~/.xinitrc .
-Note that
-.Pq unless the wallpaper is set via the menu
-.Nm
-saves the files and directories it was passed on the commandline, not the
-files which actually ended up as wallpaper.
-So, if you have randomization enabled,
-.Pa ~/.fehbg
-may set different wallpapers on each execution.
 .
 .Pp
 .

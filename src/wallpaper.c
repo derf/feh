@@ -461,6 +461,40 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					weprintf("Can't write to %s", path);
 				} else {
 					fputs("#!/bin/sh\n", fp);
+					fputs(cmdargv[0], fp);
+					fputs(" --bg-", fp);
+					if (centered)
+						fputs("center", fp);
+					else if (scaled)
+						fputs("scale", fp);
+					else if (filled)
+						fputs("fill", fp);
+					else
+						fputs("tile", fp);
+#ifdef HAVE_LIBXINERAMA
+					if (opt.xinerama) {
+						if (opt.xinerama_index >= 0) {
+							fprintf(fp, " --xinerama-index %d", opt.xinerama_index);
+						}
+					}
+					else {
+						fputs(" --no-xinerama", fp);
+					}
+#endif			/* HAVE_LIBXINERAMA */
+					if (opt.geom_flags & XValue) {
+						fprintf(fp, " --geometry %c%d",
+								opt.geom_flags & XNegative ? '-' : '+',
+								opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
+						if (opt.geom_flags & YValue) {
+							fprintf(fp, "%c%d",
+									opt.geom_flags & YNegative ? '-' : '+',
+									opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
+						}
+					}
+					if (opt.force_aliasing) {
+						fputs(" --force-aliasing", fp);
+					}
+					fputc(' ', fp);
 					if (use_filelist) {
 						for (int i = 0; i < cmdargc; i++) {
 							if (filelist_pos && !strcmp(FEH_FILE(filelist_pos->data)->filename, cmdargv[i])) {
@@ -469,30 +503,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 								fputs(shell_escape(absolute_path), fp);
 								filelist_pos = filelist_pos->next;
 								free(absolute_path);
-							} else {
-								/* argument is an option / option arg */
-								fputs(shell_escape(cmdargv[i]), fp);
+								fputc(' ', fp);
 							}
-							fputc(' ', fp);
 						}
 					} else if (fil) {
-						fputs("feh --bg-", fp);
-						if (centered)
-							fputs("center", fp);
-						else if (scaled)
-							fputs("scale", fp);
-						else if (filled)
-							fputs("fill", fp);
-						else
-							fputs("tile", fp);
-
-						if (opt.force_aliasing)
-							fputs(" --force-aliasing", fp);
-#ifdef HAVE_LIBXINERAMA
-						if (!opt.xinerama)
-							fputs(" --no-xinerama", fp);
-#endif
-						fputc(' ', fp);
 						absolute_path = feh_absolute_path(fil);
 						fputs(shell_escape(absolute_path), fp);
 						free(absolute_path);
