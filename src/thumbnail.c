@@ -766,17 +766,26 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 {
 	winwidget thumbwin = NULL;
+	gib_list *l;
+
+	for (l = filelist; l; l = l->next) {
+		if (FEH_FILE(l->data) == thumbfile) {
+			break;
+		}
+	}
+	if (!l) {
+		eprintf("Cannot find %s in filelist, wtf", thumbfile->filename);
+	}
 
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
 	if (!thumbwin) {
 		thumbwin = winwidget_create_from_file(
-				gib_list_add_front(NULL, thumbfile),
+				l,
 				WIN_TYPE_THUMBNAIL_VIEWER);
 		if (thumbwin)
 			winwidget_show(thumbwin);
 	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
-		free(thumbwin->file);
-		thumbwin->file = gib_list_add_front(NULL, thumbfile);
+		thumbwin->file = l;
 		feh_reload_image(thumbwin, 1, 1);
 	}
 }

@@ -773,8 +773,6 @@ void winwidget_destroy(winwidget winwid)
 		free(winwid->name);
 	if (winwid->gc)
 		XFreeGC(disp, winwid->gc);
-	if ((winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) && (winwid->file != NULL))
-		gib_list_free(winwid->file);
 	if (winwid->im)
 		gib_imlib_free_image_and_decache(winwid->im);
 	free(winwid);
