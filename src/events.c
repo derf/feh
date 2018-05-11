@@ -509,6 +509,8 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				dy = scr_height - (m->y + m->h);
 				dx = dx < 0 ? dx : 0;
 				dy = dy < 0 ? dy : 0;
+				dx = m->x + dx < 0 ? -m->x : dx;
+				dy = m->y + dy < 0 ? -m->y : dy;
 				if (dx || dy)
 					feh_menu_slide_all_menus_relative(dx, dy);
 			}
@@ -521,6 +523,8 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				dy = scr->height - (m->next->y + m->next->h);
 				dx = dx < 0 ? dx : 0;
 				dy = dy < 0 ? dy : 0;
+				dx = m->x + dx < 0 ? -m->x : dx;
+				dy = m->y + dy < 0 ? -m->y : dy;
 				if (dx || dy)
 					feh_menu_slide_all_menus_relative(dx, dy);
 			}
