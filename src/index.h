@@ -1,6 +1,6 @@
 /* index.h
 
-Copyright (C) 2011 Daniel Friesel.
+Copyright (C) 2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
