@@ -317,6 +317,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 void feh_event_handle_stdin()
 {
 	char stdin_buf[2];
+	static char is_esc = 0;
 	KeySym keysym = NoSymbol;
 	if (read(STDIN_FILENO, &stdin_buf, 1) == -1) {
 		control_via_stdin = 0;
@@ -328,17 +329,40 @@ void feh_event_handle_stdin()
 	}
 	stdin_buf[1] = '\0';
 
+	// escape?
+	if (stdin_buf[0] == 0x1b) {
+		is_esc = 1;
+		return;
+	}
+	if ((is_esc == 1) && (stdin_buf[0] == '[')) {
+		is_esc = 2;
+		return;
+	}
+
 	if (stdin_buf[0] == ' ')
 		keysym = XK_space;
 	else if (stdin_buf[0] == '\n')
 		keysym = XK_Return;
 	else if ((stdin_buf[0] == '\b') || (stdin_buf[0] == 127))
 		keysym = XK_BackSpace;
+	else if (is_esc == 2) {
+		if (stdin_buf[0] == 'A')
+			keysym = XK_Up;
+		else if (stdin_buf[0] == 'B')
+			keysym = XK_Down;
+		else if (stdin_buf[0] == 'C')
+			keysym = XK_Right;
+		else if (stdin_buf[0] == 'D')
+			keysym = XK_Left;
+		is_esc = 0;
+	}
 	else
 		keysym = XStringToKeysym(stdin_buf);
 
 	if (window_num)
-		feh_event_handle_generic(windows[0], 0, keysym, 0);
+		feh_event_handle_generic(windows[0], is_esc * Mod1Mask, keysym, 0);
+
+	is_esc = 0;
 }
 
 void feh_event_handle_keypress(XEvent * ev)
