@@ -234,9 +234,13 @@ must be between 0 and 2048 MiB and defaults to 4.
 .
 .It Cm -P , --cache-thumbnails
 .
-Enable thumbnail caching in
-.Pa ~/.thumbnails .
-Only works with thumbnails <= 256x256 pixels.
+Enable thumbnail caching.
+Thumbnails are saved in
+.Pa $XDG_CACHE_HOME/thumbnails ,
+which defaults to
+.Pa ~/.cache/thumbnails .
+Note that thumbnails are only cached if the configured thumbnail size does
+not exceed 256x256 pixels.
 .
 .It Cm -K , --caption-path Ar path
 .
@@ -1807,8 +1811,7 @@ Show 128x128 pixel thumbnails, limit window width to 1024 pixels.
 .
 .It feh -t -Sfilename -E 128 -y 128 -W 1024 -P -C /usr/share/fonts/truetype/ttf-dejavu/ -e DejaVuSans/8 ~/Pictures
 .
-Same as above, but enable thumbnail caching in ~/.thumbnails and use a smaller
-font.
+Same as above, but enable thumbnail caching and use a smaller font.
 .
 .It feh -irFarial/14 -O index.jpg ~/Pictures
 .
