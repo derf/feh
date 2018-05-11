@@ -1,3 +1,13 @@
+Fri, 11 May 2018 15:11:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.1
+    * Restore pre-2.21 ~/.fehbg behaviour. This fixes nondeterministic
+      wallpaper setting when using --bg-* --randomize, issues when specifying
+      --theme both in ~/.fehbg and on the commandline, and possibly other
+      edge cases
+    * Fix /tmp being cluttered with temporary ImageMagick files when using
+      --magick-timeout and a conversion takes longer than allowed
+
 Thu, 19 Apr 2018 21:43:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26
