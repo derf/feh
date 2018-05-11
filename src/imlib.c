@@ -304,8 +304,10 @@ static char *feh_magick_load_image(char *filename)
 	char *basename;
 	char *tmpname;
 	char *sfn;
+	char tempdir[] = "/tmp/.feh-magick-tmp-XXXXXX";
 	int fd = -1, devnull = -1;
 	int status;
+	char created_tempdir = 0;
 
 	if (opt.magick_timeout < 0)
 		return NULL;
@@ -339,6 +341,22 @@ static char *feh_magick_load_image(char *filename)
 	 */
 	argv_fn = estrjoin(":", "png", sfn, NULL);
 
+	/*
+	 * By default, ImageMagick saves (occasionally lots of) temporary files
+	 * in /tmp. It doesn't remove them if it runs into a timeout and is killed
+	 * by us, no matter whether we use SIGINT, SIGTERM or SIGKILL. So, unless
+	 * MAGICK_TMPDIR has already been set by the user, we create our own
+	 * temporary directory for ImageMagick and remove its contents at the end of
+	 * this function.
+	 */
+	if (getenv("MAGICK_TMPDIR") == NULL) {
+		if (mkdtemp(tempdir) == NULL) {
+			weprintf("%s: ImageMagick may leave temporary files in /tmp. mkdtemp failed:", filename);
+		} else {
+			created_tempdir = 1;
+		}
+	}
+
 	if ((childpid = fork()) < 0) {
 		weprintf("%s: Can't load with imagemagick. Fork failed:", filename);
 		unlink(sfn);
@@ -360,6 +378,11 @@ static char *feh_magick_load_image(char *filename)
 		 */
 		setpgid(0, 0);
 
+		if (created_tempdir) {
+			// no error checking - this is a best-effort code path
+			setenv("MAGICK_TMPDIR", tempdir, 0);
+		}
+
 		execlp("convert", "convert", filename, argv_fn, NULL);
 		_exit(1);
 	}
@@ -373,11 +396,37 @@ static char *feh_magick_load_image(char *filename)
 			sfn = NULL;
 
 			if (!opt.quiet) {
-				weprintf("%s - Conversion took too long, skipping", filename);
+				weprintf("%s: Conversion took too long, skipping", filename);
 			}
 		}
 		close(fd);
 		childpid = 0;
+	}
+
+	if (created_tempdir) {
+		DIR *dir;
+		struct dirent *de;
+		if ((dir = opendir(tempdir)) == NULL) {
+			weprintf("%s: Cannot remove temporary ImageMagick files from %s:", filename, tempdir);
+		} else {
+			while ((de = readdir(dir)) != NULL) {
+				if (de->d_name[0] != '.') {
+					char *temporary_file_name = estrjoin("/", tempdir, de->d_name, NULL);
+					/*
+					 * We assume that ImageMagick only creates temporary files and
+					 * not directories.
+					 */
+					if (unlink(temporary_file_name) == -1) {
+						weprintf("unlink %s:", temporary_file_name);
+					}
+					free(temporary_file_name);
+				}
+			}
+			if (rmdir(tempdir) == -1) {
+				weprintf("rmdir %s:", tempdir);
+			}
+		}
+		closedir(dir);
 	}
 
 	free(argv_fn);
