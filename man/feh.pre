@@ -1338,7 +1338,10 @@ filelists, key input from the terminal is also accepted.
 However, terminal input support is currently limited to most alphanumeric
 characters
 .Pq 0-9 a-z A-Z and some more ,
-return and backspace.
+arrow keys, return and backspace.
+The Alt
+.Pq Mod1
+modifier is also supported.
 .
 .Bl -tag -width indent
 .
