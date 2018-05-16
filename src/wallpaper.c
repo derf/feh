@@ -473,7 +473,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 						fputs("tile", fp);
 					if (opt.image_bg) {
 						fputs(" --image-bg ", fp);
-						fputs(opt.image_bg, fp);
+						fputs(shell_escape(opt.image_bg), fp);
 					}
 #ifdef HAVE_LIBXINERAMA
 					if (opt.xinerama) {
