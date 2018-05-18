@@ -1,3 +1,8 @@
+Fri, 18 May 2018 22:58:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.3
+    * Properly escape --image-bg argument in ~/.fehbg (broken in 2.26.1)
+
 Sat, 12 May 2018 16:33:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.2
