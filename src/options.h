@@ -116,6 +116,7 @@ struct __fehoptions {
 	int offset_y;
 	int default_zoom;
 	int zoom_mode;
+	int begin_top;
 	unsigned char adjust_reload;
 	int xinerama_index;
 

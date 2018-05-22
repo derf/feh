@@ -414,6 +414,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
+		{"begin-top"      , 0, 0, 242},
 		{"cache-size"    , 1, 0, 243},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
@@ -774,6 +775,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 241:
 			opt.recursive = 0;
+		case 242:
+			opt.begin_top = 1;
 			break;
 		case 243:
 			opt.cache_size = atoi(optarg);
