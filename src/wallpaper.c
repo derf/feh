@@ -467,8 +467,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 						fputs("center", fp);
 					else if (scaled)
 						fputs("scale", fp);
-					else if (filled)
+					else if (filled == 1)
 						fputs("fill", fp);
+					else if (filled == 2)
+						fputs("max", fp);
 					else
 						fputs("tile", fp);
 					if (opt.image_bg) {
