@@ -1,3 +1,8 @@
+Tue, 26 Jun 2018 10:33:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.4
+    * Correctly save --bg-max in ~/.fehbg (patch by Sebastian Bickerle)
+
 Fri, 18 May 2018 22:58:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.3
