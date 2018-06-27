@@ -146,7 +146,6 @@ winwidget winwidget_create_from_image(Imlib_Image im, char type);
 void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
-void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
 void feh_debug_print_winwid(winwidget winwid);
