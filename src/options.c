@@ -592,6 +592,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.filelistfile = estrdup(optarg);
 			break;
 		case 'g':
+			opt.geom_enabled = 1;
 			opt.geom_flags = XParseGeometry(optarg, &opt.geom_x,
 					&opt.geom_y, &opt.geom_w, &opt.geom_h);
 			break;

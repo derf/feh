@@ -143,16 +143,6 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	Imlib_Image tmp;
 	int old_w, old_h;
 
-	unsigned char tmode =0;
-	int tim_x =0;
-	int tim_y =0;
-	double tzoom =0;
-
-	tmode = w->mode;
-	tim_x = w->im_x;
-	tim_y = w->im_y;
-	tzoom = w->zoom;
-
 	if (!w->file) {
 		im_weprintf(w, "couldn't reload, this image has no file associated with it.");
 		winwidget_render_image(w, 0, 0);
@@ -217,16 +207,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		w->im_w = gib_imlib_image_get_width(w->im);
 		w->im_h = gib_imlib_image_get_height(w->im);
 	}
-	if (opt.keep_zoom_vp) {
-		/* put back in: */
-		w->mode = tmode;
-		w->im_x = tim_x;
-		w->im_y = tim_y;
-		w->zoom = tzoom;
-		winwidget_render_image(w, 0, 0);
-	} else {
-		winwidget_render_image(w, resize, 0);
-	}
+	winwidget_render_image(w, resize, 0);
 
 	return;
 }
@@ -240,11 +221,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	 * encounter invalid images.
 	 */
 	int our_filelist_len = filelist_len;
-
-	unsigned char tmode =0;
-	int tim_x =0;
-	int tim_y =0;
-	double tzoom =0;
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
@@ -356,14 +332,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			last = NULL;
 		}
 
-		if (opt.keep_zoom_vp) {
-		/* pre loadimage - record settings */
-			tmode = winwid->mode;
-			tim_x = winwid->im_x;
-			tim_y = winwid->im_y;
-			tzoom = winwid->zoom;
-		}
-
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
 			int w = gib_imlib_image_get_width(winwid->im);
 			int h = gib_imlib_image_get_height(winwid->im);
@@ -378,19 +346,8 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			winwidget_reset_image(winwid);
 			winwid->im_w = w;
 			winwid->im_h = h;
-			if (opt.keep_zoom_vp) {
-				/* put back in: */
-				winwid->mode = tmode;
-				winwid->im_x = tim_x;
-				winwid->im_y = tim_y;
-				winwid->zoom = tzoom;
-			}
 			if (render) {
-				if (opt.keep_zoom_vp) {
-					winwidget_render_image(winwid, 0, 0);
-				} else {
-					winwidget_render_image(winwid, 1, 0);
-				}
+				winwidget_render_image(winwid, 1, 0);
 			}
 			break;
 		} else
