@@ -1,3 +1,20 @@
+Thu, 28 Jun 2018 17:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Releasev v2.27
+    * Fix size_to_image ("w") command when both --scale-down and --keep-zoom-vp
+      are enabled
+    * Fix --auto-zoom not being triggered on window resize events when
+      --scale-down is enabled
+    * Fix --auto-zoom conflicting with manual zoom
+    * Fix feh_draw_checks not taking the zoom level into account properly
+    * Prevent --zoom <percent> from blocking --scale-down in fullscreen / fixed
+      geometry mode
+    * Prevent --keep-zoom-vp from blocking the dynamic window resizing
+      mechanism
+    * Prevent automatic recalculation of the zoom ratio when --keep_zoom_vp
+      is enabled
+    * All patches provided by <https://github.com/ulteq>. Thanks a lot!
+
 Tue, 26 Jun 2018 10:33:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.4
