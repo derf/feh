@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 	/* main event loop */
 	while (feh_main_iteration(1));
 
-	return(0);
+	return(sig_exit);
 }
 
 /* Return 0 to stop iterating, 1 if ok to continue. */
@@ -104,7 +104,7 @@ int feh_main_iteration(int block)
 	double t1 = 0.0, t2 = 0.0;
 	fehtimer ft;
 
-	if (window_num == 0)
+	if (window_num == 0 || sig_exit != 0)
 		return(0);
 
 	if (first) {
@@ -137,7 +137,7 @@ int feh_main_iteration(int block)
 		if (ev_handler[ev.type])
 			(*(ev_handler[ev.type])) (&ev);
 
-		if (window_num == 0)
+		if (window_num == 0 || sig_exit != 0)
 			return(0);
 	}
 	XFlush(disp);
@@ -208,7 +208,7 @@ int feh_main_iteration(int block)
 				feh_event_handle_stdin();
 		}
 	}
-	if (window_num == 0)
+	if (window_num == 0 || sig_exit != 0)
 		return(0);
 	
 	return(1);
