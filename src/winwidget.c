@@ -799,12 +799,16 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 	}
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
 		if (opt.screen_clip) {
-			double required_zoom = 1.0;
-			int max_w = (w > scr_width) ? scr_width : w;
-			int max_h = (h > scr_height) ? scr_height : h;
-			feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, max_w, max_h);
-			winwid->w = winwid->im_w * required_zoom;
-			winwid->h = winwid->im_h * required_zoom;
+			double required_zoom = winwid->zoom;
+			if (opt.scale_down && !opt.keep_zoom_vp) {
+				int max_w = (w > scr_width) ? scr_width : w;
+				int max_h = (h > scr_height) ? scr_height : h;
+				feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, max_w, max_h);
+			}
+			int desired_w = winwid->im_w * required_zoom;
+			int desired_h = winwid->im_h * required_zoom;
+			winwid->w = (desired_w > scr_width) ? scr_width : desired_w;
+			winwid->h = (desired_h > scr_height) ? scr_height : desired_h;
 		}
 		if (winwid->full_screen) {
 			XTranslateCoordinates(disp, winwid->win, attributes.root,
