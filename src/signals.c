@@ -28,13 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 void feh_handle_signal(int);
-int sig_exit;
+int sig_exit = 0;
 
 void setup_signal_handlers()
 {
 	struct sigaction feh_sh;
 	sigset_t feh_ss;
-	sig_exit = 0;
 	if (
 		(sigemptyset(&feh_ss) == -1) ||
 		(sigaddset(&feh_ss, SIGUSR1) == -1) ||
@@ -89,6 +88,7 @@ void feh_handle_signal(int signo)
 			if (childpid)
 				killpg(childpid, SIGINT);
 			sig_exit = 128 + signo;
+			return;
 	}
 
 	winwid = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
