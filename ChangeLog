@@ -1,6 +1,15 @@
+Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.27.1
+    * Fix feh occasionally becoming unresponsive when asked to terminate
+      via SIGINT/SIGQUIT/SIGTERM (based on a patch by
+      <https://github.com/giladogit>)
+    * Fix --keep-zoom-vp issues introduced in 2.27
+      (patch by <https://github.com/ulteq>)
+
 Thu, 28 Jun 2018 17:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
-* Releasev v2.27
+* Release v2.27
     * Fix size_to_image ("w") command when both --scale-down and --keep-zoom-vp
       are enabled
     * Fix --auto-zoom not being triggered on window resize events when
