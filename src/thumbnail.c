@@ -149,9 +149,16 @@ void init_thumbnail_mode(void)
 	D(("imlib_create_image(%d, %d)\n", index_image_width, index_image_height));
 	td.im_main = imlib_create_image(index_image_width, index_image_height);
 
-	if (!td.im_main)
-		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
-				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+	if (!td.im_main) {
+		if (index_image_height >= 32768 || index_image_width >= 32768) {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image.\n"
+					"This is probably due to Imlib2 issues when dealing with images larger than 32k x 32k pixels.",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		} else {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		}
+	}
 
 	gib_imlib_image_set_has_alpha(td.im_main, 1);
 
