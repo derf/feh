@@ -394,8 +394,9 @@ Limit (and don't change) the window size.
 Takes an X-style geometry
 .Ar string
 like 640x480 with optional +x+y window offset.
-Note that larger images will be zoomed out to fit, but you can see them at 1:1
-by clicking the zoom button.
+Use
+.Cm --scale-down
+to scale down larger images like in fullscreen mode.
 .
 Also note that this option does not enforce the geometry, changing it by a tiling
 WM or manually is still possible.
