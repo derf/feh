@@ -142,8 +142,12 @@ If the convert binary
 .Pq supplied by ImageMagick
 is available, it also has limited support for many other filetypes, such as
 svg, xcf and otf.
+If dcraw is available,
+.Nm
+also supports RAW files provided by cameras and will display the embedded
+thumbnails.
 Use
-.Cm --magick-timeout Ar num
+.Cm --conversion-timeout Ar num
 with a non-negative value to enable it.
 .
 .
@@ -483,16 +487,15 @@ Don't display images.
 Just print out their names if imlib2 can successfully load them.
 Returns false if at least one image failed to load.
 .
-.It Cm --magick-timeout Ar timeout
+.It Cm --conversion-timeout Ar timeout
 .
 Stop trying to convert unloadable files after
 .Ar timeout
 seconds.
-A negative value disables covert / magick support altogether, a value
-of zero causes
+Negative values disable conversion altogether, zero causes
 .Nm
 to try indefinitely.
-By default, magick support is disabled.
+By default, conversion is disabled.
 .
 .It Cm --max-dimension Ar width No x Ar height
 .
@@ -1902,7 +1905,7 @@ see
 .Aq https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729
 for details.
 Workaround: Use
-.Cm --magick-timeout 5
+.Cm --conversion-timeout 5
 .Pq or some other positive value
 to load gifs with imagemagick instead, or downgrade to giflib 5.1.1, or
 upgrade to giflib 5.1.4.
