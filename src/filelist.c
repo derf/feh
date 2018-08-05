@@ -574,7 +574,7 @@ gib_list *feh_read_filelist(char *filename)
 	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
 	Imlib_Image tmp_im;
 	struct stat st;
-	signed short tmp_magick_timeout;
+	signed short tmp_conversion_timeout;
 
 	if (!filename)
 		return(NULL);
@@ -582,8 +582,8 @@ gib_list *feh_read_filelist(char *filename)
 	/*
 	 * feh_load_image will fail horribly if filename is not seekable
 	 */
-	tmp_magick_timeout = opt.magick_timeout;
-	opt.magick_timeout = -1;
+	tmp_conversion_timeout = opt.conversion_timeout;
+	opt.conversion_timeout = -1;
 	if (!stat(filename, &st) && S_ISREG(st.st_mode)) {
 		tmp_im = imlib_load_image_with_error_return(filename, &err);
 		if (err == IMLIB_LOAD_ERROR_NONE) {
@@ -594,7 +594,7 @@ gib_list *feh_read_filelist(char *filename)
 			return NULL;
 		}
 	}
-	opt.magick_timeout = tmp_magick_timeout;
+	opt.conversion_timeout = tmp_conversion_timeout;
 
 	errno = 0;
 

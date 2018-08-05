@@ -230,7 +230,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		if ((tmpname = feh_http_load_image(file->filename)) == NULL)
 			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	}
-	else if (opt.dcraw_timeout >= 0 && feh_file_is_raw(file->filename)) {
+	else if (opt.conversion_timeout >= 0 && feh_file_is_raw(file->filename)) {
 		image_source = SRC_DCRAW;
 		tmpname = feh_dcraw_load_image(file->filename);
 		if (!tmpname)
@@ -239,7 +239,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	else
 		*im = imlib_load_image_with_error_return(file->filename, &err);
 
-	if (opt.magick_timeout >= 0 && (
+	if (opt.conversion_timeout >= 0 && (
 			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||
 			(err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT))) {
 		image_source = SRC_MAGICK;
@@ -377,7 +377,7 @@ static char *feh_dcraw_load_image(char *filename)
 		dup(fd);
 		close(fd);
 
-		alarm(opt.dcraw_timeout);
+		alarm(opt.conversion_timeout);
 		execlp("dcraw", "dcraw", "-c", "-e", filename, NULL);
 		_exit(1);
 	}
@@ -481,10 +481,10 @@ static char *feh_magick_load_image(char *filename)
 		_exit(1);
 	}
 	else {
-		alarm(opt.magick_timeout);
+		alarm(opt.conversion_timeout);
 		waitpid(childpid, &status, 0);
 		kill(childpid, SIGKILL);
-		if (opt.magick_timeout > 0 && !alarm(0)) {
+		if (opt.conversion_timeout > 0 && !alarm(0)) {
 			unlink(sfn);
 			free(sfn);
 			sfn = NULL;
