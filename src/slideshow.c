@@ -214,7 +214,6 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
-	gib_list *last = NULL;
 	int i = 0;
 	int jmp = 1;
 	/* We can't use filelist_len in the for loop, since that changes when we
@@ -327,16 +326,11 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			break;
 		}
 
-		if (last) {
-			filelist = feh_file_remove_from_list(filelist, last);
-			last = NULL;
-		}
-
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
 			int w = gib_imlib_image_get_width(winwid->im);
 			int h = gib_imlib_image_get_height(winwid->im);
 			if (feh_should_ignore_image(winwid->im)) {
-				last = current_file;
+				filelist = feh_file_remove_from_list(filelist, current_file);
 				continue;
 			}
 			winwid->mode = MODE_NORMAL;
@@ -351,10 +345,8 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			}
 			break;
 		} else
-			last = current_file;
+			filelist = feh_file_remove_from_list(filelist, current_file);
 	}
-	if (last)
-		filelist = feh_file_remove_from_list(filelist, last);
 
 	if (filelist_len == 0)
 		eprintf("No more slides in show");
