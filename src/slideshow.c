@@ -222,6 +222,9 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	 */
 	int our_filelist_len = filelist_len;
 
+	if (opt.slideshow_delay > 0.0)
+		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
+
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
 	if (filelist_len < 2 && opt.cycle_once == 0)
@@ -359,8 +362,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	if (filelist_len == 0)
 		eprintf("No more slides in show");
 
-	if (opt.slideshow_delay > 0.0)
-		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
 	return;
 }
 
