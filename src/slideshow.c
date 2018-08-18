@@ -331,6 +331,17 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		if (current_file == last_file)
 			break;
 
+		/*
+		 * The lines above check whether feh_list_jump had an effect, which
+		 * is especially important when using --on-last-slide=hold. However,
+		 * this only works if the last image in a slide show is loadable -- if
+		 * it isn't, we end up comparing to the wrong last_file and end up in
+		 * the middle of invalid memory by freeing "last" twice.
+		 * The following lines only work around that partially and are hence
+		 * commented out -- they're not a proper bugfix
+		 */
+		//last_file = current_file;
+
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
