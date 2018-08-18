@@ -225,7 +225,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
-	if (filelist_len < 2 && opt.cycle_once == 0)
+	if (filelist_len < 2 && opt.on_last_slide != ON_LAST_SLIDE_QUIT)
 		return;
 
 	/* Ok. I do this in such an odd way to ensure that if the last or first *
@@ -571,10 +571,10 @@ void feh_filelist_image_remove(winwidget winwid, char do_delete)
 
 		doomed = current_file;
 		/*
-		 * work around feh_list_jump exiting if cycle_once is enabled
+		 * work around feh_list_jump exiting if ON_LAST_SLIDE_QUIT is set
 		 * and no further files are left (we need to delete first)
 		 */
-		if (opt.cycle_once && ! doomed->next && do_delete) {
+		if (opt.on_last_slide == ON_LAST_SLIDE_QUIT && ! doomed->next && do_delete) {
 			feh_file_rm_and_free(filelist, doomed);
 			exit(0);
 		}
@@ -650,21 +650,21 @@ gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
 			if (ret->next) {
 				ret = ret->next;
 			} else {
-				if (opt.cycle_once) {
+				if (opt.on_last_slide == ON_LAST_SLIDE_QUIT) {
 					exit(0);
 				}
 				if (opt.randomize) {
 					/* Randomize the filename order */
 					filelist = gib_list_randomize(filelist);
 					ret = filelist;
-				} else if (!opt.no_cycle) {
+				} else if (opt.on_last_slide != ON_LAST_SLIDE_HOLD) {
 					ret = root;
 				}
 			}
 		} else {
 			if (ret->prev)
 				ret = ret->prev;
-			else if (!opt.no_cycle)
+			else if (opt.on_last_slide != ON_LAST_SLIDE_HOLD)
 				ret = gib_list_last(ret);
 		}
 	}
