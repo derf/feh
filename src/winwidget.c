@@ -520,7 +520,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
-	if ((winwid->zoom != 1.0) && !force_alias && !winwid->force_aliasing)
+	if ((winwid->zoom != 1.0 || winwid->has_rotated) && !force_alias && !winwid->force_aliasing)
 		antialias = 1;
 
 	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
