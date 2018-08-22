@@ -105,6 +105,7 @@ struct __fehoptions {
 	double reload;
 	int sort;
 	int version_sort;
+	int center_window_on_resize;
 	int debug;
 	int geom_enabled;
 	int geom_flags;

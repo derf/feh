@@ -817,6 +817,10 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 			winwid->x = tc_x;
 			winwid->y = tc_y;
 			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+		} else if (opt.center_window_on_resize) {
+			winwid->x = (scr_width  - winwid->w) / 2;
+			winwid->y = (scr_height - winwid->h) / 2;
+			XMoveResizeWindow(disp, winwid->win, winwid->x, winwid->y, winwid->w, winwid->h);
 		} else
 			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
 
