@@ -27,6 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+enum on_last_slide_action {
+	ON_LAST_SLIDE_RESUME = 0,
+	ON_LAST_SLIDE_QUIT,
+	ON_LAST_SLIDE_HOLD
+};
+
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
@@ -68,7 +74,7 @@ struct __fehoptions {
 	unsigned char draw_actions;
 	unsigned char draw_info;
 	unsigned char cache_thumbnails;
-	unsigned char cycle_once;
+	unsigned char on_last_slide;
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
 	unsigned char no_fehbg;

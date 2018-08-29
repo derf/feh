@@ -415,6 +415,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
 		{"cache-size"    , 1, 0, 243},
+		{"on-last-slide" , 1, 0, 244},
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
@@ -742,7 +743,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 #endif
 		case 224:
-			opt.cycle_once = 1;
+			weprintf("--cycle-once is deprecated, please use --on-last-slide=quit instead");
+			opt.on_last_slide = ON_LAST_SLIDE_QUIT;
 			break;
 		case 225:
 			opt.xinerama = 0;
@@ -784,6 +786,18 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.cache_size = 0;
 			if (opt.cache_size > 2048)
 				opt.cache_size = 2048;
+			break;
+		case 244:
+			if (!strcmp(optarg, "quit")) {
+				opt.on_last_slide = ON_LAST_SLIDE_QUIT;
+			} else if (!strcmp(optarg, "hold")) {
+				opt.on_last_slide = ON_LAST_SLIDE_HOLD;
+			} else if (!strcmp(optarg, "resume")) {
+				opt.on_last_slide = ON_LAST_SLIDE_RESUME;
+			} else {
+				weprintf("Unrecognized on-last-slide action \"%s\"."
+						"Supported actions: hold, resume, quit\n", optarg);
+			}
 			break;
 		case 245:
 			opt.conversion_timeout = atoi(optarg);
