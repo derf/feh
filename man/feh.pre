@@ -563,8 +563,7 @@ With
 .Nm
 will stop advancing images in this case and continue displaying the first/last
 image, respectively.
-This is intended for linear slide shows, especially automated ones using
-.Cm --slideshow-delay .
+This is intended for linear slide shows.
 Behaviour is unspecified when using other navigation commands than previous
 and next image.
 .
