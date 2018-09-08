@@ -238,9 +238,11 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	if (change == SLIDE_FIRST) {
 		current_file = gib_list_last(filelist);
 		change = SLIDE_NEXT;
+		previous_file = NULL;
 	} else if (change == SLIDE_LAST) {
 		current_file = filelist;
 		change = SLIDE_PREV;
+		previous_file = NULL;
 	}
 
 	/* The for loop prevents us looping infinitely */
@@ -336,7 +338,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			last = NULL;
 		}
 
-		if (opt.on_last_slide == ON_LAST_SLIDE_HOLD &&
+		if (opt.on_last_slide == ON_LAST_SLIDE_HOLD && previous_file &&
 			((current_file == filelist && change == SLIDE_NEXT) ||
 			(previous_file == filelist && change == SLIDE_PREV))) {
 				current_file = previous_file;
