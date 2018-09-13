@@ -1,7 +1,7 @@
 /* index.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -59,7 +59,6 @@ void init_index_mode(void)
 	int lineno;
 	unsigned char trans_bg = 0;
 	int index_image_width, index_image_height;
-	char *s;
 	gib_list *line, *lines;
 
 	if (opt.montage) {
@@ -148,9 +147,16 @@ void init_index_mode(void)
 	index_image_height = h + title_area_h;
 	im_main = imlib_create_image(index_image_width, index_image_height);
 
-	if (!im_main)
-		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
-				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+	if (!im_main) {
+		if (index_image_height >= 32768 || index_image_width >= 32768) {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image.\n"
+					"This is probably due to Imlib2 issues when dealing with images larger than 32k x 32k pixels.",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		} else {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		}
+	}
 
 	if (bg_im)
 		gib_imlib_blend_image_onto_image(im_main, bg_im,
@@ -164,15 +170,9 @@ void init_index_mode(void)
 		gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0, 0, 255);
 	}
 
-	/* Create the window title at this point */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [index mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+		winwid = winwidget_create_from_image(im_main, WIN_TYPE_SINGLE);
+		winwidget_rename(winwid, PACKAGE " [index mode]");
 		winwidget_show(winwid);
 	}
 
@@ -348,7 +348,6 @@ void init_index_mode(void)
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
 
-	free(s);
 	return;
 }
 

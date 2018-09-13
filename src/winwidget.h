@@ -1,7 +1,7 @@
 /* winwidget.h
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -150,12 +150,11 @@ void winwidget_get_geometry(winwidget winwid, int *rect);
 int winwidget_get_width(winwidget winwid);
 int winwidget_get_height(winwidget winwid);
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(gib_list * filename, char *name, char type);
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);
+winwidget winwidget_create_from_file(gib_list * filename, char type);
+winwidget winwidget_create_from_image(Imlib_Image im, char type);
 void winwidget_rename(winwidget winwid, char *newname);
 void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
-void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
 void feh_debug_print_winwid(winwidget winwid);

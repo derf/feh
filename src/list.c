@@ -1,7 +1,7 @@
 /* list.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -92,6 +92,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
+				fflush(stdout);
 				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {
@@ -106,6 +107,7 @@ void real_loadables_mode(int loadable)
 				if (opt.verbose)
 					feh_display_status('.');
 				puts(file->filename);
+				fflush(stdout);
 				feh_action_run(file, opt.actions[0], NULL);
 			}
 			else {

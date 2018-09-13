@@ -1,6 +1,6 @@
 /* signals.c
 
-Copyright (C) 2010 by Daniel Friesel
+Copyright (C) 2010-2018 by Daniel Friesel
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 void feh_handle_signal(int);
+int sig_exit = 0;
 
 void setup_signal_handlers()
 {
@@ -40,7 +41,8 @@ void setup_signal_handlers()
 		(sigaddset(&feh_ss, SIGALRM) == -1) ||
 		(sigaddset(&feh_ss, SIGTERM) == -1) ||
 		(sigaddset(&feh_ss, SIGQUIT) == -1) ||
-		(sigaddset(&feh_ss, SIGINT) == -1))
+		(sigaddset(&feh_ss, SIGINT) == -1) ||
+		(sigaddset(&feh_ss, SIGTTIN) == -1))
 	{
 		weprintf("Failed to set up signal masks");
 		return;
@@ -56,7 +58,8 @@ void setup_signal_handlers()
 		(sigaction(SIGALRM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGTERM, &feh_sh, NULL) == -1) ||
 		(sigaction(SIGQUIT, &feh_sh, NULL) == -1) ||
-		(sigaction(SIGINT, &feh_sh, NULL) == -1))
+		(sigaction(SIGINT, &feh_sh, NULL) == -1) ||
+		(sigaction(SIGTTIN, &feh_sh, NULL) == -1))
 	{
 		weprintf("Failed to set up signal handler");
 		return;
@@ -75,12 +78,17 @@ void feh_handle_signal(int signo)
 			if (childpid)
 				killpg(childpid, SIGINT);
 			return;
+		case SIGTTIN:
+			// we were probably backgrounded while we were running
+			control_via_stdin = 0;
+			return;
 		case SIGINT:
 		case SIGTERM:
 		case SIGQUIT:
 			if (childpid)
 				killpg(childpid, SIGINT);
-			exit(128 + signo);
+			sig_exit = 128 + signo;
+			return;
 	}
 
 	winwid = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);

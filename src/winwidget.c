@@ -1,7 +1,7 @@
 /* winwidget.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -89,7 +89,7 @@ static winwidget winwidget_allocate(void)
 	return(ret);
 }
 
-winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image im, char type)
 {
 	winwidget ret = NULL;
 
@@ -103,11 +103,6 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
 	ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
 
-	if (name)
-		ret->name = estrdup(name);
-	else
-		ret->name = estrdup(PACKAGE);
-
 	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
 		ret->full_screen = True;
 	winwidget_create_window(ret, ret->w, ret->h);
@@ -116,7 +111,7 @@ winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type)
 	return(ret);
 }
 
-winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
+winwidget winwidget_create_from_file(gib_list * list, char type)
 {
 	winwidget ret = NULL;
 	feh_file *file = FEH_FILE(list->data);
@@ -127,12 +122,8 @@ winwidget winwidget_create_from_file(gib_list * list, char *name, char type)
 	ret = winwidget_allocate();
 	ret->file = list;
 	ret->type = type;
-	if (name)
-		ret->name = estrdup(name);
-	else
-		ret->name = estrdup(file->filename);
 
-	if (winwidget_loadimage(ret, file) == 0) {
+	if ((winwidget_loadimage(ret, file) == 0) || feh_should_ignore_image(ret->im)) {
 		winwidget_destroy(ret);
 		return(NULL);
 	}
@@ -340,11 +331,12 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	winwidget_register(ret);
 
 	/* do not scale down a thumbnail list window, only those created from it */
-	if (opt.scale_down && (ret->type != WIN_TYPE_THUMBNAIL)) {
+	if (opt.geom_enabled && (ret->type != WIN_TYPE_THUMBNAIL)) {
 		opt.geom_w = w;
 		opt.geom_h = h;
 		opt.geom_flags |= WidthValue | HeightValue;
 	}
+
 	return;
 }
 
@@ -399,17 +391,18 @@ void winwidget_setup_pixmaps(winwidget winwid)
 			if (winwid->gc == None) {
 				XGCValues gcval;
 
-				if (opt.image_bg == IMAGE_BG_WHITE) {
-					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
+				if (!opt.image_bg || !strcmp(opt.image_bg, "default")) {
+					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
 					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
-				}
-				else if (opt.image_bg == IMAGE_BG_CHECKS) {
+				} else if (!strcmp(opt.image_bg, "checks")) {
 					gcval.tile = feh_create_checks();
 					gcval.fill_style = FillTiled;
 					winwid->gc = XCreateGC(disp, winwid->win, GCTile | GCFillStyle, &gcval);
-				}
-				else {
-					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+				} else {
+					XColor color;
+					Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
+					XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+					gcval.foreground = color.pixel;
 					winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
 				}
 			}
@@ -438,140 +431,65 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int sx, sy, sw, sh, dx, dy, dw, dh;
 	int calc_w, calc_h;
 	int antialias = 0;
-	int need_center = winwid->had_resize;
 
 	if (!winwid->full_screen && resize) {
 		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
 		winwidget_reset_image(winwid);
 	}
 
-	/* bounds checks for panning */
-	if (winwid->im_x > winwid->w)
-		winwid->im_x = winwid->w;
-	if (winwid->im_y > winwid->h)
-		winwid->im_y = winwid->h;
-
 	D(("winwidget_render_image resize %d force_alias %d im %dx%d\n",
 	      resize, force_alias, winwid->im_w, winwid->im_h));
 
+	/* winwidget_setup_pixmaps(winwid) resets the winwid->had_resize flag */
+	int had_resize = winwid->had_resize || resize;
+
 	winwidget_setup_pixmaps(winwid);
+
+	if (had_resize && !opt.keep_zoom_vp && (winwid->type != WIN_TYPE_THUMBNAIL)) {
+		double required_zoom = 1.0;
+		feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
+
+		winwid->zoom = opt.default_zoom ? (0.01 * opt.default_zoom) : 1.0;
+
+		if ((opt.scale_down || (winwid->full_screen && !opt.default_zoom))
+				&& winwid->zoom > required_zoom)
+			winwid->zoom = required_zoom;
+		else if ((opt.zoom_mode && required_zoom > 1)
+				&& (!opt.default_zoom || required_zoom < winwid->zoom))
+			winwid->zoom = required_zoom;
+
+		if (opt.offset_flags & XValue) {
+			if (opt.offset_flags & XNegative) {
+				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.offset_x;
+			} else {
+				winwid->im_x = - opt.offset_x * winwid->zoom;
+			}
+		} else {
+			winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
+		}
+		if (opt.offset_flags & YValue) {
+			if (opt.offset_flags & YNegative) {
+				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.offset_y;
+			} else {
+				winwid->im_y = - opt.offset_y * winwid->zoom;
+			}
+		} else {
+			winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
+		}
+	}
+
+	winwid->had_resize = 0;
+
+	if (opt.keep_zoom_vp)
+		winwidget_sanitise_offsets(winwid);
 
 	if (!winwid->full_screen && ((gib_imlib_image_has_alpha(winwid->im))
 				     || (opt.geom_flags & (WidthValue | HeightValue))
-				     || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
-				     || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
+				     || (winwid->im_x || winwid->im_y)
+				     || (winwid->w > winwid->im_w * winwid->zoom)
+				     || (winwid->h > winwid->im_h * winwid->zoom)
 				     || (winwid->has_rotated)))
 		feh_draw_checks(winwid);
-
-	if (!winwid->full_screen && opt.zoom_mode
-				&& (winwid->zoom == 1.0) && ! (opt.geom_flags & (WidthValue | HeightValue))
-				&& (winwid->w > winwid->im_w) && (winwid->h > winwid->im_h))
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
-
-	/*
-	 * In case of a resize, the geomflags (and im_w, im_h) get updated by
-	 * the ConfigureNotify handler.
-	 */
-	if (need_center && !winwid->full_screen
-				&& (opt.geom_flags & (WidthValue | HeightValue))
-				&& ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
-		feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, winwid->w, winwid->h);
-
-
-	if (resize && (winwid->full_screen
-                     || (opt.geom_flags & (WidthValue | HeightValue)))) {
-		int smaller;	/* Is the image smaller than screen? */
-		int max_w = 0, max_h = 0;
-
-		if (winwid->full_screen) {
-			max_w = scr->width;
-			max_h = scr->height;
-#ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama && xinerama_screens) {
-				max_w = xinerama_screens[xinerama_screen].width;
-				max_h = xinerama_screens[xinerama_screen].height;
-			}
-#endif				/* HAVE_LIBXINERAMA */
-		} else {
-			if (opt.geom_flags & WidthValue) {
-				max_w = opt.geom_w;
-			}
-			if (opt.geom_flags & HeightValue) {
-				max_h = opt.geom_h;
-			}
-		}
-
-		D(("Calculating for fullscreen/fixed geom render\n"));
-		smaller = ((winwid->im_w < max_w)
-			   && (winwid->im_h < max_h));
-
-		if (!smaller || opt.zoom_mode) {
-			double ratio = 0.0;
-
-			/* Image is larger than the screen (so wants shrinking), or it's
-			   smaller but wants expanding to fill it */
-			ratio = feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h, max_w, max_h);
-
-			/* contributed by Jens Laas <jens.laas@data.slu.se>
-			 * What it does:
-			 * zooms images by a fixed amount but never larger than the screen.
-			 *
-			 * Why:
-			 * This is nice if you got a collection of images where some
-			 * are small and can stand a small zoom. Large images are unaffected.
-			 *
-			 * When does it work, and how?
-			 * You have to be in fullscreen mode _and_ have auto-zoom turned on.
-			 *   "feh -FZ --zoom 130 imagefile" will do the trick.
-			 *        -zoom percent - the new switch.
-			 *                        100 = orignal size,
-			 *                        130 is 30% larger.
-			 */
-			if (opt.default_zoom) {
-				double old_zoom = winwid->zoom;
-
-				winwid->zoom = 0.01 * opt.default_zoom;
-				if (opt.default_zoom != 100) {
-					if ((winwid->im_h * winwid->zoom) > max_h)
-						winwid->zoom = old_zoom;
-					else if ((winwid->im_w * winwid->zoom) > max_w)
-						winwid->zoom = old_zoom;
-				}
-
-				winwid->im_x = ((int)
-						(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-				winwid->im_y = ((int)
-						(max_h - (winwid->im_h * winwid->zoom))) >> 1;
-			} else {
-				if (ratio > 1.0) {
-					/* height is the factor */
-					winwid->im_x = 0;
-					winwid->im_y = ((int)
-							(max_h - (winwid->im_h * winwid->zoom))) >> 1;
-				} else {
-					/* width is the factor */
-					winwid->im_x = ((int)
-							(max_w - (winwid->im_w * winwid->zoom))) >> 1;
-					winwid->im_y = 0;
-				}
-			}
-		} else {
-			/* my modification to jens hack, allow --zoom without auto-zoom mode */
-			if (opt.default_zoom) {
-				winwid->zoom = 0.01 * opt.default_zoom;
-			} else {
-				winwid->zoom = 1.0;
-			}
-			/* Just center the image in the window */
-			winwid->im_x = (int) (max_w - (winwid->im_w * winwid->zoom)) >> 1;
-			winwid->im_y = (int) (max_h - (winwid->im_h * winwid->zoom)) >> 1;
-		}
-	}
-	else if (need_center && !winwid->full_screen
-			&& (winwid->type != WIN_TYPE_THUMBNAIL) && !opt.keep_zoom_vp) {
-		winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
-		winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
-	}
 
 	/* Now we ensure only to render the area we're looking at */
 	dx = winwid->im_x;
@@ -610,7 +528,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
-	if ((winwid->zoom != 1.0) && !force_alias && !winwid->force_aliasing)
+	if ((winwid->zoom != 1.0 || winwid->has_rotated) && !force_alias && !winwid->force_aliasing)
 		antialias = 1;
 
 	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
@@ -642,16 +560,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			feh_draw_info(winwid);
 		if (winwid->errstr)
 			feh_draw_errstr(winwid);
-		if (opt.title && (winwid->type != WIN_TYPE_THUMBNAIL_VIEWER) &&
-				(winwid->file != NULL)) {
-			char *s = slideshow_create_name(FEH_FILE(winwid->file->data), winwid);
-			winwidget_rename(winwid, s);
-			free(s);
-		} else if (opt.thumb_title && (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) &&
-				(winwid->file != NULL)) {
-			char *s = thumbnail_create_name(FEH_FILE(winwid->file->data), winwid);
-			winwidget_rename(winwid, s);
-			free(s);
+		if (winwid->file != NULL) {
+			if (opt.title && winwid->type != WIN_TYPE_THUMBNAIL_VIEWER) {
+				winwidget_rename(winwid, feh_printf(opt.title, FEH_FILE(winwid->file->data), winwid));
+			} else if (opt.thumb_title && winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) {
+				winwidget_rename(winwid, feh_printf(opt.thumb_title, FEH_FILE(winwid->file->data), winwid));
+			}
 		}
 	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);
@@ -710,14 +624,15 @@ Pixmap feh_create_checks(void)
 		if (!checks)
 			eprintf("Unable to create a teeny weeny imlib image. I detect problems");
 
-		if (opt.image_bg == IMAGE_BG_WHITE)
-			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 255, 255, 255, 255);
-		else if (opt.image_bg == IMAGE_BG_BLACK)
-			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 0, 0, 0, 255);
-		else {
+		if (!opt.image_bg || !strcmp(opt.image_bg, "default") || !strcmp(opt.image_bg, "checks")) {
 			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, 144, 144, 144, 255);
 			gib_imlib_image_fill_rectangle(checks, 0, 0,  8,  8, 100, 100, 100, 255);
 			gib_imlib_image_fill_rectangle(checks, 8, 8,  8,  8, 100, 100, 100, 255);
+		} else {
+			XColor color;
+			Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
+			XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+			gib_imlib_image_fill_rectangle(checks, 0, 0, 16, 16, color.red, color.green, color.blue, 255);
 		}
 
 		checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
@@ -725,13 +640,6 @@ Pixmap feh_create_checks(void)
 		gib_imlib_free_image_and_decache(checks);
 	}
 	return(checks_pmap);
-}
-
-void winwidget_clear_background(winwidget w)
-{
-	XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
-	/* XClearWindow(disp, w->win); */
-	return;
 }
 
 void feh_draw_checks(winwidget win)
@@ -771,8 +679,6 @@ void winwidget_destroy(winwidget winwid)
 		free(winwid->name);
 	if (winwid->gc)
 		XFreeGC(disp, winwid->gc);
-	if ((winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) && (winwid->file != NULL))
-		gib_list_free(winwid->file);
 	if (winwid->im)
 		gib_imlib_free_image_and_decache(winwid->im);
 	free(winwid);
@@ -968,24 +874,30 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 	D(("   x %d y %d w %d h %d\n", attributes.x, attributes.y, winwid->w,
 		winwid->h));
 
-    if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
-        winwid->had_resize = 1;
-        return;
-    }
+	if ((opt.geom_flags & (WidthValue | HeightValue)) && !force_resize) {
+		winwid->had_resize = 1;
+		return;
+	}
 	if (winwid && ((winwid->w != w) || (winwid->h != h))) {
-		/* winwidget_clear_background(winwid); */
 		if (opt.screen_clip) {
-            winwid->w = (w > scr_width) ? scr_width : w;
-            winwid->h = (h > scr_height) ? scr_height : h;
+			double required_zoom = winwid->zoom;
+			if (opt.scale_down && !opt.keep_zoom_vp) {
+				int max_w = (w > scr_width) ? scr_width : w;
+				int max_h = (h > scr_height) ? scr_height : h;
+				feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, max_w, max_h);
+			}
+			int desired_w = winwid->im_w * required_zoom;
+			int desired_h = winwid->im_h * required_zoom;
+			winwid->w = (desired_w > scr_width) ? scr_width : desired_w;
+			winwid->h = (desired_h > scr_height) ? scr_height : desired_h;
 		}
 		if (winwid->full_screen) {
-            XTranslateCoordinates(disp, winwid->win, attributes.root,
-                        -attributes.border_width -
-                        attributes.x,
-                        -attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
-            winwid->x = tc_x;
-            winwid->y = tc_y;
-            XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
+			XTranslateCoordinates(disp, winwid->win, attributes.root,
+						-attributes.border_width - attributes.x,
+						-attributes.border_width - attributes.y, &tc_x, &tc_y, &dw);
+			winwid->x = tc_x;
+			winwid->y = tc_y;
+			XMoveResizeWindow(disp, winwid->win, tc_x, tc_y, winwid->w, winwid->h);
 		} else
 			XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
 
@@ -1089,7 +1001,7 @@ void winwidget_rename(winwidget winwid, char *newname)
 void winwidget_free_image(winwidget w)
 {
 	if (w->im)
-		gib_imlib_free_image_and_decache(w->im);
+		gib_imlib_free_image(w->im);
 	w->im = NULL;
 	w->im_w = 0;
 	w->im_h = 0;
@@ -1113,10 +1025,12 @@ void feh_debug_print_winwid(winwidget w)
 
 void winwidget_reset_image(winwidget winwid)
 {
-	winwid->zoom = 1.0;
-	winwid->old_zoom = 1.0;
-	winwid->im_x = 0;
-	winwid->im_y = 0;
+	if (!opt.keep_zoom_vp) {
+		winwid->zoom = 1.0;
+		winwid->old_zoom = 1.0;
+		winwid->im_x = 0;
+		winwid->im_y = 0;
+	}
 	winwid->im_angle = 0.0;
 	winwid->has_rotated = 0;
 	return;

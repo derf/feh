@@ -1,7 +1,7 @@
 /* options.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <strings.h>
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
@@ -53,7 +54,7 @@ void init_parse_options(int argc, char **argv)
 	opt.display = 1;
 	opt.aspect = 1;
 	opt.slideshow_delay = 0.0;
-	opt.magick_timeout = -1;
+	opt.conversion_timeout = -1;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
@@ -67,6 +68,7 @@ void init_parse_options(int argc, char **argv)
 	opt.jump_on_resort = 1;
 
 	opt.screen_clip = 1;
+	opt.cache_size = 4;
 #ifdef HAVE_LIBXINERAMA
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
@@ -211,7 +213,7 @@ static void feh_parse_options_from_string(char *opts)
 	char *s;
 	char *t;
 	char last = 0;
-	int inquote = 0;
+	char inquote = 0;
 	int i = 0;
 
 	/* So we don't reinvent the wheel (not again, anyway), we use the
@@ -226,7 +228,7 @@ static void feh_parse_options_from_string(char *opts)
 			eprintf(PACKAGE " does not support more than 64 words per "
 					"theme definition.\n Please shorten your lines.");
 
-		if ((*t == ' ') && !(inquote)) {
+		if ((*t == ' ') && !inquote) {
 			*t = '\0';
 			num++;
 
@@ -237,8 +239,10 @@ static void feh_parse_options_from_string(char *opts)
 
 			list[num - 1] = feh_string_normalize(s);
 			break;
-		} else if (((*t == '\"') || (*t == '\'')) && last != '\\')
-			inquote = !(inquote);
+		} else if ((*t == inquote) && (last != '\\')) {
+			inquote = 0;
+		} else if (((*t == '\"') || (*t == '\'')) && (last != '\\') && !inquote)
+			inquote = *t;
 		last = *t;
 	}
 
@@ -409,8 +413,13 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"xinerama-index", 1, 0, 239},
 		{"insecure"      , 0, 0, 240},
 		{"no-recursive"  , 0, 0, 241},
+		{"cache-size"    , 1, 0, 243},
+		{"on-last-slide" , 1, 0, 244},
+		{"conversion-timeout" , 1, 0, 245},
+		{"version-sort"  , 0, 0, 246},
+		{"offset"        , 1, 0, 247},
 #ifdef HAVE_INOTIFY
-		{"auto-reload"   , 0, 0, 243},
+		{"auto-reload"   , 0, 0, 248},
 #endif
 		{0, 0, 0, 0}
 	};
@@ -430,6 +439,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.debug = 1;
 			break;
 		case '<':
+			opt.filter_by_dimensions = 1;
 			XParseGeometry(optarg, &discard, &discard, &opt.max_width, &opt.max_height);
 			if (opt.max_width == 0)
 				opt.max_width = UINT_MAX;
@@ -437,6 +447,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.max_height = UINT_MAX;
 			break;
 		case '>':
+			opt.filter_by_dimensions = 1;
 			XParseGeometry(optarg, &discard, &discard, &opt.min_width, &opt.min_height);
 			break;
 		case '.':
@@ -449,14 +460,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.actions[0] = estrdup(optarg);
 			break;
 		case 'B':
-			if (!strcmp(optarg, "checks"))
-				opt.image_bg = IMAGE_BG_CHECKS;
-			else if (!strcmp(optarg, "white"))
-				opt.image_bg = IMAGE_BG_WHITE;
-			else if (!strcmp(optarg, "black"))
-				opt.image_bg = IMAGE_BG_BLACK;
-			else
-				weprintf("Unknown argument to --image-bg: %s", optarg);
+			opt.image_bg = estrdup(optarg);
 			break;
 		case 'C':
 			D(("adding fontpath %s\n", optarg));
@@ -592,6 +596,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.filelistfile = estrdup(optarg);
 			break;
 		case 'g':
+			opt.geom_enabled = 1;
 			opt.geom_flags = XParseGeometry(optarg, &opt.geom_x,
 					&opt.geom_y, &opt.geom_w, &opt.geom_h);
 			break;
@@ -692,7 +697,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.index_info = estrdup(optarg);
 			break;
 		case 208:
-			opt.magick_timeout = atoi(optarg);
+			weprintf("--magick-timeout is deprecated, please use --conversion-timeout instead");
+			opt.conversion_timeout = atoi(optarg);
 			break;
 		case 209:
 			opt.actions[1] = estrdup(optarg);
@@ -738,13 +744,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.auto_rotate = 1;
 			break;
 #endif
-#ifdef HAVE_INOTIFY
-		case 243:
-			opt.auto_reload = 1;
-			break;
-#endif
 		case 224:
-			opt.cycle_once = 1;
+			weprintf("--cycle-once is deprecated, please use --on-last-slide=quit instead");
+			opt.on_last_slide = ON_LAST_SLIDE_QUIT;
 			break;
 		case 225:
 			opt.xinerama = 0;
@@ -776,8 +778,44 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 240:
 			opt.insecure_ssl = 1;
+			break;
 		case 241:
 			opt.recursive = 0;
+			break;
+		case 243:
+			opt.cache_size = atoi(optarg);
+			if (opt.cache_size < 0)
+				opt.cache_size = 0;
+			if (opt.cache_size > 2048)
+				opt.cache_size = 2048;
+			break;
+		case 244:
+			if (!strcmp(optarg, "quit")) {
+				opt.on_last_slide = ON_LAST_SLIDE_QUIT;
+			} else if (!strcmp(optarg, "hold")) {
+				opt.on_last_slide = ON_LAST_SLIDE_HOLD;
+			} else if (!strcmp(optarg, "resume")) {
+				opt.on_last_slide = ON_LAST_SLIDE_RESUME;
+			} else {
+				weprintf("Unrecognized on-last-slide action \"%s\"."
+						"Supported actions: hold, resume, quit\n", optarg);
+			}
+			break;
+		case 245:
+			opt.conversion_timeout = atoi(optarg);
+			break;
+		case 246:
+			opt.version_sort = 1;
+			break;
+		case 247:
+			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
+					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
+			break;
+#ifdef HAVE_INOTIFY
+		case 248:
+			opt.auto_reload = 1;
+			break;
+#endif
 		default:
 			break;
 		}

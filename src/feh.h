@@ -1,7 +1,7 @@
 /* feh.h
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -26,6 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef FEH_H
 #define FEH_H
+
+/*
+ * strverscmp(3) is a GNU extension. In most supporting C libraries it
+ * requires _GNU_SOURCE to be defined.
+ */
+#ifdef HAVE_VERSCMP
+#define _GNU_SOURCE
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -107,8 +115,6 @@ enum slide_change { SLIDE_NEXT, SLIDE_PREV, SLIDE_RAND, SLIDE_FIRST, SLIDE_LAST,
 	SLIDE_JUMP_PREV_DIR
 };
 
-enum image_bg { IMAGE_BG_CHECKS = 1, IMAGE_BG_BLACK, IMAGE_BG_WHITE };
-
 #define INPLACE_EDIT_FLIP   -1
 #define INPLACE_EDIT_MIRROR -2
 
@@ -133,14 +139,15 @@ void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
 void feh_clean_exit(void);
+int feh_should_ignore_image(Imlib_Image * im);
 int feh_load_image(Imlib_Image * im, feh_file * file);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change, int render);
 void slideshow_pause_toggle(winwidget w);
-char *slideshow_create_name(feh_file * file, winwidget winwid);
-char *thumbnail_create_name(feh_file * file, winwidget winwid);
 void init_keyevents(void);
 void init_buttonbindings(void);
+void setup_stdin(void);
+void restore_stdin(void);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_event_handle_stdin();
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button);
@@ -203,5 +210,7 @@ extern char *mode;		/* label for the current mode */
 
 /* to terminate long-running children with SIGALRM */
 extern int childpid;
+
+extern unsigned char control_via_stdin;
 
 #endif

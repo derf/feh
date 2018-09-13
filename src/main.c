@@ -1,7 +1,7 @@
 /* main.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -42,12 +42,11 @@ char **cmdargv = NULL;
 int cmdargc = 0;
 char *mode = NULL;
 
-struct termios old_term_settings;
-int control_via_stdin = 0;
-
 int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
+
+	srand(getpid() * time(NULL) % ((unsigned int) -1));
 
 	setup_signal_handlers();
 	init_parse_options(argc, argv);
@@ -89,16 +88,19 @@ int main(int argc, char **argv)
 		feh_wm_set_bg_filelist(opt.bgmode);
 		exit(0);
 	}
-	else {
+	else if (opt.display){
 		/* Slideshow mode is the default. Because it's spiffy */
 		opt.slideshow = 1;
 		init_slideshow_mode();
+	}
+	else {
+		eprintf("Invalid option combination");
 	}
 
 	/* main event loop */
 	while (feh_main_iteration(1));
 
-	return(0);
+	return(sig_exit);
 }
 
 /* Return 0 to stop iterating, 1 if ok to continue. */
@@ -115,7 +117,7 @@ int feh_main_iteration(int block)
 	double t1 = 0.0, t2 = 0.0;
 	fehtimer ft;
 
-	if (window_num == 0)
+	if (window_num == 0 || sig_exit != 0)
 		return(0);
 
 	if (first) {
@@ -124,20 +126,18 @@ int feh_main_iteration(int block)
 		fdsize = xfd + 1;
 		pt = feh_get_time();
 		first = 0;
-		if (isatty(STDIN_FILENO)) {
-			control_via_stdin = 1;
-			struct termios ctrl;
-			if (tcgetattr(STDIN_FILENO, &old_term_settings) == -1)
-				eprintf("tcgetattr failed");
-			if (tcgetattr(STDIN_FILENO, &ctrl) == -1)
-				eprintf("tcgetattr failed");
-			ctrl.c_iflag &= ~(PARMRK | ISTRIP
-					| INLCR | IGNCR | IXON);
-			ctrl.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-			ctrl.c_cflag &= ~(CSIZE | PARENB);
-			ctrl.c_cflag |= CS8;
-			if (tcsetattr(STDIN_FILENO, TCSANOW, &ctrl) == -1)
-				eprintf("tcsetattr failed");
+		/*
+		 * Only accept commands from stdin if
+		 * - stdin is a terminal (otherwise it's probably used as an image / filelist)
+		 * - we aren't running in multiwindow mode (cause it's not clear which
+		 *   window commands should be applied to in that case)
+		 * - we're in the same process group as stdin, AKA we're not running
+		 *   in the background. Background processes are stopped with SIGTTOU
+		 *   if they try to write to stdout or change terminal attributes. They
+		 *   also don't get input from stdin anyway.
+		 */
+		if (isatty(STDIN_FILENO) && !opt.multiwindow && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
+			setup_stdin();
 		}
 	}
 
@@ -150,7 +150,7 @@ int feh_main_iteration(int block)
 		if (ev_handler[ev.type])
 			(*(ev_handler[ev.type])) (&ev);
 
-		if (window_num == 0)
+		if (window_num == 0 || sig_exit != 0)
 			return(0);
 	}
 	XFlush(disp);
@@ -211,7 +211,7 @@ int feh_main_iteration(int block)
 				   in that */
 				feh_handle_timer();
 			}
-			else if (count && (FD_ISSET(0, &fdset)))
+			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
@@ -228,7 +228,7 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
-			else if (count && (FD_ISSET(0, &fdset)))
+			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
@@ -236,7 +236,7 @@ int feh_main_iteration(int block)
 #endif
 		}
 	}
-	if (window_num == 0)
+	if (window_num == 0 || sig_exit != 0)
 		return(0);
 	
 	return(1);
@@ -258,9 +258,16 @@ void feh_clean_exit(void)
 	if(disp)
 		XCloseDisplay(disp);
 
-	if (control_via_stdin)
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
-			eprintf("tcsetattr failed");
+	/*
+	 * Only restore the old terminal settings if
+	 * - we changed them in the first place
+	 * - stdin still is a terminal (it might have been closed)
+	 * - stdin still belongs to us (we might have been detached from the
+	 *   controlling terminal, in that case we probably shouldn't be messing
+	 *   around with it) <https://github.com/derf/feh/issues/324>
+	 */
+	if (control_via_stdin && isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO)))
+		restore_stdin();
 
 	if (opt.filelistfile)
 		feh_write_filelist(filelist, opt.filelistfile);

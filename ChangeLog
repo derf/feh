@@ -1,3 +1,158 @@
+Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.27.1
+    * Fix feh occasionally becoming unresponsive when asked to terminate
+      via SIGINT/SIGQUIT/SIGTERM (based on a patch by
+      <https://github.com/giladogit>)
+    * Fix --keep-zoom-vp issues introduced in 2.27
+      (patch by <https://github.com/ulteq>)
+
+Thu, 28 Jun 2018 17:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.27
+    * Fix size_to_image ("w") command when both --scale-down and --keep-zoom-vp
+      are enabled
+    * Fix --auto-zoom not being triggered on window resize events when
+      --scale-down is enabled
+    * Fix --auto-zoom conflicting with manual zoom
+    * Fix feh_draw_checks not taking the zoom level into account properly
+    * Prevent --zoom <percent> from blocking --scale-down in fullscreen / fixed
+      geometry mode
+    * Prevent --keep-zoom-vp from blocking the dynamic window resizing
+      mechanism
+    * Prevent automatic recalculation of the zoom ratio when --keep_zoom_vp
+      is enabled
+    * All patches provided by <https://github.com/ulteq>. Thanks a lot!
+
+Tue, 26 Jun 2018 10:33:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.4
+    * Correctly save --bg-max in ~/.fehbg (patch by Sebastian Bickerle)
+
+Fri, 18 May 2018 22:58:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.3
+    * Properly escape --image-bg argument in ~/.fehbg (broken in 2.26.1)
+
+Sat, 12 May 2018 16:33:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.2
+    * Show correct filelist position in windows opened from thumbnail mode.
+      Note that navigation is still not supported in those windows
+    * Improve support for key input from stdin
+    * Do not push menus off the screen when hitting screen limits
+
+Fri, 11 May 2018 15:11:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26.1
+    * Restore pre-2.21 ~/.fehbg behaviour. This fixes nondeterministic
+      wallpaper setting when using --bg-* --randomize, issues when specifying
+      --theme both in ~/.fehbg and on the commandline, and possibly other
+      edge cases
+    * Fix /tmp being cluttered with temporary ImageMagick files when using
+      --magick-timeout and a conversion takes longer than allowed
+
+Thu, 19 Apr 2018 21:43:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.26
+    * Save absolute file paths in ~/.fehbg, similar to the behaviour prior to
+      feh 2.21
+    * Add %g (window dimensions) and %Z (precise zoom level) format specifiers
+    * Improve -z/--randomize randomness
+
+Wed, 07 Mar 2018 17:49:52 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.25.1
+    * Fix compilation issues when using CFLAGS=-m64 on some gcc versions
+    * Re-render current image when toggle_fixed_geometry is input
+
+Sun, 04 Mar 2018 08:53:50 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.25
+    * Add --version-sort option to enable natural sorting of file and directory
+      names. This requires a libc with strverscmp support, which is a
+      non-POSIX GNU extension. Use the new build flag `verscmp=0` to disable
+      this feature on systems which do not ship strverscmp
+      (patch by ulteq)
+    * Allow arbitrary X11 colors as -B/--image-bg argument (patch by ulteq)
+    * Improve --image-bg support and transparency handling in --bg-* mode
+    * Respect --geometry settings in --bg-fill mode
+    * Add keybinding toggle_auto_zoom (default "Z") to toggle --auto-zoom
+    * Fix filelists specified by -f/--filelist not being reloaded when using
+      --reload
+
+Mon, 26 Feb 2018 21:41:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.24
+    * Improve performance when using --{max,min}-dimension in slideshow mode
+      (patch by ulteq)
+    * Fix crash when using %m format specifier in slideshow mode
+      (introduced in feh 2.23.1)
+
+
+Mon, 12 Feb 2018 22:11:55 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.23.2
+    * Fix support for nested quotes in .confeg/feh/themes
+
+Wed, 31 Jan 2018 17:38:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.23.1
+    * The Makefile no longer honors CPPFLAGS and instead consistently uses
+      CFLAGS for user-provided include paths
+    * Fix %u format specifier in multiwindow and list modes (patch by ulteq)
+    * Minor performance improvements (patches by ulteq)
+    * Stability improvements when using --magick-timeout (patch by ulteq)
+
+Thu, 28 Dec 2017 19:26:29 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.23
+    * Fix broken thumbnail/index windows when using --scale-down
+    * Use Imlib2 in-memory image cache (default cache size: 4MiB). This allows
+      for significant performance improvements especially in small slideshows
+    * Add --cache-size option to set Imlib2 image cache size
+
+Tue, 07 Nov 2017 17:36:26 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.22.2
+    * Fix HTTPS certificate errors on some systems (broken in 2.22)
+
+Tue, 07 Nov 2017 07:51:48 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.22.1
+    * Allow ~/.fehbg to be sourced (instead of executed) from other shell
+      scripts again (broken in 2.22)
+
+Sat, 04 Nov 2017 14:55:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.22
+    * Add support for CURL_CA_BUNDLE environment variable when loading images
+      via HTTPS
+    * Fix ~/.fehbg not being updated when setting a wallpaper via menu
+      (broken in 2.21)
+
+Sat, 07 Oct 2017 12:14:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.21
+    * Add toggle_fixed_geometry ('g') key binding to toggle window auto-resize
+    * Improve control via terminal input
+    * Fix crash (segmentation fault) when using feh -O in non-index mode
+    * Fix --force-aliasing (and possibly other options) missing from ~/.fehbg
+      when using them for background setting
+
+Thu, 07 Sep 2017 20:20:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.20
+    * Fix clang/gcc warnings (Patches by orbea)
+    * Add support for control via terminal input. feh will read key presses
+      from the controlling terminal and handle them like X11 key presses
+      inside the feh window. Note that at the moment, only lower / upper case
+      ASCII letters and a very small set of additional keys are supported.
+    * Fix broken ImageMagick support (see --magick-timeout) when using some
+      ImageMagick versions <https://github.com/derf/feh/issues/323>
+    * Remove images from the filelist if they were removed by executing a
+      user-defined action <https://github.com/derf/feh/issues/322>
+
 Mon, 21 Aug 2017 19:04:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.3
@@ -129,7 +284,7 @@ Thu, 28 Apr 2016 11:41:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       size which will not be updated when changing images (as was the case in
       feh < 2.15). This may or may not be fixed in the future.
 
-Sat, 16 Apr 2016 18:32:38 +0200  Daniel Frisel <derf+feh@finalrewind.org>
+Sat, 16 Apr 2016 18:32:38 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.2
     * Fix --keep-zoom-vp not keeping the viewport x/y offsets (broken by 2.15)
@@ -701,7 +856,7 @@ Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
       malicious URLs containing shell metacharacters (but only if those URLs
       led to a valid file)
     * Don't add ?randomnumber to URLs when downloading them, it confuses some
-      servers and is not really neccessary in general
+      servers and is not really necessary in general
 
 Thu Jun 10 12:12:04 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
 

@@ -1,7 +1,7 @@
 /* collage.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -41,7 +41,6 @@ void init_collage_mode(void)
 	feh_file *file = NULL;
 	unsigned char trans_bg = 0;
 	gib_list *l, *last = NULL;
-	char *s;
 
 	mode = "collage";
 
@@ -105,15 +104,9 @@ void init_collage_mode(void)
 		gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
 	}
 
-	/* Create the title string */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [collage mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
-
 	if (opt.display) {
-		winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+		winwid = winwidget_create_from_image(im_main, WIN_TYPE_SINGLE);
+		winwidget_rename(winwid, PACKAGE " [collage mode]");
 		winwidget_show(winwid);
 	}
 
@@ -210,7 +203,6 @@ void init_collage_mode(void)
 
 	if (!opt.display)
 		gib_imlib_free_image_and_decache(im_main);
-	free(s);
 
 	return;
 }

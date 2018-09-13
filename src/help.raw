@@ -20,7 +20,7 @@ OPTIONS
  -g, --geometry WxH[+X+Y]  Limit the window size to DIMENSION[+OFFSET]
  -f, --filelist FILE       Load/save images from/to the FILE filelist
  -|, --start-at FILENAME   Start at FILENAME in the filelist
- -p, --preload             Remove unlaodable files from the internal filelist
+ -p, --preload             Remove unloadable files from the internal filelist
                            before attempting to display anything
  -., --scale-down          Automatically scale down images to fit screen size
  -F, --fullscreen          Make the window full screen
@@ -38,7 +38,8 @@ OPTIONS
      --auto-rotate         Rotate images according to Exif info (if compiled with exif=1)
  -^, --title TITLE         Set window title (see FORMAT SPECIFIERS)
  -D, --slideshow-delay NUM Set delay between automatically changing slides
-     --cycle-once          Exit after one loop through the slideshow
+     --on-last-slide quit  Exit after one loop through the slide show
+     --on-last-slide hold  Stop at both ends of the filelist
  -R, --reload NUM          Reload images after NUM seconds
  -k, --keep-http           Keep local copies when viewing HTTP/FTP files
      --insecure            Disable peer/host verification when using HTTPS.
@@ -52,6 +53,7 @@ OPTIONS
                            name, filename, mtime, width, height, pixels, size,
                            or format
  -n, --reverse             Reverse sort order
+     --version-sort        Natural sort of (version) numbers within text
  -A, --action [;]ACTION    Specify action to perform when pressing <return>.
                            Executed by /bin/sh, may contain FORMAT SPECIFIERS
                            reloads image with \";\", switches to next otherwise
@@ -84,7 +86,7 @@ OPTIONS
                            can be used multiple times to add multiple paths.
  -M, --menu-font FONT      Use FONT for the font in menus.
  -B, --image-bg STYLE      Set background for transparent images and the like.
-                           Accepted values: white, black, default
+                           Accepted values: default, checks, or a XColor (eg. #428bdd)
  -N, --no-menus            Don't load or show any menus.
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
@@ -94,6 +96,7 @@ OPTIONS
      --min-dimension WxH   Only show images with width >= W and height >= H
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
+     --cache-size NUM      imlib cache size in mebibytes (0 .. 2048)
      --auto-reload         automatically reload shown image if file was changed
 
 MONTAGE MODE OPTIONS

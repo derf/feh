@@ -157,7 +157,7 @@ char *feh_unique_filename(char *path, char *basename)
 {
 	char *tmpname;
 	char num[10];
-	char cppid[10];
+	char cppid[12];
 	static long int i = 1;
 	struct stat st;
 	pid_t ppid;
@@ -200,4 +200,27 @@ char *ereadfile(char *path)
 	fclose(fp);
 
 	return estrdup(buffer);
+}
+
+char *shell_escape(char *input)
+{
+	static char ret[1024];
+	unsigned int out = 0, in = 0;
+
+	ret[out++] = '\'';
+	for (in = 0; input[in] && (out < (sizeof(ret) - 7)); in++) {
+		if (input[in] == '\'') {
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+			ret[out++] = '"';
+			ret[out++] = '\'';
+		}
+		else
+			ret[out++] = input[in];
+	}
+	ret[out++] = '\'';
+	ret[out++] = '\0';
+
+	return ret;
 }

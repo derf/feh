@@ -1,3 +1,5 @@
+[![build status](https://travis-ci.org/derf/feh.svg?branch=master)](https://travis-ci.org/derf/feh)
+
 # feh
 Imlib2 based image viewer
 ---
@@ -84,6 +86,7 @@ Available flags are:
 | help | 0 | include help text (refers to the manpage otherwise) |
 | inotify | 0 | enable inotify, needed for `--auto-reload` |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
+| verscmp | 1 | Support naturing sorting (`--version-sort`). Requires a GNU-compatible libc exposing `strverscmp` |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
 So, by default **libcurl** and **Xinerama** are enabled, the rest is disabled.

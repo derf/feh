@@ -5,14 +5,18 @@ app ?= 0
 cam ?= 0
 curl ?= 1
 debug ?= 0
-help ?= 0
-xinerama ?= 1
 exif ?= 0
+help ?= 0
+verscmp ?= 1
+xinerama ?= 1
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
 ICON_PREFIX ?= ${DESTDIR}${PREFIX}/share/icons
 
+# icons in /usr/share/local/icons (and other prefixes != /usr) are not
+# generally supported. So ignore PREFIX and always install icons into
+# /usr/share/icons if the user wants to install feh on their local machine.
 ifeq (${app},1)
 	ICON_PREFIX = /usr/share/icons
 endif
@@ -33,6 +37,9 @@ scalable_icon_dir = ${icon_dir}/scalable/apps
 # default CFLAGS
 CFLAGS ?= -g -O2
 CFLAGS += -Wall -Wextra -pedantic
+
+# Settings for glibc >= 2.19 - may need to be adjusted for other systems
+CFLAGS += -std=c11 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700
 
 ifeq (${curl},1)
 	CFLAGS += -DHAVE_LIBCURL
@@ -55,6 +62,13 @@ endif
 
 ifeq (${stat64},1)
 	CFLAGS += -D_FILE_OFFSET_BITS=64
+endif
+
+ifeq (${verscmp},1)
+	CFLAGS += -DHAVE_VERSCMP
+	MAN_VERSCMP = enabled
+else
+	MAN_VERSCMP = disabled
 endif
 
 ifeq (${xinerama},1)

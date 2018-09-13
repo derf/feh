@@ -1,7 +1,7 @@
 /* imlib.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -61,7 +61,9 @@ int num_xinerama_screens;
 
 int childpid = 0;
 
+static int feh_file_is_raw(char *filename);
 static char *feh_http_load_image(char *url);
+static char *feh_dcraw_load_image(char *filename);
 static char *feh_magick_load_image(char *filename);
 
 #ifdef HAVE_LIBXINERAMA
@@ -131,10 +133,21 @@ void init_x_and_imlib(void)
 	imlib_context_set_operation(IMLIB_OP_COPY);
 	wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
-	/* Initialise random numbers */
-	srand(getpid() * time(NULL) % ((unsigned int) -1));
+	imlib_set_cache_size(opt.cache_size * 1024 * 1024);
 
 	return;
+}
+
+int feh_should_ignore_image(Imlib_Image * im)
+{
+	if (opt.filter_by_dimensions) {
+		unsigned int w = gib_imlib_image_get_width(im);
+		unsigned int h = gib_imlib_image_get_height(im);
+		if (w < opt.min_width || w > opt.max_width || h < opt.min_height || h > opt.max_height) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 int feh_load_image_char(Imlib_Image * im, char *filename)
@@ -202,14 +215,9 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
-	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK } image_source =
-		SRC_IMLIB;
+	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK, SRC_DCRAW } image_source = SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
-
-#ifdef HAVE_LIBEXIF
-	ExifEntry *entry;
-#endif
 
 	D(("filename is %s, image is %p\n", file->filename, im));
 
@@ -222,18 +230,25 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		if ((tmpname = feh_http_load_image(file->filename)) == NULL)
 			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	}
+	else if (opt.conversion_timeout >= 0 && feh_file_is_raw(file->filename)) {
+		image_source = SRC_DCRAW;
+		tmpname = feh_dcraw_load_image(file->filename);
+		if (!tmpname)
+			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+	}
 	else
 		*im = imlib_load_image_with_error_return(file->filename, &err);
 
-	if ((err == IMLIB_LOAD_ERROR_UNKNOWN)
-			|| (err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT)) {
+	if (opt.conversion_timeout >= 0 && (
+			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||
+			(err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT))) {
 		image_source = SRC_MAGICK;
 		tmpname = feh_magick_load_image(file->filename);
 	}
 
-	if ((image_source != SRC_IMLIB) && tmpname) {
+	if (tmpname) {
 		*im = imlib_load_image_with_error_return(tmpname, &err);
-		if (im) {
+		if (!err && im) {
 			real_filename = file->filename;
 			file->filename = tmpname;
 			feh_file_info_load(file, *im);
@@ -242,7 +257,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((image_source == SRC_MAGICK) || !opt.keep_http)
+		if ((image_source != SRC_HTTP) || !opt.keep_http)
 			unlink(tmpname);
 
 		free(tmpname);
@@ -257,6 +272,16 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		D(("Load *failed*\n"));
 		return(0);
 	}
+
+	/*
+	 * By default, Imlib2 unconditionally loads a cached file without checking
+	 * if it was modified on disk. However, feh (or rather its users) should
+	 * expect image changes to appear at the next reload. So we tell Imlib2 to
+	 * always check the file modification time and only use a cached image if
+	 * the mtime was not changed. The performance penalty is usually negligible.
+	 */
+	imlib_context_set_image(*im);
+	imlib_image_set_changes_on_disk();
 
 #ifdef HAVE_LIBEXIF
 	int orientation = 0;
@@ -281,17 +306,41 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	return(1);
 }
 
-static char *feh_magick_load_image(char *filename)
+static int feh_file_is_raw(char *filename)
 {
-	char argv_fd[12];
+	childpid = fork();
+	if (childpid == -1) {
+		perror("fork");
+		return 0;
+	}
+
+	if (childpid == 0) {
+		if (opt.quiet) {
+			int devnull = open("/dev/null", O_WRONLY);
+			dup2(devnull, 1);
+			dup2(devnull, 2);
+		}
+		execlp("dcraw", "dcraw", "-i", filename, NULL);
+		_exit(1);
+	} else {
+		int status;
+		do {
+			waitpid(childpid, &status, WUNTRACED);
+			if (WIFEXITED(status)) {
+				return !WEXITSTATUS(status);
+			}
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	}
+
+	return 0;
+}
+
+static char *feh_dcraw_load_image(char *filename)
+{
 	char *basename;
 	char *tmpname;
 	char *sfn;
-	int fd = -1, devnull = -1;
-	int status;
-
-	if (opt.magick_timeout < 0)
-		return NULL;
+	int fd = -1;
 
 	basename = strrchr(filename, '/');
 
@@ -310,10 +359,97 @@ static char *feh_magick_load_image(char *filename)
 
 	fd = mkstemp(sfn);
 
-	if (fd == -1)
+	if (fd == -1) {
+		free(sfn);
 		return NULL;
+	}
 
-	snprintf(argv_fd, sizeof(argv_fd), "png:fd:%d", fd);
+	childpid = fork();
+	if (childpid == -1) {
+		weprintf("%s: Can't load with dcraw. Fork failed:", filename);
+		unlink(sfn);
+		free(sfn);
+		close(fd);
+		return NULL;
+	} else if (childpid == 0) {
+
+		close(1);
+		dup(fd);
+		close(fd);
+
+		alarm(opt.conversion_timeout);
+		execlp("dcraw", "dcraw", "-c", "-e", filename, NULL);
+		_exit(1);
+	}
+
+	int status;
+	waitpid(-1, &status, 0);
+	if (WIFSIGNALED(status)) {
+		unlink(sfn);
+		free(sfn);
+		sfn = NULL;
+		if (!opt.quiet)
+			weprintf("%s - Conversion took too long, skipping", filename);
+	}
+
+	return sfn;
+}
+
+static char *feh_magick_load_image(char *filename)
+{
+	char *argv_fn;
+	char *basename;
+	char *tmpname;
+	char *sfn;
+	char tempdir[] = "/tmp/.feh-magick-tmp-XXXXXX";
+	int fd = -1, devnull = -1;
+	int status;
+	char created_tempdir = 0;
+
+	basename = strrchr(filename, '/');
+
+	if (basename == NULL)
+		basename = filename;
+	else
+		basename++;
+
+	tmpname = feh_unique_filename("/tmp/", basename);
+
+	if (strlen(tmpname) > (NAME_MAX-6))
+		tmpname[NAME_MAX-7] = '\0';
+
+	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
+	free(tmpname);
+
+	fd = mkstemp(sfn);
+
+	if (fd == -1) {
+		free(sfn);
+		return NULL;
+	}
+
+	/*
+	 * We could use png:fd:(whatever mkstemp returned) as target filename
+	 * for convert, but this seems to be broken in some ImageMagick versions.
+	 * So we resort to png:(sfn) instead.
+	 */
+	argv_fn = estrjoin(":", "png", sfn, NULL);
+
+	/*
+	 * By default, ImageMagick saves (occasionally lots of) temporary files
+	 * in /tmp. It doesn't remove them if it runs into a timeout and is killed
+	 * by us, no matter whether we use SIGINT, SIGTERM or SIGKILL. So, unless
+	 * MAGICK_TMPDIR has already been set by the user, we create our own
+	 * temporary directory for ImageMagick and remove its contents at the end of
+	 * this function.
+	 */
+	if (getenv("MAGICK_TMPDIR") == NULL) {
+		if (mkdtemp(tempdir) == NULL) {
+			weprintf("%s: ImageMagick may leave temporary files in /tmp. mkdtemp failed:", filename);
+		} else {
+			created_tempdir = 1;
+		}
+	}
 
 	if ((childpid = fork()) < 0) {
 		weprintf("%s: Can't load with imagemagick. Fork failed:", filename);
@@ -336,39 +472,58 @@ static char *feh_magick_load_image(char *filename)
 		 */
 		setpgid(0, 0);
 
-		execlp("convert", "convert", filename, argv_fd, NULL);
+		if (created_tempdir) {
+			// no error checking - this is a best-effort code path
+			setenv("MAGICK_TMPDIR", tempdir, 0);
+		}
+
+		execlp("convert", "convert", filename, argv_fn, NULL);
 		_exit(1);
 	}
 	else {
-		alarm(opt.magick_timeout);
+		alarm(opt.conversion_timeout);
 		waitpid(childpid, &status, 0);
-		alarm(0);
-		if (!WIFEXITED(status) || (WEXITSTATUS(status) != 0)) {
-			close(fd);
+		kill(childpid, SIGKILL);
+		if (opt.conversion_timeout > 0 && !alarm(0)) {
 			unlink(sfn);
 			free(sfn);
 			sfn = NULL;
 
 			if (!opt.quiet) {
-				if (WIFSIGNALED(status))
-					weprintf("%s - Conversion took too long, skipping",
-						filename);
+				weprintf("%s: Conversion took too long, skipping", filename);
 			}
-
-			/*
-			 * Reap child.  The previous waitpid call was interrupted by
-			 * alarm, but convert doesn't terminate immediately.
-			 * XXX
-			 * normally, if (WIFSIGNALED(status)) waitpid(childpid, &status, 0);
-			 * would suffice. However, as soon as feh has its own window,
-			 * this doesn't work anymore and the following workaround is
-			 * required. Hm.
-			 */
-			waitpid(-1, &status, 0);
 		}
+		close(fd);
 		childpid = 0;
 	}
 
+	if (created_tempdir) {
+		DIR *dir;
+		struct dirent *de;
+		if ((dir = opendir(tempdir)) == NULL) {
+			weprintf("%s: Cannot remove temporary ImageMagick files from %s:", filename, tempdir);
+		} else {
+			while ((de = readdir(dir)) != NULL) {
+				if (de->d_name[0] != '.') {
+					char *temporary_file_name = estrjoin("/", tempdir, de->d_name, NULL);
+					/*
+					 * We assume that ImageMagick only creates temporary files and
+					 * not directories.
+					 */
+					if (unlink(temporary_file_name) == -1) {
+						weprintf("unlink %s:", temporary_file_name);
+					}
+					free(temporary_file_name);
+				}
+			}
+			if (rmdir(tempdir) == -1) {
+				weprintf("rmdir %s:", tempdir);
+			}
+		}
+		closedir(dir);
+	}
+
+	free(argv_fn);
 	return sfn;
 }
 
@@ -425,6 +580,10 @@ static char *feh_http_load_image(char *url)
 			if (opt.insecure_ssl) {
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+			} else if (getenv("CURL_CA_BUNDLE") != NULL) {
+				// Allow the user to specify custom CA certificates.
+				curl_easy_setopt(curl, CURLOPT_CAINFO,
+						getenv("CURL_CA_BUNDLE"));
 			}
 
 			res = curl_easy_perform(curl);
@@ -459,7 +618,7 @@ static char *feh_http_load_image(char *url)
 char *feh_http_load_image(char *url)
 {
 	weprintf(
-		"Cannot load image %s\n Please recompile with libcurl support",
+		"Cannot load image %s\nPlease recompile feh with libcurl support",
 		url
 	);
 	return NULL;
@@ -675,11 +834,12 @@ void feh_draw_exif(winwidget w)
 
 	fn = feh_load_font(w);
 
-	if (buffer == NULL)
+	if (buffer[0] == '\0')
 	{
 		snprintf(buffer, EXIF_MAX_DATA, "%s", estrdup("Failed to run exif command"));
-		gib_imlib_get_text_size(fn, &buffer[0], NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
-		no_lines = 1;
+		gib_imlib_get_text_size(fn, buffer, NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
+		info_buf[no_lines] = estrdup(buffer);
+		no_lines++;
 	}
 	else
 	{
@@ -1262,7 +1422,7 @@ void feh_draw_actions(winwidget w)
 	int i = 0;
 	int num_actions = 0;
 	int cur_action = 0;
-	char index[2];
+	char index[3];
 	char *line;
 
 	/* Count number of defined actions. This method sucks a bit since it needs

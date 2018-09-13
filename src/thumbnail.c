@@ -1,7 +1,7 @@
 /* thumbnail.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -71,7 +71,6 @@ void init_thumbnail_mode(void)
 	gib_list *l, *last = NULL;
 	int lineno;
 	int index_image_width, index_image_height;
-	char *s;
 	unsigned int thumb_counter = 0;
 	gib_list *line, *lines;
 
@@ -92,6 +91,8 @@ void init_thumbnail_mode(void)
 	td.vertical = 0;
 	td.max_column_w = 0;
 
+	if (!opt.thumb_title)
+		opt.thumb_title = "%n";
 	mode = "thumbnail";
 
 	if (opt.font)
@@ -147,9 +148,16 @@ void init_thumbnail_mode(void)
 	D(("imlib_create_image(%d, %d)\n", index_image_width, index_image_height));
 	td.im_main = imlib_create_image(index_image_width, index_image_height);
 
-	if (!td.im_main)
-		eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
-				index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+	if (!td.im_main) {
+		if (index_image_height >= 32768 || index_image_width >= 32768) {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image.\n"
+					"This is probably due to Imlib2 issues when dealing with images larger than 32k x 32k pixels.",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		} else {
+			eprintf("Failed to create %dx%d pixels (%d MB) index image. Do you have enough RAM?",
+					index_image_width, index_image_height, index_image_width * index_image_height * 4 / (1024*1024));
+		}
+	}
 
 	gib_imlib_image_set_has_alpha(td.im_main, 1);
 
@@ -168,15 +176,10 @@ void init_thumbnail_mode(void)
 				td.h + title_area_h, 0, 0, 0, 255);
 	}
 
-	/* Create title now */
-
-	if (!opt.title)
-		s = estrdup(PACKAGE " [thumbnail mode]");
-	else
-		s = estrdup(feh_printf(opt.title, NULL, NULL));
 
 	if (opt.display) {
-		winwid = winwidget_create_from_image(td.im_main, s, WIN_TYPE_THUMBNAIL);
+		winwid = winwidget_create_from_image(td.im_main, WIN_TYPE_THUMBNAIL);
+		winwidget_rename(winwid, PACKAGE " [thumbnail mode]");
 		winwidget_show(winwid);
 	}
 
@@ -416,7 +419,6 @@ void init_thumbnail_mode(void)
 	}
 
 
-	free(s);
 	return;
 }
 
@@ -772,24 +774,25 @@ int feh_thumbnail_get_generated(Imlib_Image * image, feh_file * file,
 void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 {
 	winwidget thumbwin = NULL;
-	char *s;
+	gib_list *l;
 
-	if (!opt.thumb_title)
-		s = thumbfile->name;
-	else
-		s = feh_printf(opt.thumb_title, thumbfile, NULL);
-	
+	for (l = filelist; l; l = l->next) {
+		if (FEH_FILE(l->data) == thumbfile) {
+			break;
+		}
+	}
+	if (!l) {
+		eprintf("Cannot find %s in filelist, wtf", thumbfile->filename);
+	}
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
 	if (!thumbwin) {
 		thumbwin = winwidget_create_from_file(
-				gib_list_add_front(NULL, thumbfile),
-				s, WIN_TYPE_THUMBNAIL_VIEWER);
+				l,
+				WIN_TYPE_THUMBNAIL_VIEWER);
 		if (thumbwin)
 			winwidget_show(thumbwin);
 	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
-		free(thumbwin->file);
-		thumbwin->file = gib_list_add_front(NULL, thumbfile);
-		winwidget_rename(thumbwin, s);
+		thumbwin->file = l;
 #ifdef HAVE_INOTIFY
         winwidget_inotify_remove(thumbwin);
 #endif
@@ -930,17 +933,4 @@ int feh_thumbnail_setup_thumbnail_dir(void)
 	}
 
 	return status;
-}
-
-char *thumbnail_create_name(feh_file * file, winwidget winwid)
-{
-	char *s = NULL;
-
-	if (!opt.thumb_title) {
-		s = estrdup(file->filename);
-	} else {
-		s = estrdup(feh_printf(opt.thumb_title, file, winwid));
-	}
-
-	return(s);
 }

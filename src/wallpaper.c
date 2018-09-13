@@ -1,7 +1,7 @@
 /* wallpaper.c
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -24,12 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#include <limits.h>
+#include <sys/stat.h>
+
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
 #include "wallpaper.h"
-#include <limits.h>
-#include <sys/stat.h>
+
 Window ipc_win = None;
 Window my_ipc_win = None;
 Atom ipc_atom = None;
@@ -89,7 +91,7 @@ static void feh_wm_set_bg_scaled(Pixmap pmap, Imlib_Image im, int use_filelist,
 		feh_wm_load_next(&im);
 
 	gib_imlib_render_image_on_drawable_at_size(pmap, im, x, y, w, h,
-			1, 0, !opt.force_aliasing);
+			1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -130,7 +132,7 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 		y + ((offset_y > 0) ? offset_y : 0),
 		w,
 		h,
-		1, 0, 0);
+		1, 1, 0);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -158,11 +160,36 @@ static void feh_wm_set_bg_filled(Pixmap pmap, Imlib_Image im, int use_filelist,
 	render_x = (  cut_x ? ((img_w - render_w) >> 1) : 0);
 	render_y = ( !cut_x ? ((img_h - render_h) >> 1) : 0);
 
+	if ((opt.geom_flags & XValue) && cut_x) {
+		if (opt.geom_flags & XNegative) {
+			render_x = img_w - render_w + opt.geom_x;
+		} else {
+			render_x = opt.geom_x;
+		}
+		if (render_x < 0) {
+			render_x = 0;
+		} else if (render_x + render_w > img_w) {
+			render_x = img_w - render_w;
+		}
+	}
+	else if ((opt.geom_flags & YValue) && !cut_x) {
+		if (opt.geom_flags & YNegative) {
+			render_y = img_h - render_h + opt.geom_y;
+		} else {
+			render_y = opt.geom_y;
+		}
+		if (render_y < 0) {
+			render_y = 0;
+		} else if (render_y + render_h > img_h) {
+			render_y = img_h - render_h;
+		}
+	}
+
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		render_x, render_y,
 		render_w, render_h,
 		x, y, w, h,
-		1, 0, !opt.force_aliasing);
+		1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -210,7 +237,7 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 	gib_imlib_render_image_on_drawable_at_size(pmap, im,
 		render_x, render_y,
 		render_w, render_h,
-		1, 0, !opt.force_aliasing);
+		1, 1, !opt.force_aliasing);
 
 	if (use_filelist)
 		gib_imlib_free_image_and_decache(im);
@@ -294,97 +321,30 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
-		gib_list *l;
 
-		/* string for sticking in ~/.fehbg */
-		char *fehbg = NULL;
-		char fehbg_args[512];
-		fehbg_args[0] = '\0';
-		char *argptr = fehbg_args;
 		char *home;
-		char filbuf[4096];
-		char *bgfill = NULL;
-		bgfill = opt.image_bg == IMAGE_BG_WHITE ?  "--image-bg white" : "--image-bg black" ;
-
-#ifdef HAVE_LIBXINERAMA
-		if (opt.xinerama) {
-			if (opt.xinerama_index >= 0) {
-				snprintf(argptr, sizeof(fehbg_args),
-					"--xinerama-index %d", opt.xinerama_index);
-			}
-		}
-		else
-			snprintf(argptr, sizeof(fehbg_args), "--no-xinerama");
-		argptr += strlen(argptr);
-#endif			/* HAVE_LIBXINERAMA */
-		if ((opt.geom_flags & XValue) && (sizeof(fehbg_args) - strlen(fehbg_args) > 60)) {
-			snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), " --geometry %c%d",
-					opt.geom_flags & XNegative ? '-' : '+',
-					opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
-			argptr += strlen(argptr);
-			if (opt.geom_flags & YValue) {
-				snprintf(argptr, sizeof(fehbg_args) - strlen(fehbg_args), "%c%d",
-						opt.geom_flags & YNegative ? '-' : '+',
-						opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
-				argptr += strlen(argptr);
-			}
-		}
 
 		/* local display to set closedownmode on */
 		Display *disp2;
 		Window root2;
 		int depth2;
-		int in, out, w, h;
+		int w, h;
 
 		D(("Falling back to XSetRootWindowPixmap\n"));
 
-		/* Put the filename in filbuf between ' and escape ' in the filename */
-		out = 0;
-
-		if (fil && !use_filelist) {
-			filbuf[out++] = '\'';
-
-			fil = feh_absolute_path(fil);
-
-			for (in = 0; fil[in] && out < 4092; in++) {
-
-				if (fil[in] == '\'')
-					filbuf[out++] = '\\';
-				filbuf[out++] = fil[in];
-			}
-			filbuf[out++] = '\'';
-			free(fil);
-
-		} else {
-			for (l = filelist; l && out < 4092; l = l->next) {
-				filbuf[out++] = '\'';
-
-				fil = feh_absolute_path(FEH_FILE(l->data)->filename);
-
-				for (in = 0; fil[in] && out < 4092; in++) {
-
-					if (fil[in] == '\'')
-						filbuf[out++] = '\\';
-					filbuf[out++] = fil[in];
-				}
-				filbuf[out++] = '\'';
-				filbuf[out++] = ' ';
-				free(fil);
-			}
-		}
-
-
-		filbuf[out++] = 0;
+		XColor color;
+		Colormap cmap = DefaultColormap(disp, DefaultScreen(disp));
+		if (opt.image_bg)
+			XAllocNamedColor(disp, cmap, (char*) opt.image_bg, &color, &color);
+		else
+			XAllocNamedColor(disp, cmap, "black", &color, &color);
 
 		if (scaled) {
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama_index >= 0) {
-				if (opt.image_bg == IMAGE_BG_WHITE)
-					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-				else
-					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+				gcval.foreground = color.pixel;
 				gc = XCreateGC(disp, root, GCForeground, &gcval);
 				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 				XFreeGC(disp, gc);
@@ -403,16 +363,12 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 #endif			/* HAVE_LIBXINERAMA */
 				feh_wm_set_bg_scaled(pmap_d1, im, use_filelist,
 					0, 0, scr->width, scr->height);
-			fehbg = estrjoin(" ", "feh", fehbg_args, "--bg-scale", filbuf, NULL);
 		} else if (centered) {
 
 			D(("centering\n"));
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			if (opt.image_bg == IMAGE_BG_WHITE)
-				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-			else
-				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+			gcval.foreground = color.pixel;
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
@@ -433,18 +389,13 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			XFreeGC(disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_args, bgfill, "--bg-center", filbuf, NULL);
-
 		} else if (filled == 1) {
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama_index >= 0) {
-				if (opt.image_bg == IMAGE_BG_WHITE)
-					gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-				else
-					gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+				gcval.foreground = color.pixel;
 				gc = XCreateGC(disp, root, GCForeground, &gcval);
 				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 				XFreeGC(disp, gc);
@@ -464,15 +415,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				feh_wm_set_bg_filled(pmap_d1, im, use_filelist
 					, 0, 0, scr->width, scr->height);
 
-			fehbg = estrjoin(" ", "feh", fehbg_args, "--bg-fill", filbuf, NULL);
-
 		} else if (filled == 2) {
 
 			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			if (opt.image_bg == IMAGE_BG_WHITE)
-				gcval.foreground = WhitePixel(disp, DefaultScreen(disp));
-			else
-				gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
+			gcval.foreground = color.pixel;
 			gc = XCreateGC(disp, root, GCForeground, &gcval);
 			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
 
@@ -493,29 +439,85 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			XFreeGC(disp, gc);
 
-			fehbg = estrjoin(" ", "feh", fehbg_args, bgfill, "--bg-max", filbuf, NULL);
-
 		} else {
 			if (use_filelist)
 				feh_wm_load_next(&im);
 			w = gib_imlib_image_get_width(im);
 			h = gib_imlib_image_get_height(im);
 			pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
-			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
-			fehbg = estrjoin(" ", "feh --bg-tile", filbuf, NULL);
+			gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 1, 0);
 		}
 
-		if (fehbg && !opt.no_fehbg) {
+		if (!opt.no_fehbg) {
 			home = getenv("HOME");
 			if (home) {
 				FILE *fp;
 				char *path;
+				char *absolute_path;
 				struct stat s;
+				gib_list *filelist_pos = filelist;
 				path = estrjoin("/", home, ".fehbg", NULL);
 				if ((fp = fopen(path, "w")) == NULL) {
 					weprintf("Can't write to %s", path);
 				} else {
-					fprintf(fp, "#!/bin/sh\n%s\n", fehbg);
+					fputs("#!/bin/sh\n", fp);
+					fputs(cmdargv[0], fp);
+					fputs(" --bg-", fp);
+					if (centered)
+						fputs("center", fp);
+					else if (scaled)
+						fputs("scale", fp);
+					else if (filled == 1)
+						fputs("fill", fp);
+					else if (filled == 2)
+						fputs("max", fp);
+					else
+						fputs("tile", fp);
+					if (opt.image_bg) {
+						fputs(" --image-bg ", fp);
+						fputs(shell_escape(opt.image_bg), fp);
+					}
+#ifdef HAVE_LIBXINERAMA
+					if (opt.xinerama) {
+						if (opt.xinerama_index >= 0) {
+							fprintf(fp, " --xinerama-index %d", opt.xinerama_index);
+						}
+					}
+					else {
+						fputs(" --no-xinerama", fp);
+					}
+#endif			/* HAVE_LIBXINERAMA */
+					if (opt.geom_flags & XValue) {
+						fprintf(fp, " --geometry %c%d",
+								opt.geom_flags & XNegative ? '-' : '+',
+								opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
+						if (opt.geom_flags & YValue) {
+							fprintf(fp, "%c%d",
+									opt.geom_flags & YNegative ? '-' : '+',
+									opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
+						}
+					}
+					if (opt.force_aliasing) {
+						fputs(" --force-aliasing", fp);
+					}
+					fputc(' ', fp);
+					if (use_filelist) {
+						for (int i = 0; i < cmdargc; i++) {
+							if (filelist_pos && !strcmp(FEH_FILE(filelist_pos->data)->filename, cmdargv[i])) {
+								/* argument is a file */
+								absolute_path = feh_absolute_path(cmdargv[i]);
+								fputs(shell_escape(absolute_path), fp);
+								filelist_pos = filelist_pos->next;
+								free(absolute_path);
+								fputc(' ', fp);
+							}
+						}
+					} else if (fil) {
+						absolute_path = feh_absolute_path(fil);
+						fputs(shell_escape(absolute_path), fp);
+						free(absolute_path);
+					}
+					fputc('\n', fp);
 					fclose(fp);
 					stat(path, &s);
 					if (chmod(path, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
@@ -525,8 +527,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				free(path);
 			}
 		}
-		
-		free(fehbg);
 
 		/* create new display, copy pixmap to new display */
 		disp2 = XOpenDisplay(NULL);
@@ -779,10 +779,11 @@ void enl_ipc_send(char *str)
 	return;
 }
 
-static sighandler_t *enl_ipc_timeout(int sig)
+void enl_ipc_timeout(int sig)
 {
-	timeout = 1;
-	return((sighandler_t *) sig);
+	if (sig == SIGALRM)
+		timeout = 1;
+	return;
 }
 
 char *enl_wait_for_reply(void)
@@ -842,7 +843,8 @@ char *enl_ipc_get(const char *msg_data)
 char *enl_send_and_wait(char *msg)
 {
 	char *reply = IPC_TIMEOUT;
-	sighandler_t old_alrm;
+	struct sigaction e17_sh, feh_sh;
+	sigset_t e17_ss;
 
 	/*
 	 * Shortcut this func and return IPC_FAKE
@@ -861,7 +863,19 @@ char *enl_send_and_wait(char *msg)
 				sleep(1);
 		}
 	}
-	old_alrm = (sighandler_t) signal(SIGALRM, (sighandler_t) enl_ipc_timeout);
+
+	if ((sigemptyset(&e17_ss) == -1) || sigaddset(&e17_ss, SIGALRM) == -1) {
+		weprintf("Failed to set up temporary E17 signal masks");
+		return reply;
+	}
+	e17_sh.sa_handler = enl_ipc_timeout;
+	e17_sh.sa_mask = e17_ss;
+	e17_sh.sa_flags = 0;
+	if (sigaction(SIGALRM, &e17_sh, &feh_sh) == -1) {
+		weprintf("Failed to set up temporary E17 signal handler");
+		return reply;
+	}
+
 	for (; reply == IPC_TIMEOUT;) {
 		timeout = 0;
 		enl_ipc_send(msg);
@@ -873,6 +887,8 @@ char *enl_send_and_wait(char *msg)
 			ipc_win = None;
 		}
 	}
-	signal(SIGALRM, old_alrm);
+	if (sigaction(SIGALRM, &feh_sh, NULL) == -1) {
+		weprintf("Failed to restore signal handler");
+	}
 	return(reply);
 }

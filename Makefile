@@ -58,18 +58,21 @@ install-doc:
 install-bin:
 	@echo installing executables to ${bin_dir}
 	@mkdir -p ${bin_dir}
-	@cp src/feh ${bin_dir}
+	@cp src/feh ${bin_dir}/feh.tmp
+	@mv ${bin_dir}/feh.tmp ${bin_dir}/feh
 	@chmod 755 ${bin_dir}/feh
 
 install-font:
 	@echo installing fonts to ${font_dir}
 	@mkdir -p ${font_dir}
+	@chmod 755 ${font_dir}
 	@cp share/fonts/* ${font_dir}
 	@chmod 644 ${font_dir}/*
 
 install-img:
 	@echo installing images to ${image_dir}
 	@mkdir -p ${image_dir}
+	@chmod 755 ${image_dir}
 	@cp share/images/* ${image_dir}
 	@chmod 644 ${image_dir}/*
 

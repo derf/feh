@@ -1,7 +1,7 @@
 /* options.h
 
 Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2011 Daniel Friesel.
+Copyright (C) 2010-2018 Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -26,6 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef OPTIONS_H
 #define OPTIONS_H
+
+enum on_last_slide_action {
+	ON_LAST_SLIDE_RESUME = 0,
+	ON_LAST_SLIDE_QUIT,
+	ON_LAST_SLIDE_HOLD
+};
 
 struct __fehoptions {
 	unsigned char multiwindow;
@@ -72,17 +78,18 @@ struct __fehoptions {
 	unsigned char draw_actions;
 	unsigned char draw_info;
 	unsigned char cache_thumbnails;
-	unsigned char cycle_once;
+	unsigned char on_last_slide;
 	unsigned char hold_actions[10];
 	unsigned char text_bg;
-	unsigned char image_bg;
 	unsigned char no_fehbg;
 	unsigned char keep_zoom_vp;
 	unsigned char insecure_ssl;
+	unsigned char filter_by_dimensions;
 
 	char *output_file;
 	char *output_dir;
 	char *bg_file;
+	char *image_bg;
 	char *font;
 	char *title_font;
 	char *title;
@@ -107,12 +114,17 @@ struct __fehoptions {
 	unsigned int thumb_redraw;
 	double reload;
 	int sort;
+	int version_sort;
 	int debug;
+	int geom_enabled;
 	int geom_flags;
 	int geom_x;
 	int geom_y;
 	unsigned int geom_w;
 	unsigned int geom_h;
+	int offset_flags;
+	int offset_x;
+	int offset_y;
 	int default_zoom;
 	int zoom_mode;
 	unsigned char adjust_reload;
@@ -121,6 +133,9 @@ struct __fehoptions {
 	/* signed in case someone wants to invert scrolling real quick */
 	int scroll_step;
 
+	// imlib cache size in mebibytes
+	int cache_size;
+
 	unsigned int min_width, min_height, max_width, max_height;
 
 	unsigned char mode;
@@ -128,7 +143,7 @@ struct __fehoptions {
 
 	double slideshow_delay;
 
-	signed short magick_timeout;
+	signed int conversion_timeout;
 
 	Imlib_Font menu_fn;
 };
@@ -138,80 +153,83 @@ struct __fehkey {
 	unsigned int keystates[3];
 	unsigned int state;
 	unsigned int button;
+	char *name;
 };
 
-struct __fehkb {
-	struct __fehkey menu_close;
-	struct __fehkey menu_parent;
-	struct __fehkey menu_down;
-	struct __fehkey menu_up;
-	struct __fehkey menu_child;
-	struct __fehkey menu_select;
-	struct __fehkey scroll_right;
-	struct __fehkey prev_img;
-	struct __fehkey scroll_left;
-	struct __fehkey next_img;
-	struct __fehkey scroll_up;
-	struct __fehkey scroll_down;
-	struct __fehkey scroll_right_page;
-	struct __fehkey scroll_left_page;
-	struct __fehkey scroll_up_page;
-	struct __fehkey scroll_down_page;
-	struct __fehkey jump_back;
-	struct __fehkey quit;
-	struct __fehkey jump_fwd;
-	struct __fehkey prev_dir;
-	struct __fehkey next_dir;
-	struct __fehkey remove;
-	struct __fehkey delete;
-	struct __fehkey jump_first;
-	struct __fehkey jump_last;
-	struct __fehkey action_0;
-	struct __fehkey action_1;
-	struct __fehkey action_2;
-	struct __fehkey action_3;
-	struct __fehkey action_4;
-	struct __fehkey action_5;
-	struct __fehkey action_6;
-	struct __fehkey action_7;
-	struct __fehkey action_8;
-	struct __fehkey action_9;
-	struct __fehkey zoom_in;
-	struct __fehkey zoom_out;
-	struct __fehkey zoom_default;
-	struct __fehkey zoom_fit;
-	struct __fehkey zoom_fill;
-	struct __fehkey render;
-	struct __fehkey toggle_actions;
-	struct __fehkey toggle_filenames;
+enum key_action {
+	EVENT_menu_close = 0,
+	EVENT_menu_parent,
+	EVENT_menu_down,
+	EVENT_menu_up,
+	EVENT_menu_child,
+	EVENT_menu_select,
+	EVENT_scroll_left,
+	EVENT_scroll_right,
+	EVENT_scroll_down,
+	EVENT_scroll_up,
+	EVENT_scroll_left_page,
+	EVENT_scroll_right_page,
+	EVENT_scroll_down_page,
+	EVENT_scroll_up_page,
+	EVENT_prev_img,
+	EVENT_next_img,
+	EVENT_jump_back,
+	EVENT_jump_fwd,
+	EVENT_prev_dir,
+	EVENT_next_dir,
+	EVENT_jump_random,
+	EVENT_quit,
+	EVENT_close,
+	EVENT_remove,
+	EVENT_delete,
+	EVENT_jump_first,
+	EVENT_jump_last,
+	EVENT_action_0,
+	EVENT_action_1,
+	EVENT_action_2,
+	EVENT_action_3,
+	EVENT_action_4,
+	EVENT_action_5,
+	EVENT_action_6,
+	EVENT_action_7,
+	EVENT_action_8,
+	EVENT_action_9,
+	EVENT_zoom_in,
+	EVENT_zoom_out,
+	EVENT_zoom_default,
+	EVENT_zoom_fit,
+	EVENT_zoom_fill,
+	EVENT_size_to_image,
+	EVENT_render,
+	EVENT_toggle_actions,
+	EVENT_toggle_aliasing,
+	EVENT_toggle_auto_zoom,
 #ifdef HAVE_LIBEXIF
-	struct __fehkey toggle_exif;
+	EVENT_toggle_exif,
 #endif
-	struct __fehkey toggle_info;
-	struct __fehkey toggle_pointer;
-	struct __fehkey toggle_aliasing;
-	struct __fehkey jump_random;
-	struct __fehkey toggle_caption;
-	struct __fehkey toggle_pause;
-	struct __fehkey reload_image;
-	struct __fehkey save_image;
-	struct __fehkey save_filelist;
-	struct __fehkey size_to_image;
-	struct __fehkey toggle_menu;
-	struct __fehkey close;
-	struct __fehkey orient_1;
-	struct __fehkey orient_3;
-	struct __fehkey flip;
-	struct __fehkey mirror;
-	struct __fehkey toggle_fullscreen;
-	struct __fehkey reload_minus;
-	struct __fehkey reload_plus;
-	struct __fehkey toggle_keep_vp;
-	struct __fehkey pan;
-	struct __fehkey zoom;
-	struct __fehkey reload;
-	struct __fehkey blur;
-	struct __fehkey rotate;
+	EVENT_toggle_filenames,
+	EVENT_toggle_info,
+	EVENT_toggle_pointer,
+	EVENT_toggle_caption,
+	EVENT_toggle_pause,
+	EVENT_toggle_menu,
+	EVENT_toggle_fullscreen,
+	EVENT_reload_image,
+	EVENT_save_image,
+	EVENT_save_filelist,
+	EVENT_orient_1,
+	EVENT_orient_3,
+	EVENT_flip,
+	EVENT_mirror,
+	EVENT_reload_minus,
+	EVENT_reload_plus,
+	EVENT_toggle_keep_vp,
+	EVENT_toggle_fixed_geometry,
+	EVENT_pan,
+	EVENT_zoom,
+	EVENT_blur,
+	EVENT_rotate,
+	EVENT_LIST_END
 };
 
 void init_parse_options(int argc, char **argv);
