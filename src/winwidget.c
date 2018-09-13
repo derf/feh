@@ -792,13 +792,13 @@ void winwidget_inotify_remove(winwidget winwid)
 #endif
 
 #ifdef HAVE_INOTIFY
-void winwidget_inotify_add(winwidget winwid, char *filename)
+void winwidget_inotify_add(winwidget winwid, feh_file * file)
 {
     if (opt.auto_reload) {
-        D(("Adding inotify watch for %s\n", filename));
-        winwid->inotify_wd = inotify_add_watch(opt.inotify_fd,
-                                               filename,
-                                               IN_CLOSE_WRITE);
+        D(("Adding inotify watch for %s\n", file->filename));
+        char dir[PATH_MAX];
+        feh_file_dirname(dir, file, PATH_MAX);
+        winwid->inotify_wd = inotify_add_watch(opt.inotify_fd, dir, IN_CLOSE_WRITE | IN_MOVED_TO);
         if (winwid->inotify_wd < 0)
             eprintf("inotify_add_watch failed");
     }
@@ -824,12 +824,13 @@ void feh_event_handle_inotify(void)
         for (int j = 0; j < window_num; j++) {
             if(windows[j]->inotify_wd == event->wd) {
                 if (event->mask & IN_IGNORED) {
-                    D(("Inotify watch was implicitely removed\n"));
-                    feh_reload_image(windows[j], 0, 1);
-                    winwidget_inotify_add(windows[j], FEH_FILE(windows[j]->file->data)->filename);
-                } else if (event->mask & IN_CLOSE_WRITE) {
-                    D(("Inotify says file changed\n"));
-                    feh_reload_image(windows[j], 0, 1);
+                    D(("inotify watch was implicitely removed\n"));
+                    windows[j]->inotify_wd = -1;
+                } else if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO)) {
+                    if (strcmp(event->name, FEH_FILE(windows[j]->file->data)->name) == 0) {
+                        D(("inotify says file changed\n"));
+                        feh_reload_image(windows[j], 0, 1);
+                    }
                 }
                 break;
             }
@@ -878,7 +879,7 @@ int winwidget_loadimage(winwidget winwid, feh_file * file)
     int res = feh_load_image(&(winwid->im), file);
 #ifdef HAVE_INOTIFY
     if (res) {
-        winwidget_inotify_add(winwid, file->filename);
+        winwidget_inotify_add(winwid, file);
     }
 #endif
 	return(res);

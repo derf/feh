@@ -124,7 +124,7 @@ struct __winwidget {
 
 #ifdef HAVE_INOTIFY
 void winwidget_inotify_remove(winwidget winwid);
-void winwidget_inotify_add(winwidget winwid, char *filename);
+void winwidget_inotify_add(winwidget winwid, feh_file * file);
 #endif
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);
