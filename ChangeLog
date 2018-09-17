@@ -1,3 +1,17 @@
+Mon, 17 Sep 2018 21:17:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.28
+    * Decrease loading time for RAW images by utilizing dcraw to display the
+      embedded JPEG preview (patch by <https://github.com/ulteq>)
+    * Rename --magick-timeout to --conversion-timeout. --magick-timeout is
+      now deprecated and will be removed in a future release
+    * Fix unintened aliasing in rotated images whose rotation is not a
+      multiple of 90 degrees (patch by <https://github.com/ulteq>)
+    * New option: --on-last-slide=hold|quit|resume.
+      hold replaces --no-cycle (which is now deprecated), quit will cause feh
+      to quit after the last slide (patch by <https://github.com/ulteq>),
+      resume is the default (continue at the first image)
+
 Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.27.1

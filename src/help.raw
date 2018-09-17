@@ -91,8 +91,8 @@ OPTIONS
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
  -Y, --hide-pointer        Hide the pointer
-     --magick-timeout INT  Load unknown files with ImageMagick, timeout after
-                           INT seconds (0: no timeout)
+     --conversion-timeout  INT  Load unknown files with dcraw or ImageMagick,
+                           timeout after INT seconds (0: no timeout)
      --min-dimension WxH   Only show images with width >= W and height >= H
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
