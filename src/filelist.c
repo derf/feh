@@ -37,6 +37,7 @@ gib_list *original_file_items = NULL; /* original file items from argv */
 int filelist_len = 0;
 gib_list *current_file = NULL;
 extern int errno;
+extern int sig_exit; /* exit flag from signal handler */
 
 static gib_list *rm_filelist = NULL;
 
@@ -327,6 +328,10 @@ gib_list *feh_file_info_preload(gib_list * list)
 				feh_display_status('s');
 		} else if (opt.verbose)
 			feh_display_status('.');
+		if (sig_exit) {
+			feh_display_status(0);
+			exit(sig_exit);
+		}
 	}
 	if (opt.verbose)
 		feh_display_status(0);
