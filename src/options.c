@@ -419,6 +419,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
+		{"disable_click_to_advance", 0, 0, 248},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -808,6 +809,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 247:
 			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
 					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
+			break;
+		case 248:
+			opt.disable_click_to_advance = 1;
 			break;
 		default:
 			break;
