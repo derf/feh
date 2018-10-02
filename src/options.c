@@ -354,7 +354,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"title"         , 1, 0, '^'},
 		{"alpha"         , 1, 0, 'a'},
 		{"bg"            , 1, 0, 'b'},
-		{"collage"       , 0, 0, 'c'},
 		{"draw-filename" , 0, 0, 'd'},
 		{"font"          , 1, 0, 'e'},
 		{"filelist"      , 1, 0, 'f'},
@@ -577,9 +576,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'b':
 			opt.bg = 1;
 			opt.bg_file = estrdup(optarg);
-			break;
-		case 'c':
-			opt.collage = 1;
 			break;
 		case 'd':
 			opt.draw_filename = 1;
@@ -853,17 +849,11 @@ static void check_options(void)
 		}
 	}
 
-	if ((opt.index + opt.collage) > 1) {
-		weprintf("you can't use collage mode and index mode together.\n"
-				"   I'm going with index");
-		opt.collage = 0;
-	}
-
 	if (opt.full_screen && opt.multiwindow) {
 		eprintf("You cannot combine --fullscreen with --multiwindow");
 	}
 
-	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
+	if (opt.list && (opt.multiwindow || opt.index)) {
 		eprintf("You cannot combine --list with other modes");
 	}
 
