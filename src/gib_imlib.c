@@ -717,3 +717,15 @@ void gib_imlib_image_orientate(Imlib_Image im, int orientation)
   imlib_context_set_image(im);
   imlib_image_orientate(orientation);
 }
+
+void gib_imlib_image_flip_horizontal(Imlib_Image im)
+{
+  imlib_context_set_image(im);
+  imlib_image_flip_horizontal();
+}
+
+void gib_imlib_image_flip_vertical(Imlib_Image im)
+{
+  imlib_context_set_image(im);
+  imlib_image_flip_vertical();
+}
