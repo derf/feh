@@ -252,7 +252,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	XGCValues gcval;
 	GC gc;
 	char bgname[20];
-	int num = (int) rand();
+	int num = (int) random();
 	char bgfil[4096];
 	char sendbuf[4096];
 

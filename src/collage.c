@@ -145,8 +145,8 @@ void init_collage_mode(void)
 			}
 
 			/* pick random coords for thumbnail */
-			xxx = ((w - www) * ((double) rand() / RAND_MAX));
-			yyy = ((h - hhh) * ((double) rand() / RAND_MAX));
+			xxx = ((w - www) * ((double) random() / RAND_MAX));
+			yyy = ((h - hhh) * ((double) random() / RAND_MAX));
 			D(("image going on at x=%d, y=%d\n", xxx, yyy));
 
 			im_thumb = gib_imlib_create_cropped_scaled_image(im_temp,
