@@ -294,10 +294,22 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	}
 	file->ed = exifData;
 
-	if (orientation == 3)
+	if (orientation == 2)
+		gib_imlib_image_flip_horizontal(*im);
+	else if (orientation == 3)
 		gib_imlib_image_orientate(*im, 2);
+	else if (orientation == 4)
+		gib_imlib_image_flip_vertical(*im);
+	else if (orientation == 5) {
+		gib_imlib_image_orientate(*im, 3);
+		gib_imlib_image_flip_vertical(*im);
+	}
 	else if (orientation == 6)
 		gib_imlib_image_orientate(*im, 1);
+	else if (orientation == 7) {
+		gib_imlib_image_orientate(*im, 3);
+		gib_imlib_image_flip_horizontal(*im);
+	}
 	else if (orientation == 8)
 		gib_imlib_image_orientate(*im, 3);
 #endif
