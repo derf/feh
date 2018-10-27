@@ -1,3 +1,11 @@
+Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.28.1
+    * Do not ignore quit signals (SIGTERM, SIGINT, SIGQUIT) during preload
+    * Add missing EXIF orientations 2, 4, 5, and 7 (when built with exif=1,
+      patch by Olof-Joachim Frahm)
+    * Improve randomness on non-glibc systems
+
 Mon, 17 Sep 2018 21:17:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.28
