@@ -78,7 +78,7 @@ Available flags are:
 
 | Flag | Default value | Description |
 | :--- | :---: | :--- |
-| app  | 0 | install icons to /usr/share, regardless of `DESTDIR` and `PREFIX, and call gtk-update-icon-cache afterwards |
+| app  | 0 | install icons to /usr/share, regardless of `DESTDIR` and `PREFIX`, and call gtk-update-icon-cache afterwards |
 | curl | 1 | use libcurl to view http:// and similar images |
 | debug | 0 | debug build, enables `--debug` |
 | exif | 0 | Builtin EXIF tag display support |
@@ -87,7 +87,8 @@ Available flags are:
 | verscmp | 1 | Support naturing sorting (`--version-sort`). Requires a GNU-compatible libc exposing `strverscmp` |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
-So, by default **libcurl** and **Xinerama** are enabled, the rest is disabled.
+So, by default **libcurl**, **verscmp**, and **Xinerama** are enabled.
+All other flags are disabled.
 
 Additionally, the standard variables `PREFIX` and `DESTDIR` are supported.
 
