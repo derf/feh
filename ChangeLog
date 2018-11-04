@@ -1,6 +1,13 @@
 git HEAD
 
     * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
+    * Remove deprecated collage mode (-c/--collage)
+    * flip and rotation (keys "<", ">", "|", and "_") no longer change the
+      underlying file. This leaves delete ("Ctrl+Delete") as the only
+      destructive action which is enabled by default
+    * Add option --edit, which makes flip and rotation change the underlying
+      file as well as the displayed image. This was the default behaviour in
+      feh 1.x and 2.x
 
 Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
