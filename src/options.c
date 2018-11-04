@@ -398,6 +398,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-fill"       , 0, 0, 218},
 		{"bg-max"        , 0, 0, 219},
 		{"no-jump-on-resort", 0, 0, 220},
+		{"edit"          , 0, 0, 221},
 #ifdef HAVE_LIBEXIF
 		{"draw-exif"     , 0, 0, 223},
 		{"auto-rotate"   , 0, 0, 242},
@@ -729,6 +730,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 220:
 			opt.jump_on_resort = 0;
+			break;
+		case 221:
+			opt.edit = 1;
 			break;
 #ifdef HAVE_LIBEXIF
 		case 223:
