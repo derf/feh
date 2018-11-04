@@ -1204,7 +1204,7 @@ void feh_edit_inplace(winwidget w, int op)
 	if (!w->file || !w->file->data || !FEH_FILE(w->file->data)->filename)
 		return;
 
-	if (opt.no_inplace_edit) {
+	if (!opt.edit) {
 		imlib_context_set_image(w->im);
 		if (op == INPLACE_EDIT_FLIP)
 			imlib_image_flip_vertical();

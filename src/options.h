@@ -80,6 +80,7 @@ struct __fehoptions {
 	unsigned char keep_zoom_vp;
 	unsigned char insecure_ssl;
 	unsigned char filter_by_dimensions;
+	unsigned char edit;
 
 	char *output_file;
 	char *output_dir;
@@ -110,7 +111,6 @@ struct __fehoptions {
 	double reload;
 	int sort;
 	int version_sort;
-	int no_inplace_edit;
 	int debug;
 	int geom_enabled;
 	int geom_flags;
