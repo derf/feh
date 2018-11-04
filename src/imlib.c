@@ -1213,8 +1213,12 @@ void feh_edit_inplace(winwidget w, int op)
 		else {
 			imlib_image_orientate(op);
 			tmp = w->im_w;
-			FEH_FILE(w->file->data)->info->width = w->im_w = w->im_h;
-			FEH_FILE(w->file->data)->info->height = w->im_h = tmp;
+			w->im_w = w->im_h;
+			w->im_h = tmp;
+			if (FEH_FILE(w->file->data)->info) {
+				FEH_FILE(w->file->data)->info->width = w->im_w;
+				FEH_FILE(w->file->data)->info->height = w->im_h;
+			}
 		}
 		winwidget_render_image(w, 1, 0);
 		return;
@@ -1257,8 +1261,12 @@ void feh_edit_inplace(winwidget w, int op)
 		else {
 			imlib_image_orientate(op);
 			tmp = w->im_w;
-			FEH_FILE(w->file->data)->info->width = w->im_w = w->im_h;
-			FEH_FILE(w->file->data)->info->height = w->im_h = tmp;
+			w->im_w = w->im_h;
+			w->im_h = tmp;
+			if (FEH_FILE(w->file->data)->info) {
+				FEH_FILE(w->file->data)->info->width = w->im_w;
+				FEH_FILE(w->file->data)->info->height = w->im_h;
+			}
 		}
 		im_weprintf(w, "unable to edit in place. Changes have not been saved.");
 		winwidget_render_image(w, 1, 0);
