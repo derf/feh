@@ -688,16 +688,33 @@ in paused mode.
 .
 .It Cm -S , --sort Ar sort_type
 .
-The file list may be sorted according to image parameters.
+Sort file list according to image parameters.
 Allowed sort types are: name, filename, dirname, mtime, width, height, pixels,
 size, format.
-For sort modes other than name, filename, dirname, or mtime, a preload run will
-be necessary, causing a delay proportional to the number of images in the list.
+For sort modes other than name, filename, dirname, or mtime, a preload run is
+necessary, causing a delay proportional to the number of images in the list.
 .
 .Pp
 .
-The mtime sort mode sorts images by most recently modified.
-To sort by oldest first, reverse the filelist with --reverse.
+.Cm mtime
+starts with the most recently modified image,
+.Cm width , height , pixels
+and
+.Cm size
+start with the smallest.
+Use
+.Cm --reverse
+to sort by oldest or largest first.
+.
+.Pp
+.
+For
+.Cm name , filename ,
+and
+.Cm dirname ,
+you can use
+.Cm --version-sort
+to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
 .It Cm -| , --start-at Ar filename
 .
@@ -781,11 +798,17 @@ output version information and exit.
 .It Cm --version-sort
 .
 .Pq optional feature, $MAN_VERSCMP$ in this build
-Use natural sorting for file and directory names.
+When combined with
+.Cm --sort name , --sort filename ,
+or
+.Cm --sort dirname :
+use natural sorting for file and directory names.
 In this mode, filenames are sorted as an ordinary human would expect, e.g.
 .Qq 2.jpg
 comes before
 .Qq 10.jpg .
+Note that this option only has an effect when a sort mode is set using
+.Cm --sort .
 .
 .It Cm --xinerama-index Ar screen
 .
