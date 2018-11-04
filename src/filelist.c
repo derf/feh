@@ -491,7 +491,7 @@ void feh_prepare_filelist(void)
 	 * we can create a properly sized thumbnail list.
 	 */
 	if (opt.list || opt.preload || opt.customlist || (opt.sort > SORT_MTIME)
-			|| (opt.filter_by_dimensions && (opt.index || opt.collage || opt.thumbs || opt.bgmode))) {
+			|| (opt.filter_by_dimensions && (opt.index || opt.thumbs || opt.bgmode))) {
 		/* For these sort options, we have to preload images */
 		filelist = feh_file_info_preload(filelist);
 		if (!gib_list_length(filelist))

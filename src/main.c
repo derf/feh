@@ -59,8 +59,6 @@ int main(int argc, char **argv)
 
 	if (opt.index)
 		init_index_mode();
-	else if (opt.collage)
-		init_collage_mode();
 	else if (opt.multiwindow)
 		init_multiwindow_mode();
 	else if (opt.list || opt.customlist)
