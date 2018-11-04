@@ -289,6 +289,12 @@ Show overlay texts
 .Pq as created by Cm --draw-filename No et al
 on a semi-transparent background to improve their readability
 .
+.It Cm --edit
+.
+Enable basic editing of files. This makes rotation and mirroring
+.Pq bound to Qo < Qc , Qo > Qc , Qo | Qc , and Qo _ Qc by default
+change the underlying file and not just its displayed content.
+.
 .It Cm -f , --filelist Ar file
 .
 This option is similar to the playlists used by music software.
@@ -1525,8 +1531,14 @@ are grouped together.
 .
 .It < , > Bq orient_3 , orient_1
 .
-In place editing - rotate the image 90 degrees (counter)clockwise.
-The rotation is lossless, but may create artifacts in some image corners when
+rotate the image 90 degrees (counter)clockwise.
+.
+.Pp
+.
+When
+.Cm --edit
+is used, this also rotates the image in the underlying file.
+Rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.
 Rotating in the reverse direction will make them go away.
 See
@@ -1546,11 +1558,19 @@ for details on how to change this flag.
 .
 .It _ Bq flip
 .
-In place editing - vertical flip
+Vertically flip image.
+When
+.Cm --edit
+is used, this also flips the image in the underlying file
+.Pq see above .
 .
 .It | Bq mirror
 .
-In place editing - horizontal flip
+Horizontally flip image.
+When
+.Cm --edit
+is used, this also flips the image in the underlying file
+.Pq see above .
 .
 .It 0 .. 9 Bq action_0 .. action_9
 .
