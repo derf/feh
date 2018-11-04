@@ -79,7 +79,6 @@ Available flags are:
 | Flag | Default value | Description |
 | :--- | :---: | :--- |
 | app  | 0 | install icons to /usr/share, regardless of `DESTDIR` and `PREFIX, and call gtk-update-icon-cache afterwards |
-| cam  | 0 | install deprecated feh-cam und gen-cam-menu scripts |
 | curl | 1 | use libcurl to view http:// and similar images |
 | debug | 0 | debug build, enables `--debug` |
 | exif | 0 | Builtin EXIF tag display support |

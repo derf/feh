@@ -20,7 +20,7 @@ SKIP: {
 		skip( 'mandoc not installed', 3 );
 	}
 
-	for my $file ( 'feh', 'feh-cam', 'gen-cam-menu' ) {
+	for my $file ('feh') {
 		qx{mandoc -Tlint -Werror man/${file}.1};
 		is( $?, 0, "${file}.1: Valid mdoc syntax" );
 	}

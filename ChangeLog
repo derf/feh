@@ -1,3 +1,7 @@
+git HEAD
+
+    * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
+
 Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.28.1
