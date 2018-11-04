@@ -36,7 +36,6 @@ enum on_last_slide_action {
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
-	unsigned char collage;
 	unsigned char index;
 	unsigned char thumbs;
 	unsigned char slideshow;
