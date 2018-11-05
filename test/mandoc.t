@@ -17,7 +17,7 @@ SKIP: {
 
 	if ( not $mandoc_present ) {
 		diag('mandoc not installed, test skipped. This is NOT fatal.');
-		skip( 'mandoc not installed', 3 );
+		skip( 'mandoc not installed', 1 );
 	}
 
 	for my $file ('feh') {
