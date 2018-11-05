@@ -96,7 +96,6 @@ struct __fehoptions {
 	char *filelistfile;
 	char *menu_font;
 	char *customlist;
-	char *menu_bg;
 	char *caption_path;
 	char *start_list_at;
 	char *info_cmd;

@@ -41,11 +41,6 @@ booth --full-screen --hide-pointer --slideshow-delay 20
 # Screw xscreensaver, use feh =)
 screensave --recursive --full-screen --randomize --slideshow-delay 10 --hide-pointer
 
-# Different menus
-aqua --menu-bg /usr/share/feh/images/menubg_aqua.png
-sky --menu-bg /usr/share/feh/images/menubg_sky.png
-black --menu-bg /usr/share/feh/images/menubg_black.png
-
 # Some more examples, used by the feh developer
 
 rfs --full-screen --hide-pointer --auto-zoom --randomize

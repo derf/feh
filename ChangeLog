@@ -3,6 +3,7 @@ git HEAD
     * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
     * Remove deprecated collage mode (-c/--collage)
     * Remove deprecated option --cycle-once (use --on-last-slide=quit instead)
+    * Remove deprecated option --menu-bg
     * flip and rotation (keys "<", ">", "|", and "_") no longer change the
       underlying file. This leaves delete ("Ctrl+Delete") as the only
       destructive action which is enabled by default

@@ -62,7 +62,6 @@ void init_parse_options(int argc, char **argv)
 	opt.scroll_step = 20;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
-	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.max_height = opt.max_width = UINT_MAX;
 
 	opt.start_list_at = NULL;
@@ -319,7 +318,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
-		{"menu-bg"       , 1, 0, ')'},
 		{"debug"         , 0, 0, '+'},
 		{"scale-down"    , 0, 0, '.'},
 		{"max-dimension" , 1, 0, '<'},
@@ -426,11 +424,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		D(("Got option, getopt calls it %d, or %c\n", optch, optch));
 		switch (optch) {
 		case 0:
-			break;
-		case ')':
-			free(opt.menu_bg);
-			opt.menu_bg = estrdup(optarg);
-			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
 		case '+':
 			opt.debug = 1;

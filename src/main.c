@@ -216,7 +216,6 @@ void feh_clean_exit(void)
 {
 	delete_rm_files();
 
-	free(opt.menu_bg);
 	free(opt.menu_font);
 
 	if(disp)
