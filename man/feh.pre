@@ -382,8 +382,7 @@ only affects smaller images and never scales larger than necessary to fit the
 screen size.
 The only exception is a
 .Ar zoom
-of 100, in which case images will always be shown at 100% zoom, no matter
-their dimensions.
+of 100, in which case images will always be shown at 100% zoom.
 .
 .Pp
 .
@@ -394,17 +393,17 @@ The thumbnail list itself will still be windowed.
 .
 .It Cm -g , --geometry Ar width Cm x Ar height | Cm + Ar x Cm + Ar y | Ar width Cm x Ar height Cm + Ar x Cm + Ar y
 .
-Limit (and don't change) the window size.
-Takes an X-style geometry
-.Ar string
-like 640x480 with optional +x+y window offset.
-Use
+Use a fixed window size as specified in the X-style geometry
+.Ar string ,
+e.g. 640x480.
+An optional +x+y window offset can be specified.
+Combine with
 .Cm --scale-down
 to scale down larger images like in fullscreen mode.
 .
-Also note that this option does not enforce the geometry, changing it by a tiling
+Note that this option does not enforce the window size; changing it by a tiling
 WM or manually is still possible.
-After each resize, the resulting window size is used as the new size limit.
+However, auto-resize remains disabled.
 .
 .It Cm -Y , --hide-pointer
 .
@@ -421,8 +420,9 @@ Accepted values: default, checks, or an XColor
 .
 In windowed mode, the default is checks
 .Pq a checkered background so transparent image parts are easy to see .
-In fullscreen and background setting mode, checks is not accepted and the
-default is black.
+In fullscreen and background setting mode,
+.Cm checks
+is not accepted and the default is black.
 .
 .It Cm -i , --index
 .
@@ -489,13 +489,19 @@ Returns false if at least one image failed to load.
 .
 .It Cm --conversion-timeout Ar timeout
 .
-Stop trying to convert unloadable files after
+.Nm
+can use ImageMagick to try converting unloadable files into a supportad
+file format.
+As this can take a long time, it is disabled by default.
+Set
 .Ar timeout
-seconds.
-Negative values disable conversion altogether, zero causes
+to a non-negative value to enable it.
+A positive value
+specifies after how many seconds conversion attempts should be aborted,
+zero causes
 .Nm
 to try indefinitely.
-By default, conversion is disabled.
+Negative values restore the default by disabling conversion altogether.
 .
 .It Cm --max-dimension Ar width No x Ar height
 .
