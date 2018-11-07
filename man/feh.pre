@@ -37,8 +37,7 @@ It is especially aimed at command line users who need a fast image viewer
 without huge GUI dependencies, though it can also be started by
 .Pq graphical
 file managers to view an image.
-By default
-.Pq unless arguments or a filelist are specified ,
+When no file arguments or filelists are specified,
 .Nm
 displays all files in the current directory.
 .
@@ -96,7 +95,7 @@ and its size can be limited by height, width or both.
 .
 Index mode forms an index print from the filelist.
 Image thumbnails are shown along with the filename,
-filesize and pixel size, printed using a truetype
+size and dimensions, printed using a truetype
 font of your choice.
 The resulting image can be viewed or saved, and its size
 can be limited by height, width or both.
@@ -148,7 +147,7 @@ also supports RAW files provided by cameras and will display the embedded
 thumbnails.
 Use
 .Cm --conversion-timeout Ar num
-with a non-negative value to enable it.
+with a non-negative value to enable support for these formats.
 .
 .
 .Sh OPTIONS
@@ -376,7 +375,7 @@ to get a progress bar.
 .
 Make the window fullscreen.
 Note that in this mode, large images will always be scaled down to fit the
-screen,
+screen, and
 .Cm --zoom Ar zoom
 only affects smaller images and never scales larger than necessary to fit the
 screen size.
@@ -463,10 +462,9 @@ or in the current working directory.
 .
 .It Cm --insecure
 .
-When viewing files with HTTPS, this option disables strict hostname and peer
-checking.
-This allows images on sites with self-signed certificates to be opened, but is
-no more secure than plain HTTP.
+When viewing files with HTTPS, this option disables all certificate checks.  It
+allows images on sites with self-signed or expired certificates to be opened,
+but is no more secure than plain HTTP.
 .
 .It Cm --keep-zoom-vp
 .
@@ -635,8 +633,9 @@ to the content of those directories, all the way down to the bottom level.
 .
 .It Cm --no-recursive
 .
-Don't recursively expand any directories (enabled by default).
-Useful to override theme options.
+Don't recursively expand any directories.
+This is the default, but this option is useful to override themes containing
+.Cm --recursive .
 .
 .It Cm -R , --reload Ar int
 .
@@ -644,7 +643,7 @@ Reload filelist and current image after
 .Ar int
 seconds.
 Useful for viewing HTTP webcams or frequently changing directories.
-.Pq Note that the filelist reloading is still experimental.
+.Pq Note that filelist reloading is still experimental.
 .
 .Pp
 .
@@ -680,10 +679,10 @@ In tiling environments, this also causes the image to be centered in the window.
 Scroll
 .Ar count
 pixels whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
-Note that this option accepts negative numbers in case you need to inverse the
-scroll direction; see
+Note that this option accepts negative numbers in case you need to reverse the
+scroll direction. See
 .Sx KEYS CONFIG SYNTAX
-to change it permanently.
+for how to reverse it permanently.
 Default: 20
 .
 .It Cm -D , --slideshow-delay Ar float
@@ -1001,20 +1000,14 @@ be printed.
 .
 Redraw thumbnail window every
 .Ar n
-images.
-In
-.Nm
-<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
-.Pq so, it updated immediately .
-However, since the redrawing takes quite long
-.Pq especially for thumbnail mode on a large filelist ,
-this turned out to be a major performance penalty.
-As a workaround, the thumbnail image is redrawn every 10th image now by default.
+images while generating thumbnails.
+Redrawing takes quite long, so the default is 10.
 Set
 .Ar n No = 1
-to get the old behaviour,
-.Ar n No = 0
-will only redraw once all thumbnails are loaded.
+to update the thumbnail window immediately.
+With
+.Ar n No = 0 ,
+there will only be one redraw once all thumbnails are loaded.
 .
 .El
 .
@@ -1250,7 +1243,7 @@ If the files are not found in that directory, it will also try
 All config files treat lines starting with a
 .Qq #
 character as comments.
-Note that mid-line comments are not supported.
+Comments at the end of a line are not supported.
 .
 .
 .Sh THEMES CONFIG SYNTAX
@@ -1473,7 +1466,7 @@ will keep zoom and X, Y offset when switching images.
 .It m Bq toggle_menu
 .
 Show menu.
-Use the arrow keys and return to select items,
+Use the arrow keys and return to select items, and
 .Aq escape
 to close the menu.
 .
@@ -1635,7 +1628,7 @@ Scroll up
 .It Ao keypad Down Ac , Ao Ctrl+Down Ac Bq scroll_down
 .
 Scroll down.
-Note that the scroll keys work without anti-aliasing for performance reasons,
+Note that the scroll keys work without anti-aliasing for performance reasons;
 hit the render key after scrolling to antialias the image.
 .
 .It Aq Alt+Left Bq scroll_left_page
@@ -1869,7 +1862,7 @@ Switch to previous image
 .
 Here are some examples of useful option combinations.
 See also:
-.Aq http://feh.finalrewind.org/examples/
+.Aq https://feh.finalrewind.org/examples/
 .
 .Bl -tag -width indent
 .
@@ -1941,7 +1934,7 @@ Same as above
 .
 Show some EXIF information, extracted by exifprobe/exifgrep
 .
-.It feh --action 'rm %F' -rl --max-dim 1000x800
+.It feh --action 'rm %F' -rl --max-dimension 1000x800
 .
 Recursively remove all images with dimensions below or equal to 1000x800 pixels
 from the current directory.
@@ -1951,23 +1944,24 @@ from the current directory.
 .
 .Sh DEPENDENCIES
 .
+When
+.Cm --edit
+is used,
 .Nm
-requires the
+needs the
 .Cm jpegtran
 and
 .Cm jpegexiforient
 binaries
 .Pq usually distributed in Qo libjpeg-progs Qc or similar
-for lossless rotation.
+for lossless JPEG rotation.
 .
 .Pp
 .
-To view images from URLs such as http://, you need
+To view images from URLs such as http://,
 .Nm
-compiled with libcurl support (enabled by default).
-See the
-.Sx VERSION
-section.
+must be compiled with libcurl support.
+It is $MAN_CURL$ in this build
 .
 .
 .Sh BUGS
@@ -2074,4 +2068,4 @@ Tom Gilbert
 .Pp
 .
 See also:
-http://feh.finalrewind.org
+https://feh.finalrewind.org
