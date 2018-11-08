@@ -4,6 +4,9 @@ git HEAD
     * Remove deprecated collage mode (-c/--collage)
     * Remove deprecated option --cycle-once (use --on-last-slide=quit instead)
     * Remove deprecated option --menu-bg
+    * Change default save_filelist key from "f" to "L" (mnemonic: fileList)
+    * Change default toggle_fullscreen key from "v" to "f" as this is also
+      used by mplayer, mpv and similar
     * flip and rotation (keys "<", ">", "|", and "_") no longer change the
       underlying file. This leaves delete ("Ctrl+Delete") as the only
       destructive action which is enabled by default

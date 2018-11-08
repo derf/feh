@@ -1436,10 +1436,9 @@ Toggle filename display
 .Pq optional feature, $MAN_EXIF$ in this build
 Toggle EXIF tag display
 .
-.It f Bq save_filelist
+.It f Bq toggle_fullscreen
 .
-Save the current filelist as
-.Qq feh_PID_ID_filelist
+Toggle fullscreen
 .
 .It g Bq toggle_fixed_geometry
 .
@@ -1462,6 +1461,11 @@ Toggle zoom and viewport keeping.
 When enabled,
 .Nm
 will keep zoom and X, Y offset when switching images.
+.
+.It L Bq save_filelist
+.
+Save the current filelist as
+.Qq feh_PID_ID_filelist
 .
 .It m Bq toggle_menu
 .
@@ -1498,10 +1502,6 @@ Useful for webcams
 .
 Save the current image as
 .Qq feh_PID_ID_FILENAME
-.
-.It v Bq toggle_fullscreen
-.
-Toggle fullscreen
 .
 .It w Bq size_to_image
 .

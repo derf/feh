@@ -195,10 +195,10 @@ void init_keyevents(void) {
 	feh_set_kb("toggle_caption" , 0, XK_c, 0, 0, 0, 0);
 	feh_set_kb("toggle_pause" , 0, XK_h, 0, 0, 0, 0);
 	feh_set_kb("toggle_menu" , 0, XK_m, 0, 0, 0, 0);
-	feh_set_kb("toggle_fullscreen" , 0, XK_v, 0, 0, 0, 0);
+	feh_set_kb("toggle_fullscreen" , 0, XK_f, 0, 0, 0, 0);
 	feh_set_kb("reload_image" , 0, XK_r, 0, 0, 0, 0);
 	feh_set_kb("save_image" , 0, XK_s, 0, 0, 0, 0);
-	feh_set_kb("save_filelist" , 0, XK_f, 0, 0, 0, 0);
+	feh_set_kb("save_filelist" , 0, XK_L, 0, 0, 0, 0);
 	feh_set_kb("orient_1" , 0, XK_greater, 0, 0, 0, 0);
 	feh_set_kb("orient_3" , 0, XK_less, 0, 0, 0, 0);
 	feh_set_kb("flip" , 0, XK_underscore, 0, 0, 0, 0);
