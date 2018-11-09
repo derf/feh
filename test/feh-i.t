@@ -138,28 +138,28 @@ SendKeys('{RIG}');
 test_win_title( $win, 'feh slideshow 2/3 jpg' );
 feh_stop();
 
-feh_start( '--cycle-once', 'test/ok/png test/ok/jpg' );
+feh_start( '--on-last-slide=quit', 'test/ok/png test/ok/jpg' );
 for ( 1 .. 2 ) {
 	SendKeys('{RIG}');
 }
-test_no_win("--cycle-once -> window closed");
+test_no_win("--on-last-slide=quit -> window closed");
 
 feh_start(
-	'--cycle-once --slideshow-delay 0.5',
+	'--on-last-slide=quit --slideshow-delay 0.5',
 	'test/ok/png test/ok/jpg test/ok/gif'
 );
 sleep(1.5);
-test_no_win('cycle-once + slideshow-delay -> window closed');
+test_no_win('on-last-slide=quit + slideshow-delay -> window closed');
 
 $win = feh_start(
-	'--cycle-once --slideshow-delay -0.01',
+	'--on-last-slide=quit --slideshow-delay -0.01',
 	'test/ok/png test/ok/jpg test/ok/gif'
 );
 
 test_win_title( $win, 'feh [1 of 3] - test/ok/png [Paused]' );
 
 SendKeys('h');
-test_no_win('cycle-once + negative delay + [h]');
+test_no_win('on-last-slide=quit + negative delay + [h]');
 
 $win = feh_start( q{}, 'test/ok/png test/ok/gif test/ok/gif test/ok/jpg' );
 for ( 1 .. 2 ) {

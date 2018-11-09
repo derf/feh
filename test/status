@@ -82,7 +82,7 @@ Overall test status, what's covered / missing
  [x] format specifiers
 
 
---cycle-once
+--on-last-slide=quit
 
  [x] closes feh window at end of slideshow
  [x] combination with --slideshow-delay
