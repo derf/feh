@@ -1,5 +1,6 @@
-git HEAD
+Fri, 09 Nov 2018 17:17:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v3.0
     * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
     * Remove deprecated collage mode (-c/--collage)
     * Remove deprecated option --cycle-once (use --on-last-slide=quit instead)
