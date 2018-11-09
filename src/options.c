@@ -314,7 +314,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 	int discard;
 	static char stropts[] =
 		"a:A:b:B:C:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		".@:^:~:):|:+:<:>:";
+		".@:^:~:|:+:<:>:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
