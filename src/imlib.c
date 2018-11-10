@@ -36,6 +36,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <netdb.h>
 
 #ifdef HAVE_LIBCURL
+#include "signals.h"
+
+#include <unistd.h>
 #include <curl/curl.h>
 #endif
 
@@ -544,7 +547,12 @@ static char *feh_magick_load_image(char *filename)
 static char *feh_http_load_image(char *url)
 {
 	CURL *curl;
-	CURLcode res;
+	CURLM *multi;
+	CURLMcode res;
+	int numfds;
+	int still_running;
+	long sleep_ms;
+	CURLMsg *msg;
 	char *sfn;
 	FILE *sfp;
 	int fd = -1;
@@ -561,9 +569,16 @@ static char *feh_http_load_image(char *url)
 	} else
 		path = "/tmp/";
 
+	multi = curl_multi_init();
+	if (!multi) {
+		weprintf("open url: libcurl multi initialization failure");
+		return NULL;
+	}
+
 	curl = curl_easy_init();
 	if (!curl) {
-		weprintf("open url: libcurl initialization failure");
+		curl_multi_cleanup(curl);
+		weprintf("open url: libcurl easy initialization failure");
 		return NULL;
 	}
 
@@ -605,9 +620,56 @@ static char *feh_http_load_image(char *url)
 						getenv("CURL_CA_BUNDLE"));
 			}
 
-			res = curl_easy_perform(curl);
+			res = curl_multi_add_handle(multi, curl);
+			if (res != CURLM_OK) {
+				weprintf("open url: %s", ebuff);
+				unlink(sfn);
+				close(fd);
+				free(sfn);
+				sfn = NULL;
+			} else {
+				// TODO: check for window_num?
+				while (sig_exit == 0) {
+					res = curl_multi_wait(multi, NULL, 0, 1000, &numfds);
+					if (res != CURLM_OK) {
+						break;
+					}
+
+					if (!numfds) {
+						curl_multi_timeout(multi, &sleep_ms);
+
+						if (sleep_ms) {
+							if (sleep_ms > 1000) {
+								sleep_ms = 1000;
+							}
+							usleep(sleep_ms * 1000);
+						}
+					}
+
+					res = curl_multi_perform(multi, &still_running);
+					if (res != CURLM_OK) {
+						break;
+					}
+
+					if (!still_running) {
+						msg = curl_multi_info_read(multi, &numfds);
+						if (msg) {
+							if (msg->data.result != CURLE_OK) {
+								// just need to signal an error
+								res = CURLM_INTERNAL_ERROR;
+							}
+							break;
+						}
+					}
+				}
+			}
+
+			curl_multi_remove_handle(multi, curl);
+
 			curl_easy_cleanup(curl);
-			if (res != CURLE_OK) {
+			curl_multi_cleanup(curl);
+
+			if (res != CURLM_OK) {
 				weprintf("open url: %s", ebuff);
 				unlink(sfn);
 				close(fd);
@@ -629,6 +691,7 @@ static char *feh_http_load_image(char *url)
 		free(sfn);
 	}
 	curl_easy_cleanup(curl);
+	curl_multi_cleanup(curl);
 	return NULL;
 }
 
