@@ -4,8 +4,7 @@
 Imlib2 based image viewer
 ---
 
- * http://feh.finalrewind.org/
- * http://linuxbrit.co.uk/feh/
+ * https://feh.finalrewind.org/
  * #feh on irc.oftc.net
 
 Dependencies
@@ -51,7 +50,7 @@ Because of this, when using "make install app=1", feh will install its icons
 to /usr/share/..., even though they technically belong into /usr/local.
 
 
-ZSH Completion for feh is available [here](http://git.finalrewind.org/zsh/plain/etc/completions/_feh)
+ZSH Completion for feh is available [here](https://git.finalrewind.org/zsh/plain/etc/completions/_feh)
 
 Make flags
 ----------
@@ -79,7 +78,7 @@ Available flags are:
 | Flag | Default value | Description |
 | :--- | :---: | :--- |
 | app  | 0 | install icons to /usr/share, regardless of `DESTDIR` and `PREFIX`, and call gtk-update-icon-cache afterwards |
-| curl | 1 | use libcurl to view http:// and similar images |
+| curl | 1 | use libcurl to view https:// and similar images |
 | debug | 0 | debug build, enables `--debug` |
 | exif | 0 | Builtin EXIF tag display support |
 | help | 0 | include help text (refers to the manpage otherwise) |
