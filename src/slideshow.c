@@ -615,7 +615,10 @@ void slideshow_save_image(winwidget win)
 {
 	char *tmpname;
 	Imlib_Load_Error err;
-	char *base_dir = estrjoin("", opt.output_dir ? opt.output_dir : "", "/", NULL);
+	char *base_dir = "";
+	if (opt.output_dir) {
+		base_dir = estrjoin("", opt.output_dir, "/", NULL);
+	}
 
 	if (win->file) {
 		tmpname = feh_unique_filename(base_dir, FEH_FILE(win->file->data)->name);
@@ -628,7 +631,9 @@ void slideshow_save_image(winwidget win)
 		tmpname = feh_unique_filename(base_dir, "noname.png");
 	}
 
-	free(base_dir);
+	if (opt.output_dir) {
+		free(base_dir);
+	}
 
 	if (opt.verbose)
 		fprintf(stderr, "saving image to filename '%s'\n", tmpname);

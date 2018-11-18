@@ -152,6 +152,7 @@ char path_is_url(char *path) {
 	return 0;
 }
 
+/* Note: path must end with a trailing / or be an empty string */
 /* free the result please */
 char *feh_unique_filename(char *path, char *basename)
 {
