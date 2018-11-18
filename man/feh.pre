@@ -594,7 +594,9 @@ image.
 .
 Save files to
 .Ar directory
-.Pq only useful with -k , -o / -O or the save_image command .
+when using
+.Cm --keep-http
+or the save_image command.
 By default, files are saved in the current working directory.
 .
 .It Cm -p , --preload
