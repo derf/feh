@@ -254,6 +254,22 @@ and viewing image
 the caption will be looked for in
 .Qq images/captions/foo.jpg.txt .
 .
+.It Cm --conversion-timeout Ar timeout
+.
+.Nm
+can use ImageMagick to try converting unloadable files into a supportad
+file format.
+As this can take a long time, it is disabled by default.
+Set
+.Ar timeout
+to a non-negative value to enable it.
+A positive value
+specifies after how many seconds conversion attempts should be aborted,
+zero causes
+.Nm
+to try indefinitely.
+Negative values restore the default by disabling conversion altogether.
+.
 .It Cm -L , --customlist Ar format
 .
 Don't display images, print image info according to
@@ -445,6 +461,12 @@ is set to
 the output will not be displayed by default, but has to be enabled by the
 toggle_info key.
 .
+.It Cm --insecure
+.
+When viewing files with HTTPS, this option disables all certificate checks.  It
+allows images on sites with self-signed or expired certificates to be opened,
+but is no more secure than plain HTTP.
+.
 .It Cm -k , --keep-http
 .
 When viewing files using HTTP,
@@ -454,12 +476,6 @@ This option permanently stores them on disk, either in the directory
 specified by
 .Cm --output-dir ,
 or in the current working directory.
-.
-.It Cm --insecure
-.
-When viewing files with HTTPS, this option disables all certificate checks.  It
-allows images on sites with self-signed or expired certificates to be opened,
-but is no more secure than plain HTTP.
 .
 .It Cm --keep-zoom-vp
 .
@@ -479,22 +495,6 @@ Useful in scripts to hunt out images of a certain size/resolution/type etc.
 Don't display images.
 Just print out their names if imlib2 can successfully load them.
 Returns false if at least one image failed to load.
-.
-.It Cm --conversion-timeout Ar timeout
-.
-.Nm
-can use ImageMagick to try converting unloadable files into a supportad
-file format.
-As this can take a long time, it is disabled by default.
-Set
-.Ar timeout
-to a non-negative value to enable it.
-A positive value
-specifies after how many seconds conversion attempts should be aborted,
-zero causes
-.Nm
-to try indefinitely.
-Negative values restore the default by disabling conversion altogether.
 .
 .It Cm --max-dimension Ar width No x Ar height
 .
