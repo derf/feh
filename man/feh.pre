@@ -729,20 +729,17 @@ to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 Start the filelist at
 .Ar filename .
 .
-Note that at the moment,
+If you use relative paths in your filelist,
 .Ar filename
-must match an
-.Pq expanded
-path in the filelist.
-So, if the file to be matched is passed via an absolute path in the filelist,
-.Ar filename
-must be an absolute path.
-If the file is passed via a relative path,
-.Ar filename
-must be an identical relative path.
-This is a known issue.
-See also
-.Sx USAGE EXAMPLES .
+should also be a relative path.
+If you use absolute paths, it should also be an absolute path.
+.
+If
+.Nm
+cannot find an exact match, it will compare basenames
+.Pq filenames without the directory suffix .
+Note that this may lead to mismatches if several files in your filelist
+have the same basename.
 .
 .It Cm -T , --theme Ar theme
 .
