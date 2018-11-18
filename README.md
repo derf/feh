@@ -1,11 +1,21 @@
 [![build status](https://travis-ci.org/derf/feh.svg?branch=master)](https://travis-ci.org/derf/feh)
 
-# feh
-Imlib2 based image viewer
+Feh – Image viewer and Cataloguer
 ---
 
- * https://feh.finalrewind.org/
- * #feh on irc.oftc.net
+feh is a light-weight, configurable and versatile image viewer.
+It is aimed at command line users, but can also be started from graphical file
+managers. Apart from viewing images, it can compile text and thumbnail
+listings, show (un)loadable files, set X11 backgrounds, and more.
+
+Features include filelists, various image sorting modes, custom action scripts,
+and image captions. feh can be controlled by configurable keyboard and mouse
+shortcuts, terminal input and signals.  When no file arguments or filelists are
+specified, feh displays all files in the current directory.
+
+For more information, please refer to the [feh
+website](https://feh.finalrewind.org/) or read the [feh
+manual](https://man.finalrewind.org/1/feh/).
 
 Dependencies
 ---
@@ -21,11 +31,10 @@ If built with exif=1:
  * libexif-dev
  * libexif12
 
-Recommended
+Recommended Binaries
 ---
 
- * jpegtran  (supplied by the jpeg library, for lossless image rotation)
- * convert  (supplied by ImageMagick, can be used to load unsupported formats)
+ * convert  (supplied by ImageMagick, can be used to load image formats not supported by Imlib2)
 
 Installation
 ---
@@ -45,24 +54,23 @@ $ sudo make install
 
 **Explanation:** feh ships some icons and an X11 desktop entry, which allow it to
 be used from file managers, desktop menus and similar. However, installing
-icons to /usr/local/share/... does not seem to work reliable in all cases.
+icons to /usr/local/share/... does not seem to work reliably.
 Because of this, when using "make install app=1", feh will install its icons
 to /usr/share/..., even though they technically belong into /usr/local.
 
-
-ZSH Completion for feh is available [here](https://git.finalrewind.org/zsh/plain/etc/completions/_feh)
+[ZSH completion for
+feh](https://git.finalrewind.org/zsh/plain/etc/completions/_feh) is also
+available.
 
 Make flags
 ----------
 
-Flags can be used to control the build and installation process.
-
-e.g.
+feh's build process uses make flags to enable/disable optional features and
+fine-tune the build and installation process. They can be passed as **make**
+arguments or set as environment variables, like so:
 
 ```bash
 make flag=bool
-```
-```bash
 make install flag=bool
 ```
 or
@@ -71,9 +79,8 @@ export flag=bool
 make && make install
 ```
 
-For example, `make xinerama=0 debug=1` will disable Xinerama support and produce a debug build.
-
-Available flags are:
+The following flags are respected by the makefile. A default value of **1**
+indicates that the corresponding feature is enabled by default.
 
 | Flag | Default value | Description |
 | :--- | :---: | :--- |
@@ -86,8 +93,8 @@ Available flags are:
 | verscmp | 1 | Support naturing sorting (`--version-sort`). Requires a GNU-compatible libc exposing `strverscmp` |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
-So, by default **libcurl**, **verscmp**, and **Xinerama** are enabled.
-All other flags are disabled.
+For example, `make xinerama=0 debug=1` will disable Xinerama support and
+produce a debug build; libcurl and natural sorting support will remain enabled.
 
 Additionally, the standard variables `PREFIX` and `DESTDIR` are supported.
 
@@ -97,8 +104,8 @@ will be installed. It must be set both during `make` and `make install`.
 **DESTDIR _(default: empty)_** sets the installation root during "make install". It
 is mostly useful for package maintainers.
 
-**Note:** config.mk is designed so that in most cases, you can set environment
-variables instead of editing it. E.g.:
+**Note:** Defaults are specified in `config.mk`. It is designed so that in most
+cases, you can set environment variables instead of editing it. E.g.:
 
 ```bash
 CFLAGS='-g -Os' make
@@ -113,26 +120,12 @@ Builtin EXIF support is maintained by Dennis Real, [here](https://github.com/rea
 
 Testing (non-X)
 ---------------
+
+The non-X11 parts of feh can be automatically tested by running
+
 ```bash
 $ make test
 ```
-
-Requires **perl >= 5.10** with `Test::Command`. The tests are non-interactive and
-work without X, so they can safely be run even on a headless buildserver.
-
-
-Testing (X)
------------
-
-Requires
- * import (usually supplied by imagemagick)
- * perl >= 5.10 with GD, Test::More and X11::GUITest
- * twm
- * Xephyr
-
-```bash
-$ make test-x11
-```
-
-**_Be aware that this is quite experimental, so far the X-tests have only been
-run on one machine. So they may or may not work for you._**
+This requires **perl >= 5.10** and the perl module `Test::Command`. Tests are
+non-interactive and do not require a running X11, so they can safely be run on
+a headless buildserver.

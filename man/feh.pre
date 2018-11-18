@@ -32,27 +32,22 @@ $MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
 .Sh DESCRIPTION
 .
 .Nm
-is a mode-based image viewer.
-It is especially aimed at command line users who need a fast image viewer
-without huge GUI dependencies, though it can also be started by
-.Pq graphical
-file managers to view an image.
+is a light-weight, configurable and versatile image viewer.
+It is aimed at command line users, but can also be started from graphical file
+managers.
+Apart from viewing images, it can compile text and thumbnail
+listings, show (un)loadable files, set X11 backgrounds, and more.
+.
+.Pp
+.
+Features include filelists, various image sorting modes, custom action scripts,
+and image captions.
+.Nm
+can be controlled by configurable keyboard and mouse shortcuts, terminal
+input and signals.
 When no file arguments or filelists are specified,
 .Nm
 displays all files in the current directory.
-.
-.Pp
-.
-.Nm
-supports filelists, various image sorting modes, image captions, HTTP and more.
-It can be controlled by configurable keyboard and mouse shortcuts, terminal
-input and signals.
-.
-.Pp
-.
-In many desktop environments,
-.Nm
-can also be used as wallpaper setter.
 .
 .Pp
 .
