@@ -129,3 +129,20 @@ $ make test
 This requires **perl >= 5.10** and the perl module `Test::Command`. Tests are
 non-interactive and do not require a running X11, so they can safely be run on
 a headless buildserver.
+
+
+Contributing
+---
+
+Bugfixes are always welcome, just open a pull request :)
+
+Before proposing a new feature, please consider the scope of feh: It is an
+image viewer and cataloguer, not an image editor or similar. Also, its option
+list is already pretty long. Please discuss your ideas in a feature request
+before opening a pull request in this case.
+
+Please keep in mind that feh's options, key bindings and format specifiers are
+documented in two different places: The manual (man/feh.pre) and the help text
+(src/help.raw). Although the help is not compiled in by default, it should be
+kept up-to-date. On space-constrained embedded systems, it may be more useful
+than the (significantly larger) man page.
