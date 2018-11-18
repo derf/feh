@@ -98,7 +98,7 @@ produce a debug build; libcurl and natural sorting support will remain enabled.
 
 Additionally, the standard variables `PREFIX` and `DESTDIR` are supported.
 
-**PREFIX _(default: /usr)_** controls where the application and its data files
+**PREFIX _(default: /usr/local)_** controls where the application and its data files
 will be installed. It must be set both during `make` and `make install`.
 
 **DESTDIR _(default: empty)_** sets the installation root during "make install". It
