@@ -1,3 +1,18 @@
+git HEAD
+
+    * Running "feh --start-at .../file.jpg" without specifying images,
+      directories or filelists to load is now equivalent to running
+      "feh --start-at .../file.jpg $(dirname .../file.jpg)". This way, it is
+      possible to view a specific file and browse all other files in the
+      corresponding directory. This is especially useful when starting feh
+      from file managers.
+    * Introduce fuzzy matching in --start-at: If the specified path is not
+      found in the file list, feh now resorts to comparing basenames (i.e.,
+      file names without the directory components). This allows calls
+      like "feh --start-at cat.jpg ~/Pictures", which led to a file not found
+      error in previous versions.
+    * Respect -j / --output-dir when using save_image or save_filelist actions.
+
 Fri, 09 Nov 2018 17:17:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.0
