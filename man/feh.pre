@@ -45,7 +45,9 @@ and image captions.
 .Nm
 can be controlled by configurable keyboard and mouse shortcuts, terminal
 input and signals.
-When no file arguments or filelists are specified,
+When no file arguments or filelists are specified and
+.Cm --start-at
+is not used,
 .Nm
 displays all files in the current directory.
 .
@@ -728,8 +730,20 @@ to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
 Start the filelist at
 .Ar filename .
+If no files or filelists were specifed on the commandline,
+.Nm
+will first load all files from the directory in which
+.Ar filename
+resides.
+This way, it's possible to look at a specific image and use the next / prev
+keys to browse through the directory.
+See
+.Sx USAGE EXAMPLES
+for examples.
 .
-If you use relative paths in your filelist,
+.Pp
+.
+Note: If you use relative paths in your filelist,
 .Ar filename
 should also be a relative path.
 If you use absolute paths, it should also be an absolute path.
@@ -738,7 +752,7 @@ If
 .Nm
 cannot find an exact match, it will compare basenames
 .Pq filenames without the directory suffix .
-Note that this may lead to mismatches if several files in your filelist
+This may lead to mismatches if several files in your filelist
 have the same basename.
 .
 .It Cm -T , --theme Ar theme
@@ -1915,14 +1929,14 @@ automatically change to the next image after 5 seconds
 View all images in ~/Pictures and below, sorted by width, move an image to
 ~/image/image_name when enter is pressed
 .
-.It feh --start-at ./foo.jpg \&.
+.It feh --start-at ~/Pictures/foo.jpg
 .
-View all images in the current directory, starting with foo.jpg.
+View all images in ~/Pictures, starting with foo.jpg.
 All other images are still in the slideshow and can be viewed normally
 .
-.It feh --start-at foo.jpg *
+.It feh --start-at ~/Pictures/foo.jpg ~/Pictures
 .
-Same as above
+Same as above.
 .
 .It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' %F \&| cut -d \&. -f 4-\&" \&.
 .
