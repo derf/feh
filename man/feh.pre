@@ -730,7 +730,7 @@ to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
 Start the filelist at
 .Ar filename .
-If no files or filelists were specifed on the commandline,
+If no other files or filelists were specifed on the commandline,
 .Nm
 will first load all files from the directory in which
 .Ar filename

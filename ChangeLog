@@ -1,5 +1,6 @@
-git HEAD
+Wed, 21 Nov 2018 19:37:34 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v3.1
     * Running "feh --start-at .../file.jpg" without specifying images,
       directories or filelists to load is now equivalent to running
       "feh --start-at .../file.jpg $(dirname .../file.jpg)". This way, it is
