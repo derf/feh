@@ -583,6 +583,13 @@ static char *feh_http_load_image(char *url)
 #ifdef DEBUG
 			curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 #endif
+			/*
+			 * Do not allow requests to take longer than 30 minutes.
+			 * This should be sufficiently high to accomodate use cases with
+			 * unusually high latencies, while at the sime time avoiding
+			 * feh hanging indefinitely in unattended slideshows.
+			 */
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1800);
 			curl_easy_setopt(curl, CURLOPT_URL, url);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
 			ebuff = emalloc(CURL_ERROR_SIZE);
