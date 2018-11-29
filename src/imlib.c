@@ -37,6 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef HAVE_LIBCURL
 #include <curl/curl.h>
+extern int sig_exit;
 #endif
 
 #ifdef HAVE_LIBEXIF
@@ -541,6 +542,24 @@ static char *feh_magick_load_image(char *filename)
 
 #ifdef HAVE_LIBCURL
 
+static int curl_quit_function(void *clientp,  curl_off_t dltotal,  curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+	// ignore "unused parameter" warnings
+	(void)clientp;
+	(void)dltotal;
+	(void)dlnow;
+	(void)ultotal;
+	(void)ulnow;
+	if (sig_exit) {
+		/*
+		 * The user wants to quit feh. Tell libcurl to abort the transfer and
+		 * return control to the main loop, where we can quit gracefully.
+		 */
+		return 1;
+	}
+	return 0;
+}
+
 static char *feh_http_load_image(char *url)
 {
 	CURL *curl;
@@ -596,6 +615,8 @@ static char *feh_http_load_image(char *url)
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+			curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_quit_function);
+			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 			if (opt.insecure_ssl) {
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -608,7 +629,9 @@ static char *feh_http_load_image(char *url)
 			res = curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
 			if (res != CURLE_OK) {
-				weprintf("open url: %s", ebuff);
+				if (res != CURLE_ABORTED_BY_CALLBACK) {
+					weprintf("open url: %s", ebuff);
+				}
 				unlink(sfn);
 				close(fd);
 				free(sfn);
