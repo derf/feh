@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 void feh_handle_signal(int);
-int sig_exit = 0;
+volatile int sig_exit = 0;
 
 void setup_signal_handlers()
 {

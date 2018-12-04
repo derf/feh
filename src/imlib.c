@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "filelist.h"
+#include "signals.h"
 #include "winwidget.h"
 #include "options.h"
 
@@ -37,7 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef HAVE_LIBCURL
 #include <curl/curl.h>
-extern int sig_exit;
 #endif
 
 #ifdef HAVE_LIBEXIF

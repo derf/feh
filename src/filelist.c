@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "filelist.h"
+#include "signals.h"
 #include "options.h"
 
 gib_list *filelist = NULL;
@@ -37,7 +38,6 @@ gib_list *original_file_items = NULL; /* original file items from argv */
 int filelist_len = 0;
 gib_list *current_file = NULL;
 extern int errno;
-extern int sig_exit; /* exit flag from signal handler */
 
 static gib_list *rm_filelist = NULL;
 
