@@ -1972,7 +1972,7 @@ must be compiled with libcurl support.
 It is $MAN_CURL$ in this build
 .
 .
-.Sh BUGS
+.Sh KNOWN BUGS
 .
 On systems with giflib 5.1.2,
 .Nm
@@ -1989,6 +1989,12 @@ Workaround: Use
 .Pq or some other positive value
 to load gifs with imagemagick instead, or downgrade to giflib 5.1.1, or
 upgrade to giflib 5.1.4.
+.
+.Pp
+.
+While loading images using libcurl,
+.Nm
+will not react to key or mouse actions.
 .
 .Pp
 .
