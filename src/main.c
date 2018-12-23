@@ -183,7 +183,7 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
-			if ((ft) && (count == 0)) {
+			if (count == 0) {
 				/* This means the timer is due to be executed. If count was > 0,
 				   that would mean an X event had woken us, we're not interested
 				   in that */
