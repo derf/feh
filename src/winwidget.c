@@ -740,8 +740,6 @@ void winwidget_show(winwidget winwid)
 void winwidget_move(winwidget winwid, int x, int y)
 {
 	if (winwid && ((winwid->x != x) || (winwid->y != y))) {
-		winwid->x = x;
-		winwid->y = y;
 		winwid->x = (x > scr->width) ? scr->width : x;
 		winwid->y = (y > scr->height) ? scr->height : y;
 		XMoveWindow(disp, winwid->win, winwid->x, winwid->y);
