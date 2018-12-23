@@ -1318,6 +1318,9 @@ to use these options.
 .
 Note that you can split a theme over several lines by placing a backslash at
 the end of an unfinished line.
+A single option-argument-pair must not span multiple lines.
+A single line must not be longer than 1023 characters, but there's no upper
+limit for the length of a theme.
 .
 .Pp
 .
