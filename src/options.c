@@ -131,6 +131,7 @@ static void feh_load_options_for_theme(char *theme)
 	char *rcpath = NULL;
 	char *oldrcpath = NULL;
 	char *confbase = getenv("XDG_CONFIG_HOME");
+	// s, s1 and s2 must always have identical size
 	char s[1024], s1[1024], s2[1024];
 	int cont = 0;
 	int bspos;
@@ -167,11 +168,19 @@ static void feh_load_options_for_theme(char *theme)
 		s2[0] = '\0';
 
 		if (cont) {
+			/*
+			 * fgets ensures that s contains no more than 1023 characters
+			 * (+ 1 null byte)
+			 */
 			sscanf(s, " %[^\n]\n", (char *) &s2);
 			if (!*s2)
 				break;
 			D(("Got continued options %s\n", s2));
 		} else {
+			/*
+			 * fgets ensures that s contains no more than 1023 characters
+			 * (+ 1 null byte)
+			 */
 			sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
 			if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#')) {
 				cont = 0;
