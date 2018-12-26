@@ -54,6 +54,7 @@ struct __fehoptions {
 	unsigned char jump_on_resort;
 	unsigned char full_screen;
 	unsigned char draw_filename;
+	int rotate;
 #ifdef HAVE_LIBEXIF
 	unsigned char draw_exif;
 	unsigned char auto_rotate;

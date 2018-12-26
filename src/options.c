@@ -406,6 +406,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-max"        , 0, 0, 219},
 		{"no-jump-on-resort", 0, 0, 220},
 		{"edit"          , 0, 0, 221},
+		{"rotate"        , 1, 0, 222},
 #ifdef HAVE_LIBEXIF
 		{"draw-exif"     , 0, 0, 223},
 		{"auto-rotate"   , 0, 0, 242},
@@ -735,6 +736,14 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 221:
 			opt.edit = 1;
 			break;
+		case 222:
+			if (!strcmp("right", optarg))
+				opt.rotate = 1;
+			else if (!strcmp("180", optarg))
+				opt.rotate = 2;
+			else if (!strcmp("left", optarg))
+				opt.rotate = 3;
+			break;
 #ifdef HAVE_LIBEXIF
 		case 223:
 			opt.draw_exif = 1;
@@ -874,6 +883,12 @@ static void check_options(void)
 	if (opt.loadables && opt.unloadables) {
 		eprintf("You cannot combine --loadable with --unloadable");
 	}
+
+#ifdef HAVE_LIBEXIF
+	if (opt.rotate && opt.auto_rotate) {
+		eprintf("You cannot combine --rotate with --auto_rotate");
+	}
+#endif
 
 	return;
 }

@@ -208,11 +208,26 @@ Example usage:
 .
 Extra actions which can be set and triggered using the appropriate number key.
 .
+.It Cm --rotate Cm right | Cm left | Cm 180
+.
+Rotate all loaded images
+.Cm right ,
+.Cm left ,
+or
+.Cm 180
+degrees.
+Useful for keeping wallpaper oriented correctly when used in conjunction with an
+autorotate program on a tablet or 2-in-1.
+Cannot be used with
+.Cm --auto-rotate .
+.
 .It Cm --auto-rotate
 .
 .Pq optional feature, $MAN_EXIF$ in this build
 Automatically rotate images based on EXIF data.
 Does not alter the image files.
+Cannot be used with
+.Cm --rotate .
 .
 .It Cm -Z , --auto-zoom
 .
@@ -1078,6 +1093,15 @@ You may also use
 to use
 .Nm
 as a background setter for a specific screen.
+.
+.Pp
+.
+Use
+.Cm --rotate
+.Pq Cm right , Cm left , No or Cm 180
+to keep the wallpaper oriented correctly when using
+.Cm feh
+in conjunction with an autorotate program on a tablet or 2-in-1.
 .
 .Bl -tag -width indent
 .

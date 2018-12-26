@@ -284,35 +284,40 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	imlib_context_set_image(*im);
 	imlib_image_set_changes_on_disk();
 
+	if (opt.rotate) {
+		gib_imlib_image_orientate(*im, opt.rotate);
+	}
 #ifdef HAVE_LIBEXIF
-	int orientation = 0;
-	ExifData *exifData = exif_data_new_from_file(file->filename);
-	if (exifData) {
-		ExifByteOrder byteOrder = exif_data_get_byte_order(exifData);
-		ExifEntry *exifEntry = exif_data_get_entry(exifData, EXIF_TAG_ORIENTATION);
-		if (exifEntry && opt.auto_rotate)
-			orientation = exif_get_short(exifEntry->data, byteOrder);
-	}
-	file->ed = exifData;
+	else if (opt.auto_rotate) {
+		int orientation = 0;
+		ExifData *exifData = exif_data_new_from_file(file->filename);
+		if (exifData) {
+			ExifByteOrder byteOrder = exif_data_get_byte_order(exifData);
+			ExifEntry *exifEntry = exif_data_get_entry(exifData, EXIF_TAG_ORIENTATION);
+			if (exifEntry)
+				orientation = exif_get_short(exifEntry->data, byteOrder);
+		}
+		file->ed = exifData;
 
-	if (orientation == 2)
-		gib_imlib_image_flip_horizontal(*im);
-	else if (orientation == 3)
-		gib_imlib_image_orientate(*im, 2);
-	else if (orientation == 4)
-		gib_imlib_image_flip_vertical(*im);
-	else if (orientation == 5) {
-		gib_imlib_image_orientate(*im, 3);
-		gib_imlib_image_flip_vertical(*im);
+		if (orientation == 2)
+			gib_imlib_image_flip_horizontal(*im);
+		else if (orientation == 3)
+			gib_imlib_image_orientate(*im, 2);
+		else if (orientation == 4)
+			gib_imlib_image_flip_vertical(*im);
+		else if (orientation == 5) {
+			gib_imlib_image_orientate(*im, 3);
+			gib_imlib_image_flip_vertical(*im);
+		}
+		else if (orientation == 6)
+			gib_imlib_image_orientate(*im, 1);
+		else if (orientation == 7) {
+			gib_imlib_image_orientate(*im, 3);
+			gib_imlib_image_flip_horizontal(*im);
+		}
+		else if (orientation == 8)
+			gib_imlib_image_orientate(*im, 3);
 	}
-	else if (orientation == 6)
-		gib_imlib_image_orientate(*im, 1);
-	else if (orientation == 7) {
-		gib_imlib_image_orientate(*im, 3);
-		gib_imlib_image_flip_horizontal(*im);
-	}
-	else if (orientation == 8)
-		gib_imlib_image_orientate(*im, 3);
 #endif
 
 	D(("Loaded ok\n"));
