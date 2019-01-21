@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 # Recursively find images below a certain resolution
 #
 # Usage: find-lowres [-r] [directory [dimension]]
@@ -10,20 +10,23 @@
 
 remove=0
 
-while [[ $1 == -* ]]; do
+while true
+do
 	case $1 in
 		-r) remove=1 ;;
+		-*) echo "option \"$1\" ignored" ;;
 		-|--) shift; break ;;
+		*) break ;;
 	esac
 	shift
 done
 
-base=${1-.}
-dimension=${2-1000x800}
+dir=${1:-.}
+dimension=${2:-1000x800}
 
-if (( remove ))
+if [ "$remove" = "1" ]
 then
-	feh --action 'rm %F' -rlV --max-dim ${dimension} ${base}
+	feh --action 'rm %F' -rlV --max-dim "${dimension}" "${dir}"
 else
-	feh -rlV --max-dim ${dimension} ${base}
+	feh -rlV --max-dim "${dimension}" "${dir}"
 fi
