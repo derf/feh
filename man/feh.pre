@@ -129,21 +129,21 @@ This is useful for preening a directory.
 .Sh SUPPORTED FORMATS
 .
 .Nm
-can open any format supported by Imlib2, most notably jpeg, png,
+can open any format supported by imlib2, most notably jpeg, png,
 pnm, tiff, and bmp.
 The gif format is also supported, but only for static images.
 In case of animations, only the first frame will be shown.
 .
 If the convert binary
 .Pq supplied by ImageMagick
-is available, it also has limited support for many other filetypes, such as
+is available, it also has limited support for many other file types, such as
 svg, xcf and otf.
 If dcraw is available,
 .Nm
 also supports RAW files provided by cameras and will display the embedded
 thumbnails.
 Use
-.Cm --conversion-timeout Ar num
+.Cm --conversion-timeout Ar timeout
 with a non-negative value to enable support for these formats.
 .
 .
@@ -224,7 +224,7 @@ Create borderless windows.
 .
 .It Cm --cache-size Ar size
 .
-Set Imlib2 in-memory cache to
+Set imlib2 in-memory cache to
 .Ar size
 MiB.
 A higher cache size can significantly improve performance especially for small
@@ -259,7 +259,7 @@ the caption will be looked for in
 .It Cm --conversion-timeout Ar timeout
 .
 .Nm
-can use ImageMagick to try converting unloadable files into a supportad
+can use ImageMagick to try converting unloadable files into a supported
 file format.
 As this can take a long time, it is disabled by default.
 Set
@@ -293,7 +293,7 @@ with exiv2 / exifgrep .
 .
 .It Cm -d , --draw-filename
 .
-Draw the filename at the top-left of the image.
+Draw the file name at the top-left of the image.
 .
 .It Cm --draw-tinted
 .
@@ -313,8 +313,8 @@ This option is similar to the playlists used by music software.
 If
 .Ar file
 exists, it will be read for a list of files to load, in the order they appear.
-The format is a list of image filenames, absolute or relative to the current
-directory, one filename per line.
+The format is a list of image file names, absolute or relative to the current
+directory, one file name per line.
 .
 .Pp
 .
@@ -363,7 +363,7 @@ add multiple paths.
 .
 .It Cm --force-aliasing
 .
-Disable antialiasing for zooming, background setting etc.
+Disable anti-aliasing for zooming, background setting etc.
 .
 .It Cm -I , --fullindex
 .
@@ -428,7 +428,7 @@ Use
 .Ar style
 as background for transparent image parts and the like.
 Accepted values: default, checks, or an XColor
-.Pq eg. Qo black Qc or Qo #428bdd Qc .
+.Pq e.g. Qo black Qc or Qo #428bdd Qc .
 .
 In windowed mode, the default is checks
 .Pq a checkered background so transparent image parts are easy to see .
@@ -447,10 +447,10 @@ Index mode enables certain other options, see
 and
 .Sx MONTAGE MODE OPTIONS .
 .
-.It Cm --info Oo Ar flag Oc Ns Ar commandline
+.It Cm --info Oo Ar flag Oc Ns Ar command_line
 .
 Execute
-.Ar commandline
+.Ar command_line
 and display its output in the bottom left corner of the image.
 Can be used to display e.g. image dimensions or EXIF information.
 Supports
@@ -627,7 +627,7 @@ from last to first image).
 .
 .It Cm -r , --recursive
 .
-Recursively expand any directories in the commandline arguments
+Recursively expand any directories in the command line arguments
 to the content of those directories, all the way down to the bottom level.
 .
 .It Cm --no-recursive
@@ -699,15 +699,19 @@ in paused mode.
 .It Cm -S , --sort Ar sort_type
 .
 Sort file list according to image parameters.
-Allowed sort types are: name, filename, dirname, mtime, width, height, pixels,
-size, format.
-For sort modes other than name, filename, dirname, or mtime, a preload run is
+Allowed sort types are:
+.Cm name , filename , dirname , mtime , width , height , pixels , size , format .
+For sort modes other than
+.Cm name , filename , dirname ,
+or
+.Cm mtime ,
+a preload run is
 necessary, causing a delay proportional to the number of images in the list.
 .
 .Pp
 .
 .Cm mtime
-starts with the most recently modified image,
+starts with the most recently modified image.
 .Cm width , height , pixels
 and
 .Cm size
@@ -721,7 +725,7 @@ to sort by oldest or largest first.
 For
 .Cm name , filename ,
 and
-.Cm dirname ,
+.Cm dirname
 you can use
 .Cm --version-sort
 to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
@@ -730,7 +734,7 @@ to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
 Start the filelist at
 .Ar filename .
-If no other files or filelists were specifed on the commandline,
+If no other files or filelists were specified on the command line,
 .Nm
 will first load all files from the directory in which
 .Ar filename
@@ -762,7 +766,7 @@ Load options from config file with name
 - see
 .Sx THEMES CONFIG SYNTAX
 for more info.
-Note that commandline options always override theme options.
+Note that command line options always override theme options.
 The theme can also be set via the program name
 .Pq e.g. with symlinks ,
 so by default
@@ -1640,7 +1644,7 @@ Scroll up
 .
 Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons;
-hit the render key after scrolling to antialias the image.
+hit the render key after scrolling to anti-alias the image.
 .
 .It Aq Alt+Left Bq scroll_left_page
 .
@@ -1660,7 +1664,7 @@ Scroll down by one page
 .
 .It R, Ao keypad begin Ac Bq render
 .
-Antialias the image.
+Anti-alias the image.
 Opens the currently selected image in thumbnail mode.
 .
 .It Ao keypad + Ac , Ao Up Ac Bq zoom_in
@@ -1969,7 +1973,7 @@ for lossless JPEG rotation.
 .
 .Pp
 .
-To view images from URLs such as http://,
+To view images from URLs such as "http://",
 .Nm
 must be compiled with libcurl support.
 It is $MAN_CURL$ in this build
@@ -2015,7 +2019,7 @@ window slightly too large.
 If you find a bug, please report it to
 .Aq derf+feh@finalrewind.org
 or via
-.Aq http://github.com/derf/feh/issues .
+.Aq https://github.com/derf/feh/issues .
 You are also welcome to direct any feh-related comments/questions/... to #feh
 on irc.oftc.net.
 .
