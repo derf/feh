@@ -502,15 +502,16 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					}
 					fputc(' ', fp);
 					if (use_filelist) {
-						for (int i = 0; i < cmdargc; i++) {
-							if (filelist_pos && !strcmp(FEH_FILE(filelist_pos->data)->filename, cmdargv[i])) {
-								/* argument is a file */
-								absolute_path = feh_absolute_path(cmdargv[i]);
-								fputs(shell_escape(absolute_path), fp);
-								filelist_pos = filelist_pos->next;
-								free(absolute_path);
-								fputc(' ', fp);
-							}
+#ifdef HAVE_LIBXINERAMA
+						for (int i = 0; (i < num_xinerama_screens) && filelist_pos; i++) {
+#else
+						for (int i = 0; (i < 1                   ) && filelist_pos; i++) {
+#endif
+							absolute_path = feh_absolute_path(FEH_FILE(filelist_pos->data)->filename);
+							fputs(shell_escape(absolute_path), fp);
+							filelist_pos = filelist_pos->next;
+							free(absolute_path);
+							fputc(' ', fp);
 						}
 					} else if (fil) {
 						absolute_path = feh_absolute_path(fil);
