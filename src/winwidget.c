@@ -203,7 +203,6 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	}
 
 	if (opt.paused) {
-		printf("name %s\n", ret->name);
 		tmpname = estrjoin(" ", ret->name, "[Paused]", NULL);
 		free(ret->name);
 		ret->name = tmpname;
