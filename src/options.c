@@ -470,6 +470,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			if (opt.slideshow_delay < 0.0) {
 				opt.slideshow_delay *= (-1);
 				opt.paused = 1;
+			} else {
+				opt.paused = 0;
 			}
 			break;
 		case 'E':
