@@ -503,7 +503,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					fputc(' ', fp);
 					if (use_filelist) {
 #ifdef HAVE_LIBXINERAMA
-						for (int i = 0; (i < num_xinerama_screens) && filelist_pos; i++) {
+						for (int i = 0; (i < opt.xinerama ? num_xinerama_screens : 1) && filelist_pos; i++) {
 #else
 						for (int i = 0; (i < 1                   ) && filelist_pos; i++) {
 #endif
