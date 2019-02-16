@@ -1954,6 +1954,12 @@ Show some EXIF information, extracted by exifprobe/exifgrep
 Recursively remove all images with dimensions below or equal to 1000x800 pixels
 from the current directory.
 .
+.It feh -L '%w %h %f' \&| awk '{ if \&($1 > $2\&) { print $0 } }' \&| cut -d ' ' -f 3- \&| feh -f -
+.
+Show landscape pictures
+.Pq image width greater than height
+in the current directory.
+.
 .El
 .
 .
