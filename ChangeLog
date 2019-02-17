@@ -1,3 +1,9 @@
+Sun, 17 Feb 2019 08:41:53 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Releasev v3.1.3
+    * Fix missing filename in ~/.fehbg when using --no-xinerama on a feh
+      binary compiled with xinerama=1. This issue was introduced in v3.1.2.
+
 Mon, 11 Feb 2019 17:24:13 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.1.2
