@@ -820,6 +820,8 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 		winwid->had_resize = 1;
 		XFlush(disp);
 
+		winwidget_get_geometry(winwid, NULL);
+
 		if (force_resize && (opt.geom_flags & (WidthValue | HeightValue))
 				&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
 			opt.geom_w = winwid->w;
@@ -1059,8 +1061,11 @@ void winwidget_get_geometry(winwidget winwid, int *rect)
 {
 	unsigned int bw, bp;
 	Window child;
+
+	int inner_rect[4];
+
 	if (!rect)
-		return;
+		rect = inner_rect;
 
 	XGetGeometry(disp, winwid->win, &root, &(rect[0]), &(rect[1]), (unsigned
 				int *)&(rect[2]), (unsigned int *)&(rect[3]), &bw, &bp);
