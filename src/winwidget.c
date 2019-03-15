@@ -721,6 +721,8 @@ void winwidget_show(winwidget winwid)
 		/* wait for the window to map */
 		D(("Waiting for window to map\n"));
 		XMaskEvent(disp, StructureNotifyMask, &ev);
+		winwidget_get_geometry(winwid, NULL);
+
 		/* Unfortunately, StructureNotifyMask does not only mask
 		 * the events of type MapNotify (which we want to mask here)
 		 * but also such of type ConfigureNotify (and others, see
