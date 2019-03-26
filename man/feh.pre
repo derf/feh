@@ -1856,7 +1856,7 @@ So, to enlarge a specific part of an image, click the zoom button on that part.
 .
 .Sh SIGNALS
 .
-In slideshow mode,
+In slideshow and multiwindow mode,
 .Nm
 handles the following signals:
 .
@@ -1864,11 +1864,15 @@ handles the following signals:
 .
 .It Dv SIGUSR1
 .
-Switch to next image
+Slideshow mode: switch to next image;
+reload current image if the slideshow consists of a single file.
+Multiwindow mode: reload all images.
 .
 .It Dv SIGUSR2
 .
-Switch to previous image
+Slideshow mode: switch to previous image;
+reload current image if the slideshow consists of a single file.
+Multiwindow mode: reload all images.
 .
 .El
 .
