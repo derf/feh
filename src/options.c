@@ -425,6 +425,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
+		{"center-window-on-resize", 0, 0, 249},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -809,6 +810,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 247:
 			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
 					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
+			break;
+		case 249:
+			opt.center_window_on_resize = 1;
 			break;
 		default:
 			break;
