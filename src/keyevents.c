@@ -493,42 +493,66 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	else if (feh_is_kp(EVENT_scroll_right, state, keysym, button)) {
 		winwid->im_x -= opt.scroll_step;;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if(opt.antialiasing_scroll == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_left, state, keysym, button)) {
 		winwid->im_x += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if(opt.antialiasing_scroll == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_down, state, keysym, button)) {
 		winwid->im_y -= opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if(opt.antialiasing_scroll == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_up, state, keysym, button)) {
 		winwid->im_y += opt.scroll_step;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 1);
+		if(opt.antialiasing_scroll == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_right_page, state, keysym, button)) {
 		winwid->im_x -= winwid->w;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_scroll_page == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll_page == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_left_page, state, keysym, button)) {
 		winwid->im_x += winwid->w;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_scroll_page == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll_page == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_down_page, state, keysym, button)) {
 		winwid->im_y -= winwid->h;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_scroll_page == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll_page == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_scroll_up_page, state, keysym, button)) {
 		winwid->im_y += winwid->h;
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_scroll_page == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_scroll_page == 1)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_jump_back, state, keysym, button)) {
 		if (opt.slideshow)
@@ -613,7 +637,10 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
 			winwid->old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_out, state, keysym, button)) {
 		winwid->old_zoom = winwid->zoom;
@@ -627,24 +654,36 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
 			winwid->old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_default, state, keysym, button)) {
 		winwid->zoom = 1.0;
 		winwidget_center_image(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_fit, state, keysym, button)) {
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 		winwidget_center_image(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_fill, state, keysym, button)) {
 		int save_zoom = opt.zoom_mode;
 		opt.zoom_mode = ZOOM_MODE_FILL;
 		feh_calc_needed_zoom(&winwid->zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 		winwidget_center_image(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 		opt.zoom_mode = save_zoom;
 	}
 	else if (feh_is_kp(EVENT_render, state, keysym, button)) {

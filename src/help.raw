@@ -61,6 +61,16 @@ OPTIONS
      --action[1-9]         Extra actions triggered by pressing keys <1>to <9>
  -G, --draw-actions        Show the defined actions in the image window
      --force-aliasing      Disable antialiasing
+     --aa-scroll NUM       0 disable antialiasing for scroll
+                           1 enable antialiasing after scroll
+     --aa-scroll-page NUM  0 disable antialiasing for scroll-page
+                           1 enable antialiasing after scroll-page
+     --aa-pan NUM          0 disable antialiasing for pan
+                           1 enable antialiasing after pan
+                           2 enable antialiasing during pan
+     --aa-zoom NUM         0 disable antialiasing for zoom
+                           1 enable antialiasing after zoom
+                           2 enable antialiasing during zoom
  -m, --montage             Enable montage mode
  -i, --index               Create an index print of all images
      --info CMD            Run CMD and show its output in the image window

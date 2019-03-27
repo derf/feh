@@ -365,6 +365,47 @@ add multiple paths.
 .
 Disable anti-aliasing for zooming, background setting etc.
 .
+.It Cm --aa-scroll int
+.
+0 disable antialiasing for scroll
+.
+.Pp
+.
+1 enable antialiasing after scroll
+.
+
+.It Cm --aa-scroll-page int
+.
+0 disable antialiasing for scroll-page
+.
+.Pp
+.
+1 enable antialiasing after scroll-page
+.
+.It Cm --aa-pan int
+.
+0 disable antialiasing for pan
+.
+.Pp
+.
+1 enable antialiasing after pan
+.
+.Pp
+.
+2 enable antialiasing during pan
+.
+.It Cm --aa-zoom int
+.
+0 disable antialiasing for zoom
+.
+.Pp
+.
+1 enable antialiasing after zoom
+.
+.Pp
+.
+2 enable antialiasing during zoom
+.
 .It Cm -I , --fullindex
 .
 Same as index mode, but with additional information below the thumbnails.

@@ -73,6 +73,10 @@ void init_parse_options(int argc, char **argv)
 	/* if we're using xinerama, then enable it by default */
 	opt.xinerama = 1;
 	opt.xinerama_index = -1;
+	opt.antialiasing_scroll_page = 1;
+	opt.antialiasing_pan = 1;
+	opt.antialiasing_zoom = 1;
+
 #endif				/* HAVE_LIBXINERAMA */
 
 	feh_getopt_theme(argc, argv);
@@ -425,6 +429,10 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
+		{"aa-scroll"     , 1, 0, 248},
+		{"aa-scroll-page", 1, 0, 249},
+		{"aa-pan"        , 1, 0, 250},
+		{"aa-zoom"       , 1, 0, 251},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -762,6 +770,10 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 235:
 			opt.force_aliasing = 1;
+			opt.antialiasing_scroll = 0;
+			opt.antialiasing_scroll_page = 0;
+			opt.antialiasing_pan = 0;
+			opt.antialiasing_zoom = 0;
 			break;
 		case 236:
 			opt.no_fehbg = 1;
@@ -809,6 +821,50 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 247:
 			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
 					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
+			break;
+		case 248:
+			if(!opt.force_aliasing) {
+				if(atoi(optarg) == 0 || atoi(optarg) == 1) {
+					opt.antialiasing_scroll = atoi(optarg);
+				} else {
+					weprintf("Unrecognised aa-scroll option \"%s\". "
+							 "Defaulting to 0", optarg);
+					opt.antialiasing_scroll = 0;
+				}
+			}
+			break;
+		case 249:
+			if(!opt.force_aliasing) {
+				if(atoi(optarg) == 0 || atoi(optarg) == 1) {
+					opt.antialiasing_scroll_page = atoi(optarg);
+				} else {
+					weprintf("Unrecognised aa-scroll-page mode \"%s\". "
+							 "Defaulting to 1", optarg);
+					opt.antialiasing_scroll_page = 1;
+				}
+			}
+			break;
+		case 250:
+			if(!opt.force_aliasing) {
+				if(atoi(optarg) == 0 || atoi(optarg) == 1 || atoi(optarg) == 2) {
+					opt.antialiasing_pan = atoi(optarg);
+				} else {
+					weprintf("Unrecognised aa-pan mode \"%s\". "
+							 "Defaulting to 1", optarg);
+					opt.antialiasing_pan = 1;
+				}
+			}
+			break;
+		case 251:
+			if(!opt.force_aliasing) {
+				if(atoi(optarg) == 0 || atoi(optarg) == 1 || atoi(optarg) == 2) {
+					opt.antialiasing_zoom = atoi(optarg);
+				} else {
+					weprintf("Unrecognised aa-zoom mode \"%s\". "
+							 "Defaulting to 1", optarg);
+					opt.antialiasing_zoom = 1;
+				}
+			}
 			break;
 		default:
 			break;
