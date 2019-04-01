@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "filelist.h"
+#include "signals.h"
 #include "options.h"
 
 gib_list *filelist = NULL;
@@ -327,6 +328,10 @@ gib_list *feh_file_info_preload(gib_list * list)
 				feh_display_status('s');
 		} else if (opt.verbose)
 			feh_display_status('.');
+		if (sig_exit) {
+			feh_display_status(0);
+			exit(sig_exit);
+		}
 	}
 	if (opt.verbose)
 		feh_display_status(0);
@@ -486,7 +491,7 @@ void feh_prepare_filelist(void)
 	 * we can create a properly sized thumbnail list.
 	 */
 	if (opt.list || opt.preload || opt.customlist || (opt.sort > SORT_MTIME)
-			|| (opt.filter_by_dimensions && (opt.index || opt.collage || opt.thumbs || opt.bgmode))) {
+			|| (opt.filter_by_dimensions && (opt.index || opt.thumbs || opt.bgmode))) {
 		/* For these sort options, we have to preload images */
 		filelist = feh_file_info_preload(filelist);
 		if (!gib_list_length(filelist))

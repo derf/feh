@@ -362,7 +362,7 @@ gib_list_randomize(gib_list * list)
    }
    for (i = 0; i < len - 1; i++)
    {
-      r = i + rand() / (RAND_MAX / (len - i) + 1 );
+      r = i + random() / (RAND_MAX / (len - i) + 1 );
       t = farray[r];
       farray[r] = farray[i];
       farray[i] = t;

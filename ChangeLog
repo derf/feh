@@ -1,3 +1,85 @@
+Sun, 17 Feb 2019 08:41:53 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Releasev v3.1.3
+    * Fix missing filename in ~/.fehbg when using --no-xinerama on a feh
+      binary compiled with xinerama=1. This issue was introduced in v3.1.2.
+
+Mon, 11 Feb 2019 17:24:13 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.1.2
+    * Fix missing filenames in ~/.fehbg when using --bg-* on directories and/or
+      with --randomize
+    * Fix repeated --slideshow-delay/-D option not properly overriding the
+      'start paused' flag
+    * Fix repeated --info option not properly overriding the 'draw info' flag
+
+Fri, 07 Dec 2018 22:51:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.1.1
+    * Decrease libcurl timeout from indefinite to 30 minutes. This should
+      be sufficient even for use cases with unusually high timeouts (just in
+      case anyone wants to do interplanetary slideshows), while at the same
+      time avoiding stalls in unattended slideshows when encountering
+      temporary network issues.
+    * Handle SIGINT/SIGTERM/SIGQUIT signals while loading images using libcurl.
+      Previously, signals were ignored during a (possibly slow) libcurl
+      network transfer, which was not intended behaviour.
+
+Wed, 21 Nov 2018 19:37:34 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.1
+    * Running "feh --start-at .../file.jpg" without specifying images,
+      directories or filelists to load is now equivalent to running
+      "feh --start-at .../file.jpg $(dirname .../file.jpg)". This way, it is
+      possible to view a specific file and browse all other files in the
+      corresponding directory. This is especially useful when starting feh
+      from file managers.
+    * Introduce fuzzy matching in --start-at: If the specified path is not
+      found in the file list, feh now resorts to comparing basenames (i.e.,
+      file names without the directory components). This allows calls
+      like "feh --start-at cat.jpg ~/Pictures", which led to a file not found
+      error in previous versions.
+    * Respect -j / --output-dir when using save_image or save_filelist actions.
+
+Fri, 09 Nov 2018 17:17:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.0
+    * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
+    * Remove deprecated collage mode (-c/--collage)
+    * Remove deprecated option --cycle-once (use --on-last-slide=quit instead)
+    * Remove deprecated option --menu-bg
+    * Change default save_filelist key from "f" to "L" (mnemonic: fileList)
+    * Change default toggle_fullscreen key from "v" to "f" as this is also
+      used by mplayer, mpv and similar
+    * flip and rotation (keys "<", ">", "|", and "_") no longer change the
+      underlying file. This leaves delete ("Ctrl+Delete") as the only
+      destructive action which is enabled by default
+    * Add option --edit, which makes flip and rotation change the underlying
+      file as well as the displayed image. This was the default behaviour in
+      feh 1.x and 2.x
+
+Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.28.1
+    * Do not ignore quit signals (SIGTERM, SIGINT, SIGQUIT) during preload
+    * Add missing EXIF orientations 2, 4, 5, and 7 (when built with exif=1,
+      patch by Olof-Joachim Frahm)
+    * Improve randomness on non-glibc systems
+
+Mon, 17 Sep 2018 21:17:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v2.28
+    * Decrease loading time for RAW images by utilizing dcraw to display the
+      embedded JPEG preview (patch by <https://github.com/ulteq>)
+    * Rename --magick-timeout to --conversion-timeout. --magick-timeout is
+      now deprecated and will be removed in a future release
+    * Fix unintened aliasing in rotated images whose rotation is not a
+      multiple of 90 degrees (patch by <https://github.com/ulteq>)
+    * New option: --on-last-slide=hold|quit|resume.
+      hold will cause feh to stop advancing beyond the last slide (patch by
+      <https://github.com/ulteq>), quit replaces --cycle-once (which is now
+      deprecated), and resume is the default (continue at the first image).
+
 Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v2.27.1

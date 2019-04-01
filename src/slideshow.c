@@ -37,6 +37,24 @@ void init_slideshow_mode(void)
 	int success = 0;
 	gib_list *l = filelist, *last = NULL;
 
+	/*
+	 * In theory, --start-at FILENAME is simple: Look for a file called
+	 * FILENAME, start the filelist there, done.
+	 *
+	 * In practice, there are cases where this isn't sufficient. For instance,
+	 * a user running 'feh --start-at hello.jpg /tmp' will expect feh to start
+	 * at /tmp/hello.jpg, as if they had used
+	 * 'feh --start-at /tmp/hello.jpg /tmp'. Similarly, XDG Desktop files
+	 * may lead to the invocation 'feh --start-at /tmp/hello.jpg .' in /tmp,
+	 * expecting the behaviour of 'feh --start-at ./hello.jpg .'.
+	 *
+	 * Since a good user experience is not about being technically correct, but
+	 * about delivering the expected behaviour, we do some fuzzy matching
+	 * here. In the worst case, this will cause --start-at to start at the
+	 * wrong file.
+	 */
+
+	// Try finding an exact filename match first
 	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
 			opt.start_list_at = NULL;
@@ -44,6 +62,34 @@ void init_slideshow_mode(void)
 		}
 	}
 
+	/*
+	 * If it didn't work (opt.start_list_at is still set): Fall back to
+	 * comparing just the filenames without directory prefixes. This may lead
+	 * to false positives, but for now that's just the way it is.
+	 */
+	if (opt.start_list_at) {
+		char *current_filename;
+		char *start_at_filename = strrchr(opt.start_list_at, '/');
+		if (start_at_filename) {
+			start_at_filename++; // We only care about the part after the '/'
+		} else {
+			start_at_filename = opt.start_list_at;
+		}
+		for (l = filelist; l && opt.start_list_at; l = l->next) {
+			current_filename = strrchr(FEH_FILE(l->data)->filename, '/');
+			if (current_filename) {
+				current_filename++; // We only care about the part after the '/'
+			} else {
+				current_filename = FEH_FILE(l->data)->filename;
+			}
+			if (!strcmp(start_at_filename, current_filename)) {
+				opt.start_list_at = NULL;
+				break;
+			}
+		}
+	}
+
+	// If that didn't work either, we're out of luck.
 	if (opt.start_list_at)
 		eprintf("--start-at %s: File not found in filelist",
 				opt.start_list_at);
@@ -258,7 +304,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		case SLIDE_RAND:
 			if (filelist_len > 1) {
 				current_file = feh_list_jump(filelist, current_file, FORWARD,
-					(rand() % (filelist_len - 1)) + 1);
+					(random() % (filelist_len - 1)) + 1);
 				change = SLIDE_NEXT;
 			}
 			break;
@@ -615,16 +661,24 @@ void slideshow_save_image(winwidget win)
 {
 	char *tmpname;
 	Imlib_Load_Error err;
+	char *base_dir = "";
+	if (opt.output_dir) {
+		base_dir = estrjoin("", opt.output_dir, "/", NULL);
+	}
 
 	if (win->file) {
-		tmpname = feh_unique_filename("", FEH_FILE(win->file->data)->name);
+		tmpname = feh_unique_filename(base_dir, FEH_FILE(win->file->data)->name);
 	} else if (mode) {
 		char *tmp;
 		tmp = estrjoin(".", mode, "png", NULL);
-		tmpname = feh_unique_filename("", tmp);
+		tmpname = feh_unique_filename(base_dir, tmp);
 		free(tmp);
 	} else {
-		tmpname = feh_unique_filename("", "noname.png");
+		tmpname = feh_unique_filename(base_dir, "noname.png");
+	}
+
+	if (opt.output_dir) {
+		free(base_dir);
 	}
 
 	if (opt.verbose)

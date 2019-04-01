@@ -25,23 +25,6 @@ test-x11: all
 install: install-man install-doc install-bin install-font install-img
 install: install-icon install-examples install-applications
 
-ifeq (${cam},1)
-install: install-cam
-uninstall: uninstall-cam
-endif
-
-install-cam:
-	@echo installing fe-cam and gen-cam-menu
-	@cp man/feh-cam.1 man/gen-cam-menu.1 ${man_dir}/man1
-	@chmod 644 ${man_dir}/man1/feh-cam.1 ${man_dir}/man1/gen-cam-menu.1
-	@cp cam/feh-cam cam/gen-cam-menu ${bin_dir}
-	@chmod 755 ${bin_dir}/feh-cam ${bin_dir}/gen-cam-menu
-
-uninstall-cam:
-	rm -f ${man_dir}/man1/feh-cam.1
-	rm -f ${man_dir}/man1/gen-cam-menu.1
-	rm -f ${bin_dir}/feh-cam ${bin_dir}/gen-cam-menu
-
 install-man:
 	@echo installing manuals to ${man_dir}
 	@mkdir -p ${man_dir}/man1

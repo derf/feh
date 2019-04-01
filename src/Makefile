@@ -1,7 +1,6 @@
 include ../config.mk
 
 TARGETS = \
-	collage.c \
 	events.c \
 	feh_png.c \
 	filelist.c \

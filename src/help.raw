@@ -35,6 +35,7 @@ OPTIONS
  -d, --draw-filename       Show the filename in the image window
      --draw-tinted         Show overlay texts on semi-transparent background
      --draw-exif           Show some Exif information (if compiled with exif=1)
+     --edit                Make flip/rotation keys flip/rotate the underlying file
      --auto-rotate         Rotate images according to Exif info (if compiled with exif=1)
  -^, --title TITLE         Set window title (see FORMAT SPECIFIERS)
  -D, --slideshow-delay NUM Set delay between automatically changing slides
@@ -87,12 +88,13 @@ OPTIONS
  -M, --menu-font FONT      Use FONT for the font in menus.
  -B, --image-bg STYLE      Set background for transparent images and the like.
                            Accepted values: default, checks, or a XColor (eg. #428bdd)
+     --xinerama-index I    Assumee that I is the active xinerama screen
  -N, --no-menus            Don't load or show any menus.
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
  -Y, --hide-pointer        Hide the pointer
-     --magick-timeout INT  Load unknown files with ImageMagick, timeout after
-                           INT seconds (0: no timeout)
+     --conversion-timeout  INT  Load unknown files with dcraw or ImageMagick,
+                           timeout after INT seconds (0: no timeout)
      --min-dimension WxH   Only show images with width >= W and height >= H
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
@@ -124,13 +126,14 @@ INDEX MODE OPTIONS
 FORMAT SPECIFIERS
  %f     image path/filename
  %F     image path/filename (shell-escaped)
+ %g     window dimensions (\"width,height\") in pixels
  %h     image height
  %l     total number of files in the filelist
  %L     path to temporary copy of filelist
  %m     current mode (slideshow, multiwindow...)
  %n     image name
  %N     image name (shell-escaped)
- %o     x,y offset of top-left image corner to window in pixels
+ %o     offset of top-left image corner to window (\"x,y\") in pixels
  %p     image pixel size
  %P     image pixel size in kilo-/megapixels
  %r     image rotation. half right turn == 3.1415 (pi)
@@ -141,34 +144,39 @@ FORMAT SPECIFIERS
  %w     image width
  %v     " PACKAGE " version
  %V     process ID
- %z     current image zoom
+ %z     current image zoom, rounded to two decimal places
+ %Z     current image zoom, high precision
  %%     %
  \\n     newline
 
-KEYS
+DEFAULT KEYS
  a                       Toggle action display (--draw-actions)
  A                       Toggle anti-aliasing
  c                       Enable caption entry mode
  d                       Toggle filename display (--draw-filename)
  e                       Toggle exif tag display (if compiled with exif=1)
- f                       Save current filelist to unique filename
+ f                       Toggle fullscreen
+ g                       Toggle fixed geometry mode
  h                       pause/continue slideshow
  i                       Toggle --info display
  k                       Toggle zoom/viewport freeze when switching images
- m                       Show menu
+ L                       Save current filelist to unique filename
+ m                       Show/hide menu
  n, <SPACE>, <RIGHT>     Go to next image
  o                       Toggle pointer visibility
  p, <BACKSPACE>, <LEFT>  Go to previous image
  q, <ESCAPE>             Quit
  r                       Reload image
+ R                       Render/anti-alias image
  s                       Save current image to unique filename
- v                       Toggle fullscreen
  w                       Resize window to current image dimensions
  x                       Close current window
  z                       Jump to a random position in the current filelist
- <, >                    In place editing, rotate 90 degrees right/left
- _                       In place editing, vertical flip
- |                       In place editing, horizontal flip
+ Z                       Toggle auto-zoom
+ [, ]                    Jump to previous/next directory
+ <, >                    Rotate 90 degrees right/left
+ _                       Vertical flip
+ |                       Horizontal flip
  0, <ENTER>              Run action specified by --action option
  1-9                     Run action 1-9 specified by --action[1-9] options
  <HOME>                  Go to first slide
@@ -192,7 +200,7 @@ KEYS
 
 This program is free software, see the file COPYING for licensing info.
 Copyright Tom Gilbert (and various contributors) 1999-2003.
-Copyright Daniel Friesel (and various contributors) 2010-2016.
+Copyright Daniel Friesel (and various contributors) 2010-2018.
 
 Homepage: http://feh.finalrewind.org
 Report bugs to <derf+feh@finalrewind.org> or #feh on irc.oftc.net.

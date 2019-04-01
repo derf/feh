@@ -33,28 +33,24 @@ $MAN_INOTIFY$$MAN_DEBUG$
 .Sh DESCRIPTION
 .
 .Nm
-is a mode-based image viewer.
-It is especially aimed at command line users who need a fast image viewer
-without huge GUI dependencies, though it can also be started by
-.Pq graphical
-file managers to view an image.
-By default
-.Pq unless arguments or a filelist are specified ,
+is a light-weight, configurable and versatile image viewer.
+It is aimed at command line users, but can also be started from graphical file
+managers.
+Apart from viewing images, it can compile text and thumbnail
+listings, show (un)loadable files, set X11 backgrounds, and more.
+.
+.Pp
+.
+Features include filelists, various image sorting modes, custom action scripts,
+and image captions.
+.Nm
+can be controlled by configurable keyboard and mouse shortcuts, terminal
+input and signals.
+When no file arguments or filelists are specified and
+.Cm --start-at
+is not used,
 .Nm
 displays all files in the current directory.
-.
-.Pp
-.
-.Nm
-supports filelists, various image sorting modes, image captions, HTTP and more.
-It can be controlled by configurable keyboard and mouse shortcuts, terminal
-input and signals.
-.
-.Pp
-.
-In many desktop environments,
-.Nm
-can also be used as wallpaper setter.
 .
 .Pp
 .
@@ -97,7 +93,7 @@ and its size can be limited by height, width or both.
 .
 Index mode forms an index print from the filelist.
 Image thumbnails are shown along with the filename,
-filesize and pixel size, printed using a truetype
+size and dimensions, printed using a truetype
 font of your choice.
 The resulting image can be viewed or saved, and its size
 can be limited by height, width or both.
@@ -134,22 +130,22 @@ This is useful for preening a directory.
 .Sh SUPPORTED FORMATS
 .
 .Nm
-can open any format supported by Imlib2, most notably jpeg, png,
+can open any format supported by imlib2, most notably jpeg, png,
 pnm, tiff, and bmp.
 The gif format is also supported, but only for static images.
 In case of animations, only the first frame will be shown.
 .
 If the convert binary
 .Pq supplied by ImageMagick
-is available, it also has limited support for many other filetypes, such as
+is available, it also has limited support for many other file types, such as
 svg, xcf and otf.
 If dcraw is available,
 .Nm
 also supports RAW files provided by cameras and will display the embedded
 thumbnails.
 Use
-.Cm --conversion-timeout Ar num
-with a non-negative value to enable it.
+.Cm --conversion-timeout Ar timeout
+with a non-negative value to enable support for these formats.
 .
 .
 .Sh OPTIONS
@@ -229,7 +225,7 @@ Create borderless windows.
 .
 .It Cm --cache-size Ar size
 .
-Set Imlib2 in-memory cache to
+Set imlib2 in-memory cache to
 .Ar size
 MiB.
 A higher cache size can significantly improve performance especially for small
@@ -261,6 +257,22 @@ and viewing image
 the caption will be looked for in
 .Qq images/captions/foo.jpg.txt .
 .
+.It Cm --conversion-timeout Ar timeout
+.
+.Nm
+can use ImageMagick to try converting unloadable files into a supported
+file format.
+As this can take a long time, it is disabled by default.
+Set
+.Ar timeout
+to a non-negative value to enable it.
+A positive value
+specifies after how many seconds conversion attempts should be aborted,
+zero causes
+.Nm
+to try indefinitely.
+Negative values restore the default by disabling conversion altogether.
+.
 .It Cm -L , --customlist Ar format
 .
 Don't display images, print image info according to
@@ -282,7 +294,7 @@ with exiv2 / exifgrep .
 .
 .It Cm -d , --draw-filename
 .
-Draw the filename at the top-left of the image.
+Draw the file name at the top-left of the image.
 .
 .It Cm --draw-tinted
 .
@@ -290,14 +302,20 @@ Show overlay texts
 .Pq as created by Cm --draw-filename No et al
 on a semi-transparent background to improve their readability
 .
+.It Cm --edit
+.
+Enable basic editing of files. This makes rotation and mirroring
+.Pq bound to Qo < Qc , Qo > Qc , Qo | Qc , and Qo _ Qc by default
+change the underlying file and not just its displayed content.
+.
 .It Cm -f , --filelist Ar file
 .
 This option is similar to the playlists used by music software.
 If
 .Ar file
 exists, it will be read for a list of files to load, in the order they appear.
-The format is a list of image filenames, absolute or relative to the current
-directory, one filename per line.
+The format is a list of image file names, absolute or relative to the current
+directory, one file name per line.
 .
 .Pp
 .
@@ -346,7 +364,7 @@ add multiple paths.
 .
 .It Cm --force-aliasing
 .
-Disable antialiasing for zooming, background setting etc.
+Disable anti-aliasing for zooming, background setting etc.
 .
 .It Cm -I , --fullindex
 .
@@ -371,14 +389,13 @@ to get a progress bar.
 .
 Make the window fullscreen.
 Note that in this mode, large images will always be scaled down to fit the
-screen,
+screen, and
 .Cm --zoom Ar zoom
 only affects smaller images and never scales larger than necessary to fit the
 screen size.
 The only exception is a
 .Ar zoom
-of 100, in which case images will always be shown at 100% zoom, no matter
-their dimensions.
+of 100, in which case images will always be shown at 100% zoom.
 .
 .Pp
 .
@@ -389,17 +406,17 @@ The thumbnail list itself will still be windowed.
 .
 .It Cm -g , --geometry Ar width Cm x Ar height | Cm + Ar x Cm + Ar y | Ar width Cm x Ar height Cm + Ar x Cm + Ar y
 .
-Limit (and don't change) the window size.
-Takes an X-style geometry
-.Ar string
-like 640x480 with optional +x+y window offset.
-Use
+Use a fixed window size as specified in the X-style geometry
+.Ar string ,
+e.g. 640x480.
+An optional +x+y window offset can be specified.
+Combine with
 .Cm --scale-down
 to scale down larger images like in fullscreen mode.
 .
-Also note that this option does not enforce the geometry, changing it by a tiling
+Note that this option does not enforce the window size; changing it by a tiling
 WM or manually is still possible.
-After each resize, the resulting window size is used as the new size limit.
+However, auto-resize remains disabled.
 .
 .It Cm -Y , --hide-pointer
 .
@@ -412,12 +429,13 @@ Use
 .Ar style
 as background for transparent image parts and the like.
 Accepted values: default, checks, or an XColor
-.Pq eg. Qo black Qc or Qo #428bdd Qc .
+.Pq e.g. Qo black Qc or Qo #428bdd Qc .
 .
 In windowed mode, the default is checks
 .Pq a checkered background so transparent image parts are easy to see .
-In fullscreen and background setting mode, checks is not accepted and the
-default is black.
+In fullscreen and background setting mode,
+.Cm checks
+is not accepted and the default is black.
 .
 .It Cm -i , --index
 .
@@ -430,10 +448,10 @@ Index mode enables certain other options, see
 and
 .Sx MONTAGE MODE OPTIONS .
 .
-.It Cm --info Oo Ar flag Oc Ns Ar commandline
+.It Cm --info Oo Ar flag Oc Ns Ar command_line
 .
 Execute
-.Ar commandline
+.Ar command_line
 and display its output in the bottom left corner of the image.
 Can be used to display e.g. image dimensions or EXIF information.
 Supports
@@ -446,6 +464,12 @@ is set to
 the output will not be displayed by default, but has to be enabled by the
 toggle_info key.
 .
+.It Cm --insecure
+.
+When viewing files with HTTPS, this option disables all certificate checks.  It
+allows images on sites with self-signed or expired certificates to be opened,
+but is no more secure than plain HTTP.
+.
 .It Cm -k , --keep-http
 .
 When viewing files using HTTP,
@@ -455,13 +479,6 @@ This option permanently stores them on disk, either in the directory
 specified by
 .Cm --output-dir ,
 or in the current working directory.
-.
-.It Cm --insecure
-.
-When viewing files with HTTPS, this option disables strict hostname and peer
-checking.
-This allows images on sites with self-signed certificates to be opened, but is
-no more secure than plain HTTP.
 .
 .It Cm --keep-zoom-vp
 .
@@ -481,16 +498,6 @@ Useful in scripts to hunt out images of a certain size/resolution/type etc.
 Don't display images.
 Just print out their names if imlib2 can successfully load them.
 Returns false if at least one image failed to load.
-.
-.It Cm --conversion-timeout Ar timeout
-.
-Stop trying to convert unloadable files after
-.Ar timeout
-seconds.
-Negative values disable conversion altogether, zero causes
-.Nm
-to try indefinitely.
-By default, conversion is disabled.
 .
 .It Cm --max-dimension Ar width No x Ar height
 .
@@ -590,7 +597,9 @@ image.
 .
 Save files to
 .Ar directory
-.Pq only useful with -k .
+when using
+.Cm --keep-http
+or the save_image command.
 By default, files are saved in the current working directory.
 .
 .It Cm -p , --preload
@@ -619,13 +628,14 @@ from last to first image).
 .
 .It Cm -r , --recursive
 .
-Recursively expand any directories in the commandline arguments
+Recursively expand any directories in the command line arguments
 to the content of those directories, all the way down to the bottom level.
 .
 .It Cm --no-recursive
 .
-Don't recursively expand any directories (enabled by default).
-Useful to override theme options.
+Don't recursively expand any directories.
+This is the default, but this option is useful to override themes containing
+.Cm --recursive .
 .
 .It Cm -R , --reload Ar int
 .
@@ -633,7 +643,7 @@ Reload filelist and current image after
 .Ar int
 seconds.
 Useful for viewing HTTP webcams or frequently changing directories.
-.Pq Note that the filelist reloading is still experimental.
+.Pq Note that filelist reloading is still experimental.
 .
 .Pp
 .
@@ -669,10 +679,10 @@ In tiling environments, this also causes the image to be centered in the window.
 Scroll
 .Ar count
 pixels whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
-Note that this option accepts negative numbers in case you need to inverse the
-scroll direction; see
+Note that this option accepts negative numbers in case you need to reverse the
+scroll direction. See
 .Sx KEYS CONFIG SYNTAX
-to change it permanently.
+for how to reverse it permanently.
 Default: 20
 .
 .It Cm -D , --slideshow-delay Ar float
@@ -689,36 +699,66 @@ in paused mode.
 .
 .It Cm -S , --sort Ar sort_type
 .
-The file list may be sorted according to image parameters.
-Allowed sort types are: name, filename, dirname, mtime, width, height, pixels,
-size, format.
-For sort modes other than name, filename, dirname, or mtime, a preload run will
-be necessary, causing a delay proportional to the number of images in the list.
+Sort file list according to image parameters.
+Allowed sort types are:
+.Cm name , filename , dirname , mtime , width , height , pixels , size , format .
+For sort modes other than
+.Cm name , filename , dirname ,
+or
+.Cm mtime ,
+a preload run is
+necessary, causing a delay proportional to the number of images in the list.
 .
 .Pp
 .
-The mtime sort mode sorts images by most recently modified.
-To sort by oldest first, reverse the filelist with --reverse.
+.Cm mtime
+starts with the most recently modified image.
+.Cm width , height , pixels
+and
+.Cm size
+start with the smallest.
+Use
+.Cm --reverse
+to sort by oldest or largest first.
+.
+.Pp
+.
+For
+.Cm name , filename ,
+and
+.Cm dirname
+you can use
+.Cm --version-sort
+to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
 .It Cm -| , --start-at Ar filename
 .
 Start the filelist at
 .Ar filename .
+If no other files or filelists were specified on the command line,
+.Nm
+will first load all files from the directory in which
+.Ar filename
+resides.
+This way, it's possible to look at a specific image and use the next / prev
+keys to browse through the directory.
+See
+.Sx USAGE EXAMPLES
+for examples.
 .
-Note that at the moment,
+.Pp
+.
+Note: If you use relative paths in your filelist,
 .Ar filename
-must match an
-.Pq expanded
-path in the filelist.
-So, if the file to be matched is passed via an absolute path in the filelist,
-.Ar filename
-must be an absolute path.
-If the file is passed via a relative path,
-.Ar filename
-must be an identical relative path.
-This is a known issue.
-See also
-.Sx USAGE EXAMPLES .
+should also be a relative path.
+If you use absolute paths, it should also be an absolute path.
+.
+If
+.Nm
+cannot find an exact match, it will compare basenames
+.Pq filenames without the directory suffix .
+This may lead to mismatches if several files in your filelist
+have the same basename.
 .
 .It Cm -T , --theme Ar theme
 .
@@ -727,7 +767,7 @@ Load options from config file with name
 - see
 .Sx THEMES CONFIG SYNTAX
 for more info.
-Note that commandline options always override theme options.
+Note that command line options always override theme options.
 The theme can also be set via the program name
 .Pq e.g. with symlinks ,
 so by default
@@ -782,11 +822,17 @@ output version information and exit.
 .It Cm --version-sort
 .
 .Pq optional feature, $MAN_VERSCMP$ in this build
-Use natural sorting for file and directory names.
+When combined with
+.Cm --sort name , --sort filename ,
+or
+.Cm --sort dirname :
+use natural sorting for file and directory names.
 In this mode, filenames are sorted as an ordinary human would expect, e.g.
 .Qq 2.jpg
 comes before
 .Qq 10.jpg .
+Note that this option only has an effect when a sort mode is set using
+.Cm --sort .
 .
 .It Cm --xinerama-index Ar screen
 .
@@ -967,20 +1013,14 @@ be printed.
 .
 Redraw thumbnail window every
 .Ar n
-images.
-In
-.Nm
-<= 1.5, the thumbnail image used to be redrawn after every computed thumbnail
-.Pq so, it updated immediately .
-However, since the redrawing takes quite long
-.Pq especially for thumbnail mode on a large filelist ,
-this turned out to be a major performance penalty.
-As a workaround, the thumbnail image is redrawn every 10th image now by default.
+images while generating thumbnails.
+Redrawing takes quite long, so the default is 10.
 Set
 .Ar n No = 1
-to get the old behaviour,
-.Ar n No = 0
-will only redraw once all thumbnails are loaded.
+to update the thumbnail window immediately.
+With
+.Ar n No = 0 ,
+there will only be one redraw once all thumbnails are loaded.
 .
 .El
 .
@@ -1216,7 +1256,7 @@ If the files are not found in that directory, it will also try
 All config files treat lines starting with a
 .Qq #
 character as comments.
-Note that mid-line comments are not supported.
+Comments at the end of a line are not supported.
 .
 .
 .Sh THEMES CONFIG SYNTAX
@@ -1283,6 +1323,9 @@ to use these options.
 .
 Note that you can split a theme over several lines by placing a backslash at
 the end of an unfinished line.
+A single option-argument-pair must not span multiple lines.
+A single line must not be longer than 1023 characters, but there's no upper
+limit for the length of a theme.
 .
 .Pp
 .
@@ -1409,10 +1452,9 @@ Toggle filename display
 .Pq optional feature, $MAN_EXIF$ in this build
 Toggle EXIF tag display
 .
-.It f Bq save_filelist
+.It f Bq toggle_fullscreen
 .
-Save the current filelist as
-.Qq feh_PID_ID_filelist
+Toggle fullscreen
 .
 .It g Bq toggle_fixed_geometry
 .
@@ -1436,10 +1478,15 @@ When enabled,
 .Nm
 will keep zoom and X, Y offset when switching images.
 .
+.It L Bq save_filelist
+.
+Save the current filelist as
+.Qq feh_PID_ID_filelist
+.
 .It m Bq toggle_menu
 .
 Show menu.
-Use the arrow keys and return to select items,
+Use the arrow keys and return to select items, and
 .Aq escape
 to close the menu.
 .
@@ -1472,10 +1519,6 @@ Useful for webcams
 Save the current image as
 .Qq feh_PID_ID_FILENAME
 .
-.It v Bq toggle_fullscreen
-.
-Toggle fullscreen
-.
 .It w Bq size_to_image
 .
 Change window size to fit current image size
@@ -1503,8 +1546,14 @@ are grouped together.
 .
 .It < , > Bq orient_3 , orient_1
 .
-In place editing - rotate the image 90 degrees (counter)clockwise.
-The rotation is lossless, but may create artifacts in some image corners when
+rotate the image 90 degrees (counter)clockwise.
+.
+.Pp
+.
+When
+.Cm --edit
+is used, this also rotates the image in the underlying file.
+Rotation is lossless, but may create artifacts in some image corners when
 used with JPEG images.
 Rotating in the reverse direction will make them go away.
 See
@@ -1524,11 +1573,19 @@ for details on how to change this flag.
 .
 .It _ Bq flip
 .
-In place editing - vertical flip
+Vertically flip image.
+When
+.Cm --edit
+is used, this also flips the image in the underlying file
+.Pq see above .
 .
 .It | Bq mirror
 .
-In place editing - horizontal flip
+Horizontally flip image.
+When
+.Cm --edit
+is used, this also flips the image in the underlying file
+.Pq see above .
 .
 .It 0 .. 9 Bq action_0 .. action_9
 .
@@ -1587,8 +1644,8 @@ Scroll up
 .It Ao keypad Down Ac , Ao Ctrl+Down Ac Bq scroll_down
 .
 Scroll down.
-Note that the scroll keys work without anti-aliasing for performance reasons,
-hit the render key after scrolling to antialias the image.
+Note that the scroll keys work without anti-aliasing for performance reasons;
+hit the render key after scrolling to anti-alias the image.
 .
 .It Aq Alt+Left Bq scroll_left_page
 .
@@ -1608,7 +1665,7 @@ Scroll down by one page
 .
 .It R, Ao keypad begin Ac Bq render
 .
-Antialias the image.
+Anti-alias the image.
 Opens the currently selected image in thumbnail mode.
 .
 .It Ao keypad + Ac , Ao Up Ac Bq zoom_in
@@ -1800,7 +1857,7 @@ So, to enlarge a specific part of an image, click the zoom button on that part.
 .
 .Sh SIGNALS
 .
-In slideshow mode,
+In slideshow and multiwindow mode,
 .Nm
 handles the following signals:
 .
@@ -1808,11 +1865,15 @@ handles the following signals:
 .
 .It Dv SIGUSR1
 .
-Switch to next image
+Slideshow mode: switch to next image;
+reload current image if the slideshow consists of a single file.
+Multiwindow mode: reload all images.
 .
 .It Dv SIGUSR2
 .
-Switch to previous image
+Slideshow mode: switch to previous image;
+reload current image if the slideshow consists of a single file.
+Multiwindow mode: reload all images.
 .
 .El
 .
@@ -1821,7 +1882,7 @@ Switch to previous image
 .
 Here are some examples of useful option combinations.
 See also:
-.Aq http://feh.finalrewind.org/examples/
+.Aq https://feh.finalrewind.org/examples/
 .
 .Bl -tag -width indent
 .
@@ -1880,49 +1941,56 @@ automatically change to the next image after 5 seconds
 View all images in ~/Pictures and below, sorted by width, move an image to
 ~/image/image_name when enter is pressed
 .
-.It feh --start-at ./foo.jpg \&.
+.It feh --start-at ~/Pictures/foo.jpg
 .
-View all images in the current directory, starting with foo.jpg.
+View all images in ~/Pictures, starting with foo.jpg.
 All other images are still in the slideshow and can be viewed normally
 .
-.It feh --start-at foo.jpg *
+.It feh --start-at ~/Pictures/foo.jpg ~/Pictures
 .
-Same as above
+Same as above.
 .
 .It feh --info \&"exifgrep '\&(Model\&|DateTimeOriginal\&|FNumber\&|ISO\&|Flash\&)' %F \&| cut -d \&. -f 4-\&" \&.
 .
 Show some EXIF information, extracted by exifprobe/exifgrep
 .
-.It feh --action 'rm %F' -rl --max-dim 1000x800
+.It feh --action 'rm %F' -rl --max-dimension 1000x800
 .
 Recursively remove all images with dimensions below or equal to 1000x800 pixels
 from the current directory.
+.
+.It feh -L '%w %h %f' \&| awk '{ if \&($1 > $2\&) { print $0 } }' \&| cut -d ' ' -f 3- \&| feh -f -
+.
+Show landscape pictures
+.Pq image width greater than height
+in the current directory.
 .
 .El
 .
 .
 .Sh DEPENDENCIES
 .
+When
+.Cm --edit
+is used,
 .Nm
-requires the
+needs the
 .Cm jpegtran
 and
 .Cm jpegexiforient
 binaries
 .Pq usually distributed in Qo libjpeg-progs Qc or similar
-for lossless rotation.
+for lossless JPEG rotation.
 .
 .Pp
 .
-To view images from URLs such as http://, you need
+To view images from URLs such as "http://",
 .Nm
-compiled with libcurl support (enabled by default).
-See the
-.Sx VERSION
-section.
+must be compiled with libcurl support.
+It is $MAN_CURL$ in this build
 .
 .
-.Sh BUGS
+.Sh KNOWN BUGS
 .
 On systems with giflib 5.1.2,
 .Nm
@@ -1942,6 +2010,12 @@ upgrade to giflib 5.1.4.
 .
 .Pp
 .
+While loading images using libcurl,
+.Nm
+will not react to key or mouse actions.
+.
+.Pp
+.
 Thumbnail mode is somewhat inefficient, and because of that not nearly as fast
 as it could be.
 .
@@ -1956,7 +2030,7 @@ window slightly too large.
 If you find a bug, please report it to
 .Aq derf+feh@finalrewind.org
 or via
-.Aq http://github.com/derf/feh/issues .
+.Aq https://github.com/derf/feh/issues .
 You are also welcome to direct any feh-related comments/questions/... to #feh
 on irc.oftc.net.
 .
@@ -2026,4 +2100,4 @@ Tom Gilbert
 .Pp
 .
 See also:
-http://feh.finalrewind.org
+https://feh.finalrewind.org

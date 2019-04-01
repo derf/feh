@@ -61,7 +61,6 @@ void init_parse_options(int argc, char **argv)
 	opt.scroll_step = 20;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.font = NULL;
-	opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg_default.png");
 	opt.max_height = opt.max_width = UINT_MAX;
 
 	opt.start_list_at = NULL;
@@ -131,6 +130,7 @@ static void feh_load_options_for_theme(char *theme)
 	char *rcpath = NULL;
 	char *oldrcpath = NULL;
 	char *confbase = getenv("XDG_CONFIG_HOME");
+	// s, s1 and s2 must always have identical size
 	char s[1024], s1[1024], s2[1024];
 	int cont = 0;
 	int bspos;
@@ -167,11 +167,19 @@ static void feh_load_options_for_theme(char *theme)
 		s2[0] = '\0';
 
 		if (cont) {
+			/*
+			 * fgets ensures that s contains no more than 1023 characters
+			 * (+ 1 null byte)
+			 */
 			sscanf(s, " %[^\n]\n", (char *) &s2);
 			if (!*s2)
 				break;
 			D(("Got continued options %s\n", s2));
 		} else {
+			/*
+			 * fgets ensures that s contains no more than 1023 characters
+			 * (+ 1 null byte)
+			 */
 			sscanf(s, "%s %[^\n]\n", (char *) &s1, (char *) &s2);
 			if (!(*s1) || (!*s2) || (*s1 == '\n') || (*s1 == '#')) {
 				cont = 0;
@@ -313,12 +321,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 {
 	int discard;
 	static char stropts[] =
-		"a:A:b:B:cC:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
-		".@:^:~:):|:+:<:>:";
+		"a:A:b:B:C:dD:e:E:f:Fg:GhH:iIj:J:kK:lL:mM:nNo:O:pPqrR:sS:tT:uUvVwW:xXy:YzZ"
+		".@:^:~:|:+:<:>:";
 
 	/* (*name, has_arg, *flag, val) See: struct option in getopts.h */
 	static struct option lopts[] = {
-		{"menu-bg"       , 1, 0, ')'},
 		{"debug"         , 0, 0, '+'},
 		{"scale-down"    , 0, 0, '.'},
 		{"max-dimension" , 1, 0, '<'},
@@ -353,7 +360,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"title"         , 1, 0, '^'},
 		{"alpha"         , 1, 0, 'a'},
 		{"bg"            , 1, 0, 'b'},
-		{"collage"       , 0, 0, 'c'},
 		{"draw-filename" , 0, 0, 'd'},
 		{"font"          , 1, 0, 'e'},
 		{"filelist"      , 1, 0, 'f'},
@@ -398,11 +404,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-fill"       , 0, 0, 218},
 		{"bg-max"        , 0, 0, 219},
 		{"no-jump-on-resort", 0, 0, 220},
+		{"edit"          , 0, 0, 221},
 #ifdef HAVE_LIBEXIF
 		{"draw-exif"     , 0, 0, 223},
 		{"auto-rotate"   , 0, 0, 242},
 #endif
-		{"cycle-once"    , 0, 0, 224},
 		{"no-xinerama"   , 0, 0, 225},
 		{"draw-tinted"   , 0, 0, 229},
 		{"info"          , 1, 0, 234},
@@ -429,11 +435,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		D(("Got option, getopt calls it %d, or %c\n", optch, optch));
 		switch (optch) {
 		case 0:
-			break;
-		case ')':
-			free(opt.menu_bg);
-			opt.menu_bg = estrdup(optarg);
-			weprintf("The --menu-bg option is deprecated and will be removed by 2012");
 			break;
 		case '+':
 			opt.debug = 1;
@@ -471,6 +472,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			if (opt.slideshow_delay < 0.0) {
 				opt.slideshow_delay *= (-1);
 				opt.paused = 1;
+			} else {
+				opt.paused = 0;
 			}
 			break;
 		case 'E':
@@ -579,9 +582,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 'b':
 			opt.bg = 1;
 			opt.bg_file = estrdup(optarg);
-			break;
-		case 'c':
-			opt.collage = 1;
 			break;
 		case 'd':
 			opt.draw_filename = 1;
@@ -736,6 +736,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 220:
 			opt.jump_on_resort = 0;
 			break;
+		case 221:
+			opt.edit = 1;
+			break;
 #ifdef HAVE_LIBEXIF
 		case 223:
 			opt.draw_exif = 1;
@@ -744,10 +747,6 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.auto_rotate = 1;
 			break;
 #endif
-		case 224:
-			weprintf("--cycle-once is deprecated, please use --on-last-slide=quit instead");
-			opt.on_last_slide = ON_LAST_SLIDE_QUIT;
-			break;
 		case 225:
 			opt.xinerama = 0;
 			break;
@@ -756,10 +755,12 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 234:
 			opt.info_cmd = estrdup(optarg);
-			if (opt.info_cmd[0] == ';')
+			if (opt.info_cmd[0] == ';') {
+				opt.draw_info = 0;
 				opt.info_cmd++;
-			else
+			} else {
 				opt.draw_info = 1;
+			}
 			break;
 		case 235:
 			opt.force_aliasing = 1;
@@ -831,8 +832,19 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			add_file_to_filelist_recursively(argv[optind++], FILELIST_FIRST);
 		}
 	}
-	else if (finalrun && !opt.filelistfile && !opt.bgmode)
-		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+	else if (finalrun && !opt.filelistfile && !opt.bgmode) {
+		if (opt.start_list_at && !path_is_url(opt.start_list_at) && strrchr(opt.start_list_at, '/')) {
+			char *target_directory = estrdup(opt.start_list_at);
+			char *filename_start = strrchr(target_directory, '/');
+			if (filename_start) {
+				*filename_start = '\0';
+			}
+			add_file_to_filelist_recursively(target_directory, FILELIST_FIRST);
+			free(target_directory);
+		} else {
+			add_file_to_filelist_recursively(".", FILELIST_FIRST);
+		}
+	}
 
 	/* So that we can safely be called again */
 	optind = 0;
@@ -860,17 +872,11 @@ static void check_options(void)
 		}
 	}
 
-	if ((opt.index + opt.collage) > 1) {
-		weprintf("you can't use collage mode and index mode together.\n"
-				"   I'm going with index");
-		opt.collage = 0;
-	}
-
 	if (opt.full_screen && opt.multiwindow) {
 		eprintf("You cannot combine --fullscreen with --multiwindow");
 	}
 
-	if (opt.list && (opt.multiwindow || opt.index || opt.collage)) {
+	if (opt.list && (opt.multiwindow || opt.index)) {
 		eprintf("You cannot combine --list with other modes");
 	}
 
@@ -908,6 +914,10 @@ static void show_version(void)
 
 #if _FILE_OFFSET_BITS == 64
 		"stat64 "
+#endif
+
+#ifdef HAVE_VERSCMP
+		"verscmp "
 #endif
 
 #ifdef HAVE_LIBXINERAMA

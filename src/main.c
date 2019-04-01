@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 {
 	atexit(feh_clean_exit);
 
-	srand(getpid() * time(NULL) % ((unsigned int) -1));
+	srandom(getpid() * time(NULL) % ((unsigned int) -1));
 
 	setup_signal_handlers();
 	init_parse_options(argc, argv);
@@ -72,8 +72,6 @@ int main(int argc, char **argv)
 
 	if (opt.index)
 		init_index_mode();
-	else if (opt.collage)
-		init_collage_mode();
 	else if (opt.multiwindow)
 		init_multiwindow_mode();
 	else if (opt.list || opt.customlist)
@@ -205,7 +203,7 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
-			if ((ft) && (count == 0)) {
+			if (count == 0) {
 				/* This means the timer is due to be executed. If count was > 0,
 				   that would mean an X event had woken us, we're not interested
 				   in that */
@@ -246,7 +244,6 @@ void feh_clean_exit(void)
 {
 	delete_rm_files();
 
-	free(opt.menu_bg);
 	free(opt.menu_font);
 
 #ifdef HAVE_INOTIFY

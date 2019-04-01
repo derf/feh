@@ -132,7 +132,6 @@ void init_xinerama(void);
 #endif				/* HAVE_LIBXINERAMA */
 void init_multiwindow_mode(void);
 void init_thumbnail_mode(void);
-void init_collage_mode(void);
 void init_index_mode(void);
 void init_slideshow_mode(void);
 void init_list_mode(void);

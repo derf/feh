@@ -2,7 +2,6 @@ PACKAGE ?= feh
 VERSION ?= ${shell git describe --dirty}
 
 app ?= 0
-cam ?= 0
 curl ?= 1
 debug ?= 0
 exif ?= 0

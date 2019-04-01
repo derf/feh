@@ -76,15 +76,13 @@ Overall test status, what's covered / missing
  [x] correct caption display
 
 
---collage
-
 --customlist
 
  [x] correct output
  [x] format specifiers
 
 
---cycle-once
+--on-last-slide=quit
 
  [x] closes feh window at end of slideshow
  [x] combination with --slideshow-delay
