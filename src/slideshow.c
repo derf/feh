@@ -445,7 +445,7 @@ void feh_action_run(feh_file * file, char *action, winwidget winwid)
 	return;
 }
 
-char *format_size(int size)
+char *format_size(double size)
 {
 	static char ret[5];
 	char units[] = {' ', 'k', 'M', 'G', 'T'};
@@ -454,7 +454,7 @@ char *format_size(int size)
 		size /= 1000;
 		postfix++;
 	}
-	snprintf(ret, 5, "%3d%c", size, units[postfix]);
+	snprintf(ret, 5, "%3.0f%c", size, units[postfix]);
 	return ret;
 }
 
