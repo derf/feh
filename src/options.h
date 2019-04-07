@@ -102,6 +102,10 @@ struct __fehoptions {
 	char *index_info;
 
 	int force_aliasing;
+	int antialiasing_scroll;
+	int antialiasing_scroll_page;
+	int antialiasing_pan;
+	int antialiasing_zoom;
 	int thumb_w;
 	int thumb_h;
 	int limit_w;

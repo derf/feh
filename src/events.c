@@ -267,7 +267,10 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- (winwid->im_click_offset_y * winwid->zoom);
 
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 
 	} else if (feh_is_bb(EVENT_zoom_out, button, state)) {
 		D(("Zoom_Out Button Press event\n"));
@@ -295,7 +298,10 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- (winwid->im_click_offset_y * winwid->zoom);
 
 		winwidget_sanitise_offsets(winwid);
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 
 	} else if (feh_is_bb(EVENT_reload_image, button, state)) {
 		D(("Reload Button Press event\n"));
@@ -353,7 +359,10 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			opt.mode = MODE_NORMAL;
 			winwid->mode = MODE_NORMAL;
 			winwidget_sanitise_offsets(winwid);
-			winwidget_render_image(winwid, 0, 0);
+			if(opt.antialiasing_pan == 0)
+				winwidget_render_image(winwid, 0, 1);
+			else if(opt.antialiasing_pan == 1 || opt.antialiasing_pan == 2)
+				winwidget_render_image(winwid, 0, 0);
 		} else if (opt.mode == MODE_NEXT) {
 			opt.mode = MODE_NORMAL;
 			winwid->mode = MODE_NORMAL;
@@ -399,7 +408,10 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 		} else
 			winwidget_sanitise_offsets(winwid);
 
-		winwidget_render_image(winwid, 0, 0);
+		if(opt.antialiasing_zoom == 0)
+			winwidget_render_image(winwid, 0, 1);
+		else if(opt.antialiasing_zoom == 1 || opt.antialiasing_zoom == 2)
+			winwidget_render_image(winwid, 0, 0);
 
 	} else if (feh_is_bb(EVENT_blur, button, state)) {
 		D(("Disabling Blur mode\n"));
@@ -554,7 +566,10 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->im_y = winwid->click_offset_y
 					- (winwid->im_click_offset_y * winwid->zoom);
 
-			winwidget_render_image(winwid, 0, 1);
+			if(opt.antialiasing_zoom == 0 || opt.antialiasing_zoom == 1)
+				winwidget_render_image(winwid, 0, 1);
+			else if(opt.antialiasing_zoom == 2)
+				winwidget_render_image(winwid, 0, 0);
 		}
 	} else if ((opt.mode == MODE_PAN) || (opt.mode == MODE_NEXT)) {
 		int orig_x, orig_y;
@@ -621,7 +636,11 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 			if ((winwid->im_x != orig_x)
 					|| (winwid->im_y != orig_y))
-				winwidget_render_image(winwid, 0, 1);
+				if(opt.antialiasing_pan == 0 || opt.antialiasing_pan == 1)
+					winwidget_render_image(winwid, 0, 1);
+				else if(opt.antialiasing_pan == 2)
+					winwidget_render_image(winwid, 0, 0);
+
 		}
 	} else if (opt.mode == MODE_ROTATE) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -641,7 +660,10 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			}
 			winwid->im_angle = (ev->xmotion.x - winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
 			D(("angle: %f\n", winwid->im_angle));
-			winwidget_render_image(winwid, 0, 1);
+			if(opt.antialiasing_zoom == 0 || opt.antialiasing_zoom == 1)
+				winwidget_render_image(winwid, 0, 1);
+			else if(opt.antialiasing_zoom == 2)
+				winwidget_render_image(winwid, 0, 0);
 		}
 	} else if (opt.mode == MODE_BLUR) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
