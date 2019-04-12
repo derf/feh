@@ -34,6 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "wallpaper.h"
 #include <termios.h>
 
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
+
 char **cmdargv = NULL;
 int cmdargc = 0;
 char *mode = NULL;
@@ -53,6 +57,15 @@ int main(int argc, char **argv)
 		init_x_and_imlib();
 		init_keyevents();
 		init_buttonbindings();
+#ifdef HAVE_INOTIFY
+        if (opt.auto_reload) {
+            opt.inotify_fd = inotify_init();
+            if (opt.inotify_fd < 0) {
+                opt.auto_reload = 0;
+                eprintf("inotify_init failed");
+            }
+        }
+#endif
 	}
 
 	feh_event_init();
@@ -146,6 +159,13 @@ int feh_main_iteration(int block)
 	FD_SET(xfd, &fdset);
 	if (control_via_stdin)
 		FD_SET(STDIN_FILENO, &fdset);
+#ifdef HAVE_INOTIFY
+    if (opt.auto_reload) {
+        FD_SET(opt.inotify_fd, &fdset);
+        if (opt.inotify_fd >= fdsize)
+            fdsize = opt.inotify_fd + 1;
+    }
+#endif
 
 	/* Timers */
 	ft = first_timer;
@@ -191,6 +211,10 @@ int feh_main_iteration(int block)
 			}
 			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
+#ifdef HAVE_INOTIFY
+			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
+                feh_event_handle_inotify();
+#endif
 		}
 	} else {
 		/* Don't block if there are events in the queue. That's a bit rude ;-) */
@@ -204,6 +228,10 @@ int feh_main_iteration(int block)
 				eprintf("Connection to X display lost");
 			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
+#ifdef HAVE_INOTIFY
+			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
+                feh_event_handle_inotify();
+#endif
 		}
 	}
 	if (window_num == 0 || sig_exit != 0)
@@ -217,6 +245,12 @@ void feh_clean_exit(void)
 	delete_rm_files();
 
 	free(opt.menu_font);
+
+#ifdef HAVE_INOTIFY
+    if (opt.auto_reload)
+        if (close(opt.inotify_fd))
+            eprintf("inotify close failed");
+#endif
 
 	if(disp)
 		XCloseDisplay(disp);

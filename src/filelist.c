@@ -76,7 +76,7 @@ void feh_file_free(feh_file * file)
 #ifdef HAVE_LIBEXIF
 	if (file->ed)
 		exif_data_unref(file->ed);
-#endif		
+#endif
 	free(file);
 	return;
 }

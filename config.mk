@@ -86,6 +86,13 @@ else
 	MAN_EXIF = disabled
 endif
 
+ifeq (${inotify},1)
+	CFLAGS += -DHAVE_INOTIFY
+	MAN_INOTIFY = enabled
+else
+	MAN_INOTIFY = disabled
+endif
+
 MAN_DATE ?= ${shell date '+%B %d, %Y'}
 
 # Uncomment this to use dmalloc
