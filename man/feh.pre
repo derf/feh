@@ -212,8 +212,8 @@ Extra actions which can be set and triggered using the appropriate number key.
 .It Cm --auto-reload
 .
 .Pq optional feature, $MAN_INOTIFY$ in this build
-automatically reload image when the underlying file changes. Note that this
-feature
+automatically reload image when the underlying file changes.
+Note that this feature
 .Pq if present in the build
 is enabled by default.
 This option is only useful to re-enable auto-reload after it has been
@@ -316,7 +316,8 @@ on a semi-transparent background to improve their readability
 .
 .It Cm --edit
 .
-Enable basic editing of files. This makes rotation and mirroring
+Enable basic editing of files.
+This makes rotation and mirroring
 .Pq bound to Qo < Qc , Qo > Qc , Qo | Qc , and Qo _ Qc by default
 change the underlying file and not just its displayed content.
 .
@@ -478,9 +479,9 @@ toggle_info key.
 .
 .It Cm --insecure
 .
-When viewing files with HTTPS, this option disables all certificate checks.  It
-allows images on sites with self-signed or expired certificates to be opened,
-but is no more secure than plain HTTP.
+When viewing files with HTTPS, this option disables all certificate checks.
+It allows images on sites with self-signed or expired certificates to be
+opened, but is no more secure than plain HTTP.
 .
 .It Cm -k , --keep-http
 .
@@ -697,7 +698,8 @@ Scroll
 .Ar count
 pixels whenever scroll_up, scroll_down, scroll_left or scroll_right is pressed.
 Note that this option accepts negative numbers in case you need to reverse the
-scroll direction. See
+scroll direction.
+See
 .Sx KEYS CONFIG SYNTAX
 for how to reverse it permanently.
 Default: 20
