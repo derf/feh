@@ -73,6 +73,9 @@ void init_parse_options(int argc, char **argv)
 	opt.xinerama = 1;
 	opt.xinerama_index = -1;
 #endif				/* HAVE_LIBXINERAMA */
+#ifdef HAVE_INOTIFY
+	opt.auto_reload = 1;
+#endif				/* HAVE_INOTIFY */
 
 	feh_getopt_theme(argc, argv);
 
@@ -519,6 +522,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'R':
 			opt.reload = atof(optarg);
+#ifdef HAVE_INOTIFY
+			opt.auto_reload = 0;
+#endif
 			break;
 		case 'S':
 			if (!strcasecmp(optarg, "name"))
