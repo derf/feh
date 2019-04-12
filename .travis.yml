@@ -27,3 +27,4 @@ env:
   - stat64=1
   - verscmp=0
   - xinerama=0
+  - inotify=1

@@ -99,6 +99,7 @@ OPTIONS
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
      --cache-size NUM      imlib cache size in mebibytes (0 .. 2048)
+     --auto-reload         automatically reload shown image if file was changed
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without

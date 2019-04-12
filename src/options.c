@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <strings.h>
-
 #include "feh.h"
 #include "filelist.h"
 #include "options.h"
@@ -425,6 +424,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"conversion-timeout" , 1, 0, 245},
 		{"version-sort"  , 0, 0, 246},
 		{"offset"        , 1, 0, 247},
+#ifdef HAVE_INOTIFY
+		{"auto-reload"   , 0, 0, 248},
+#endif
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -810,6 +812,11 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.offset_flags = XParseGeometry(optarg, &opt.offset_x,
 					&opt.offset_y, (unsigned int *)&discard, (unsigned int *)&discard);
 			break;
+#ifdef HAVE_INOTIFY
+		case 248:
+			opt.auto_reload = 1;
+			break;
+#endif
 		default:
 			break;
 		}
@@ -895,6 +902,10 @@ static void show_version(void)
 
 #ifdef HAVE_LIBEXIF
 		"exif "
+#endif
+
+#ifdef HAVE_INOTIFY
+		"inotify "
 #endif
 
 #ifdef INCLUDE_HELP

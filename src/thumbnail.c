@@ -93,7 +93,6 @@ void init_thumbnail_mode(void)
 
 	if (!opt.thumb_title)
 		opt.thumb_title = "%n";
-
 	mode = "thumbnail";
 
 	if (opt.font)
@@ -176,6 +175,7 @@ void init_thumbnail_mode(void)
 		gib_imlib_image_fill_rectangle(td.im_main, 0, 0, td.w,
 				td.h + title_area_h, 0, 0, 0, 255);
 	}
+
 
 	if (opt.display) {
 		winwid = winwidget_create_from_image(td.im_main, WIN_TYPE_THUMBNAIL);
@@ -417,6 +417,7 @@ void init_thumbnail_mode(void)
 			}
 		}
 	}
+
 
 	return;
 }
@@ -783,7 +784,6 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 	if (!l) {
 		eprintf("Cannot find %s in filelist, wtf", thumbfile->filename);
 	}
-
 	thumbwin = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
 	if (!thumbwin) {
 		thumbwin = winwidget_create_from_file(
@@ -793,7 +793,13 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 			winwidget_show(thumbwin);
 	} else if (FEH_FILE(thumbwin->file->data) != thumbfile) {
 		thumbwin->file = l;
-		feh_reload_image(thumbwin, 1, 1);
+#ifdef HAVE_INOTIFY
+        winwidget_inotify_remove(thumbwin);
+#endif
+		feh_reload_image(thumbwin, 1, 0);
+#ifdef HAVE_INOTIFY
+        winwidget_inotify_add(thumbwin, thumbfile);
+#endif
 	}
 }
 

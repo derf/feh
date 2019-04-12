@@ -26,7 +26,8 @@ $VERSION$
 .
 Compile-time switches: libcurl support $MAN_CURL$, natural sorting support
 $MAN_VERSCMP$, Xinerama support
-$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$$MAN_DEBUG$
+$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$, inotify support
+$MAN_INOTIFY$$MAN_DEBUG$
 .
 .
 .Sh DESCRIPTION
