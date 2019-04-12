@@ -796,7 +796,7 @@ void feh_thumbnail_show_fullsize(feh_file *thumbfile)
 #ifdef HAVE_INOTIFY
         winwidget_inotify_remove(thumbwin);
 #endif
-		feh_reload_image(thumbwin, 1, 1);
+		feh_reload_image(thumbwin, 1, 0);
 #ifdef HAVE_INOTIFY
         winwidget_inotify_add(thumbwin, thumbfile);
 #endif

@@ -734,7 +734,7 @@ void feh_event_handle_inotify(void)
                 } else if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO)) {
                     if (strcmp(event->name, FEH_FILE(windows[j]->file->data)->name) == 0) {
                         D(("inotify says file changed\n"));
-                        feh_reload_image(windows[j], 0, 1);
+                        feh_reload_image(windows[j], 0, 0);
                     }
                 }
                 break;
