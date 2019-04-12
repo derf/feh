@@ -26,7 +26,7 @@ $VERSION$
 .
 Compile-time switches: libcurl support $MAN_CURL$, natural sorting support
 $MAN_VERSCMP$, Xinerama support
-$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$, inotify support
+$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$, inotify-based auto-reload
 $MAN_INOTIFY$$MAN_DEBUG$
 .
 .
@@ -208,6 +208,18 @@ Example usage:
 .It Cm --action1 No .. Cm --action9 Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
 Extra actions which can be set and triggered using the appropriate number key.
+.
+.It Cm --auto-reload
+.
+.Pq optional feature, $MAN_INOTIFY$ in this build
+automatically reload image when the underlying file changes. Note that this
+feature
+.Pq if present in the build
+is enabled by default.
+This option is only useful to re-enable auto-reload after it has been
+disabled by a preceding
+.Cm --reload=0
+option.
 .
 .It Cm --auto-rotate
 .
@@ -644,6 +656,7 @@ Reload filelist and current image after
 seconds.
 Useful for viewing HTTP webcams or frequently changing directories.
 .Pq Note that filelist reloading is still experimental.
+Set to zero to disable any kind of automatic reloading.
 .
 .Pp
 .
@@ -653,6 +666,10 @@ will either show the next one or quit.
 However, if an image still exists, but can no longer be loaded,
 .Nm
 will continue to try loading it.
+.
+.Pp
+.
+Setting this option causes inotify-based auto-reload to be disabled.
 .
 .It Cm -n , --reverse
 .
