@@ -62,7 +62,8 @@ int main(int argc, char **argv)
             opt.inotify_fd = inotify_init();
             if (opt.inotify_fd < 0) {
                 opt.auto_reload = 0;
-                eprintf("inotify_init failed:");
+                weprintf("inotify_init failed:");
+                weprintf("Disabling inotify-based auto-reload");
             }
         }
 #endif
