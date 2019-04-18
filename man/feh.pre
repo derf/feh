@@ -24,10 +24,28 @@ $VERSION$
 .
 .Pp
 .
-Compile-time switches: libcurl support $MAN_CURL$, natural sorting support
-$MAN_VERSCMP$, Xinerama support
-$MAN_XINERAMA$, builtin EXIF support $MAN_EXIF$, inotify-based auto-reload
-$MAN_INOTIFY$$MAN_DEBUG$
+Compile-time switches in this build:
+.
+.Bl -bullet -compact
+.
+.It
+remote file support: libcurl $MAN_CURL$
+.
+.It
+natural sorting option $MAN_VERSCMP$
+.
+.It
+Xinerama multi-monitor support $MAN_XINERAMA$
+.
+.It
+builtin EXIF reader $MAN_EXIF$
+.
+.It
+inotify-based auto-reload of changed files $MAN_INOTIFY$
+.
+.El
+.
+$MAN_DEBUG$
 .
 .
 .Sh DESCRIPTION
@@ -213,9 +231,9 @@ Extra actions which can be set and triggered using the appropriate number key.
 .
 .Pq optional feature, $MAN_INOTIFY$ in this build
 automatically reload image when the underlying file changes.
-Note that this feature
-.Pq if present in the build
-is enabled by default.
+Note that auto-reload
+.Pq if enabled in the build
+is on by default.
 This option is only useful to re-enable auto-reload after it has been
 disabled by a preceding
 .Cm --reload=0

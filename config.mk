@@ -50,9 +50,9 @@ endif
 
 ifeq (${debug},1)
 	CFLAGS += -DDEBUG -O0
-	MAN_DEBUG = . This is a debug build.
+	MAN_DEBUG = This is a debug build.
 else
-	MAN_DEBUG =
+	MAN_DEBUG = .
 endif
 
 ifeq (${help},1)
@@ -65,9 +65,9 @@ endif
 
 ifeq (${verscmp},1)
 	CFLAGS += -DHAVE_VERSCMP
-	MAN_VERSCMP = enabled
+	MAN_VERSCMP = available
 else
-	MAN_VERSCMP = disabled
+	MAN_VERSCMP = not available
 endif
 
 ifeq (${xinerama},1)
@@ -81,9 +81,9 @@ endif
 ifeq (${exif},1)
 	CFLAGS += -DHAVE_LIBEXIF
 	LDLIBS += -lexif
-	MAN_EXIF = enabled
+	MAN_EXIF = available
 else
-	MAN_EXIF = disabled
+	MAN_EXIF = not available
 endif
 
 ifeq (${inotify},1)
