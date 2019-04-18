@@ -690,7 +690,7 @@ void winwidget_inotify_remove(winwidget winwid)
     if (winwid->inotify_wd >= 0) {
         D(("Removing inotify watch\n"));
         if (inotify_rm_watch(opt.inotify_fd, winwid->inotify_wd))
-            eprintf("inotify_rm_watch failed");
+            eprintf("inotify_rm_watch failed:");
         winwid->inotify_wd = -1;
     }
 }
@@ -705,7 +705,7 @@ void winwidget_inotify_add(winwidget winwid, feh_file * file)
         feh_file_dirname(dir, file, PATH_MAX);
         winwid->inotify_wd = inotify_add_watch(opt.inotify_fd, dir, IN_CLOSE_WRITE | IN_MOVED_TO);
         if (winwid->inotify_wd < 0)
-            eprintf("inotify_add_watch failed");
+            eprintf("inotify_add_watch failed:");
     }
 }
 #endif
