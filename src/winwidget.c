@@ -703,6 +703,15 @@ void winwidget_inotify_add(winwidget winwid, feh_file * file)
         D(("Adding inotify watch for %s\n", file->filename));
         char dir[PATH_MAX];
         feh_file_dirname(dir, file, PATH_MAX);
+
+        /*
+         * Handle files without directory part, e.g. "feh somefile.jpg".
+         * These always reside in the current directory.
+         */
+        if (dir[0] == '\0') {
+            dir[0] = '.';
+            dir[1] = '\0';
+        }
         winwid->inotify_wd = inotify_add_watch(opt.inotify_fd, dir, IN_CLOSE_WRITE | IN_MOVED_TO);
         if (winwid->inotify_wd < 0)
             weprintf("inotify_add_watch failed:");
