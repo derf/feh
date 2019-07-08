@@ -213,7 +213,7 @@ int feh_main_iteration(int block)
 			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
-			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
+			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
                 feh_event_handle_inotify();
 #endif
 		}
@@ -230,7 +230,7 @@ int feh_main_iteration(int block)
 			else if ((count > 0) && (FD_ISSET(0, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
-			else if (count && (FD_ISSET(opt.inotify_fd, &fdset)))
+			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
                 feh_event_handle_inotify();
 #endif
 		}
