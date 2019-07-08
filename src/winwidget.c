@@ -811,6 +811,8 @@ void winwidget_show(winwidget winwid)
 		/* wait for the window to map */
 		D(("Waiting for window to map\n"));
 		XMaskEvent(disp, StructureNotifyMask, &ev);
+		winwidget_get_geometry(winwid, NULL);
+
 		/* Unfortunately, StructureNotifyMask does not only mask
 		 * the events of type MapNotify (which we want to mask here)
 		 * but also such of type ConfigureNotify (and others, see
@@ -909,6 +911,8 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 
 		winwid->had_resize = 1;
 		XFlush(disp);
+
+		winwidget_get_geometry(winwid, NULL);
 
 		if (force_resize && (opt.geom_flags & (WidthValue | HeightValue))
 				&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
@@ -1149,8 +1153,11 @@ void winwidget_get_geometry(winwidget winwid, int *rect)
 {
 	unsigned int bw, bp;
 	Window child;
+
+	int inner_rect[4];
+
 	if (!rect)
-		return;
+		rect = inner_rect;
 
 	XGetGeometry(disp, winwid->win, &root, &(rect[0]), &(rect[1]), (unsigned
 				int *)&(rect[2]), (unsigned int *)&(rect[3]), &bw, &bp);
