@@ -452,6 +452,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			home = getenv("HOME");
 			if (home) {
 				FILE *fp;
+				int fd;
 				char *path;
 				char *absolute_path;
 				struct stat s;
@@ -519,11 +520,11 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 						free(absolute_path);
 					}
 					fputc('\n', fp);
-					fclose(fp);
-					stat(path, &s);
-					if (chmod(path, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
+					fd = fileno(fp);
+					if (fstat(fd, &s) != 0 || fchmod(fd, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
 						weprintf("Can't set %s as executable", path);
 					}
+					fclose(fp);
 				}
 				free(path);
 			}
