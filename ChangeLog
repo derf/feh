@@ -1,3 +1,14 @@
+Mon, 22 Jul 2019 20:17:03 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.2.1
+    * Use --no-fehbg option in ~/.fehbg. This fixes cases where an X11
+      setup change may inadvertently alter the commandline stored in .fehbg.
+    * Fix insufficient error handling when updating ~/.fehbg. Previously,
+      a stat() error may have caused .fehbg to be update with excessive file
+      permissions (patch by Tobias Stoeckmann)
+    * Fix TOCTTOU when setting the file mode of ~/.fehbg
+      (patch by Tobias Stoeckmann)
+
 Wed, 10 Jul 2019 17:40:29 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.2
