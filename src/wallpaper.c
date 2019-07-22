@@ -463,7 +463,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				} else {
 					fputs("#!/bin/sh\n", fp);
 					fputs(cmdargv[0], fp);
-					fputs(" --bg-", fp);
+					fputs(" --no-fehbg --bg-", fp);
 					if (centered)
 						fputs("center", fp);
 					else if (scaled)

@@ -1075,6 +1075,12 @@ So to have your background restored every time you start X, you can add
 .Qq ~/.fehbg &
 to your X startup script
 .Pq such as Pa ~/.xinitrc .
+Note that the commandline written to
+.Pa ~/.fehbg
+always includes the
+.Cm --no-fehbg
+option to ensure that it is not inadvertently changed by differences in
+X11 screen layout or similar.
 .
 .Pp
 .
