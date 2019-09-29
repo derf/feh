@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+#include<regex.h>
+
 enum on_last_slide_action {
 	ON_LAST_SLIDE_RESUME = 0,
 	ON_LAST_SLIDE_QUIT,
@@ -104,6 +106,7 @@ struct __fehoptions {
 	char *start_list_at;
 	char *info_cmd;
 	char *index_info;
+	regex_t filter;
 
 	int force_aliasing;
 	int thumb_w;

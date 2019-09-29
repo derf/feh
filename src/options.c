@@ -76,6 +76,7 @@ void init_parse_options(int argc, char **argv)
 #ifdef HAVE_INOTIFY
 	opt.auto_reload = 1;
 #endif				/* HAVE_INOTIFY */
+	opt.filter.allocated = 0;
 
 	feh_getopt_theme(argc, argv);
 
@@ -430,6 +431,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 #ifdef HAVE_INOTIFY
 		{"auto-reload"   , 0, 0, 248},
 #endif
+		{"skip"          , 1, 0, 249},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -823,6 +825,12 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.auto_reload = 1;
 			break;
 #endif
+
+		case 249:
+			if(regcomp(&opt.filter, optarg, 0)){
+				weprintf("Invalid skip REGEX. Disabling...\n");
+			}
+			break;
 		default:
 			break;
 		}

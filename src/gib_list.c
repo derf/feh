@@ -134,6 +134,9 @@ gib_list_add_front(gib_list * root, void *data)
 {
    gib_list *l;
 
+   if (data == NULL)
+      return(root);
+
    l = gib_list_new();
    l->next = root;
    l->data = data;

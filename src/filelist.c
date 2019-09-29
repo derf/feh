@@ -46,6 +46,9 @@ feh_file *feh_file_new(char *filename)
 	feh_file *newfile;
 	char *s;
 
+	if(opt.filter.allocated != 0 && !regexec(&opt.filter, filename, 0, NULL, 0))
+		return NULL;
+
 	newfile = (feh_file *) emalloc(sizeof(feh_file));
 	newfile->caption = NULL;
 	newfile->filename = estrdup(filename);
