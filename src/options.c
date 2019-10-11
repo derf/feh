@@ -430,6 +430,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 #ifdef HAVE_INOTIFY
 		{"auto-reload"   , 0, 0, 248},
 #endif
+		{"class"         , 1, 0, 249},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -823,6 +824,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.auto_reload = 1;
 			break;
 #endif
+		case 249:
+			opt.x11_class = estrdup(optarg);
+			break;
 		default:
 			break;
 		}
