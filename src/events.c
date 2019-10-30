@@ -632,12 +632,14 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				Imlib_Image temp;
 
 				temp = gib_imlib_create_rotated_image(winwid->im, 0.0);
-				winwid->im_w = gib_imlib_image_get_width(temp);
-				winwid->im_h = gib_imlib_image_get_height(temp);
-				gib_imlib_free_image_and_decache(temp);
-				if (!winwid->full_screen && !opt.geom_flags)
-					winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
-				winwid->has_rotated = 1;
+				if (temp != NULL) {
+					winwid->im_w = gib_imlib_image_get_width(temp);
+					winwid->im_h = gib_imlib_image_get_height(temp);
+					gib_imlib_free_image_and_decache(temp);
+					if (!winwid->full_screen && !opt.geom_flags)
+						winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
+					winwid->has_rotated = 1;
+				}
 			}
 			winwid->im_angle = (ev->xmotion.x - winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
 			D(("angle: %f\n", winwid->im_angle));
@@ -653,17 +655,19 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			D(("Blurring\n"));
 
 			temp = gib_imlib_clone_image(winwid->im);
-			blur_radius = (((double) ev->xmotion.x / winwid->w) * 20) - 10;
-			D(("angle: %d\n", blur_radius));
-			if (blur_radius > 0)
-				gib_imlib_image_sharpen(temp, blur_radius);
-			else
-				gib_imlib_image_blur(temp, 0 - blur_radius);
-			ptr = winwid->im;
-			winwid->im = temp;
-			winwidget_render_image(winwid, 0, 1);
-			gib_imlib_free_image_and_decache(winwid->im);
-			winwid->im = ptr;
+			if (temp != NULL) {
+				blur_radius = (((double) ev->xmotion.x / winwid->w) * 20) - 10;
+				D(("angle: %d\n", blur_radius));
+				if (blur_radius > 0)
+					gib_imlib_image_sharpen(temp, blur_radius);
+				else
+					gib_imlib_image_blur(temp, 0 - blur_radius);
+				ptr = winwid->im;
+				winwid->im = temp;
+				winwidget_render_image(winwid, 0, 1);
+				gib_imlib_free_image_and_decache(winwid->im);
+				winwid->im = ptr;
+			}
 		}
 	} else {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
