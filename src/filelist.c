@@ -634,7 +634,7 @@ char *feh_absolute_path(char *path)
 {
 	char cwd[PATH_MAX];
 	char fullpath[PATH_MAX];
-	char temp[PATH_MAX];
+	char temp[PATH_MAX + 2];
 	char *ret;
 
 	if (!path)

@@ -254,7 +254,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 	char bgname[20];
 	int num = (int) random();
 	char bgfil[4096];
-	char sendbuf[4096];
+	char sendbuf[PATH_MAX + 128];
 
 	/*
 	 * TODO this re-implements mkstemp (badly). However, it is only needed
