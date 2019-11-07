@@ -615,7 +615,9 @@ static char *feh_http_load_image(char *url)
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+#if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 			curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_quit_function);
+#endif
 			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 			if (opt.insecure_ssl) {
 				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
