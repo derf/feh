@@ -303,6 +303,13 @@ zero causes
 to try indefinitely.
 Negative values restore the default by disabling conversion altogether.
 .
+.It Cm --class Ar class
+.
+Set the X11 class hint to
+.Ar class .
+.
+Default: feh
+.
 .It Cm -L , --customlist Ar format
 .
 Don't display images, print image info according to
@@ -320,7 +327,7 @@ Draw the defined actions and what they do at the top-left of the image.
 .Pq optional feature, $MAN_EXIF$ in this build
 display some EXIF information in the bottom left corner, similar to using
 .Cm --info
-with exiv2 / exifgrep .
+with exiv2 / exifgrep.
 .
 .It Cm -d , --draw-filename
 .
@@ -330,7 +337,7 @@ Draw the file name at the top-left of the image.
 .
 Show overlay texts
 .Pq as created by Cm --draw-filename No et al
-on a semi-transparent background to improve their readability
+on a semi-transparent background to improve their readability.
 .
 .It Cm --edit
 .

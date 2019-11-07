@@ -305,7 +305,7 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	winwidget_update_title(ret);
 	xch = XAllocClassHint();
 	xch->res_name = "feh";
-	xch->res_class = "feh";
+	xch->res_class = opt.x11_class ? opt.x11_class : "feh";
 	XSetClassHint(disp, ret->win, xch);
 	XFree(xch);
 
