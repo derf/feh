@@ -34,6 +34,13 @@ if ( length($feh_name) == 0 ) {
 	die($err_no_env);
 }
 
+# Imlib2 1.6+ reports JPEG file format as 'jpg', older versions use 'jpeg'.
+# Determine the output format used in this version with a --customlist call.
+my $list_dir = 'list';
+if (qx{$feh --customlist %t test/ok/jpg} =~ m{jpg}) {
+	$list_dir = 'list_imlib2_1.6';
+}
+
 my $version = qx{$feh --version};
 if ( $version =~ m{ Compile-time \s switches : \s .* help }ox ) {
 	$has_help = 1;
@@ -93,14 +100,14 @@ $cmd->stderr_is_eq('');
 $cmd = Test::Command->new( cmd => "$feh --list $images" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/default');
+$cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_like($re_warning);
 
 for my $sort (qw/name filename width height pixels size format/) {
 	$cmd = Test::Command->new( cmd => "$feh --list $images --sort $sort" );
 
 	$cmd->exit_is_num(0);
-	$cmd->stdout_is_file("test/list/$sort");
+	$cmd->stdout_is_file("test/${list_dir}/$sort");
 	$cmd->stderr_like($re_warning);
 }
 
@@ -108,7 +115,7 @@ $cmd
   = Test::Command->new( cmd => "$feh --list $images --sort format --reverse" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/format_reverse');
+$cmd->stdout_is_file("test/${list_dir}/format_reverse");
 $cmd->stderr_like($re_warning);
 
 $cmd = Test::Command->new(
@@ -117,7 +124,7 @@ $cmd = Test::Command->new(
 $cmd->exit_is_num(0);
 
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729
-#$cmd->stdout_is_file('test/list/filename_recursive');
+#$cmd->stdout_is_file("test/${list_dir}/filename_recursive");
 #$cmd->stderr_is_eq('');
 # dummy tests to match number of planned tests
 $cmd->exit_is_num(0);
@@ -127,19 +134,19 @@ $cmd = Test::Command->new( cmd => "$feh --customlist '%f; %h; %l; %m; %n; %p; "
 	  . "%s; %t; %u; %w' $images" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/custom');
+$cmd->stdout_is_file("test/${list_dir}/custom");
 $cmd->stderr_like($re_warning);
 
 $cmd = Test::Command->new( cmd => "$feh --list --quiet $images" );
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/default');
+$cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
 	cmd => "$feh --quiet --list --action 'echo \"%f %wx%h\" >&2' $images" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/default');
+$cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_like($re_list_action);
 
 $cmd
@@ -170,12 +177,12 @@ $cmd
   = Test::Command->new( cmd => "$feh --list --min-dimension 16x16 $images_ok" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/default');
+$cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_is_eq('');
 
 $cmd
   = Test::Command->new( cmd => "$feh --list --max-dimension 16x16 $images_ok" );
 
 $cmd->exit_is_num(0);
-$cmd->stdout_is_file('test/list/default');
+$cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_is_eq('');

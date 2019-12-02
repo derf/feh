@@ -1,0 +1,7 @@
+NUM	FORMAT	WIDTH	HEIGHT	PIXELS	SIZE	ALPHA	FILENAME
+1	gif	16	16	256 	953 	-	test/ok/gif
+2	jpg	16	16	256 	354 	-	test/ok/jpg
+3	jpg	16	16	256 	  9k	-	test/ok/jpg_exif
+4	png	16	16	256 	403 	X	test/ok/png
+5	pnm	16	16	256 	269 	-	test/ok/pnm
+6	png	16	16	256 	403 	X	test/ok/recursive/png
