@@ -1,3 +1,11 @@
+Tue, 03 Dec 2019 17:27:46 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.3
+    * New option --class allows setting the X11 class hint per feh instance
+      (patch by Olof-Joachim Frahm)
+    * Improve handling of NULL returns from Imlib2 calls (patch by Ben Boeckel)
+    * Fix compilation with libcurl < v7.32
+
 Mon, 22 Jul 2019 20:17:03 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.2.1
