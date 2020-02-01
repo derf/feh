@@ -468,6 +468,8 @@ Use
 as background for transparent image parts and the like.
 Accepted values: default, checks, or an XColor
 .Pq e.g. Qo black Qc or Qo #428bdd Qc .
+Note that some shells treat the hash symbol as a special character, so you
+may need to quote or escape it for the XColor code to work.
 .
 In windowed mode, the default is checks
 .Pq a checkered background so transparent image parts are easy to see .
