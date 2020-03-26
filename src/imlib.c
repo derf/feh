@@ -542,7 +542,11 @@ static char *feh_magick_load_image(char *filename)
 
 #ifdef HAVE_LIBCURL
 
+#if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 static int curl_quit_function(void *clientp,  curl_off_t dltotal,  curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+#else
+static int curl_quit_function(void *clientp,  double dltotal,  double dlnow, double ultotal, double ulnow)
+#endif
 {
 	// ignore "unused parameter" warnings
 	(void)clientp;
@@ -617,6 +621,8 @@ static char *feh_http_load_image(char *url)
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 			curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_quit_function);
+#else
+			curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, curl_quit_function);
 #endif
 			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
 			if (opt.insecure_ssl) {
