@@ -791,6 +791,13 @@ keys to browse through the directory.
 See
 .Sx USAGE EXAMPLES
 for examples.
+If
+.Ar filename
+is a URL and no files or filelists were specified,
+.Nm
+will show
+.Ar filename
+and not attempt to load additional files or directories.
 .
 .Pp
 .
