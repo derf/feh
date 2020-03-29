@@ -843,7 +843,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		}
 	}
 	else if (finalrun && !opt.filelistfile && !opt.bgmode) {
-		if (opt.start_list_at && !path_is_url(opt.start_list_at) && strrchr(opt.start_list_at, '/')) {
+		if (opt.start_list_at && path_is_url(opt.start_list_at)) {
+			add_file_to_filelist_recursively(opt.start_list_at, FILELIST_FIRST);
+		} else if (opt.start_list_at && strrchr(opt.start_list_at, '/')) {
 			char *target_directory = estrdup(opt.start_list_at);
 			char *filename_start = strrchr(target_directory, '/');
 			if (filename_start) {
