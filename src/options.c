@@ -431,6 +431,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"auto-reload"   , 0, 0, 248},
 #endif
 		{"class"         , 1, 0, 249},
+		{"use-http-cache", 0, 0, 250},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -826,6 +827,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 #endif
 		case 249:
 			opt.x11_class = estrdup(optarg);
+			break;
+		case 250:
+			opt.use_http_cache = 1;
 			break;
 		default:
 			break;

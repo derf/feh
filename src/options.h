@@ -49,6 +49,7 @@ struct __fehoptions {
 	unsigned char aspect;
 	unsigned char stretch;
 	unsigned char keep_http;
+	unsigned char use_http_cache;
 	unsigned char borderless;
 	unsigned char randomize;
 	unsigned char jump_on_resort;

@@ -258,10 +258,13 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((image_source != SRC_HTTP) || !opt.keep_http)
+		if ((image_source != SRC_HTTP) || (!opt.keep_http && !opt.use_http_cache))
 			unlink(tmpname);
+		else if (opt.use_http_cache && !opt.keep_http)
+			add_file_to_rm_filelist(tmpname);
 
-		free(tmpname);
+		if (image_source != SRC_HTTP && !opt.use_http_cache)
+			free(tmpname);
 	}
 
 	if ((err) || (!im)) {
@@ -542,6 +545,8 @@ static char *feh_magick_load_image(char *filename)
 
 #ifdef HAVE_LIBCURL
 
+gib_hash* http_cache = NULL;
+
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 static int curl_quit_function(void *clientp,  curl_off_t dltotal,  curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
 #else
@@ -575,6 +580,13 @@ static char *feh_http_load_image(char *url)
 	char *tmpname;
 	char *basename;
 	char *path = NULL;
+
+	if (opt.use_http_cache) {
+		if (!http_cache)
+			http_cache = gib_hash_new();
+		if ((sfn = gib_hash_get(http_cache, url)) != NULL)
+			return sfn;
+	}
 
 	if (opt.keep_http) {
 		if (opt.output_dir)
@@ -648,6 +660,8 @@ static char *feh_http_load_image(char *url)
 
 			free(ebuff);
 			fclose(sfp);
+			if (opt.use_http_cache)
+				gib_hash_set(http_cache, url, sfn);
 			return sfn;
 		} else {
 			weprintf("open url: fdopen failed:");
