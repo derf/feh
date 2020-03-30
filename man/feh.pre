@@ -578,6 +578,19 @@ Disable slideshow mode.
 With this setting, instead of opening multiple files in slideshow mode,
 multiple windows will be opened; one per file.
 .
+.It Cm --no-conversion-cache
+.
+When loading images via HTTP, ImageMagick or dcraw,
+.Nm
+will only load/convert them once and re-use the cached file on subsequent
+slideshow passes.
+This option disables the cache. It is also disabled when
+.Cm --reload
+is used.
+Use it if you rely on frequently changing files loaded via one of these
+sources.
+Note that it will impair performance.
+.
 .It Cm --no-jump-on-resort
 .
 Don't jump to the first image after resorting the filelist.
