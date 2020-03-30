@@ -60,6 +60,11 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
+#ifdef HAVE_LIBCURL
+// TODO use cache for dcraw and magick conversion results as well
+gib_hash* http_cache = NULL;
+#endif
+
 int childpid = 0;
 
 static int feh_file_is_raw(char *filename);
@@ -258,10 +263,15 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((image_source != SRC_HTTP) || !opt.keep_http)
+		if ((image_source != SRC_HTTP) || (!opt.keep_http && !opt.use_http_cache))
 			unlink(tmpname);
+		// keep_http already performs an add_file_to_rm_filelist call
+		else if (opt.use_http_cache && !opt.keep_http)
+			// add_file_to_rm_filelist duplicates tmpname
+			add_file_to_rm_filelist(tmpname);
 
-		free(tmpname);
+		if (image_source != SRC_HTTP && !opt.use_http_cache)
+			free(tmpname);
 	}
 
 	if ((err) || (!im)) {
@@ -317,6 +327,91 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	D(("Loaded ok\n"));
 	return(1);
+}
+
+void feh_reload_image(winwidget w, int resize, int force_new)
+{
+	char *new_title;
+	int len;
+	Imlib_Image tmp;
+	int old_w, old_h;
+
+	if (!w->file) {
+		im_weprintf(w, "couldn't reload, this image has no file associated with it.");
+		winwidget_render_image(w, 0, 0);
+		return;
+	}
+
+	D(("resize %d, force_new %d\n", resize, force_new));
+
+	free(FEH_FILE(w->file->data)->caption);
+	FEH_FILE(w->file->data)->caption = NULL;
+
+	len = strlen(w->name) + sizeof("Reloading: ") + 1;
+	new_title = emalloc(len);
+	snprintf(new_title, len, "Reloading: %s", w->name);
+	winwidget_rename(w, new_title);
+	free(new_title);
+
+	old_w = gib_imlib_image_get_width(w->im);
+	old_h = gib_imlib_image_get_height(w->im);
+
+	/*
+	 * If we don't free the old image before loading the new one, Imlib2's
+	 * caching will get in our way.
+	 * However, if --reload is used (force_new == 0), we want to continue if
+	 * the new image cannot be loaded, so we must not free the old image yet.
+	 */
+	if (force_new)
+		winwidget_free_image(w);
+
+#ifdef HAVE_LIBCURL
+	// if it's an external image, our own cache will also get in your way
+	char *sfn;
+	if (opt.use_http_cache && (sfn = gib_hash_get(http_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
+		free(sfn);
+		gib_hash_set(http_cache, FEH_FILE(w->file->data)->filename, NULL);
+	}
+#endif
+
+	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
+		if (force_new)
+			eprintf("failed to reload image\n");
+		else {
+			im_weprintf(w, "Couldn't reload image. Is it still there?");
+			winwidget_render_image(w, 0, 0);
+		}
+		return;
+	}
+
+	if (!resize && ((old_w != gib_imlib_image_get_width(tmp)) ||
+			(old_h != gib_imlib_image_get_height(tmp))))
+		resize = 1;
+
+	if (!force_new)
+		winwidget_free_image(w);
+
+	w->im = tmp;
+	winwidget_reset_image(w);
+
+	w->mode = MODE_NORMAL;
+	if ((w->im_w != gib_imlib_image_get_width(w->im))
+	    || (w->im_h != gib_imlib_image_get_height(w->im)))
+		w->had_resize = 1;
+	if (w->has_rotated) {
+		Imlib_Image temp;
+
+		temp = gib_imlib_create_rotated_image(w->im, 0.0);
+		w->im_w = gib_imlib_image_get_width(temp);
+		w->im_h = gib_imlib_image_get_height(temp);
+		gib_imlib_free_image_and_decache(temp);
+	} else {
+		w->im_w = gib_imlib_image_get_width(w->im);
+		w->im_h = gib_imlib_image_get_height(w->im);
+	}
+	winwidget_render_image(w, resize, 0);
+
+	return;
 }
 
 static int feh_file_is_raw(char *filename)
@@ -576,6 +671,13 @@ static char *feh_http_load_image(char *url)
 	char *basename;
 	char *path = NULL;
 
+	if (opt.use_http_cache) {
+		if (!http_cache)
+			http_cache = gib_hash_new();
+		if ((sfn = gib_hash_get(http_cache, url)) != NULL)
+			return sfn;
+	}
+
 	if (opt.keep_http) {
 		if (opt.output_dir)
 			path = opt.output_dir;
@@ -648,6 +750,8 @@ static char *feh_http_load_image(char *url)
 
 			free(ebuff);
 			fclose(sfp);
+			if (opt.use_http_cache)
+				gib_hash_set(http_cache, url, sfn);
 			return sfn;
 		} else {
 			weprintf("open url: fdopen failed:");

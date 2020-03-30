@@ -76,6 +76,7 @@ void init_parse_options(int argc, char **argv)
 #ifdef HAVE_INOTIFY
 	opt.auto_reload = 1;
 #endif				/* HAVE_INOTIFY */
+	opt.use_http_cache = 1;
 
 	feh_getopt_theme(argc, argv);
 
@@ -431,6 +432,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"auto-reload"   , 0, 0, 248},
 #endif
 		{"class"         , 1, 0, 249},
+		{"no-conversion-cache", 0, 0, 250},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -523,6 +525,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'R':
 			opt.reload = atof(optarg);
+			opt.use_http_cache = 0;
 #ifdef HAVE_INOTIFY
 			opt.auto_reload = 0;
 #endif
@@ -827,6 +830,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case 249:
 			opt.x11_class = estrdup(optarg);
 			break;
+		case 250:
+			opt.use_http_cache = 0;
+			break;
 		default:
 			break;
 		}
@@ -843,7 +849,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		}
 	}
 	else if (finalrun && !opt.filelistfile && !opt.bgmode) {
-		if (opt.start_list_at && !path_is_url(opt.start_list_at) && strrchr(opt.start_list_at, '/')) {
+		if (opt.start_list_at && path_is_url(opt.start_list_at)) {
+			add_file_to_filelist_recursively(opt.start_list_at, FILELIST_FIRST);
+		} else if (opt.start_list_at && strrchr(opt.start_list_at, '/')) {
 			char *target_directory = estrdup(opt.start_list_at);
 			char *filename_start = strrchr(target_directory, '/');
 			if (filename_start) {
