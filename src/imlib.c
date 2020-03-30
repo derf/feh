@@ -60,6 +60,11 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
+#ifdef HAVE_LIBCURL
+// TODO use cache for dcraw and magick conversion results as well
+gib_hash* http_cache = NULL;
+#endif
+
 int childpid = 0;
 
 static int feh_file_is_raw(char *filename);
@@ -260,7 +265,9 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		}
 		if ((image_source != SRC_HTTP) || (!opt.keep_http && !opt.use_http_cache))
 			unlink(tmpname);
+		// keep_http already performs an add_file_to_rm_filelist call
 		else if (opt.use_http_cache && !opt.keep_http)
+			// add_file_to_rm_filelist duplicates tmpname
 			add_file_to_rm_filelist(tmpname);
 
 		if (image_source != SRC_HTTP && !opt.use_http_cache)
@@ -357,6 +364,15 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	 */
 	if (force_new)
 		winwidget_free_image(w);
+
+#ifdef HAVE_LIBCURL
+	// if it's an external image, our own cache will also get in your way
+	char *sfn;
+	if (opt.use_http_cache && (sfn = gib_hash_get(http_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
+		free(sfn);
+		gib_hash_set(http_cache, FEH_FILE(w->file->data)->filename, NULL);
+	}
+#endif
 
 	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
 		if (force_new)
@@ -620,9 +636,6 @@ static char *feh_magick_load_image(char *filename)
 }
 
 #ifdef HAVE_LIBCURL
-
-// TODO use cache for dcraw and magick conversion results as well
-gib_hash* http_cache = NULL;
 
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 static int curl_quit_function(void *clientp,  curl_off_t dltotal,  curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
