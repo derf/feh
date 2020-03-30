@@ -545,6 +545,7 @@ static char *feh_magick_load_image(char *filename)
 
 #ifdef HAVE_LIBCURL
 
+// TODO use cache for dcraw and magick conversion results as well
 gib_hash* http_cache = NULL;
 
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
