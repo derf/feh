@@ -76,7 +76,7 @@ void init_parse_options(int argc, char **argv)
 #ifdef HAVE_INOTIFY
 	opt.auto_reload = 1;
 #endif				/* HAVE_INOTIFY */
-	opt.use_http_cache = 1;
+	opt.use_conversion_cache = 1;
 
 	feh_getopt_theme(argc, argv);
 
@@ -525,7 +525,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 'R':
 			opt.reload = atof(optarg);
-			opt.use_http_cache = 0;
+			opt.use_conversion_cache = 0;
 #ifdef HAVE_INOTIFY
 			opt.auto_reload = 0;
 #endif
@@ -831,7 +831,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.x11_class = estrdup(optarg);
 			break;
 		case 250:
-			opt.use_http_cache = 0;
+			opt.use_conversion_cache = 0;
 			break;
 		default:
 			break;

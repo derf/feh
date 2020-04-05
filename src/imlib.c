@@ -60,10 +60,7 @@ int xinerama_screen;
 int num_xinerama_screens;
 #endif				/* HAVE_LIBXINERAMA */
 
-#ifdef HAVE_LIBCURL
-// TODO use cache for dcraw and magick conversion results as well
-gib_hash* http_cache = NULL;
-#endif
+gib_hash* conversion_cache = NULL;
 
 int childpid = 0;
 
@@ -263,14 +260,14 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			file->ed = exif_get_data(tmpname);
 #endif
 		}
-		if ((image_source != SRC_HTTP) || (!opt.keep_http && !opt.use_http_cache))
+		if (!opt.use_conversion_cache && ((image_source != SRC_HTTP) || !opt.keep_http))
 			unlink(tmpname);
 		// keep_http already performs an add_file_to_rm_filelist call
-		else if (opt.use_http_cache && !opt.keep_http)
+		else if (opt.use_conversion_cache && !opt.keep_http)
 			// add_file_to_rm_filelist duplicates tmpname
 			add_file_to_rm_filelist(tmpname);
 
-		if (image_source != SRC_HTTP && !opt.use_http_cache)
+		if (image_source != SRC_HTTP && !opt.use_conversion_cache)
 			free(tmpname);
 	}
 
@@ -365,14 +362,12 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	if (force_new)
 		winwidget_free_image(w);
 
-#ifdef HAVE_LIBCURL
 	// if it's an external image, our own cache will also get in your way
 	char *sfn;
-	if (opt.use_http_cache && (sfn = gib_hash_get(http_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
+	if (opt.use_conversion_cache && (sfn = gib_hash_get(conversion_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
 		free(sfn);
-		gib_hash_set(http_cache, FEH_FILE(w->file->data)->filename, NULL);
+		gib_hash_set(conversion_cache, FEH_FILE(w->file->data)->filename, NULL);
 	}
-#endif
 
 	if ((feh_load_image(&tmp, FEH_FILE(w->file->data))) == 0) {
 		if (force_new)
@@ -450,6 +445,13 @@ static char *feh_dcraw_load_image(char *filename)
 	char *sfn;
 	int fd = -1;
 
+	if (opt.use_conversion_cache) {
+		if (!conversion_cache)
+			conversion_cache = gib_hash_new();
+		if ((sfn = gib_hash_get(conversion_cache, filename)) != NULL)
+			return sfn;
+	}
+
 	basename = strrchr(filename, '/');
 
 	if (basename == NULL)
@@ -500,6 +502,9 @@ static char *feh_dcraw_load_image(char *filename)
 			weprintf("%s - Conversion took too long, skipping", filename);
 	}
 
+	if ((sfn != NULL) && opt.use_conversion_cache)
+		gib_hash_set(conversion_cache, filename, sfn);
+
 	return sfn;
 }
 
@@ -513,6 +518,13 @@ static char *feh_magick_load_image(char *filename)
 	int fd = -1, devnull = -1;
 	int status;
 	char created_tempdir = 0;
+
+	if (opt.use_conversion_cache) {
+		if (!conversion_cache)
+			conversion_cache = gib_hash_new();
+		if ((sfn = gib_hash_get(conversion_cache, filename)) != NULL)
+			return sfn;
+	}
 
 	basename = strrchr(filename, '/');
 
@@ -632,6 +644,10 @@ static char *feh_magick_load_image(char *filename)
 	}
 
 	free(argv_fn);
+
+	if ((sfn != NULL) && opt.use_conversion_cache)
+		gib_hash_set(conversion_cache, filename, sfn);
+
 	return sfn;
 }
 
@@ -671,10 +687,10 @@ static char *feh_http_load_image(char *url)
 	char *basename;
 	char *path = NULL;
 
-	if (opt.use_http_cache) {
-		if (!http_cache)
-			http_cache = gib_hash_new();
-		if ((sfn = gib_hash_get(http_cache, url)) != NULL)
+	if (opt.use_conversion_cache) {
+		if (!conversion_cache)
+			conversion_cache = gib_hash_new();
+		if ((sfn = gib_hash_get(conversion_cache, url)) != NULL)
 			return sfn;
 	}
 
@@ -750,8 +766,8 @@ static char *feh_http_load_image(char *url)
 
 			free(ebuff);
 			fclose(sfp);
-			if (opt.use_http_cache)
-				gib_hash_set(http_cache, url, sfn);
+			if (opt.use_conversion_cache)
+				gib_hash_set(conversion_cache, url, sfn);
 			return sfn;
 		} else {
 			weprintf("open url: fdopen failed:");
