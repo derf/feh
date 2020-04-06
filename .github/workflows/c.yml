@@ -15,7 +15,6 @@ jobs:
 
     strategy:
       matrix:
-        app: [0, 1]
         curl: [0, 1]
         exif: [0, 1]
         inotify: [0, 1]
@@ -36,6 +35,6 @@ jobs:
         if: matrix.xinerama
         run: sudo apt install libxinerama-dev
       - name: Build
-        run: make app=${{matrix.app }} curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=${{ matrix.inotify }} verscmp=${{ matrix.verscmp}} xinerama=${{ matrix.xinerama }}
+        run: make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=${{ matrix.inotify }} verscmp=${{ matrix.verscmp }} xinerama=${{ matrix.xinerama }}
       - name: run Tests
         run: make test
