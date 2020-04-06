@@ -1,0 +1,40 @@
+name: linux
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  c:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        curl: [0, 1]
+        exif: [0, 1]
+        inotify: [0, 1]
+        verscmp: [0, 1]
+        xinerama: [0, 1]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: sudo apt install build-essential libx11-dev libxt-dev libimlib2-dev libtest-command-perl libtest-simple-perl
+      - name: Install libcurl
+        if: matrix.curl
+        run: sudo apt install libcurl4-openssl-dev
+      - name: Install libexif
+        if: matrix.exif
+        run: sudo apt install libexif-dev
+      - name: Install Xinerama
+        if: matrix.xinerama
+        run: sudo apt install libxinerama-dev
+      - name: Build
+        run: make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=${{ matrix.inotify }} verscmp=${{ matrix.verscmp }} xinerama=${{ matrix.xinerama }}
+      - name: run Tests
+        run: make test
