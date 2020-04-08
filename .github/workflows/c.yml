@@ -17,8 +17,6 @@ jobs:
       matrix:
         curl: [0, 1]
         exif: [0, 1]
-        inotify: [0, 1]
-        verscmp: [0, 1]
         xinerama: [0, 1]
 
     steps:
@@ -34,7 +32,5 @@ jobs:
       - name: Install Xinerama
         if: matrix.xinerama
         run: sudo apt install libxinerama-dev
-      - name: Build
-        run: make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=${{ matrix.inotify }} verscmp=${{ matrix.verscmp }} xinerama=${{ matrix.xinerama }}
-      - name: run Tests
-        run: make test
+      - name: Build and Test
+        run: for inotify in 0 1; do for verscmp in 0 1; do make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=$inotify verscmp=$verscmp xinerama=${{ matrix.xinerama }} && make test && make clean; done; done
