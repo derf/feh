@@ -691,7 +691,10 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			slideshow_change_image(winwid, SLIDE_RAND, 1);
 	}
 	else if (feh_is_kp(EVENT_toggle_caption, state, keysym, button)) {
-		if (opt.caption_path) {
+		if (opt.caption_path && path_is_url(FEH_FILE(winwid->file->data)->filename)) {
+			im_weprintf(winwid, "Caption entry is not supported on URLs");
+		}
+		else if (opt.caption_path) {
 			/*
 			 * editing captions in slideshow mode does not make any sense
 			 * at all; this is just in case someone accidentally does it...
