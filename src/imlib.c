@@ -254,7 +254,19 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		if (!err && im) {
 			real_filename = file->filename;
 			file->filename = tmpname;
+
+			/*
+			 * feh does not associate a non-native image with its temporary
+			 * filename and may delete the temporary file right after loading.
+			 * To ensure that it is still aware of image size, dimensions, etc.,
+			 * file_info is preloaded here. To avoid a memory leak when loading
+			 * a non-native file multiple times in a slideshow, the file_info
+			 * struct is freed first. If file->info is not set, feh_file_info_free
+			 * is a no-op.
+			 */
+			feh_file_info_free(file->info);
 			feh_file_info_load(file, *im);
+
 			file->filename = real_filename;
 #ifdef HAVE_LIBEXIF
 			file->ed = exif_get_data(tmpname);
