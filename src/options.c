@@ -849,9 +849,18 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		}
 	}
 	else if (finalrun && !opt.filelistfile && !opt.bgmode) {
-		if (opt.start_list_at && path_is_url(opt.start_list_at)) {
+		/*
+		 * if --start-at is a non-local URL (i.e., does not start with file:///),
+		 * behave as if "feh URL" was called (there is no directory we can load)
+		 */
+		if (opt.start_list_at && path_is_url(opt.start_list_at) && (strlen(opt.start_list_at) <= 8 || strncmp(opt.start_list_at, "file:///", 8) != 0)) {
 			add_file_to_filelist_recursively(opt.start_list_at, FILELIST_FIRST);
 		} else if (opt.start_list_at && strrchr(opt.start_list_at, '/')) {
+			if (strlen(opt.start_list_at) > 8 && strncmp(opt.start_list_at, "file:///", 8) == 0) {
+				char *start_at_path = estrdup(opt.start_list_at + 7);
+				free(opt.start_list_at);
+				opt.start_list_at = start_at_path;
+			}
 			char *target_directory = estrdup(opt.start_list_at);
 			char *filename_start = strrchr(target_directory, '/');
 			if (filename_start) {
