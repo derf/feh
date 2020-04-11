@@ -1,3 +1,21 @@
+Sat, 11 Apr 2020 09:51:01 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.4
+    * Images loaded via HTTPS/curl, ImageMagick, and dcraw are now cached
+      by default to decrease image load time on subsequent slideshow passes.
+      Caching is disabled when using `--reload` and can also be disabled with
+      the new `--no-conversion-cache` option. Suggestion and initial patch by
+      Awal Garg.
+    * Handle SIGINT/SIGTERM/SIGQUIT signals while loading images using libcurl
+      < v7.32. Patch by <https://github.com/c99pedant>.
+    * "feh --start-at URL" now loads a single-image slideshow displaying URL.
+      This allows feh.desktop to handle URLs as well as ordinary files.
+      file:/// URLs are treated as local files, so "feh --start-at file:///..."
+      without filelist arguments behaves just like "feh --start-at ..."
+      (i.e., feh will load the entire directory and start the slideshow at ...)
+    * Fix a memory leak when repeatedly cycling through slideshows containing
+      images loaded via libcurl, ImageMagick or dcraw.
+
 Tue, 03 Dec 2019 17:27:46 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.3
