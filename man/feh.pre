@@ -806,7 +806,7 @@ See
 for examples.
 If
 .Ar filename
-is a URL and no files or filelists were specified,
+is a remote URL and no files or filelists were specified,
 .Nm
 will show
 .Ar filename
