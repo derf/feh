@@ -376,7 +376,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 
 	// if it's an external image, our own cache will also get in your way
 	char *sfn;
-	if (opt.use_conversion_cache && (sfn = gib_hash_get(conversion_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
+	if (opt.use_conversion_cache && conversion_cache && (sfn = gib_hash_get(conversion_cache, FEH_FILE(w->file->data)->filename)) != NULL) {
 		free(sfn);
 		gib_hash_set(conversion_cache, FEH_FILE(w->file->data)->filename, NULL);
 	}
