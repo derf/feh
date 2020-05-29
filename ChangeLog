@@ -1,3 +1,9 @@
+Fri, 29 May 2020 23:52:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.4.1
+    * Fix lossless rotate not being lossless when using feh with Imlib2 v1.6
+      or later
+
 Sat, 11 Apr 2020 09:51:01 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.4
