@@ -1394,8 +1394,10 @@ void feh_edit_inplace(winwidget w, int op)
 		return;
 	}
 
-	if (!strcmp(gib_imlib_image_format(w->im), "jpeg") &&
-			!path_is_url(FEH_FILE(w->file->data)->filename)) {
+	// Imlib2 <= 1.5 returns "jpeg", Imlib2 >= 1.6 uses "jpg"
+	if ((!strcmp(gib_imlib_image_format(w->im), "jpeg")
+				|| !strcmp(gib_imlib_image_format(w->im), "jpg"))
+			&& !path_is_url(FEH_FILE(w->file->data)->filename)) {
 		feh_edit_inplace_lossless(w, op);
 		feh_reload_image(w, 1, 1);
 		return;
