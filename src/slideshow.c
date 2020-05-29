@@ -385,7 +385,8 @@ void feh_action_run(feh_file * file, char *action, winwidget winwid)
 
 		if (opt.verbose && !opt.list && !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
-		system(sys);
+		if (system(sys) == -1)
+			perror("running action via system() failed");
 	}
 	return;
 }

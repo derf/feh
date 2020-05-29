@@ -197,7 +197,10 @@ int feh_png_file_is_png(FILE * fp)
 {
 	unsigned char buf[8];
 
-	fread(buf, 1, 8, fp);
+	if (fread(buf, 1, 8, fp) != 8) {
+		return 0;
+	}
+
 	if (png_sig_cmp(buf, 0, 8)) {
 		return 0;
 	}

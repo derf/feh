@@ -402,7 +402,7 @@ void feh_file_dirname(char *dst, feh_file * f, int maxlen)
 		return;
 	}
 
-	strncpy(dst, f->filename, n);
+	memcpy(dst, f->filename, n);
 	dst[n] = '\0';
 }
 
@@ -650,7 +650,8 @@ char *feh_absolute_path(char *path)
 	   path you give it is relative. Linux and BSD get this right... */
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 		eprintf("Cannot determine working directory:");
-	snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
+	if ((size_t) snprintf(temp, sizeof(temp), "%s/%s", cwd, path) >= sizeof(temp))
+		eprintf("Absolute path for working directory was truncated");
 	if (realpath(temp, fullpath) != NULL) {
 		ret = estrdup(fullpath);
 	} else {

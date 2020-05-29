@@ -637,9 +637,7 @@ static char *feh_dcraw_load_image(char *filename)
 		close(fd);
 		return NULL;
 	} else if (childpid == 0) {
-
-		close(1);
-		dup(fd);
+		dup2(fd, STDOUT_FILENO);
 		close(fd);
 
 		alarm(opt.conversion_timeout);
