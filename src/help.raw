@@ -193,8 +193,8 @@ DEFAULT KEYS
  <KEYPAD UP>             Move the image up
  <KEYPAD DOWN>           Move the image down
  <KEYPAD BEGIN>          Antialias the image
- <KEYPAD +>              Zoom in
- <KEYPAD ->              Zoom out
+ <KEYPAD +>, <UP>        Zoom in
+ <KEYPAD ->, <DOWN>      Zoom out
  <KEYPAD *>              Zoom to 100%
  <KEYPAD />              Zoom to fit the window
 
