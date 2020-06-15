@@ -32,9 +32,6 @@ Compile-time switches in this build:
 remote file support: libcurl $MAN_CURL$
 .
 .It
-natural sorting option $MAN_VERSCMP$
-.
-.It
 Xinerama multi-monitor support $MAN_XINERAMA$
 .
 .It
@@ -887,7 +884,6 @@ output version information and exit.
 .
 .It Cm --version-sort
 .
-.Pq optional feature, $MAN_VERSCMP$ in this build
 When combined with
 .Cm --sort name , --sort filename ,
 or
