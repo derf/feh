@@ -124,7 +124,7 @@ INDEX MODE OPTIONS
                            font is specified, a title will not be printed
 
 FORMAT SPECIFIERS
- %a     information about slideshow state (play/pause)
+ %a     information about slideshow state (playing/paused)
  %f     image path/filename
  %F     image path/filename (shell-escaped)
  %g     window dimensions (\"width,height\") in pixels

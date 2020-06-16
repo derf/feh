@@ -399,10 +399,10 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 			switch (*c) {
 			case 'a':
 				if (opt.paused == 1) {
-				   strncat(ret, "pause", sizeof(ret) - strlen(ret) - 1);
+				   strncat(ret, "paused", sizeof(ret) - strlen(ret) - 1);
 				}
 				else {
-				   strncat(ret, "play", sizeof(ret) - strlen(ret) - 1);
+				   strncat(ret, "playing", sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'f':

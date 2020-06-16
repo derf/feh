@@ -1206,7 +1206,7 @@ file
 .
 .It %a
 .
-Information about slideshow state (play/pause)
+Information about slideshow state (playing/paused)
 .
 .It %f
 .
