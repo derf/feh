@@ -91,7 +91,7 @@ indicates that the corresponding feature is enabled by default.
 | help | 0 | include help text (refers to the manpage otherwise) |
 | inotify | 0 | enable inotify, needed for `--auto-reload` |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
-| verscmp | 1 | Support naturing sorting (`--version-sort`). Requires a GNU-compatible libc exposing `strverscmp` |
+| verscmp | 1 | Whether your libc provides `strvercmp()`. If set to 0, feh will use an internal implementation. |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
 For example, `make xinerama=0 debug=1` will disable Xinerama support and

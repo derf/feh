@@ -34,6 +34,10 @@ ifeq (${exif},1)
 		exif_nikon.c
 endif
 
+ifneq (${verscmp},1)
+	TARGETS += strverscmp.c
+endif
+
 OBJECTS = ${TARGETS:.c=.o}
 
 I_SRCS = ${shell echo *.raw}

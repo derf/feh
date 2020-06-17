@@ -64,10 +64,7 @@ ifeq (${stat64},1)
 endif
 
 ifeq (${verscmp},1)
-	CFLAGS += -DHAVE_VERSCMP
-	MAN_VERSCMP = available
-else
-	MAN_VERSCMP = not available
+	CFLAGS += -DHAVE_STRVERSCMP
 endif
 
 ifeq (${xinerama},1)
