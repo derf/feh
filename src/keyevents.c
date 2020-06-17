@@ -710,6 +710,8 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	}
 	else if (feh_is_kp(EVENT_toggle_pause, state, keysym, button)) {
 		slideshow_pause_toggle(winwid);
+		/* We need to re-render the image to update the info string immediately. */
+		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_save_image, state, keysym, button)) {
 		slideshow_save_image(winwid);

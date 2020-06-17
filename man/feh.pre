@@ -1200,6 +1200,10 @@ file
 .
 .Bl -tag -width indent
 .
+.It %a
+.
+Information about slideshow state (playing/paused)
+.
 .It %f
 .
 Image path/filename

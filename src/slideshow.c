@@ -397,6 +397,14 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 		if ((*c == '%') && (*(c+1) != '\0')) {
 			c++;
 			switch (*c) {
+			case 'a':
+				if (opt.paused == 1) {
+				   strncat(ret, "paused", sizeof(ret) - strlen(ret) - 1);
+				}
+				else {
+				   strncat(ret, "playing", sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
 			case 'f':
 				if (file)
 					strncat(ret, file->filename, sizeof(ret) - strlen(ret) - 1);
