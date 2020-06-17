@@ -943,6 +943,10 @@ static void show_version(void)
 		"stat64 "
 #endif
 
+#ifdef HAVE_STRVERSCMP
+         "verscmp "
+#endif
+
 #ifdef HAVE_LIBXINERAMA
 		"xinerama "
 #endif
