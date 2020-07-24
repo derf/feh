@@ -130,6 +130,7 @@ struct __fehoptions {
 	unsigned char adjust_reload;
 	int xinerama_index;
 	char *x11_class;
+	unsigned int *x11_windowid;
 
 	/* signed in case someone wants to invert scrolling real quick */
 	int scroll_step;

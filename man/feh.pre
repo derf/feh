@@ -896,6 +896,11 @@ comes before
 Note that this option only has an effect when a sort mode is set using
 .Cm --sort .
 .
+.It Cm --windowid Ar windowid
+.
+Draw to an existing X11 window by its ID
+.Ar windowid .
+.
 .It Cm --xinerama-index Ar screen
 .
 .Pq optional feature, $MAN_XINERAMA$ in this build
