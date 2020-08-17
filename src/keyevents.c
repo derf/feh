@@ -494,7 +494,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	else if (feh_is_kp(EVENT_jump_interval, state, keysym, button)) {
 		if (opt.slideshow) 
 			slideshow_change_image(winwid, SLIDE_JUMP_INTERVAL, 1);
-		else if (winwid->type == WIN_TYPE_THUMBNAIL) {
+		else if (winwid->type == WIN_TYPE_THUMBNAIL) 
 			feh_thumbnail_select_next(winwid, opt.jump_interval);
 	}
 	else if (feh_is_kp(EVENT_scroll_right, state, keysym, button)) {
