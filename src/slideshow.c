@@ -188,6 +188,7 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	gib_list *previous_file = current_file;
 	int i = 0;
 	int jmp = 1;
+	int jump_interval = opt.jump_interval;
 	/* We can't use filelist_len in the for loop, since that changes when we
 	 * encounter invalid images.
 	 */
@@ -214,7 +215,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		change = SLIDE_PREV;
 		previous_file = NULL;
 	}
-
 	/* The for loop prevents us looping infinitely */
 	for (i = 0; i < our_filelist_len; i++) {
 		winwidget_free_image(winwid);
@@ -231,6 +231,16 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 					(random() % (filelist_len - 1)) + 1);
 				change = SLIDE_NEXT;
 			}
+			break;
+		case SLIDE_JUMP_INTERVAL:
+			if (filelist_len < jump_interval)
+				jump_interval = 1;
+			if (!jump_interval)
+				jump_interval = 2;
+			current_file = feh_list_jump(filelist, current_file, FORWARD, jump_interval);
+			/* important. if the load fails, we only want to step on ONCE to
+			   try the next file, not another jmp */
+			change = SLIDE_NEXT;
 			break;
 		case SLIDE_JUMP_FWD:
 			if (filelist_len < 5)

@@ -65,6 +65,7 @@ void init_parse_options(int argc, char **argv)
 
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
+	opt.jump_interval = 30;
 
 	opt.screen_clip = 1;
 	opt.cache_size = 4;
@@ -433,6 +434,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 #endif
 		{"class"         , 1, 0, 249},
 		{"no-conversion-cache", 0, 0, 250},
+		{"jump-interval", 1, 0, 251},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -832,6 +834,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 250:
 			opt.use_conversion_cache = 0;
+			break;
+		case 251:
+			opt.jump_interval = atoi(optarg);
 			break;
 		default:
 			break;

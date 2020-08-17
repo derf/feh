@@ -114,6 +114,7 @@ struct __fehoptions {
 	unsigned int thumb_redraw;
 	double reload;
 	int sort;
+	int jump_interval;
 	int version_sort;
 	int debug;
 	int geom_enabled;
@@ -183,6 +184,7 @@ enum key_action {
 	EVENT_close,
 	EVENT_remove,
 	EVENT_delete,
+	EVENT_jump_interval,
 	EVENT_jump_first,
 	EVENT_jump_last,
 	EVENT_action_0,

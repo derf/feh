@@ -15,6 +15,7 @@ OPTIONS
      --no-recursive        Do not recursively expand directories
                            (this is the default)
  -z, --randomize           Randomize the filelist
+ --jump-interval           Move forward in the file list by NUM number of images (default 30)
  --no-jump-on-resort       Don't jump to the first image when the filelist
                            is resorted
  -g, --geometry WxH[+X+Y]  Limit the window size to DIMENSION[+OFFSET]
@@ -160,6 +161,7 @@ DEFAULT KEYS
  g                       Toggle fixed geometry mode
  h                       pause/continue slideshow
  i                       Toggle --info display
+ j                       Jump forward in the file list by --jump-interval NUM of images
  k                       Toggle zoom/viewport freeze when switching images
  L                       Save current filelist to unique filename
  m                       Show/hide menu
