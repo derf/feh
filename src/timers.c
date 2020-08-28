@@ -58,7 +58,37 @@ double feh_get_time(void)
 	return((double) timev.tv_sec + (((double) timev.tv_usec) / 1000000));
 }
 
-void feh_remove_timer(char *name)
+void feh_remove_timer_by_data(void *data)
+{
+	fehtimer ft, ptr, pptr;
+
+	D(("removing timer for %p\n", data));
+	pptr = NULL;
+	ptr = first_timer;
+	while (ptr) {
+		D(("Stepping through event list\n"));
+		ft = ptr;
+		if (ft->data == data) {
+			D(("Found it. Removing\n"));
+			if (pptr)
+				pptr->next = ft->next;
+			else
+				first_timer = ft->next;
+			if (ft->next)
+				ft->next->in += ft->in;
+			if (ft->name)
+				free(ft->name);
+			if (ft)
+				free(ft);
+			return;
+		}
+		pptr = ptr;
+		ptr = ptr->next;
+	}
+	return;
+}
+
+static void feh_remove_timer(char *name)
 {
 	fehtimer ft, ptr, pptr;
 
@@ -87,6 +117,7 @@ void feh_remove_timer(char *name)
 	}
 	return;
 }
+
 
 void feh_add_timer(void (*func) (void *data), void *data, double in, char *name)
 {

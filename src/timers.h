@@ -37,7 +37,7 @@ struct __fehtimer {
 
 void feh_handle_timer(void);
 double feh_get_time(void);
-void feh_remove_timer(char *name);
+void feh_remove_timer_by_data(void *data);
 void feh_add_timer(void (*func) (void *data), void *data, double in, char *name);
 void feh_add_unique_timer(void (*func) (void *data), void *data, double in);
 

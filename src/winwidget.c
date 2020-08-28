@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "winwidget.h"
 #include "options.h"
 #include "events.h"
+#include "timers.h"
 
 #ifdef HAVE_INOTIFY
 #include <sys/inotify.h>
@@ -673,6 +674,9 @@ void winwidget_destroy(winwidget winwid)
 #ifdef HAVE_INOTIFY
     winwidget_inotify_remove(winwid);
 #endif
+	if (opt.reload > 0 && opt.multiwindow) {
+		feh_remove_timer_by_data(winwid);
+	}
 	winwidget_destroy_xwin(winwid);
 	if (winwid->name)
 		free(winwid->name);
