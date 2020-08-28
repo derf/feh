@@ -135,47 +135,54 @@ void cb_reload_timer(void *data)
 
 	winwidget w = (winwidget) data;
 
-	/* save the current filename for refinding it in new list */
-	current_filename = estrdup(FEH_FILE(current_file->data)->filename);
+	/*
+	 * multi-window mode has no concept of a "current file" and
+	 * dynamically adding/removing windows is not implemented at the moment.
+	 * So don't reload filelists in multi-window mode.
+	 */
+	if (current_file != NULL) {
+		/* save the current filename for refinding it in new list */
+		current_filename = estrdup(FEH_FILE(current_file->data)->filename);
 
-	for (l = filelist; l; l = l->next) {
-		feh_file_free(l->data);
-		l->data = NULL;
-	}
-	gib_list_free_and_data(filelist);
-	filelist = NULL;
-	filelist_len = 0;
-	current_file = NULL;
+		for (l = filelist; l; l = l->next) {
+			feh_file_free(l->data);
+			l->data = NULL;
+		}
+		gib_list_free_and_data(filelist);
+		filelist = NULL;
+		filelist_len = 0;
+		current_file = NULL;
 
-	/* rebuild filelist from original_file_items */
-	if (gib_list_length(original_file_items) > 0)
-		for (l = gib_list_last(original_file_items); l; l = l->prev)
-			add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
-	else if (!opt.filelistfile && !opt.bgmode)
-		add_file_to_filelist_recursively(".", FILELIST_FIRST);
+		/* rebuild filelist from original_file_items */
+		if (gib_list_length(original_file_items) > 0)
+			for (l = gib_list_last(original_file_items); l; l = l->prev)
+				add_file_to_filelist_recursively(l->data, FILELIST_FIRST);
+		else if (!opt.filelistfile && !opt.bgmode)
+			add_file_to_filelist_recursively(".", FILELIST_FIRST);
 
-	if (opt.filelistfile) {
-		filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
-	}
-	
-	if (!(filelist_len = gib_list_length(filelist))) {
-		eprintf("No files found to reload.");
-	}
-
-	feh_prepare_filelist();
-
-	/* find the previously current file */
-	for (l = filelist; l; l = l->next)
-		if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
-			current_file = l;
-			break;
+		if (opt.filelistfile) {
+			filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
+		}
+		
+		if (!(filelist_len = gib_list_length(filelist))) {
+			eprintf("No files found to reload.");
 		}
 
-	free(current_filename);
+		feh_prepare_filelist();
 
-	if (!current_file)
-		current_file = filelist;
-	w->file = current_file;
+		/* find the previously current file */
+		for (l = filelist; l; l = l->next)
+			if (strcmp(FEH_FILE(l->data)->filename, current_filename) == 0) {
+				current_file = l;
+				break;
+			}
+
+		free(current_filename);
+
+		if (!current_file)
+			current_file = filelist;
+		w->file = current_file;
+	}
 
 	feh_reload_image(w, 1, 0);
 	feh_add_unique_timer(cb_reload_timer, w, opt.reload);
