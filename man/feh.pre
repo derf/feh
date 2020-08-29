@@ -2113,23 +2113,11 @@ Please include the feh version
 steps to reproduce the bug and, if necessary, images to reproduce it.
 .
 .
-.Sh FUTURE PLANS
-.
-Plans for the following releases:
-.
-.Bl -bullet -compact
-.
-.It
-Make zoom options more intuitive
-.
-.El
-.
-.
 .Sh LICENSE
 .
 Copyright (C) 1999, 2000 by Paul Duncan.
-Copyright (C) 1999, 2000 by Tom Gilbert (and various contributors).
-Copyright (C) 2010-2020 by Daniel Friesel (and even more contributors).
+Copyright (C) 1999, 2000 by Tom Gilbert and contributors.
+Copyright (C) 2010-2020 by Daniel Friesel and contributors.
 .
 .Pp
 .
@@ -2171,5 +2159,5 @@ Tom Gilbert
 .
 .Pp
 .
-See also:
+Website:
 https://feh.finalrewind.org
