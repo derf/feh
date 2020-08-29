@@ -236,6 +236,10 @@ disabled by a preceding
 .Cm --reload=0
 option.
 .
+.Pp
+.
+Automatic reload is not supported in montage, index, or thumbnail mode.
+.
 .It Cm --auto-rotate
 .
 .Pq optional feature, $MAN_EXIF$ in this build
@@ -708,6 +712,7 @@ will continue to try loading it.
 .Pp
 .
 Setting this option causes inotify-based auto-reload to be disabled.
+Reload is not supported in montage, index, or thumbnail mode.
 .
 .It Cm -n , --reverse
 .
