@@ -1,4 +1,6 @@
-git HEAD
+Sat, 29 Aug 2020 08:49:08 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.5
     * Enable --version-sort on systems without strverscmp support. This
       works by bundling the strverscmp of musl libc with feh and using it
       when feh is compiled without the verscmp flag (i.e., when the system
