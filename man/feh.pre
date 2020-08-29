@@ -29,13 +29,13 @@ Compile-time switches in this build:
 .Bl -bullet -compact
 .
 .It
-remote file support: libcurl $MAN_CURL$
+libcurl remote file support $MAN_CURL$
 .
 .It
 Xinerama multi-monitor support $MAN_XINERAMA$
 .
 .It
-builtin EXIF reader $MAN_EXIF$
+libexif builtin EXIF reader $MAN_EXIF$
 .
 .It
 inotify-based auto-reload of changed files $MAN_INOTIFY$
