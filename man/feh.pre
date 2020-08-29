@@ -218,7 +218,7 @@ Use format specifiers to refer to image info, see
 .Sx FORMAT SPECIFIERS
 for details.
 Example usage:
-.Qq feh -A Qo mv ~/images/%N Qc * .
+.Qq feh -A Qo mv %F ~/images/%N Qc * .
 .
 .It Cm --action1 No .. Cm --action9 Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
