@@ -1,3 +1,11 @@
+git HEAD
+    * Enable --version-sort on systems without strverscmp support. This
+      works by bundling the strverscmp of musl libc with feh and using it
+      when feh is compiled without the verscmp flag (i.e., when the system
+      libc does not provide the verscmp function). Patch by Tim van der Molen
+    * Add %a format specifier (slideshow state: "playing" / "paused")
+    * Fix crashes when combining --reload and --multiwindow
+
 Fri, 29 May 2020 23:52:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.4.1
