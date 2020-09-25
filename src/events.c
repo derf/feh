@@ -358,7 +358,11 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 			opt.mode = MODE_NORMAL;
 			winwid->mode = MODE_NORMAL;
 			if (winwid->type == WIN_TYPE_SLIDESHOW)
-				slideshow_change_image(winwid, SLIDE_NEXT, 1);
+				if (ev->xbutton.x > winwid->w / 2) {
+                    slideshow_change_image(winwid, SLIDE_NEXT, 1);
+                } else {
+                    slideshow_change_image(winwid, SLIDE_PREV, 1);
+                }
 			else if (winwid->type == WIN_TYPE_THUMBNAIL) {
 				feh_file *thumbfile;
 				int x, y;
