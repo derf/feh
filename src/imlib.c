@@ -1210,11 +1210,12 @@ void feh_draw_caption(winwidget w)
 {
 	static Imlib_Font fn = NULL;
 	int tw = 0, th = 0, ww, hh;
-	int x, y;
+	int x, y, ax, ay;
 	Imlib_Image im = NULL;
 	char *p;
-	gib_list *lines, *l;
+	gib_list *lines, *l, *cc, *coords;
 	static gib_style *caption_style = NULL;
+    char delim[2] = { ',', '\0' };
 	feh_file *file;
 
 	if (!w->file) {
@@ -1260,62 +1261,103 @@ void feh_draw_caption(winwidget w)
 	fn = feh_load_font(w);
 
 	if (*(file->caption) == '\0') {
-		p = estrdup("Caption entry mode - Hit ESC to cancel");
-		lines = feh_wrap_string(p, w->w, fn, NULL);
+		p = estrdup("Caption entry mode\nClick to move caption\nHit ESC to cancel\n_");
+		lines = feh_wrap_string(p, 0, fn, NULL);
 		free(p);
-	} else
-		lines = feh_wrap_string(file->caption, w->w, fn, NULL);
+	} else if (w->caption_entry) {
+        p = emalloc(strlen(file->caption) + 3);
+        strcpy(p, file->caption);
+        strcat(p, "_");
+		lines = feh_wrap_string(p, 0, fn, NULL);
+		free(p);
+    } else
+		lines = feh_wrap_string(file->caption, 0, fn, NULL);
 
 	if (!lines)
 		return;
 
-	/* Work out how high/wide the caption is */
+	
 	l = lines;
-	while (l) {
-		p = (char *) l->data;
-		gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
-		if (ww > tw)
-			tw = ww;
-		th += hh;
-		if (l->next)
-			th += 1;	/* line spacing */
-		l = l->next;
-	}
+    while (l) {
+        cc = l; /* begining of current caption */
+        tw = th = y = ax = ay = 0;
 
-	/* we don't want the caption overlay larger than our window */
-	if (th > w->h)
-		th = w->h;
-	if (tw > w->w)
-		tw = w->w;
+        /* Work out how high/wide the caption is */
+	    while (l) {
+		    p = (char *) l->data;
+            if (p[0] == '#') {
+                if (l->next) {
+                    if(th)
+                        break; /* found printable text already, and a new comment is begining, split to a new caption */
+                    else {
+                        l = l->next; /* no printable text found yet, continue skipping comments */
+                        continue;
+                    }
+                }
+            } else if (p[0] == '\0') {
+                l = l->next; /* skip empty lines */
+                continue;
+            }
+		    gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+		    if (ww > tw)
+			    tw = ww;
+		    th += hh;
+		    if (l->next)
+			    th += 1;	/* line spacing */
+		    l = l->next;
+	    }
 
-	im = imlib_create_image(tw, th);
-	if (!im)
-		eprintf("Couldn't create image. Out of memory?");
+	    im = imlib_create_image(tw, th);
+	    if (!im)
+		    eprintf("Couldn't create image. Out of memory?");
 
-	feh_imlib_image_fill_text_bg(im, tw, th);
+	    feh_imlib_image_fill_text_bg(im, tw, th);
 
-	l = lines;
-	y = 0;
-	while (l) {
-		p = (char *) l->data;
-		gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
-		x = (tw - ww) / 2;
-		if (w->caption_entry && (*(file->caption) == '\0'))
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 127, 255);
-		else if (w->caption_entry)
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
-		else
-			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
-				IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	    l = cc;
+	    while (l) {
+		    p = (char *) l->data;
+            if (p[0] == '#') {
+                if (l->next) {
+                    if(y)
+                        break; /* found printable text already, and a new comment is begining, split to a new caption */
+                    else {
+                        /* try to extract absolute coords from the comment if their are any */
+                        if(strstr(p + 1, delim)) {
+                            coords = gib_string_split(p + 1, delim);
+                            if(coords && coords->data && coords->next && coords->next->data) {
+                                ax = atoi(coords->data);
+                                ay = atoi(coords->next->data);
+                            }
+                            gib_list_free_and_data(coords);
+                        }
+                        l = l->next; /* no printable text found yet, continue skipping comments */
+                        continue;
+                    }
+                }
+            } else if (p[0] == '\0') {
+                l = l->next; /* skip empty lines */
+                continue;
+            }
+		    gib_imlib_get_text_size(fn, p, caption_style, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
+		    x = (tw - ww) / 2;
+		    if (w->caption_entry && (*(file->caption) == '\0'))
+			    gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				    IMLIB_TEXT_TO_RIGHT, 255, 255, 127, 255);
+		    else if (w->caption_entry)
+			    gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				    IMLIB_TEXT_TO_RIGHT, 255, 255, 0, 255);
+		    else
+			    gib_imlib_text_draw(im, fn, caption_style, x, y, p,
+				    IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-		y += hh + 1;	/* line spacing */
-		l = l->next;
-	}
+		    y += hh + 1;	/* line spacing */
+		    l = l->next;
+	    }
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
-	gib_imlib_free_image_and_decache(im);
+	    gib_imlib_render_image_on_drawable(w->bg_pmap, im, ax ? ((ax * w->zoom - (tw / 2)) + w->im_x) : ((w->w - tw) / 2), ay ? (ay * w->zoom + w->im_y) : (w->h - th), 1, 1, 0);
+	    gib_imlib_free_image_and_decache(im);
+
+    }
 	gib_list_free_and_data(lines);
 	return;
 }

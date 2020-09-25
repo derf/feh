@@ -323,6 +323,7 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 	winwidget winwid = NULL;
 	unsigned int state = ev->xbutton.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 	unsigned int button = ev->xbutton.button;
+    char *coords;
 
 	if (menu_root) {
 		/* if menus are open, close them, and execute action if needed */
@@ -343,9 +344,18 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 	}
 
 	winwid = winwidget_get_from_window(ev->xbutton.window);
-	if (winwid == NULL || winwid->caption_entry) {
+	if (winwid == NULL) {
 		return;
 	}
+
+    if (winwid->caption_entry) {
+        coords = emalloc(sizeof(char) * 32);
+        sprintf(coords, "\n#%d,%d\n", (int)((ev->xbutton.x - winwid->im_x) / winwid->zoom), (int)((ev->xbutton.y - winwid->im_y) / winwid->zoom));
+		ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, coords);
+        free(coords);
+		winwidget_render_image_cached(winwid);
+        return;
+    }
 
 	if (feh_is_bb(EVENT_pan, button, state)) {
 		if (opt.mode == MODE_PAN) {

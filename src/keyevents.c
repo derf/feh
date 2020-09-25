@@ -429,7 +429,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	if (winwid->caption_entry && (keysym != NoSymbol)) {
 		switch (keysym) {
 		case XK_Return:
-			if (state & ControlMask) {
+			if (state & ControlMask || state & ShiftMask) {
 				/* insert actual newline */
 				ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, "\n");
 				winwidget_render_image_cached(winwid);
