@@ -585,7 +585,8 @@ When loading images via HTTP, ImageMagick or dcraw,
 .Nm
 will only load/convert them once and re-use the cached file on subsequent
 slideshow passes.
-This option disables the cache. It is also disabled when
+This option disables the cache.
+It is also disabled when
 .Cm --reload
 is used.
 Use it if you rely on frequently changing files loaded via one of these
