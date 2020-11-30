@@ -181,7 +181,11 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 			break;
 		case IMLIB_LOAD_ERROR_UNKNOWN:
 		case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-			im_weprintf(w, "%s - No Imlib2 loader for that file format", file);
+			if (getenv("FEH_SKIP_MAGIC")) {
+				im_weprintf(w, "%s - No Imlib2 loader for that file format", file);
+			} else {
+				im_weprintf(w, "%s - Does not look like an image (magic bytes missing)", file);
+			}
 			break;
 		case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
 			im_weprintf(w, "%s - Path specified is too long", file);
@@ -215,6 +219,94 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 	}
 }
 
+/*
+ * This is a workaround for an Imlib2 regression, causing unloadable image
+ * detection to be excessively slow (and, thus, causing feh to hang for a while
+ * when encountering an unloadable image). We use magic byte detection to
+ * avoid calling Imlib2 for files it probably cannot handle. See
+ * <https://phab.enlightenment.org/T8739> and
+ * <https://github.com/derf/feh/issues/505>.
+ *
+ * Note that this drops support for bz2-compressed files, unless
+ * FEH_SKIP_MAGIC is set
+ */
+int feh_is_image(feh_file * file)
+{
+	unsigned char buf[16];
+	FILE *fh = fopen(file->filename, "r");
+	if (!fh) {
+		return 0;
+	}
+	if (fread(buf, 1, 16, fh) != 16) {
+		return 0;
+	}
+	fclose(fh);
+
+	if (buf[0] == 0xff && buf[1] == 0xd8) {
+		// JPEG
+		return 1;
+	}
+	if (!memcmp(buf, "\x89PNG\x0d\x0a\x1a\x0a", 8)) {
+		// PNG
+		return 1;
+	}
+	if (buf[0] == 'A' && buf[1] == 'R' && buf[2] == 'G' && buf[3] == 'B') {
+		// ARGB
+		return 1;
+	}
+	if (buf[0] == 'B' && buf[1] == 'M') {
+		// BMP
+		return 1;
+	}
+	if (!memcmp(buf, "farbfeld", 8)) {
+		// farbfeld
+		return 1;
+	}
+	if (buf[0] == 'G' && buf[1] == 'I' && buf[2] == 'F') {
+		// GIF
+		return 1;
+	}
+	if (buf[0] == 0x00 && buf[1] == 0x00 && buf[2] <= 0x02 && buf[3] == 0x00) {
+		// ICO
+		return 1;
+	}
+	if (!memcmp(buf, "FORM", 4)) {
+		// Amiga IFF ILBM
+		return 1;
+	}
+	if (buf[0] == 'P' && buf[1] >= '1' && buf[1] <= '7') {
+		// PNM et al.
+		return 1;
+	}
+	if (strstr(file->filename, ".tga")) {
+		// TGA
+		return 1;
+	}
+	if (!memcmp(buf, "II\x2a\x00", 4) || !memcmp(buf, "MM\x00\x2a", 4)) {
+		// TIFF
+		return 1;
+	}
+	if (!memcmp(buf, "RIFF", 4)) {
+		// might be webp
+		return 1;
+	}
+	buf[15] = 0;
+	if (strstr((char *)buf, "XPM")) {
+		// XPM
+		return 1;
+	}
+	if (strstr(file->filename, ".bz2") || strstr(file->filename, ".gz")) {
+		// Imlib2 supports compressed images. It relies on the filename to
+		// determine the appropriate loader and does not use magic bytes here.
+		return 1;
+	}
+	// moved to the end as this variable won't be set in most cases
+	if (getenv("FEH_SKIP_MAGIC")) {
+		return 1;
+	}
+	return 0;
+}
+
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
@@ -239,8 +331,13 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		if (!tmpname)
 			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
 	}
-	else
-		*im = imlib_load_image_with_error_return(file->filename, &err);
+	else {
+		if (feh_is_image(file)) {
+			*im = imlib_load_image_with_error_return(file->filename, &err);
+		} else {
+			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+		}
+	}
 
 	if (opt.conversion_timeout >= 0 && (
 			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||

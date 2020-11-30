@@ -162,6 +162,23 @@ Use
 .Cm --conversion-timeout Ar timeout
 with a non-negative value to enable support for these formats.
 .
+.Pp
+.
+As Imlib2 may take several seconds to determine whether it can load a file or
+not
+.Pq e.g. when attempting to open a large video ,
+.Nm
+checks each file's header before loading it.
+If it looks like an image, it is passed on to Imlib2, otherwise, it is
+assumed to be unloadable.
+This greatly improves performance when working in directories with mixed files
+.Pq i.e., directories which do not exclusively contain image files .
+If you think that Imlib2 can load a file which
+.Nm
+has determined to be likely not an image, set the environment variable
+.Qq FEH_SKIP_MAGIC
+to pass all files directly to Imlib2, bypassing the header check.
+The environment variable's value does not matter, it just needs to be set.
 .
 .Sh OPTIONS
 .
