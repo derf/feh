@@ -922,7 +922,12 @@ void feh_menu_init_main(void)
 	feh_menu_add_entry(m, "Reload", NULL, CB_RELOAD, 0, NULL);
 	feh_menu_add_entry(m, "Save Image", NULL, CB_SAVE_IMAGE, 0, NULL);
 	feh_menu_add_entry(m, "Save List", NULL, CB_SAVE_FILELIST, 0, NULL);
-	feh_menu_add_entry(m, "Edit in Place", "EDIT", 0, 0, NULL);
+	if (opt.edit) {
+		feh_menu_add_entry(m, "Edit in Place", "EDIT", 0, 0, NULL);
+	}
+	else {
+		feh_menu_add_entry(m, "Change View", "EDIT", 0, 0, NULL);
+	}
 	feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
 	feh_menu_add_entry(m, NULL, NULL, 0, 0, NULL);
 	feh_menu_add_entry(m, "Hide", NULL, CB_REMOVE, 0, NULL);
