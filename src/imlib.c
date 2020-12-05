@@ -383,7 +383,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			// add_file_to_rm_filelist duplicates tmpname
 			add_file_to_rm_filelist(tmpname);
 
-		if (image_source != SRC_HTTP && !opt.use_conversion_cache)
+		if (!opt.use_conversion_cache)
 			free(tmpname);
 	} else if (im) {
 #ifdef HAVE_LIBEXIF
