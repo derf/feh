@@ -1014,8 +1014,9 @@ void winwidget_rename(winwidget winwid, char *newname)
 
 void winwidget_free_image(winwidget w)
 {
-	if (w->im)
+	if (w->im) {
 		gib_imlib_free_image(w->im);
+	}
 	w->im = NULL;
 	w->im_w = 0;
 	w->im_h = 0;

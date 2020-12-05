@@ -366,6 +366,13 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 			file->filename = real_filename;
 #ifdef HAVE_LIBEXIF
+			/*
+			 * if we're called from within feh_reload_image, file->ed is already
+			 * populated.
+			 */
+			if (file->ed) {
+				exif_data_unref(file->ed);
+			}
 			file->ed = exif_get_data(tmpname);
 #endif
 		}

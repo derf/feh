@@ -225,6 +225,18 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	/* The for loop prevents us looping infinitely */
 	for (i = 0; i < our_filelist_len; i++) {
 		winwidget_free_image(winwid);
+#ifdef HAVE_LIBEXIF
+		/*
+		 * An EXIF data chunk requires up to 50 kB of space. For large and
+		 * long-running slideshows, this would acculumate gigabytes of
+		 * EXIF data after a few days. We therefore do not cache EXIF data
+		 * in slideshows.
+		 */
+		if (FEH_FILE(winwid->file->data)->ed) {
+			exif_data_unref(FEH_FILE(winwid->file->data)->ed);
+			FEH_FILE(winwid->file->data)->ed = NULL;
+		}
+#endif
 		switch (change) {
 		case SLIDE_NEXT:
 			current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
