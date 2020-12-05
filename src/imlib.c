@@ -373,7 +373,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			if (file->ed) {
 				exif_data_unref(file->ed);
 			}
-			file->ed = exif_get_data(tmpname);
+			file->ed = exif_data_new_from_file(tmpname);
 #endif
 		}
 		if (!opt.use_conversion_cache && ((image_source != SRC_HTTP) || !opt.keep_http))
@@ -385,6 +385,17 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 		if (image_source != SRC_HTTP && !opt.use_conversion_cache)
 			free(tmpname);
+	} else if (im) {
+#ifdef HAVE_LIBEXIF
+		/*
+			* if we're called from within feh_reload_image, file->ed is already
+			* populated.
+			*/
+		if (file->ed) {
+			exif_data_unref(file->ed);
+		}
+		file->ed = exif_data_new_from_file(file->filename);
+#endif
 	}
 
 	if ((err) || (!im)) {
@@ -409,14 +420,12 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 #ifdef HAVE_LIBEXIF
 	int orientation = 0;
-	ExifData *exifData = exif_data_new_from_file(file->filename);
-	if (exifData) {
-		ExifByteOrder byteOrder = exif_data_get_byte_order(exifData);
-		ExifEntry *exifEntry = exif_data_get_entry(exifData, EXIF_TAG_ORIENTATION);
+	if (file->ed) {
+		ExifByteOrder byteOrder = exif_data_get_byte_order(file->ed);
+		ExifEntry *exifEntry = exif_data_get_entry(file->ed, EXIF_TAG_ORIENTATION);
 		if (exifEntry && opt.auto_rotate)
 			orientation = exif_get_short(exifEntry->data, byteOrder);
 	}
-	file->ed = exifData;
 
 	if (orientation == 2)
 		gib_imlib_image_flip_horizontal(*im);
