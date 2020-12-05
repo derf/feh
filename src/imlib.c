@@ -1191,6 +1191,7 @@ void feh_draw_exif(winwidget w)
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		free(info_buf[i]);
 
 	}
 
