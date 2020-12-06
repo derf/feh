@@ -1,3 +1,16 @@
+Sun, 06 Dec 2020 08:34:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.6.1
+    * Fix excessive memory consumption when showing long-running slideshows
+      with thousands to tens of thousands of images and feh has been compiled
+      with exif=1 (see https://github.com/derf/feh/issues/553)
+    * Fix memory leak when showing long-running slideshows with relatively few
+      images and feh has been compiled with exif=1 (ibid.)
+    * Fix memory leak when reloading an image and feh has been compiled with
+      exif=1
+    * Fix memory leak in --draw-exif
+    * Fix memory leak when reloading HTTP files with --no-conversion-cache
+
 Mon, 30 Nov 2020 19:44:47 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 * Release v3.6
     * Add flip and rotate options to the menu
