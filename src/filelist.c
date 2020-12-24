@@ -659,8 +659,17 @@ char *feh_absolute_path(char *path)
 void feh_save_filelist()
 {
 	char *tmpname;
+	char *base_dir = "";
 
-	tmpname = feh_unique_filename("", "filelist");
+	if (opt.output_dir) {
+		base_dir = estrjoin("", opt.output_dir, "/", NULL);
+	}
+
+	tmpname = feh_unique_filename(base_dir, "filelist");
+
+	if (opt.output_dir) {
+		free(base_dir);
+	}
 
 	if (opt.verbose)
 		fprintf(stderr, "saving filelist to filename '%s'\n", tmpname);

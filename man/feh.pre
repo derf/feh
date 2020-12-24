@@ -671,7 +671,7 @@ Save files to
 .Ar directory
 when using
 .Cm --keep-http
-or the save_image command.
+or the save_image or save_filelist command.
 By default, files are saved in the current working directory.
 .
 .It Cm -p , --preload
@@ -1576,7 +1576,10 @@ will keep zoom and X, Y offset when switching images.
 .It L Bq save_filelist
 .
 Save the current filelist as
-.Qq feh_PID_ID_filelist
+.Qq feh_PID_ID_filelist .
+It is saved in the directory specified by
+.Cm --output-dir ,
+if set, and in the current working directory otherwise.
 .
 .It m Bq toggle_menu
 .
@@ -1612,7 +1615,10 @@ Useful for webcams
 .It s Bq save_image
 .
 Save the current image as
-.Qq feh_PID_ID_FILENAME
+.Qq feh_PID_ID_FILENAME .
+It is saved in the directory specified by
+.Cm --output-dir ,
+if set, and in the current working directory otherwise.
 .
 .It w Bq size_to_image
 .
