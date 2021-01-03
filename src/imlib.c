@@ -290,6 +290,11 @@ int feh_is_image(feh_file * file)
 		// might be webp
 		return 1;
 	}
+	if (!memcmp(buf + 4, "ftyphei", 7) || !memcmp(buf + 4, "ftypmif1", 8)) {
+		// HEIC/HEIF - note that this is only supported in imlib2-heic. Ordinary
+		// imlib2 releases do not support heic/heif images as of 2021-01.
+		return 1;
+	}
 	buf[15] = 0;
 	if (strstr((char *)buf, "XPM")) {
 		// XPM
