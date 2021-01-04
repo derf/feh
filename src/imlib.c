@@ -238,6 +238,7 @@ int feh_is_image(feh_file * file)
 		return 0;
 	}
 	if (fread(buf, 1, 16, fh) != 16) {
+		fclose(fh);
 		return 0;
 	}
 	fclose(fh);
