@@ -13,6 +13,7 @@
 .
 .Nm
 .Op Ar options
+.Op Cm --
 .Op Ar files | Ar directories | Ar URLs ...
 .
 .
