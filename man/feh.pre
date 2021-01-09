@@ -920,10 +920,17 @@ comes before
 Note that this option only has an effect when a sort mode is set using
 .Cm --sort .
 .
-.It Cm --windowid Ar windowid
+.It Cm --window-id Ar windowid
 .
 Draw to an existing X11 window by its ID
 .Ar windowid .
+This option is intended for use with software such as xcreensaver or
+xsecurelock, which provide a window for other applications to draw into.
+Unexpected things will happen if you specify a window belonging to software
+which does not expect
+.Nm
+to draw into it or attempt to use options or keybindings which affect window
+attributes, such as full-screen mode.
 .
 .It Cm --xinerama-index Ar screen
 .
