@@ -144,6 +144,7 @@ winwidget winwidget_create_from_file(gib_list * list, char type)
 
 void winwidget_create_window(winwidget ret, int w, int h)
 {
+	XWindowAttributes window_attr;
 	XSetWindowAttributes attr;
 	XEvent ev;
 	XClassHint *xch;
@@ -250,11 +251,31 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		}
 	}
 
-	ret->win =
-	    XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
-			  depth, InputOutput, vis,
-			  CWOverrideRedirect | CWSaveUnder | CWBackingStore
-			  | CWColormap | CWBackPixel | CWBorderPixel | CWEventMask, &attr);
+	if (opt.x11_windowid == 0) {
+		ret->win =
+		  XCreateWindow(disp, DefaultRootWindow(disp), x, y, w, h, 0,
+		                depth, InputOutput, vis,
+		                CWOverrideRedirect | CWSaveUnder | CWBackingStore
+		                | CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
+		                &attr);
+	} else {
+		/* x11_windowid is a pointer to the window */
+		ret->win = (Window) opt.x11_windowid;
+
+		/* set our attributes on the window */
+		XChangeWindowAttributes(disp, ret->win,
+                            CWOverrideRedirect | CWSaveUnder | CWBackingStore
+                            | CWColormap | CWBackPixel | CWBorderPixel
+                            | CWEventMask, &attr);
+
+		/* determine the size and visibility of the window */
+		XGetWindowAttributes(disp, ret->win, &window_attr);
+		ret->visible = (window_attr.map_state == IsViewable);
+		ret->x = window_attr.x;
+		ret->y = window_attr.y;
+		ret->w = window_attr.width;
+		ret->h = window_attr.height;
+	}
 
 	if (mwmhints.flags) {
 		XChangeProperty(disp, ret->win, prop, prop, 32,

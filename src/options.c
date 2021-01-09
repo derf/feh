@@ -433,6 +433,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 #endif
 		{"class"         , 1, 0, 249},
 		{"no-conversion-cache", 0, 0, 250},
+		{"windowid", 1, 0, 251},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -832,6 +833,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 250:
 			opt.use_conversion_cache = 0;
+			break;
+		case 251:
+			opt.x11_windowid = atoi(optarg);
 			break;
 		default:
 			break;
