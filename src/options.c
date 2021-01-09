@@ -835,7 +835,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.use_conversion_cache = 0;
 			break;
 		case 251:
-			opt.x11_windowid = atoi(optarg);
+			opt.x11_windowid = atol(optarg);
 			break;
 		default:
 			break;
