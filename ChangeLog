@@ -1,3 +1,10 @@
+Sat, 09 Jan 2021 12:28:06 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.6.2
+    * Fix save_filelist not respecting --output-dir
+    * Fix file descriptor leak when attempting to load truncated image files.
+      The issue was introduced in v3.6.
+
 Sun, 06 Dec 2020 08:34:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6.1
