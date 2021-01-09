@@ -638,7 +638,7 @@ void slideshow_save_image(winwidget win)
 	gib_imlib_save_image_with_error_return(win->im, tmpname, &err);
 
 	if (err)
-		feh_imlib_print_load_error(tmpname, win, err);
+		feh_print_load_error(tmpname, win, err, LOAD_ERROR_IMLIB);
 
 	free(tmpname);
 	return;

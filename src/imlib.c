@@ -164,11 +164,31 @@ int feh_load_image_char(Imlib_Image * im, char *filename)
 	return(i);
 }
 
-void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
+void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum feh_load_error feh_err)
 {
 	if (err == IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS)
 		eprintf("%s - Out of file descriptors while loading", file);
 	else if (!opt.quiet || w) {
+		switch (feh_err) {
+			case LOAD_ERROR_IMLIB:
+				// handled in the next switch/case statement
+				break;
+			case LOAD_ERROR_IMAGEMAGICK:
+				im_weprintf(w, "%s - No ImageMagick loader for that file format", file);
+				break;
+			case LOAD_ERROR_CURL:
+				im_weprintf(w, "%s - libcurl was unable to retrieve the file", file);
+				break;
+			case LOAD_ERROR_DCRAW:
+				im_weprintf(w, "%s - Unable to open preview via dcraw", file);
+				break;
+			case LOAD_ERROR_MAGICBYTES:
+				im_weprintf(w, "%s - Does not look like an image (magic bytes missing)", file);
+				break;
+		}
+		if (feh_err != LOAD_ERROR_IMLIB) {
+			return;
+		}
 		switch (err) {
 		case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
 			im_weprintf(w, "%s - File does not exist", file);
@@ -181,11 +201,7 @@ void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err)
 			break;
 		case IMLIB_LOAD_ERROR_UNKNOWN:
 		case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-			if (getenv("FEH_SKIP_MAGIC")) {
-				im_weprintf(w, "%s - No Imlib2 loader for that file format", file);
-			} else {
-				im_weprintf(w, "%s - Does not look like an image (magic bytes missing)", file);
-			}
+			im_weprintf(w, "%s - No Imlib2 loader for that file format", file);
 			break;
 		case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
 			im_weprintf(w, "%s - Path specified is too long", file);
@@ -316,6 +332,7 @@ int feh_is_image(feh_file * file)
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
 	Imlib_Load_Error err = IMLIB_LOAD_ERROR_NONE;
+	enum feh_load_error feh_err = LOAD_ERROR_IMLIB;
 	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK, SRC_DCRAW } image_source = SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
@@ -328,19 +345,16 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	if (path_is_url(file->filename)) {
 		image_source = SRC_HTTP;
 
-		if ((tmpname = feh_http_load_image(file->filename)) == NULL)
+		if ((tmpname = feh_http_load_image(file->filename)) == NULL) {
+			feh_err = LOAD_ERROR_CURL;
 			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
-	}
-	else if (opt.conversion_timeout >= 0 && feh_file_is_raw(file->filename)) {
-		image_source = SRC_DCRAW;
-		tmpname = feh_dcraw_load_image(file->filename);
-		if (!tmpname)
-			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+		}
 	}
 	else {
 		if (feh_is_image(file)) {
 			*im = imlib_load_image_with_error_return(file->filename, &err);
 		} else {
+			feh_err = LOAD_ERROR_MAGICBYTES;
 			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
 		}
 	}
@@ -348,8 +362,20 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	if (opt.conversion_timeout >= 0 && (
 			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||
 			(err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT))) {
-		image_source = SRC_MAGICK;
-		tmpname = feh_magick_load_image(file->filename);
+		if (feh_file_is_raw(file->filename)) {
+			image_source = SRC_DCRAW;
+			tmpname = feh_dcraw_load_image(file->filename);
+			if (!tmpname) {
+				feh_err = LOAD_ERROR_DCRAW;
+			}
+		} else {
+			image_source = SRC_MAGICK;
+			feh_err = LOAD_ERROR_IMLIB;
+			tmpname = feh_magick_load_image(file->filename);
+			if (!tmpname) {
+				feh_err = LOAD_ERROR_IMAGEMAGICK;
+			}
+		}
 	}
 
 	if (tmpname) {
@@ -409,7 +435,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			fputs("\n", stderr);
 			reset_output = 1;
 		}
-		feh_imlib_print_load_error(file->filename, NULL, err);
+		feh_print_load_error(file->filename, NULL, err, feh_err);
 		D(("Load *failed*\n"));
 		return(0);
 	}
@@ -549,11 +575,9 @@ static int feh_file_is_raw(char *filename)
 	}
 
 	if (childpid == 0) {
-		if (opt.quiet) {
-			int devnull = open("/dev/null", O_WRONLY);
-			dup2(devnull, 1);
-			dup2(devnull, 2);
-		}
+		int devnull = open("/dev/null", O_WRONLY);
+		dup2(devnull, 1);
+		dup2(devnull, 2);
 		execlp("dcraw", "dcraw", "-i", filename, NULL);
 		_exit(1);
 	} else {
@@ -1537,8 +1561,8 @@ void feh_edit_inplace(winwidget w, int op)
 			FEH_FILE(w->file->data)->filename, &err);
 		gib_imlib_free_image(old);
 		if (err)
-			feh_imlib_print_load_error(FEH_FILE(w->file->data)->filename,
-				w, err);
+			feh_print_load_error(FEH_FILE(w->file->data)->filename,
+				w, err, LOAD_ERROR_IMLIB);
 		feh_reload_image(w, 1, 1);
 	} else {
 		/*

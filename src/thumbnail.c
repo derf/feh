@@ -392,7 +392,7 @@ void init_thumbnail_mode(void)
 		}
 		gib_imlib_save_image_with_error_return(td.im_main, output_buf, &err);
 		if (err) {
-			feh_imlib_print_load_error(output_buf, td.im_main, err);
+			feh_print_load_error(output_buf, td.im_main, err, LOAD_ERROR_IMLIB);
 		}
 		else if (opt.verbose) {
 			int tw, th;

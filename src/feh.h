@@ -115,6 +115,14 @@ enum slide_change { SLIDE_NEXT, SLIDE_PREV, SLIDE_RAND, SLIDE_FIRST, SLIDE_LAST,
 	SLIDE_JUMP_PREV_DIR
 };
 
+enum feh_load_error {
+	LOAD_ERROR_IMLIB = 0,
+	LOAD_ERROR_IMAGEMAGICK,
+	LOAD_ERROR_CURL,
+	LOAD_ERROR_DCRAW,
+	LOAD_ERROR_MAGICBYTES
+};
+
 #define INPLACE_EDIT_FLIP   -1
 #define INPLACE_EDIT_MIRROR -2
 
@@ -172,7 +180,7 @@ void feh_display_status(char stat);
 void real_loadables_mode(int loadable);
 void feh_reload_image(winwidget w, int resize, int force_new);
 void feh_filelist_image_remove(winwidget winwid, char do_delete);
-void feh_imlib_print_load_error(char *file, winwidget w, Imlib_Load_Error err);
+void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum feh_load_error feh_err);
 void slideshow_save_image(winwidget win);
 void feh_edit_inplace(winwidget w, int orientation);
 void feh_edit_inplace_lossless(winwidget w, int orientation);

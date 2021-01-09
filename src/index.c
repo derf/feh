@@ -332,7 +332,7 @@ void init_index_mode(void)
 
 		gib_imlib_save_image_with_error_return(im_main, output_buf, &err);
 		if (err) {
-			feh_imlib_print_load_error(output_buf, im_main, err);
+			feh_print_load_error(output_buf, im_main, err, LOAD_ERROR_IMLIB);
 		}
 		else if (opt.verbose) {
 			int tw, th;
