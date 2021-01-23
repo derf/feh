@@ -504,10 +504,11 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 					fputc(' ', fp);
 					if (use_filelist) {
 #ifdef HAVE_LIBXINERAMA
-						for (int i = 0; (i < opt.xinerama ? num_xinerama_screens : 1) && filelist_pos; i++) {
+						for (int i = 0; (i < opt.xinerama ? num_xinerama_screens : 1) && filelist_pos; i++)
 #else
-						for (int i = 0; (i < 1                   ) && filelist_pos; i++) {
+						for (int i = 0; (i < 1                   ) && filelist_pos; i++)
 #endif
+						{
 							absolute_path = feh_absolute_path(FEH_FILE(filelist_pos->data)->filename);
 							fputs(shell_escape(absolute_path), fp);
 							filelist_pos = filelist_pos->next;
