@@ -57,6 +57,7 @@ void init_slideshow_mode(void)
 	// Try finding an exact filename match first
 	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
+			free(opt.start_list_at);
 			opt.start_list_at = NULL;
 			break;
 		}
@@ -83,6 +84,7 @@ void init_slideshow_mode(void)
 				current_filename = FEH_FILE(l->data)->filename;
 			}
 			if (!strcmp(start_at_filename, current_filename)) {
+				free(opt.start_list_at);
 				opt.start_list_at = NULL;
 				break;
 			}
