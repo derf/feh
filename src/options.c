@@ -855,11 +855,26 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		 */
 		if (opt.start_list_at && path_is_url(opt.start_list_at) && (strlen(opt.start_list_at) <= 8 || strncmp(opt.start_list_at, "file:///", 8) != 0)) {
 			add_file_to_filelist_recursively(opt.start_list_at, FILELIST_FIRST);
+		/*
+		 * Otherwise, make "feh --start-at dir/file.jpg" behave like
+		 * "feh --start-at dir/file.jpg dir".
+		 */
 		} else if (opt.start_list_at && strrchr(opt.start_list_at, '/')) {
+			/*
+			 * feh can't candle urlencoded path components ("some%20dir" etc).
+			 * Use libcurl to unescape them if --start-at is file://...
+			 */
 			if (strlen(opt.start_list_at) > 8 && strncmp(opt.start_list_at, "file:///", 8) == 0) {
-				char *start_at_path = estrdup(opt.start_list_at + 7);
-				free(opt.start_list_at);
-				opt.start_list_at = start_at_path;
+				char *unescaped_path = feh_http_unescape(opt.start_list_at);
+				if (unescaped_path != NULL) {
+					free(opt.start_list_at);
+					opt.start_list_at = estrdup(unescaped_path + 7);
+					free(unescaped_path);
+				} else {
+					char *new_path = estrdup(opt.start_list_at + 7);
+					free(opt.start_list_at);
+					opt.start_list_at = new_path;
+				}
 			}
 			char *target_directory = estrdup(opt.start_list_at);
 			char *filename_start = strrchr(target_directory, '/');

@@ -97,6 +97,7 @@ gib_list *feh_read_filelist(char *filename);
 char *feh_absolute_path(char *path);
 gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l);
 void feh_save_filelist();
+char *feh_http_unescape(char * url);
 
 int feh_cmp_name(void *file1, void *file2);
 int feh_cmp_dirname(void *file1, void *file2);
