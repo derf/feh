@@ -411,6 +411,7 @@ void init_thumbnail_mode(void)
 	else if (opt.start_list_at) {
 		for (l = thumbnails; l; l = l->next) {
 			if (!strcmp(opt.start_list_at, FEH_THUMB(l->data)->file->filename)) {
+				free(opt.start_list_at);
 				opt.start_list_at = NULL;
 				feh_thumbnail_select(winwid, FEH_THUMB(l->data));
 				break;
