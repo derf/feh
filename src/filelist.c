@@ -28,6 +28,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <libexif/exif-data.h>
 #endif
 
+#ifdef HAVE_LIBCURL
+#include <curl/curl.h>
+#endif
+
 #include "feh.h"
 #include "filelist.h"
 #include "signals.h"
@@ -678,3 +682,27 @@ void feh_save_filelist()
 	free(tmpname);
 	return;
 }
+
+#ifdef HAVE_LIBCURL
+
+char *feh_http_unescape(char *url)
+{
+	CURL *curl = curl_easy_init();
+	if (!curl) {
+		return NULL;
+	}
+	char *tmp_url = curl_easy_unescape(curl, url, 0, NULL);
+	char *new_url = estrdup(tmp_url);
+	curl_free(tmp_url);
+	curl_easy_cleanup(curl);
+	return new_url;
+}
+
+#else
+
+char *feh_http_unescape(char *url)
+{
+	return NULL;
+}
+
+#endif
