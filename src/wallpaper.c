@@ -412,8 +412,6 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
 
-		char *home;
-
 		/* local display to set closedownmode on */
 		Display *disp2;
 		Window root2;
