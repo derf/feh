@@ -252,87 +252,88 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int use_filelist) {
 	char * home = getenv("HOME");
 
-	if (home) {
-		FILE *fp;
-		int fd;
-		char *path;
-		char *exec_absolute_path;
-		char *absolute_path;
-		struct stat s;
-		gib_list *filelist_pos = filelist;
-		exec_absolute_path = feh_absolute_path(cmdargv[0]);
-		path = estrjoin("/", home, ".fehbg", NULL);
-		if ((fp = fopen(path, "w")) == NULL) {
-			weprintf("Can't write to %s", path);
-		} else {
-			fputs("#!/bin/sh\n", fp);
-			fputs(exec_absolute_path, fp);
-			fputs(" --no-fehbg --bg-", fp);
-			if (centered)
-				fputs("center", fp);
-			else if (scaled)
-				fputs("scale", fp);
-			else if (filled == 1)
-				fputs("fill", fp);
-			else if (filled == 2)
-				fputs("max", fp);
-			else
-				fputs("tile", fp);
-			if (opt.image_bg) {
-				fputs(" --image-bg ", fp);
-				fputs(shell_escape(opt.image_bg), fp);
-			}
-#ifdef HAVE_LIBXINERAMA
-			if (opt.xinerama) {
-				if (opt.xinerama_index >= 0) {
-					fprintf(fp, " --xinerama-index %d", opt.xinerama_index);
-				}
-			}
-			else {
-				fputs(" --no-xinerama", fp);
-			}
-#endif			/* HAVE_LIBXINERAMA */
-			if (opt.geom_flags & XValue) {
-				fprintf(fp, " --geometry %c%d",
-						opt.geom_flags & XNegative ? '-' : '+',
-						opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
-				if (opt.geom_flags & YValue) {
-					fprintf(fp, "%c%d",
-							opt.geom_flags & YNegative ? '-' : '+',
-							opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
-				}
-			}
-			if (opt.force_aliasing) {
-				fputs(" --force-aliasing", fp);
-			}
-			fputc(' ', fp);
-			if (use_filelist) {
-#ifdef HAVE_LIBXINERAMA
-				for (int i = 0; (i < opt.xinerama ? num_xinerama_screens : 1) && filelist_pos; i++)
-#else
-					for (int i = 0; (i < 1                   ) && filelist_pos; i++)
-#endif
-					{
-						absolute_path = feh_absolute_path(FEH_FILE(filelist_pos->data)->filename);
-						fputs(shell_escape(absolute_path), fp);
-						filelist_pos = filelist_pos->next;
-						free(absolute_path);
-						fputc(' ', fp);
-					}
-			} else if (fil) {
-				absolute_path = feh_absolute_path(fil);
-				fputs(shell_escape(absolute_path), fp);
-				free(absolute_path);
-			}
-			fputc('\n', fp);
-			fd = fileno(fp);
-			if (fstat(fd, &s) != 0 || fchmod(fd, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
-				weprintf("Can't set %s as executable", path);
-			}
-			fclose(fp);
+	if (!home)
+		return;
+
+	FILE *fp;
+	int fd;
+	char *path;
+	char *exec_absolute_path;
+	char *absolute_path;
+	struct stat s;
+	gib_list *filelist_pos = filelist;
+	exec_absolute_path = feh_absolute_path(cmdargv[0]);
+	path = estrjoin("/", home, ".fehbg", NULL);
+	if ((fp = fopen(path, "w")) == NULL) {
+		weprintf("Can't write to %s", path);
+	} else {
+		fputs("#!/bin/sh\n", fp);
+		fputs(exec_absolute_path, fp);
+		fputs(" --no-fehbg --bg-", fp);
+		if (centered)
+			fputs("center", fp);
+		else if (scaled)
+			fputs("scale", fp);
+		else if (filled == 1)
+			fputs("fill", fp);
+		else if (filled == 2)
+			fputs("max", fp);
+		else
+			fputs("tile", fp);
+		if (opt.image_bg) {
+			fputs(" --image-bg ", fp);
+			fputs(shell_escape(opt.image_bg), fp);
 		}
-		free(path);
+#ifdef HAVE_LIBXINERAMA
+		if (opt.xinerama) {
+			if (opt.xinerama_index >= 0) {
+				fprintf(fp, " --xinerama-index %d", opt.xinerama_index);
+			}
+		}
+		else {
+			fputs(" --no-xinerama", fp);
+		}
+#endif			/* HAVE_LIBXINERAMA */
+		if (opt.geom_flags & XValue) {
+			fprintf(fp, " --geometry %c%d",
+					opt.geom_flags & XNegative ? '-' : '+',
+					opt.geom_flags & XNegative ? abs(opt.geom_x) : opt.geom_x);
+			if (opt.geom_flags & YValue) {
+				fprintf(fp, "%c%d",
+						opt.geom_flags & YNegative ? '-' : '+',
+						opt.geom_flags & YNegative ? abs(opt.geom_y) : opt.geom_y);
+			}
+		}
+		if (opt.force_aliasing) {
+			fputs(" --force-aliasing", fp);
+		}
+		fputc(' ', fp);
+		if (use_filelist) {
+#ifdef HAVE_LIBXINERAMA
+			for (int i = 0; (i < opt.xinerama ? num_xinerama_screens : 1) && filelist_pos; i++)
+#else
+				for (int i = 0; (i < 1                   ) && filelist_pos; i++)
+#endif
+				{
+					absolute_path = feh_absolute_path(FEH_FILE(filelist_pos->data)->filename);
+					fputs(shell_escape(absolute_path), fp);
+					filelist_pos = filelist_pos->next;
+					free(absolute_path);
+					fputc(' ', fp);
+				}
+		} else if (fil) {
+			absolute_path = feh_absolute_path(fil);
+			fputs(shell_escape(absolute_path), fp);
+			free(absolute_path);
+		}
+		fputc('\n', fp);
+		fd = fileno(fp);
+		if (fstat(fd, &s) != 0 || fchmod(fd, s.st_mode | S_IXUSR | S_IXGRP) != 0) {
+			weprintf("Can't set %s as executable", path);
+		}
+		fclose(fp);
 	}
+	free(path);
 }
 
 void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
