@@ -258,17 +258,23 @@ void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int u
 	FILE *fp;
 	int fd;
 	char *path;
-	char *exec_absolute_path;
+	char *exec_method;
 	char *absolute_path;
 	struct stat s;
 	gib_list *filelist_pos = filelist;
-	exec_absolute_path = feh_absolute_path(cmdargv[0]);
+
+	if (strchr(cmdargv[0], '/'))
+		exec_method = feh_absolute_path(cmdargv[0]);
+	else
+		exec_method = cmdargv[0];
+
 	path = estrjoin("/", home, ".fehbg", NULL);
+
 	if ((fp = fopen(path, "w")) == NULL) {
 		weprintf("Can't write to %s", path);
 	} else {
 		fputs("#!/bin/sh\n", fp);
-		fputs(exec_absolute_path, fp);
+		fputs(exec_method, fp);
 		fputs(" --no-fehbg --bg-", fp);
 		if (centered)
 			fputs("center", fp);
@@ -334,7 +340,9 @@ void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int u
 		fclose(fp);
 	}
 	free(path);
-	free(exec_absolute_path);
+
+	if(exec_method != cmdargv[0])
+		free(exec_method);
 }
 
 void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
