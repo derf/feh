@@ -980,8 +980,30 @@ zoom the image like the
 .Cm --bg-fill
 mode.
 .
-.El
+.It Cm --zoom-in-rate Ar ratio
 .
+Zoom in images by
+.Ar ratio
+.
+.It Cm --zoom-out-rate Ar ratio
+.
+Zoom out images by
+.Ar ratio
+.
+.It Cm --zoom-rate Ar ratio
+.
+Zoom images in and out by
+.Ar ratio.
+This command is the same as envoking
+.Cm --zoom-in-rate
+with
+.Ar ratio
+and
+.Cm --zoom-out-rate
+with the inverse of
+.Ar ratio
+.
+.El
 .
 .Sh MONTAGE MODE OPTIONS
 .
