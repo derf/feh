@@ -334,6 +334,7 @@ void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int u
 		fclose(fp);
 	}
 	free(path);
+	free(exec_absolute_path);
 }
 
 void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
