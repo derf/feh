@@ -255,7 +255,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- winwid->im_y) / winwid->old_zoom;
 
 		/* copied from zoom_in, keyevents.c */
-		winwid->zoom = winwid->zoom * 1.25;
+		winwid->zoom = winwid->zoom * opt.zoom_in_rate;
 
 		if (winwid->zoom > ZOOM_MAX)
 			winwid->zoom = ZOOM_MAX;
@@ -283,7 +283,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 				- winwid->im_y) / winwid->old_zoom;
 
 		/* copied from zoom_out, keyevents.c */
-		winwid->zoom = winwid->zoom * 0.80;
+		winwid->zoom = winwid->zoom * opt.zoom_out_rate;
 
 		if (winwid->zoom < ZOOM_MIN)
 			winwid->zoom = ZOOM_MIN;
