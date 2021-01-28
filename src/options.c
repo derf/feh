@@ -63,6 +63,9 @@ void init_parse_options(int argc, char **argv)
 	opt.font = NULL;
 	opt.max_height = opt.max_width = UINT_MAX;
 
+	opt.zoom_in_rate = 1.25;
+	opt.zoom_out_rate = 0.8; // = 1.0 / 1.25
+
 	opt.start_list_at = NULL;
 	opt.jump_on_resort = 1;
 
@@ -393,6 +396,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-center"     , 0, 0, OPTION_bg_center},
 		{"bg-scale"      , 0, 0, OPTION_bg_scale},
 		{"zoom"          , 1, 0, OPTION_zoom},
+		{"zoom-rate"     , 1, 0, OPTION_zoom_rate},
+		{"zoom-in-rate"  , 1, 0, OPTION_zoom_in_rate},
+		{"zoom-out-rate" , 1, 0, OPTION_zoom_out_rate},
 		{"no-screen-clip", 0, 0, OPTION_no_screen_clip},
 		{"index-info"    , 1, 0, OPTION_index_info},
 		{"magick-timeout", 1, 0, OPTION_magick_timeout},
@@ -836,6 +842,16 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case OPTION_window_id:
 			opt.x11_windowid = atol(optarg);
+			break;
+		case OPTION_zoom_rate:
+			opt.zoom_in_rate = atof(optarg);
+			opt.zoom_out_rate = 1.0 / opt.zoom_in_rate;
+			break;
+		case OPTION_zoom_in_rate:
+			opt.zoom_in_rate = atof(optarg);
+			break;
+		case OPTION_zoom_out_rate:
+			opt.zoom_out_rate = atof(optarg);
 			break;
 		default:
 			break;
