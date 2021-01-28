@@ -29,6 +29,19 @@ OPTIONS
                            mode or when window geometry is fixed. If combined
                            with --auto-zoom, zooming will be limited to the
                            the size. Also support \"max\" and \"fill\"
+     --zoom-in-rate        Specifies a ratio that is used when zooming the image in.
+                           This defaults to 1.25.
+                           Note: a ratio below 1 are permissible but will zoom out instead.
+                           And a ratio equal to 1 will inhibit zooming in.
+     --zoom-in-rate        Specifies a ratio that is used when zooming the image out.
+                           This defaults to 0.8.
+                           Note: ratios above 1 are permissible but will zoom in instead.
+                           And ratios equal to 1 will inhibit zooming out.
+     --zoom-rate           Zoom images in and out by a ratio. This command is equivalent
+                           to envoking --zoom-in-rate with the same argument along with
+                           --zoom-out-rate with the inverse of the argument.
+                           Note: ratios below 1 will reverse zooming, and ratios equal to 1
+                           will inhibit zooming in/out.
      --keep-zoom-vp        Keep viewport zoom and settings while changing images
  -w, --multiwindow         Open all files at once, one window per image
  -x, --borderless          Create borderless windows
