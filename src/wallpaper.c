@@ -111,6 +111,13 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 	img_w = gib_imlib_image_get_width(im);
 	img_h = gib_imlib_image_get_height(im);
 	if (opt.geom_w != 0 && opt.geom_h != 0) {
+		if (opt.geom_w == 0) {
+			double ratio = (double)img_w / (double)img_h;
+			opt.geom_w = (int) ((double)opt.geom_h * ratio);
+		} else if (opt.geom_h == 0) {
+			double ratio = (double)img_h / (double)img_w;
+			opt.geom_h = (int) ((double)opt.geom_w * ratio);
+		}
 
 		Imlib_Image im_old = im;
 		im = gib_imlib_create_cropped_scaled_image(im_old, 0, 0, img_w, img_h, opt.geom_w, opt.geom_h, 1);
