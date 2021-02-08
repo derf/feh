@@ -103,25 +103,38 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 		int x, int y, int w, int h)
 {
 	int offset_x, offset_y;
+	int img_w, img_h;
 
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
+	img_w = gib_imlib_image_get_width(im);
+	img_h = gib_imlib_image_get_height(im);
+	if (opt.geom_w != 0 && opt.geom_h != 0) {
+
+		Imlib_Image im_old = im;
+		im = gib_imlib_create_cropped_scaled_image(im_old, 0, 0, img_w, img_h, opt.geom_w, opt.geom_h, 1);
+		gib_imlib_free_image_and_decache(im_old);
+
+		img_w = opt.geom_w;
+		img_h = opt.geom_h;
+	}
+
 	if(opt.geom_flags & XValue)
 		if(opt.geom_flags & XNegative)
-			offset_x = (w - gib_imlib_image_get_width(im)) + opt.geom_x;
+			offset_x = (w - img_w) + opt.geom_x;
 		else
 			offset_x = opt.geom_x;
 	else
-		offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
+		offset_x = (w - img_w) >> 1;
 
 	if(opt.geom_flags & YValue)
 		if(opt.geom_flags & YNegative)
-			offset_y = (h - gib_imlib_image_get_height(im)) + opt.geom_y;
+			offset_y = (h - img_h) + opt.geom_y;
 		else
 			offset_y = opt.geom_y;
 	else
-		offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
+		offset_y = (h - img_h) >> 1;
 
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		((offset_x < 0) ? -offset_x : 0),
