@@ -441,6 +441,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
+		unsigned int pmap_d1_freeable = 0;
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -485,10 +486,40 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			D(("centering\n"));
 
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			gcval.foreground = color.pixel;
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
-			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+
+
+			unsigned char *data = NULL;
+			if (opt.bg_preserve) {
+				Atom act_type;
+				int act_format;
+				unsigned long nitems, bytes_after;
+				Atom _XROOTPMAP_ID;
+
+				_XROOTPMAP_ID = XInternAtom(disp, "_XROOTPMAP_ID", False);
+
+				if (XGetWindowProperty(disp, root, _XROOTPMAP_ID, 0, 1, False, XA_PIXMAP,
+									   &act_type, &act_format, &nitems, &bytes_after,
+									   &data) == Success) {
+					if (data) {
+						D(("preserving background\n"));
+						pmap_d1 = *((Pixmap *) data);
+						XFree(data);
+					}
+				} else {
+					// XOrg documentation is not clear if a non-success event can
+					// set data.
+					data = NULL;
+				}
+			}
+
+			// if bg_preserve wasn't run or bg_preserve found no existing background
+			if (!data) {
+				pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+				gcval.foreground = color.pixel;
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+				pmap_d1_freeable = 1;
+			}
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens) {
@@ -505,7 +536,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
 					0, 0, scr->width, scr->height);
 
-			XFreeGC(disp, gc);
+			if (!data)
+				XFreeGC(disp, gc);
 
 		} else if (filled == 1) {
 
@@ -584,7 +616,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		XFreeGC(disp2, gc);
 		XSync(disp2, False);
 		XSync(disp, False);
-		XFreePixmap(disp, pmap_d1);
+		if(pmap_d1_freeable)
+			XFreePixmap(disp, pmap_d1);
 
 		prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", True);
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", True);
@@ -619,9 +652,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		if (prop_root == None || prop_esetroot == None)
 			eprintf("creation of pixmap property failed.");
 
-		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32, PropModeReplace, (unsigned char *) &pmap_d2, 1);
+		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32,
+						PropModeReplace, (unsigned char *) &pmap_d2, 1);
 		XChangeProperty(disp2, root2, prop_esetroot, XA_PIXMAP, 32,
-				PropModeReplace, (unsigned char *) &pmap_d2, 1);
+						PropModeReplace, (unsigned char *) &pmap_d2, 1);
 
 		XSetWindowBackgroundPixmap(disp2, root2, pmap_d2);
 		XClearWindow(disp2, root2);
