@@ -319,7 +319,7 @@ void feh_event_handle_stdin()
 	char stdin_buf[2];
 	static char is_esc = 0;
 	KeySym keysym = NoSymbol;
-	if (read(STDIN_FILENO, &stdin_buf, 1) == -1) {
+	if (read(STDIN_FILENO, &stdin_buf, 1) <= 0) {
 		control_via_stdin = 0;
 		if (isatty(STDIN_FILENO) && getpgrp() == (tcgetpgrp(STDIN_FILENO))) {
 			weprintf("reading a command from stdin failed - disabling control via stdin");
