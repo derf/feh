@@ -382,7 +382,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 			feh_wm_load_next(&im);
 			fil = FEH_FILE(filelist->data)->filename;
 		}
-		snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil);
+		if ((size_t) snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname, fil) >= sizeof(sendbuf)) {
+			weprintf("Writing to IPC send buffer was truncated");
+			return;
+		}
 		enl_ipc_send(sendbuf);
 
 		if (scaled) {
