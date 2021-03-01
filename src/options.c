@@ -434,6 +434,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"class"         , 1, 0, 249},
 		{"no-conversion-cache", 0, 0, 250},
 		{"window-id", 1, 0, 251},
+		{"bg-preserve", 0, 0, 252},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -836,6 +837,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case 251:
 			opt.x11_windowid = atol(optarg);
+			break;
+		case 252:
+			opt.bg_preserve = 1;
 			break;
 		default:
 			break;

@@ -1223,6 +1223,9 @@ Tile
 .Pq repeat
 the image in case it is too small for the screen
 .
+.It Cm --bg-preserve
+Combines the results of the addition of the new background with any possibly existing background.
+.
 .It Cm --no-fehbg
 .
 Do not write a

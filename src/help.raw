@@ -82,6 +82,8 @@ OPTIONS
                            fill the whole background, but the images' aspect
                            ratio may not be preserved
      --bg-tile FILE        Set FILE as tiled desktop background
+     --bg-preserve         Combines the results of the addition of the new
+                           background with any possibly existing background.
      --no-fehbg            Do not write a ~/.fehbg file
  -C, --fontpath PATH       Specify an extra directory to look in for fonts,
                            can be used multiple times to add multiple paths.

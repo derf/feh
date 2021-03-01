@@ -91,6 +91,7 @@ struct __fehoptions {
 	char *output_dir;
 	char *bg_file;
 	char *image_bg;
+	int bg_preserve;
 	char *font;
 	char *title_font;
 	char *title;

@@ -103,25 +103,45 @@ static void feh_wm_set_bg_centered(Pixmap pmap, Imlib_Image im, int use_filelist
 		int x, int y, int w, int h)
 {
 	int offset_x, offset_y;
+	int img_w, img_h;
 
 	if (use_filelist)
 		feh_wm_load_next(&im);
 
+	img_w = gib_imlib_image_get_width(im);
+	img_h = gib_imlib_image_get_height(im);
+	if (opt.geom_w != 0 && opt.geom_h != 0) {
+		if (opt.geom_w == 0) {
+			double ratio = (double)img_w / (double)img_h;
+			opt.geom_w = (int) ((double)opt.geom_h * ratio);
+		} else if (opt.geom_h == 0) {
+			double ratio = (double)img_h / (double)img_w;
+			opt.geom_h = (int) ((double)opt.geom_w * ratio);
+		}
+
+		Imlib_Image im_old = im;
+		im = gib_imlib_create_cropped_scaled_image(im_old, 0, 0, img_w, img_h, opt.geom_w, opt.geom_h, 1);
+		gib_imlib_free_image_and_decache(im_old);
+
+		img_w = opt.geom_w;
+		img_h = opt.geom_h;
+	}
+
 	if(opt.geom_flags & XValue)
 		if(opt.geom_flags & XNegative)
-			offset_x = (w - gib_imlib_image_get_width(im)) + opt.geom_x;
+			offset_x = (w - img_w) + opt.geom_x;
 		else
 			offset_x = opt.geom_x;
 	else
-		offset_x = (w - gib_imlib_image_get_width(im)) >> 1;
+		offset_x = (w - img_w) >> 1;
 
 	if(opt.geom_flags & YValue)
 		if(opt.geom_flags & YNegative)
-			offset_y = (h - gib_imlib_image_get_height(im)) + opt.geom_y;
+			offset_y = (h - img_h) + opt.geom_y;
 		else
 			offset_y = opt.geom_y;
 	else
-		offset_y = (h - gib_imlib_image_get_height(im)) >> 1;
+		offset_y = (h - img_h) >> 1;
 
 	gib_imlib_render_image_part_on_drawable_at_size(pmap, im,
 		((offset_x < 0) ? -offset_x : 0),
@@ -424,6 +444,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		unsigned long length, after;
 		unsigned char *data_root = NULL, *data_esetroot = NULL;
 		Pixmap pmap_d1, pmap_d2;
+		unsigned int pmap_d1_freeable = 0;
 
 		/* local display to set closedownmode on */
 		Display *disp2;
@@ -468,10 +489,40 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 			D(("centering\n"));
 
-			pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-			gcval.foreground = color.pixel;
-			gc = XCreateGC(disp, root, GCForeground, &gcval);
-			XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+
+
+			unsigned char *data = NULL;
+			if (opt.bg_preserve) {
+				Atom act_type;
+				int act_format;
+				unsigned long nitems, bytes_after;
+				Atom _XROOTPMAP_ID;
+
+				_XROOTPMAP_ID = XInternAtom(disp, "_XROOTPMAP_ID", False);
+
+				if (XGetWindowProperty(disp, root, _XROOTPMAP_ID, 0, 1, False, XA_PIXMAP,
+									   &act_type, &act_format, &nitems, &bytes_after,
+									   &data) == Success) {
+					if (data) {
+						D(("preserving background\n"));
+						pmap_d1 = *((Pixmap *) data);
+						XFree(data);
+					}
+				} else {
+					// XOrg documentation is not clear if a non-success event can
+					// set data.
+					data = NULL;
+				}
+			}
+
+			// if bg_preserve wasn't run or bg_preserve found no existing background
+			if (!data) {
+				pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+				gcval.foreground = color.pixel;
+				gc = XCreateGC(disp, root, GCForeground, &gcval);
+				XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
+				pmap_d1_freeable = 1;
+			}
 
 #ifdef HAVE_LIBXINERAMA
 			if (opt.xinerama && xinerama_screens) {
@@ -488,7 +539,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 				feh_wm_set_bg_centered(pmap_d1, im, use_filelist,
 					0, 0, scr->width, scr->height);
 
-			XFreeGC(disp, gc);
+			if (!data)
+				XFreeGC(disp, gc);
 
 		} else if (filled == 1) {
 
@@ -567,7 +619,8 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		XFreeGC(disp2, gc);
 		XSync(disp2, False);
 		XSync(disp, False);
-		XFreePixmap(disp, pmap_d1);
+		if(pmap_d1_freeable)
+			XFreePixmap(disp, pmap_d1);
 
 		prop_root = XInternAtom(disp2, "_XROOTPMAP_ID", True);
 		prop_esetroot = XInternAtom(disp2, "ESETROOT_PMAP_ID", True);
@@ -602,9 +655,10 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 		if (prop_root == None || prop_esetroot == None)
 			eprintf("creation of pixmap property failed.");
 
-		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32, PropModeReplace, (unsigned char *) &pmap_d2, 1);
+		XChangeProperty(disp2, root2, prop_root, XA_PIXMAP, 32,
+						PropModeReplace, (unsigned char *) &pmap_d2, 1);
 		XChangeProperty(disp2, root2, prop_esetroot, XA_PIXMAP, 32,
-				PropModeReplace, (unsigned char *) &pmap_d2, 1);
+						PropModeReplace, (unsigned char *) &pmap_d2, 1);
 
 		XSetWindowBackgroundPixmap(disp2, root2, pmap_d2);
 		XClearWindow(disp2, root2);
