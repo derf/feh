@@ -980,44 +980,15 @@ zoom the image like the
 .Cm --bg-fill
 mode.
 .
-.It Cm --zoom-in-rate Ar ratio
-.
-Zoom in images by
-.Ar ratio
-however, if
-.Ar ratio
-is less than 1 the image will zoom out when intending to zoom in, and if
-.Ar ratio
-is equal to 1 the zoom in will have no effect.
-.
-.It Cm --zoom-out-rate Ar ratio
-.
-Zoom out images by
-.Ar ratio
-however, if
-.Ar ratio
-is greater than 1 the image will zoom in when intending to zoom out, and if
-.Ar ratio
-is equal to 1 the zoom out will have no effect.
-.
 .It Cm --zoom-rate Ar ratio
 .
 Zoom images in and out by
-.Ar ratio.
-This command is the same as envoking
-.Cm --zoom-in-rate
-with
-.Ar ratio
-and
-.Cm --zoom-out-rate
-with the inverse of
 .Ar ratio
 however, if
 .Ar ratio
 is below 1 the image will zoom out when intending to zoom in and vice versa, and if
 .Ar ratio
-is equal to 1 then zoom in and zoom out will have no effect.
-
+is equal to 1 then zoom in and zoom out will do nothing.
 .
 .El
 .
