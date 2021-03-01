@@ -359,7 +359,7 @@ void feh_event_handle_stdin()
 	else
 		keysym = XStringToKeysym(stdin_buf);
 
-	if (window_num)
+	if (window_num && keysym)
 		feh_event_handle_generic(windows[0], is_esc * Mod1Mask, keysym, 0);
 
 	is_esc = 0;
