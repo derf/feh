@@ -984,11 +984,8 @@ mode.
 .
 Zoom images in and out by
 .Ar ratio
-however, if
-.Ar ratio
-is below 1 the image will zoom out when intending to zoom in and vice versa, and if
-.Ar ratio
-is equal to 1 then zoom in and zoom out will do nothing.
+.Pq default: 1.25
+when using the zoom keys and buttons.
 .
 .El
 .

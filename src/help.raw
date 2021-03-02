@@ -29,9 +29,8 @@ OPTIONS
                            mode or when window geometry is fixed. If combined
                            with --auto-zoom, zooming will be limited to the
                            the size. Also support \"max\" and \"fill\"
-     --zoom-rate           Zoom images in and out by a ratio however, if ratio is below 1
-                           the image will zoom out when intending to zoom in and vice versa,
-                           and if ratio is equal to 1 then zoom in and zoom out will do nothing.
+     --zoom-rate RATIO     Zoom images in and out by RATIO (default: 1.25)
+                           when using the zoom keys / buttons
      --keep-zoom-vp        Keep viewport zoom and settings while changing images
  -w, --multiwindow         Open all files at once, one window per image
  -x, --borderless          Create borderless windows
