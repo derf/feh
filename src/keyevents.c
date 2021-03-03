@@ -603,7 +603,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	}
 	else if (feh_is_kp(EVENT_zoom_in, state, keysym, button)) {
 		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * 1.25;
+		winwid->zoom = winwid->zoom * opt.zoom_rate;
 
 		if (winwid->zoom > ZOOM_MAX)
 			winwid->zoom = ZOOM_MAX;
@@ -617,7 +617,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 	}
 	else if (feh_is_kp(EVENT_zoom_out, state, keysym, button)) {
 		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * 0.80;
+		winwid->zoom = winwid->zoom / opt.zoom_rate;
 
 		if (winwid->zoom < ZOOM_MIN)
 			winwid->zoom = ZOOM_MIN;
