@@ -898,6 +898,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				*filename_start = '\0';
 			}
 			add_file_to_filelist_recursively(target_directory, FILELIST_FIRST);
+			original_file_items = gib_list_add_front(original_file_items, estrdup(target_directory));
 			free(target_directory);
 		} else {
 			add_file_to_filelist_recursively(".", FILELIST_FIRST);
