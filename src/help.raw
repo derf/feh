@@ -102,7 +102,7 @@ OPTIONS
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed
      --cache-size NUM      imlib cache size in mebibytes (0 .. 2048)
      --auto-reload         automatically reload shown image if file was changed
-     --window-id           Draw to an existing X11 window by its ID
+     --window-id ID        Draw to an existing X11 window by its ID
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without
