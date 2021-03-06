@@ -1,3 +1,13 @@
+git HEAD:
+
+    * Add --window-id <windowid> option (draw to an existing window)
+    * Add --zoom-rate <rate> option (specify zoom step size)
+    * Fix --reload / --auto-reload reloading the wrong directory when
+      using --start-at and no file arguments or filelists have been
+      specified
+    * Fix Ctrl+key causing unintended behaviour when controlling feh via stdin
+    * Fix high CPU usage when closing stdin after starting feh from a terminal
+
 Mon, 25 Jan 2021 17:46:57 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6.3
