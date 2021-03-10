@@ -146,6 +146,8 @@ char *estrjoin(const char *separator, ...)
 char path_is_url(char *path) {
 	if ((!strncmp(path, "http://", 7))
 			|| (!strncmp(path, "https://", 8))
+			|| (!strncmp(path, "gopher://", 9))
+			|| (!strncmp(path, "gophers://", 10))
 			|| (!strncmp(path, "ftp://", 6))
 			|| (!strncmp(path, "file://", 7)))
 		return 1;
