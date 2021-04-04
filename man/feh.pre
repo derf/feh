@@ -409,8 +409,9 @@ will read the filelist from its standard input.
 .
 Set global font.
 Should be a truetype font, resident in the current directory or the font
-directory, and should be defined in the form fontname/points, like
-.Qq myfont/12 .
+directory, and should be defined in the form fontname/size, like
+.Qq yudit/12
+.Pq which is the default .
 .
 .It Cm -C , --fontpath Ar path
 .
