@@ -28,37 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <libexif/exif-data.h>
 
-typedef struct {
-	ExifIfd ifd;		/* section */
-	ExifTag tag;		/* tag */
-} t_EXIF_INFO;
-
-
-/* show these standard tags. section must be given first, than the tag itself */
-/* definition: http://libexif.sourceforge.net/api/exif-tag_8h.html */
-const t_EXIF_INFO Exif_tag_list[] = {
-	{ EXIF_IFD_0, EXIF_TAG_MAKE },
-	{ EXIF_IFD_0, EXIF_TAG_MODEL },
-	{ EXIF_IFD_0, EXIF_TAG_IMAGE_DESCRIPTION },
-	{ EXIF_IFD_EXIF, EXIF_TAG_DATE_TIME_ORIGINAL },
-	{ EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_TIME },
-	{ EXIF_IFD_EXIF, EXIF_TAG_SHUTTER_SPEED_VALUE },
-	{ EXIF_IFD_EXIF, EXIF_TAG_FNUMBER },
-	{ EXIF_IFD_EXIF, EXIF_TAG_APERTURE_VALUE },
-	{ EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_BIAS_VALUE },
-	{ EXIF_IFD_EXIF, EXIF_TAG_ISO_SPEED_RATINGS },
-	{ EXIF_IFD_EXIF, EXIF_TAG_FOCAL_LENGTH },
-	{ EXIF_IFD_EXIF, EXIF_TAG_FOCAL_LENGTH_IN_35MM_FILM },
-	{ EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_MODE },
-	{ EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_PROGRAM },
-	{ EXIF_IFD_EXIF, EXIF_TAG_SCENE_CAPTURE_TYPE },
-	{ EXIF_IFD_EXIF, EXIF_TAG_FLASH },
-
-	{ EXIF_IFD_COUNT, 0 }	/* end marker */
-};
-
-
-
 /* Nikon */
 
 #define EXIF_NIKON_MAKERNOTE_END 0	/* end marker: if 0 used as a tag we must find something else */

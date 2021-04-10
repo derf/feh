@@ -1,6 +1,7 @@
 /* exif.c
 
 Copyright (C) 2012      Dennis Real.
+Copyright (C) 2021      Daniel Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -155,6 +156,115 @@ void exif_get_mnote_tag(ExifData * d, unsigned int tag, char *buffer,
 	}
 }
 
+void exif_get_make_model_lens(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char make[EXIF_STD_BUF_LEN];
+	char model[EXIF_STD_BUF_LEN];
+	char lens[EXIF_STD_BUF_LEN];
+	unsigned int offset = 0;
+
+	make[0] = model[0] = lens[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_0, EXIF_TAG_MAKE, make, sizeof(make));
+	exif_get_tag_content(ed, EXIF_IFD_0, EXIF_TAG_MODEL, model, sizeof(model));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, 0xa434, lens, sizeof(lens));
+
+	if (make[0] && strncmp(make, model, strlen(make)) != 0) {
+		offset += snprintf(buffer, maxsize, "%s ", make);
+	}
+	if (model[0]) {
+		offset += snprintf(buffer + offset, maxsize - offset, "%s", model);
+	}
+	if (lens[0]) {
+		offset += snprintf(buffer + offset, maxsize - offset, " + %s", lens);
+	}
+	snprintf(buffer + offset, maxsize - offset, "\n");
+}
+
+void exif_get_exposure(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char fnumber[EXIF_STD_BUF_LEN];
+	char exposure[EXIF_STD_BUF_LEN];
+	char iso[EXIF_STD_BUF_LEN];
+	char focus[EXIF_STD_BUF_LEN];
+	char focus35[EXIF_STD_BUF_LEN];
+	unsigned int offset = 0;
+
+	fnumber[0] = exposure[0] = iso[0] = '\0';
+	focus[0] = focus35[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_FNUMBER, fnumber, sizeof(fnumber));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_TIME, exposure, sizeof(exposure));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_ISO_SPEED_RATINGS, iso, sizeof(iso));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_FOCAL_LENGTH, focus, sizeof(focus));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_FOCAL_LENGTH_IN_35MM_FILM, focus35, sizeof(focus35));
+
+	if (fnumber[0] || exposure[0]) {
+		offset += snprintf(buffer, maxsize, "%s  %s  ", fnumber, exposure);
+	}
+	if (iso[0]) {
+		offset += snprintf(buffer + offset, maxsize - offset, "ISO%s  ", iso);
+	}
+	if (focus[0] && focus35[0]) {
+		snprintf(buffer + offset, maxsize - offset, "%s (%s mm)\n", focus, focus35);
+	} else if (focus[0]) {
+		snprintf(buffer + offset, maxsize - offset, "%s\n", focus);
+	}
+}
+
+void exif_get_flash(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char flash[EXIF_STD_BUF_LEN];
+
+	flash[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, flash, sizeof(flash));
+
+	if (flash[0]) {
+		snprintf(buffer, maxsize, "%s\n", flash);
+	}
+}
+
+void exif_get_mode(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char mode[EXIF_STD_BUF_LEN];
+	char program[EXIF_STD_BUF_LEN];
+
+	mode[0] = program[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_MODE, mode, sizeof(mode));
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_EXPOSURE_PROGRAM, program, sizeof(program));
+
+	if (mode[0] || program[0]) {
+		snprintf(buffer, maxsize, "%s (%s)\n", mode, program);
+	}
+}
+
+void exif_get_datetime(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char datetime[EXIF_STD_BUF_LEN];
+
+	datetime[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_EXIF, EXIF_TAG_DATE_TIME_ORIGINAL, datetime, sizeof(datetime));
+
+	if (datetime[0]) {
+		snprintf(buffer, maxsize, "%s\n", datetime);
+	}
+}
+
+void exif_get_description(ExifData * ed, char *buffer, unsigned int maxsize)
+{
+	char description[EXIF_STD_BUF_LEN];
+
+	description[0] = '\0';
+
+	exif_get_tag_content(ed, EXIF_IFD_0, EXIF_TAG_IMAGE_DESCRIPTION, description, sizeof(description));
+
+	if (description[0]) {
+		snprintf(buffer, maxsize, "\"%s\"\n", description);
+	}
+}
 
 
 /* get gps coordinates if available */
@@ -247,80 +357,82 @@ void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize)
 		snprintf(buffer, (size_t) maxsize, "%s\n",
 			 "No Exif data in file.");
 		return;
-	} else {
-		/* show normal exif tags. list must be defined in exif_cfg.h  */
-		while ((i < USHRT_MAX)
-		       && (Exif_tag_list[i].ifd != EXIF_IFD_COUNT)) {
-			exif_get_tag(ed, Exif_tag_list[i].ifd,
-				     Exif_tag_list[i].tag,
-				     buffer + strlen(buffer),
-				     maxsize - strlen(buffer));
-			i++;
-		}
+	}
 
-		/* show vendor specific makernote tags */
-		entry =
-		    exif_content_get_entry(ed->ifd[EXIF_IFD_0],
-					   EXIF_TAG_MAKE);
-		if (entry != NULL) {
+	exif_get_description(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
+	exif_get_make_model_lens(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
+	exif_get_exposure(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
+	exif_get_mode(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
+	exif_get_flash(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
+	exif_get_datetime(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
 
-			if (exif_entry_get_value(entry, buf, sizeof(buf))) {
-				exif_trim_spaces(buf);
+	/* show vendor specific makernote tags */
+	entry =
+			exif_content_get_entry(ed->ifd[EXIF_IFD_0],
+					EXIF_TAG_MAKE);
+	if (entry != NULL) {
 
-				if ((strcmp(buf, "NIKON CORPORATION") == 0)
-				    || (strcmp(buf, "Nikon") == 0)
-				    || (strcmp(buf, "NIKON") == 0)
-				    ) {
-					/* show nikon makernote exif tags. list must be defined in exif_cfg.h  */
-					i = 0;
-					while ((i < USHRT_MAX)
-					       &&
-					       (Exif_makernote_nikon_tag_list
-						[i] !=
-						EXIF_NIKON_MAKERNOTE_END))
-					{
-						exn_get_mnote_nikon_tags
-						    (ed,
-						     Exif_makernote_nikon_tag_list
-						     [i],
-						     buffer +
-						     strlen(buffer),
-						     maxsize -
-						     strlen(buffer));
-						i++;
-					}
+		if (exif_entry_get_value(entry, buf, sizeof(buf))) {
+			exif_trim_spaces(buf);
 
-				} else if ((strcmp(buf, "Canon") == 0)) {
-					/* show canon makernote exif tags. list must be defined in exif_cfg.h  */
-					i = 0;
-					while ((i < USHRT_MAX)
-					       &&
-					       (Exif_makernote_canon_tag_list
-						[i] !=
-						EXIF_CANON_MAKERNOTE_END))
-					{
-						exc_get_mnote_canon_tags
-						    (ed,
-						     Exif_makernote_canon_tag_list
-						     [i],
-						     buffer +
-						     strlen(buffer),
-						     maxsize -
-						     strlen(buffer));
-						i++;
-					}
-
-				} else {
+			if ((strcmp(buf, "NIKON CORPORATION") == 0)
+					|| (strcmp(buf, "Nikon") == 0)
+					|| (strcmp(buf, "NIKON") == 0)
+					) {
+				/* show nikon makernote exif tags. list must be defined in exif_cfg.h  */
+				i = 0;
+				while ((i < USHRT_MAX)
+							&&
+							(Exif_makernote_nikon_tag_list
+					[i] !=
+					EXIF_NIKON_MAKERNOTE_END))
+				{
+					exn_get_mnote_nikon_tags
+							(ed,
+							Exif_makernote_nikon_tag_list
+							[i],
+							buffer +
+							strlen(buffer),
+							maxsize -
+							strlen(buffer));
+					i++;
 				}
+
+			} else if ((strcmp(buf, "Canon") == 0)) {
+				/* show canon makernote exif tags. list must be defined in exif_cfg.h  */
+				i = 0;
+				while ((i < USHRT_MAX)
+							&&
+							(Exif_makernote_canon_tag_list
+					[i] !=
+					EXIF_CANON_MAKERNOTE_END))
+				{
+					exc_get_mnote_canon_tags
+							(ed,
+							Exif_makernote_canon_tag_list
+							[i],
+							buffer +
+							strlen(buffer),
+							maxsize -
+							strlen(buffer));
+					i++;
+				}
+
+			} else {
 			}
-
 		}
-
-		/* show gps coordinates */
-		exif_get_gps_coords(ed, buffer + strlen(buffer),
-				    maxsize - strlen(buffer));
 
 	}
+
+	/* show gps coordinates */
+	exif_get_gps_coords(ed, buffer + strlen(buffer),
+					maxsize - strlen(buffer));
 
 }
 
