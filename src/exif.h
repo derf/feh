@@ -32,11 +32,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EXIF_STD_BUF_LEN 128
 
 extern void exif_trim_spaces(char *str);
-extern void exif_get_tag(ExifData *d, ExifIfd ifd, ExifTag tag, char* buffer, unsigned int maxsize);
-extern void exif_get_tag_content(ExifData *d, ExifIfd ifd, ExifTag tag, char* buffer, unsigned int maxsize);
-extern void exif_get_mnote_tag(ExifData *d, unsigned int tag, char* buffer, unsigned int maxsize);
-extern void exif_get_gps_coords(ExifData * ed, char *buffer, unsigned int maxsize);
-extern ExifData * exif_get_data(char *path);
-extern void exif_get_info(ExifData * ed, char *buffer, unsigned int maxsize);
+extern void exif_get_tag(ExifData * d, ExifIfd ifd, ExifTag tag,
+			 char *buffer, unsigned int maxsize);
+extern void exif_get_tag_content(ExifData * d, ExifIfd ifd, ExifTag tag,
+				 char *buffer, unsigned int maxsize);
+extern void exif_get_mnote_tag(ExifData * d, unsigned int tag,
+			       char *buffer, unsigned int maxsize);
+extern void exif_get_gps_coords(ExifData * ed, char *buffer,
+				unsigned int maxsize);
+extern ExifData *exif_get_data(char *path);
+extern void exif_get_info(ExifData * ed, char *buffer,
+			  unsigned int maxsize);
 
 #endif

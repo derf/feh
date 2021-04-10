@@ -36,26 +36,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 /* get interesting canon maker note tags in readable form */
-void exc_get_mnote_canon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize)
+void exc_get_mnote_canon_tags(ExifData * ed, unsigned int tag,
+			      char *buffer, unsigned int maxsize)
 {
-  /* char buf[EXIF_STD_BUF_LEN];
+	/* char buf[EXIF_STD_BUF_LEN];
 
-  buf[0] = '\0';
-  exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
-  exif_trim_spaces(buf); */
+	   buf[0] = '\0';
+	   exif_get_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_FLASH, buf, sizeof(buf));
+	   exif_trim_spaces(buf); */
 
-  switch(tag)
-  {
-    default:
-    {
-      /* normal makernote tags without special treatment */
-      exif_get_mnote_tag(ed, tag, buffer, maxsize);
-    }
-    break;
-  }
+	switch (tag) {
+	default:
+		{
+			/* normal makernote tags without special treatment */
+			exif_get_mnote_tag(ed, tag, buffer, maxsize);
+		}
+		break;
+	}
 
 
-  return;
+	return;
 }
 
 #endif

@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <libexif/exif-data.h>
 
-extern void exn_get_mnote_nikon_tags(ExifData *ed, unsigned int tag, char * buffer, unsigned int maxsize);
+extern void exn_get_mnote_nikon_tags(ExifData * ed, unsigned int tag,
+				     char *buffer, unsigned int maxsize);
 
 #endif
