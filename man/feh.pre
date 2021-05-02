@@ -933,26 +933,26 @@ which does not expect
 to draw into it or attempt to use options or keybindings which affect window
 attributes, such as full-screen mode.
 .
-.It Cm --xinerama-index Ar screen
+.It Cm --xinerama-index Ar monitor
 .
 .Pq optional feature, $MAN_XINERAMA$ in this build
 Override
 .Nm Ns No 's
-idea of the active Xinerama screen.
+idea of the active Xinerama monitor.
 May be useful in certain circumstances where the window manager places the feh
-window on Xinerama screen A while
+window on Xinerama monitor A while
 .Nm
-assumes that it will be placed on screen B.
+assumes that it will be placed on monitor B.
 .
 .Pp
 .
 In background setting mode: When used with any option other than
 .Cm --bg-tile :
 Only set wallpaper on
-.Ar screen .
-All other screens will be filled black/white.
+.Ar monitor .
+All other monitors will be filled black/white.
 .
-This is most useful in a Xinerama configuration with overlapping screens.
+This is most useful in a Xinerama configuration with overlapping monitors.
 For instance, assume you have two overlapping displays (index 0 and 1),
 where index 0 is smaller.
 To center a background on the display with index 0 and fill the extra space
@@ -1174,7 +1174,7 @@ and
 .Cm --bg-max ,
 you can use
 .Cm --geometry
-to specify an offset from one side of the screen instead of centering the image.
+to specify an offset from one side of the monitor instead of centering the image.
 Positive values will offset from the left/top side, negative values from the
 bottom/right.
 +0 and -0 are both valid and distinct values.
@@ -1184,12 +1184,12 @@ bottom/right.
 Note that all options except
 .Cm --bg-tile
 support Xinerama.
-For instance, if you have multiple screens connected and use e.g.
+For instance, if you have multiple monitors connected and use e.g.
 .Cm --bg-center ,
 .Nm
-will center or appropriately offset the image on each screen.
+will center or appropriately offset the image on each monitor.
 You may even specify more than one file, in that case, the first file is set
-on screen 0, the second on screen 1, and so on.
+on monitor 0, the second on monitor 1, and so on.
 Use
 .Cm xrandr --listmonitor
 to determine how Xinerama monitor IDs map to screens / monitors in your setup.
@@ -1198,12 +1198,12 @@ to determine how Xinerama monitor IDs map to screens / monitors in your setup.
 .
 Use
 .Cm --no-xinerama
-to treat the whole X display as one screen when setting wallpapers.
+to treat the whole X display as one monitor when setting wallpapers.
 You may also use
 .Cm --xinerama-index
 to use
 .Nm
-as a background setter for a specific screen.
+as a background setter for a specific monitor.
 .
 .Bl -tag -width indent
 .
