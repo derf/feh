@@ -960,6 +960,13 @@ on index 1 black/white, use
 .Qq --xinerama-index 0
 when setting the wallpaper.
 .
+.Pp
+.
+Use
+.Cm xrandr --listmonitor
+to determine how Xinerama monitor IDs map to screens/monitors in your setup.
+.
+.
 .It Cm --zoom Ar percent | Cm max | Cm fill
 .
 Zoom images by
@@ -1183,6 +1190,9 @@ For instance, if you have multiple screens connected and use e.g.
 will center or appropriately offset the image on each screen.
 You may even specify more than one file, in that case, the first file is set
 on screen 0, the second on screen 1, and so on.
+Use
+.Cm xrandr --listmonitor
+to determine how Xinerama monitor IDs map to screens / monitors in your setup.
 .
 .Pp
 .
