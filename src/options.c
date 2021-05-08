@@ -395,7 +395,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"bg-center"     , 0, 0, OPTION_bg_center},
 		{"bg-scale"      , 0, 0, OPTION_bg_scale},
 		{"zoom"          , 1, 0, OPTION_zoom},
-		{"zoom-rate"     , 1, 0, OPTION_zoom_rate},
+		{"zoom-step"     , 1, 0, OPTION_zoom_step},
 		{"no-screen-clip", 0, 0, OPTION_no_screen_clip},
 		{"index-info"    , 1, 0, OPTION_index_info},
 		{"magick-timeout", 1, 0, OPTION_magick_timeout},
@@ -840,13 +840,13 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case OPTION_window_id:
 			opt.x11_windowid = atol(optarg);
 			break;
-		case OPTION_zoom_rate:
+		case OPTION_zoom_step:
 			opt.zoom_rate = atof(optarg);
-			if ((opt.zoom_rate <= 0.0) || (opt.zoom_rate == 1.0)) {
-				weprintf("Zooming disabled due to --zoom-rate=%f", opt.zoom_rate);
+			if ((opt.zoom_rate <= 0)) {
+				weprintf("Zooming disabled due to --zoom-step=%f", opt.zoom_rate);
 				opt.zoom_rate = 1.0;
-			} else if (opt.zoom_rate < 1.0) {
-				opt.zoom_rate = 1.0 / opt.zoom_rate;
+			} else {
+				opt.zoom_rate = 1 + ((float)opt.zoom_rate / 100);
 			}
 			break;
 		default:

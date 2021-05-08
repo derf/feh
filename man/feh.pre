@@ -988,11 +988,11 @@ zoom the image like the
 .Cm --bg-fill
 mode.
 .
-.It Cm --zoom-rate Ar ratio
+.It Cm --zoom-step Ar percent
 .
 Zoom images in and out by
-.Ar ratio
-.Pq default: 1.25
+.Ar percent
+.Pq default: 25
 when using the zoom keys and buttons.
 .
 .El
