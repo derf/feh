@@ -1,7 +1,11 @@
-git HEAD:
+Sun, 09 May 2021 11:31:55 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
+* Release v3.7
+    * Use compact representation instead of key-value pairs for common EXIF data
+      (only applies when compiling feh with exif=1)
     * Add --window-id <windowid> option (draw to an existing window)
-    * Add --zoom-rate <rate> option (specify zoom step size)
+    * Add --zoom-step <percent> option (specify zoom step size)
+    * Pass gopher:// and gophers:// URLs to libcurl
     * Fix --reload / --auto-reload reloading the wrong directory when
       using --start-at and no file arguments or filelists have been
       specified
