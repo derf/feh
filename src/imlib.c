@@ -479,6 +479,8 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		gib_imlib_image_orientate(*im, 3);
 #endif
 
+	gib_imlib_image_orientate(*im, opt.rotate);
+
 	D(("Loaded ok\n"));
 	return(1);
 }
