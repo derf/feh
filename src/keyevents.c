@@ -211,6 +211,7 @@ void init_keyevents(void) {
 	feh_set_kb("zoom" , 0, 0, 0, 0, 0, 0);
 	feh_set_kb("blur" , 0, 0, 0, 0, 0, 0);
 	feh_set_kb("rotate" , 0, 0, 0, 0, 0, 0);
+	feh_set_kb("print_filename" , 0, XK_t, 0, 0, 0, 0);
 
 	home = getenv("HOME");
 	confhome = getenv("XDG_CONFIG_HOME");
@@ -804,6 +805,9 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			opt.geom_h = winwid->h;
 		}
 		winwidget_render_image(winwid, 1, 0);
+	}
+	else if (feh_is_kp(EVENT_print_filename, state, keysym, button)) {
+		printf("%s\n", winwid->name);
 	}
 	return;
 }

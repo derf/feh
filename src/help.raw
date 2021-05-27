@@ -173,6 +173,7 @@ DEFAULT KEYS
  r                       Reload image
  R                       Render/anti-alias image
  s                       Save current image to unique filename
+ t                       Print current filename to stdout
  w                       Resize window to current image dimensions
  x                       Close current window
  z                       Jump to a random position in the current filelist
