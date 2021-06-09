@@ -312,6 +312,11 @@ int feh_is_image(feh_file * file)
 		// imlib2 releases do not support heic/heif images as of 2021-01.
 		return 1;
 	}
+	if ((buf[0] == 0xff && buf[1] == 0x0a) || !memcmp(buf, "\x00\x00\x00\x0cJXL \x0d\x0a\x87\x0a", 12)) {
+		// JXL - note that this is only supported in imlib2-jxl. Ordinary
+		// imlib2 releases do not support JXL images as of 2021-06.
+		return 1;
+	}
 	buf[15] = 0;
 	if (strstr((char *)buf, "XPM")) {
 		// XPM
