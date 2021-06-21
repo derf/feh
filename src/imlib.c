@@ -253,7 +253,9 @@ int feh_is_image(feh_file * file)
 	if (!fh) {
 		return 0;
 	}
-	if (fread(buf, 1, 16, fh) != 16) {
+	// Files smaller than buf will be padded with zeroes
+	memset(buf, 0, sizeof(buf));
+	if (fread(buf, 1, 16, fh) <= 0) {
 		fclose(fh);
 		return 0;
 	}
