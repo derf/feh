@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use 5.010;
-use Test::Command tests => 71;
+use Test::Command tests => 73;
 
 $ENV{HOME} = 'test';
 
@@ -185,4 +185,8 @@ $cmd
 
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file("test/${list_dir}/default");
+$cmd->stderr_is_eq('');
+
+$cmd = Test::Command->new( cmd => "$feh --list test/tiny.pbm" );
+$cmd->exit_is_num(0);
 $cmd->stderr_is_eq('');
