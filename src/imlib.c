@@ -1194,7 +1194,6 @@ void feh_draw_exif(winwidget w)
 				else
 				{
 					info_line[pos2] = '\0'; /* line finished, continue with next line*/
-
 					pos++;
 					break;
 				}
