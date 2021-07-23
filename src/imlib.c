@@ -1189,7 +1189,7 @@ void feh_draw_exif(winwidget w)
 				{
 					pos = EXIF_MAX_DATA; /* all data seen */
 					info_line[pos2] = '\0';
-					pos2 = 256;
+					break;
 				}
 				else
 				{
