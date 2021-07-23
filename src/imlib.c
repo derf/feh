@@ -1166,7 +1166,7 @@ void feh_draw_exif(winwidget w)
 
 	if (buffer[0] == '\0')
 	{
-		snprintf(buffer, EXIF_MAX_DATA, "%s", estrdup("Failed to run exif command"));
+		snprintf(buffer, EXIF_MAX_DATA, "%s", "Failed to run exif command");
 		gib_imlib_get_text_size(fn, buffer, NULL, &width, &height, IMLIB_TEXT_TO_RIGHT);
 		info_buf[no_lines] = estrdup(buffer);
 		no_lines++;
