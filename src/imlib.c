@@ -1183,23 +1183,23 @@ void feh_draw_exif(winwidget w)
 				if ( (buffer[pos] != '\n')
 				      && (buffer[pos] != '\0') )
 				{
-			    info_line[pos2] = buffer[pos];
-			  }
-			  else if ( buffer[pos] == '\0' )
-			  {
-			    pos = EXIF_MAX_DATA; /* all data seen */
-			    info_line[pos2] = '\0';
+					info_line[pos2] = buffer[pos];
 				}
-			  else
-			  {
-			  	info_line[pos2] = '\0'; /* line finished, continue with next line*/
+				else if ( buffer[pos] == '\0' )
+				{
+					pos = EXIF_MAX_DATA; /* all data seen */
+					info_line[pos2] = '\0';
+					break;
+				}
+				else
+				{
+					info_line[pos2] = '\0'; /* line finished, continue with next line*/
+					pos++;
+					break;
+				}
 
-			    pos++;
-			    break;
-			  }
-
-			   pos++;
-			   pos2++;
+				pos++;
+				pos2++;
 			}
 
 			gib_imlib_get_text_size(fn, info_line, NULL, &line_width,
