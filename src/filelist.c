@@ -202,7 +202,7 @@ void add_file_to_filelist_recursively(char *origpath, unsigned char level)
 	struct stat st;
 	char *path;
 
-	if (!origpath)
+	if (!origpath || *origpath == '\0')
 		return;
 
 	path = estrdup(origpath);
