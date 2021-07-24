@@ -1,3 +1,10 @@
+Sat, 24 Jul 2021 22:30:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.7.1
+    * Support JPEG XL files when using imlib2-jxl (patch by Alistair)
+    * Fix support for images smaller than 16 bytes (patch by David Buchanan)
+    * Fix some out of bounds reads (patches by Tobias Stoeckmann)
+
 Sun, 09 May 2021 11:31:55 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.7
