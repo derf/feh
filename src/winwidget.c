@@ -104,8 +104,13 @@ winwidget winwidget_create_from_image(Imlib_Image im, char type)
 	ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
 	ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
 
-	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL))
+	if (opt.full_screen && (type != WIN_TYPE_THUMBNAIL)) {
 		ret->full_screen = True;
+	} else if (opt.default_zoom) {
+		ret->zoom = 0.01 * opt.default_zoom;
+		ret->w *= ret->zoom;
+		ret->h *= ret->zoom;
+	}
 	winwidget_create_window(ret, ret->w, ret->h);
 	winwidget_render_image(ret, 1, 0);
 
@@ -133,8 +138,13 @@ winwidget winwidget_create_from_file(gib_list * list, char type)
 		ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
 		ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
 		D(("image is %dx%d pixels, format %s\n", ret->w, ret->h, gib_imlib_image_format(ret->im)));
-		if (opt.full_screen)
+		if (opt.full_screen) {
 			ret->full_screen = True;
+		} else if (opt.default_zoom) {
+			ret->zoom = 0.01 * opt.default_zoom;
+			ret->w *= ret->zoom;
+			ret->h *= ret->zoom;
+		}
 		winwidget_create_window(ret, ret->w, ret->h);
 		winwidget_render_image(ret, 1, 0);
 	}
@@ -454,7 +464,12 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	int antialias = 0;
 
 	if (!winwid->full_screen && resize) {
-		winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
+		if (opt.default_zoom) {
+			winwid->zoom = 0.01 * opt.default_zoom;
+			winwidget_resize(winwid, winwid->im_w * winwid->zoom, winwid->im_h * winwid->zoom, 0);
+		} else {
+			winwidget_resize(winwid, winwid->im_w, winwid->im_h, 0);
+		}
 		winwidget_reset_image(winwid);
 	}
 
