@@ -237,7 +237,7 @@ int feh_main_iteration(int block)
 	}
 	if (window_num == 0 || sig_exit != 0)
 		return(0);
-	
+
 	return(1);
 }
 

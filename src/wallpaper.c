@@ -591,7 +591,7 @@ void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
 		if (data_root)
 			XFree(data_root);
-	
+
 		if (data_esetroot)
 			XFree(data_esetroot);
 
