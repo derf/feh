@@ -520,7 +520,7 @@ gib_list_find(gib_list *root, unsigned char (*find_func)(gib_list *node, void *d
 	for (i=root; i; i=i->next)
 		if (find_func(i,data))
 			return i;
-	
+
 	return NULL;
 }
 

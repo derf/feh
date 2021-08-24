@@ -165,7 +165,7 @@ void cb_reload_timer(void *data)
 		if (opt.filelistfile) {
 			filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
 		}
-		
+
 		if (!(filelist_len = gib_list_length(filelist))) {
 			eprintf("No files found to reload.");
 		}

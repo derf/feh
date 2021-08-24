@@ -1238,8 +1238,8 @@ Mon Mar 07 23:56:03 GMT 2005  Tom Gilbert <tom@linuxbrit.co.uk>
      > In short, it enables the user to use feh as an image viewer used by a
      > file manager like ROX-Filer or Nautilus when invoked with the --fmmode
      > option. The file manager passes the file that the user wants to view to
-     > feh. My function then reads the directory in which the file resides and 
-     > first passes the current image, then alphabetically all the following 
+     > feh. My function then reads the directory in which the file resides and
+     > first passes the current image, then alphabetically all the following
      > images and at last the images that are alphabetically before the current
      > file to the 'filelist'.
      > Afaik that's the default behaviour of gqview and gthumb.
@@ -1285,7 +1285,7 @@ Fri Sep 03 13:40:48 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
 
 Sat Jul 24 14:52:19 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
 
-  * Various warning fixes from Claes Nasten <pekdon@pekdon.net> 
+  * Various warning fixes from Claes Nasten <pekdon@pekdon.net>
 
 Thu Jun 10 23:14:36 BST 2004  Tom Gilbert <tom@linuxbrit.co.uk>
 
@@ -1416,13 +1416,13 @@ Sun Oct 20 20:12:23 2002 EDT, Paul Duncan <pabs@pablotron.org>
   * AUTHORS: added Jon Bernard
 
 Sun Oct 20 14:49:46 2002 EDT, Paul Duncan <pabs@pablotron.org>
-  
+
   * New beveled, off-white background image for menus.  I made it the
     default after consulting with the boss (eg Sue Gilbert).  Tom thinks
     it's okay too.
 
 Sun Oct 20 05:48:40 2002 EDT  Paul Duncan <pabs@pablotron.org>
-  
+
   * Added Xinerama support.  Currently defaults to fullscreen on the
     first head (this can be fixed with a little work).
   * Added winwidget_{move,get_geometry}();
@@ -1983,7 +1983,7 @@ Fri Jun 23 11:37:56 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 Thu Jun 22 23:57:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Optimisations to thumb hilites. Only show hilite when you can
-	click to open an image, don't show when over emtpy space, and 
+	click to open an image, don't show when over emtpy space, and
 	don't re-render if the selection hasn't changed from the last
 	mouseover. Speeds it up a lot.
 
@@ -2086,7 +2086,7 @@ Sun Jun 18 03:47:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 Sun Jun 18 01:29:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
-	* The first part of some background setting code from richlowe 
+	* The first part of some background setting code from richlowe
 	<richlowe@btinternet.com> - more to come, it'll be sweet.
 	* Doesn't work yet btw, so don't get excited ;)
 
@@ -2108,7 +2108,7 @@ Sat Jun 17 23:46:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	bg. Same for --theme chrome.
 
 Sat Jun 17 12:57:49 PDT 2000 Paul Duncan <pabs@pablotron.org>
-   
+
    * wget is now quiet by default (wget -q). it's verbose if the
    -V or --verbose flag is passed to feh.  Your terminal will
    thank you.
@@ -2183,7 +2183,7 @@ Sun Jun  4 15:44:05 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	the singleton context (accidentally leaving context_antialias on,
 	not blending when I should be etc), and to fix them I was adding
 	lines and lines of context_set this, context_set that. I've
-	wrapped the imlib calls in an imlib1 
+	wrapped the imlib calls in an imlib1
 	lots-of-params-per-function-call stylee, and now it's much more
 	readable and harder to break.
 	* In the process, made big speedups by not antialiasing when I
@@ -2522,7 +2522,7 @@ Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	* If ~/.fehrc exists, or if not, but /etc/fehrc exists, feh will
 	look in it for name/options pairs. An example entry would be:
 	imagemap -rVq --thumb-width 40 --thumb-height 30
-	* You can use the theme in two ways. Either 
+	* You can use the theme in two ways. Either
 	feh -C themename [images]
 	or you can create a symbolic link to feh with the name of the
 	options you want it to use. So from the example above:
@@ -2535,7 +2535,7 @@ Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 	create an index.jpg in the current directory. I just run:
 	$ mkindex.
 	* An example.fehrc is provided with a couple of cool examples.
-	
+
 Fri Mar 24 19:17:27 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Slightly increased the default index mode font size.
@@ -2771,11 +2771,11 @@ Fri Mar  3 22:44:25 PST 2000  Michael Jennings <mej@eterm.org>
 	tired right now to try to make sense out of gilbertt's callback
 	logic. :-)  I'll try to fix it this weekend if he doesn't beat me
 	to it.
-	
+
 Wed Mar  1 15:13:04 PST 2000  Michael Jennings <mej@eterm.org>
 
 	* Math lib
-	
+
 Sun Feb 20 15:22:00 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Remove some crufty duplication.
@@ -3078,7 +3078,7 @@ Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added a .spec file for feh. Contributed by Alistair Sutton
-	<metallica@freenet.co.uk>, (who is obviously a metallica fan ;), 
+	<metallica@freenet.co.uk>, (who is obviously a metallica fan ;),
 	and has written specs for me before ::) Thanks dude :)
 	* Urm. I haven't actually tested this yet :)
 
@@ -3188,4 +3188,3 @@ Thu Dec 16 22:58:21 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 Thu Dec 16 22:10:50 1999  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Initial import. Feh is currently at 0.5.0 release level.
-
