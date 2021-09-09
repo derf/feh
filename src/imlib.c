@@ -869,15 +869,32 @@ static char *feh_http_load_image(char *url)
 	}
 
 	basename = strrchr(url, '/') + 1;
-	tmpname = feh_unique_filename(path, basename);
 
-	if (strlen(tmpname) > (NAME_MAX-6))
-		tmpname[NAME_MAX-7] = '\0';
+#ifdef HAVE_MKSTEMPS
+	tmpname = estrjoin("_", "feh_curl_XXXXXX", basename, NULL);
 
-	sfn = estrjoin("_", tmpname, "XXXXXX", NULL);
+	if (strlen(tmpname) > NAME_MAX) {
+		tmpname[NAME_MAX] = '\0';
+	}
+#else
+	if (strlen(basename) > NAME_MAX-7) {
+		tmpname = estrdup("feh_curl_XXXXXX");
+	} else {
+		tmpname = estrjoin("_", "feh_curl", basename, "XXXXXX", NULL);
+	}
+#endif
+
+	sfn = estrjoin("", path, tmpname, NULL);
 	free(tmpname);
 
+	D(("sfn is %s\n", sfn))
+
+#ifdef HAVE_MKSTEMPS
+	fd = mkstemps(sfn, strlen(basename) + 1);
+#else
 	fd = mkstemp(sfn);
+#endif
+
 	if (fd != -1) {
 		sfp = fdopen(fd, "w+");
 		if (sfp != NULL) {
@@ -936,7 +953,11 @@ static char *feh_http_load_image(char *url)
 			close(fd);
 		}
 	} else {
+#ifdef HAVE_MKSTEMPS
+		weprintf("open url: mkstemps failed:");
+#else
 		weprintf("open url: mkstemp failed:");
+#endif
 		free(sfn);
 	}
 	curl_easy_cleanup(curl);

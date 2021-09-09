@@ -6,6 +6,7 @@ curl ?= 1
 debug ?= 0
 exif ?= 0
 help ?= 0
+mkstemps ?= 1
 verscmp ?= 1
 xinerama ?= 1
 
@@ -61,6 +62,10 @@ endif
 
 ifeq (${stat64},1)
 	CFLAGS += -D_FILE_OFFSET_BITS=64
+endif
+
+ifeq (${mkstemps},1)
+	CFLAGS += -DHAVE_MKSTEMPS
 endif
 
 ifeq (${verscmp},1)
