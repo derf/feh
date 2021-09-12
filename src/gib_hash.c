@@ -89,7 +89,7 @@ static unsigned char gib_hash_find_callback(gib_list *list, void *data)
 	gib_hash_node *node = GIB_HASH_NODE(list);
 	char          *key  = (char*) data;
 
-	/* strncasecmp causes simliar keys like key1 and key11 clobber eachother */
+	/* strncasecmp causes similar keys like key1 and key11 clobber each other */
 	return !strcasecmp(node->key, key);
 }
 

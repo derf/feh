@@ -37,7 +37,7 @@ zoom_out C-Down a
 zoom_default d
 zoom_fit s
 
-# I only hit these accidentaly
+# I only hit these accidentally
 save_image
 save_filelist
 
