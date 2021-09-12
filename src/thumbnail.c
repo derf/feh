@@ -636,9 +636,9 @@ char *feh_thumbnail_get_name_uri(char *name)
 	/* FIXME: what happens with http, https, and ftp? MTime etc */
 	if (!path_is_url(name)) {
 
-		/* make sure it's an absoulte path */
+		/* make sure it's an absolute path */
 		/* FIXME: add support for ~, need to investigate if it's expanded
-		   somewhere else before adding (unecessary) code */
+		   somewhere else before adding (unnecessary) code */
 		if (name[0] != '/') {
 			/* work around /some/path/./image.ext */
 			if ((strncmp(name, "./", 2)) == 0)

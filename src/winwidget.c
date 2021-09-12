@@ -778,7 +778,7 @@ void feh_event_handle_inotify(void)
         for (int j = 0; j < window_num; j++) {
             if(windows[j]->inotify_wd == event->wd) {
                 if (event->mask & IN_IGNORED) {
-                    D(("inotify watch was implicitely removed\n"));
+                    D(("inotify watch was implicitly removed\n"));
                     windows[j]->inotify_wd = -1;
                 } else if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO)) {
                     if (strcmp(event->name, FEH_FILE(windows[j]->file->data)->name) == 0) {

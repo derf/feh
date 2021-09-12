@@ -322,7 +322,7 @@ gib_imlib_text_draw(Imlib_Image im, Imlib_Font fn, gib_style * s, int x,
       gib_style_bit *bb;
       gib_list *l;
 
-      /* here we shift the draw to accomodate bits with negative offsets,
+      /* here we shift the draw to accommodate bits with negative offsets,
        * which would be drawn at negative coords otherwise */
       l = s->bits;
       while (l)

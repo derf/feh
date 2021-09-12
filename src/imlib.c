@@ -903,8 +903,8 @@ static char *feh_http_load_image(char *url)
 #endif
 			/*
 			 * Do not allow requests to take longer than 30 minutes.
-			 * This should be sufficiently high to accomodate use cases with
-			 * unusually high latencies, while at the sime time avoiding
+			 * This should be sufficiently high to accommodate use cases with
+			 * unusually high latencies, while at the same time avoiding
 			 * feh hanging indefinitely in unattended slideshows.
 			 */
 			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1800);

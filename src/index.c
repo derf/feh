@@ -131,7 +131,7 @@ void init_index_mode(void)
 				weprintf(
 					"The image size you specified (%dx%d) is not large\n"
 					"enough to hold all %d thumbnails. To fit all the thumbnails,\n"
-					"either decrease their size, choos e asmaller font,\n"
+					"either decrease their size, choose a smaller font,\n"
 					"or use a larger image (like %dx%d)",
 					opt.limit_w, opt.limit_h, filelist_len, w, h);
 			h = opt.limit_h;
