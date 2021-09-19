@@ -210,7 +210,7 @@ int feh_main_iteration(int block)
 				   in that */
 				feh_handle_timer();
 			}
-			else if ((count > 0) && (FD_ISSET(0, &fdset)))
+			else if ((count > 0) && (FD_ISSET(0, &fdset)) && isatty(STDIN_FILENO))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
@@ -227,7 +227,7 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
-			else if ((count > 0) && (FD_ISSET(0, &fdset)))
+			else if ((count > 0) && (FD_ISSET(0, &fdset)) && isatty(STDIN_FILENO))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
