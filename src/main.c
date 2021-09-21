@@ -158,8 +158,9 @@ int feh_main_iteration(int block)
 
 	FD_ZERO(&fdset);
 	FD_SET(xfd, &fdset);
-	if (control_via_stdin)
+	if (control_via_stdin) {
 		FD_SET(STDIN_FILENO, &fdset);
+	}
 #ifdef HAVE_INOTIFY
     if (opt.auto_reload) {
         FD_SET(opt.inotify_fd, &fdset);
@@ -210,7 +211,12 @@ int feh_main_iteration(int block)
 				   in that */
 				feh_handle_timer();
 			}
-			else if ((count > 0) && (FD_ISSET(STDIN_FILENO, &fdset)))
+			/*
+			 * Beware: If stdin is not connected, we may end up with xfd == 0.
+			 * However, STDIN_FILENO == 0 holds as well in most cases. So we must
+			 * check control_via_stdin to avoid mistaking an X11 event for stdin.
+			 */
+			else if ((count > 0) && control_via_stdin && (FD_ISSET(STDIN_FILENO, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
@@ -227,7 +233,7 @@ int feh_main_iteration(int block)
 					&& ((errno == ENOMEM) || (errno == EINVAL)
 						|| (errno == EBADF)))
 				eprintf("Connection to X display lost");
-			else if ((count > 0) && (FD_ISSET(STDIN_FILENO, &fdset)))
+			else if ((count > 0) && control_via_stdin && (FD_ISSET(STDIN_FILENO, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
 			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
