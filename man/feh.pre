@@ -2123,6 +2123,13 @@ It is $MAN_CURL$ in this build
 .
 .Sh KNOWN BUGS
 .
+Imlib2 releases prior to 1.7.4 are unable to load gif, tiff, and webp images
+if the filename does not end with gif, tiff, or webp, respectively.
+Notably, this means that feh is unable to show gif, tiff, and webp images from
+stdin or network URLs on systems using an Imlib2 version older than 1.7.4.
+.
+.Pp
+.
 On systems with giflib 5.1.2,
 .Nm
 may be unable to load gif images.
