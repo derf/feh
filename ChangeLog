@@ -1,3 +1,8 @@
+Sat, 25 Sep 2021 09:21:25 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.7.2
+    * Fix crash when running feh without stdin file descriptor
+
 Sat, 24 Jul 2021 22:30:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.7.1
@@ -47,6 +52,7 @@ Sun, 06 Dec 2020 08:34:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix memory leak when reloading HTTP files with --no-conversion-cache
 
 Mon, 30 Nov 2020 19:44:47 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+
 * Release v3.6
     * Add flip and rotate options to the menu
     * Improve unloadable image detection time (e.g. for large video files) by
