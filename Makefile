@@ -25,20 +25,20 @@ test-x11: all
 install: install-man install-doc install-bin install-font install-img
 install: install-icon install-examples install-applications
 
-install-man:
+install-man: man/feh.1
 	@echo installing manuals to ${man_dir}
 	@mkdir -p ${man_dir}/man1
 	@cp man/feh.1 ${man_dir}/man1
 	@chmod 644 ${man_dir}/man1/feh.1
 
-install-doc:
+install-doc: AUTHORS ChangeLog README.md TODO
 	@echo installing docs to ${doc_dir}
 	@mkdir -p ${doc_dir}
 	@cp AUTHORS ChangeLog README.md TODO ${doc_dir}
 	@chmod 644 ${doc_dir}/AUTHORS ${doc_dir}/ChangeLog ${doc_dir}/README.md \
 		${doc_dir}/TODO
 
-install-bin:
+install-bin: src/feh
 	@echo installing executables to ${bin_dir}
 	@mkdir -p ${bin_dir}
 	@cp src/feh ${bin_dir}/feh.tmp
@@ -78,7 +78,7 @@ install-examples:
 	@cp examples/* ${example_dir}
 	@chmod 644 ${example_dir}/*
 
-install-applications:
+install-applications: share/applications/feh.desktop
 	@echo installing desktop file to ${desktop_dir}
 	@mkdir -p ${desktop_dir}
 	@cp share/applications/feh.desktop ${desktop_dir}
