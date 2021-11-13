@@ -85,6 +85,15 @@ static void feh_set_parse_bb_partial(fehkey *button, char *binding)
 
 	button->button = atoi(cur);
 	button->state  = mod;
+
+	if (button->button == 0) {
+		/*
+		 * Mod3 is unused on today's keyboards. If Mod3 is unset and button==0,
+		 * we are dealing with an uninitialized or unset binding. If Mod3 is set
+		 * and button==0, it refers to mouse movement.
+		 */
+		button->state |= Mod3Mask;
+	}
 }
 
 /*
@@ -680,6 +689,8 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
 			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
 			feh_thumbnail_select(winwid, thumbnail);
+		} else {
+			feh_event_handle_generic(winwid, ev->xmotion.state | Mod3Mask, NoSymbol, 0);
 		}
 	}
 	return;

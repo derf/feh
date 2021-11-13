@@ -1905,6 +1905,13 @@ section can also be bound to a button.
 .
 Reload current image
 .
+.It 0 Ao cursor movement while not panning, zooming, or similar Ac
+.
+Does not have a default binding.
+By binding it to
+.Cm quit ,
+you can turn feh into a simple screensaver.
+.
 .It 1 Ao left mouse button Ac Bq pan
 .
 pan the current image
