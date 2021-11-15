@@ -133,6 +133,7 @@ void winwidget_show_menu(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
+void winwidget_free_image_and_decache(winwidget w);
 void winwidget_center_image(winwidget w);
 void winwidget_render_image(winwidget winwid, int resize, int force_alias);
 void winwidget_rotate_image(winwidget winid, double angle);

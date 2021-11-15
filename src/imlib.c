@@ -507,7 +507,7 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 	 * the new image cannot be loaded, so we must not free the old image yet.
 	 */
 	if (force_new)
-		winwidget_free_image(w);
+		winwidget_free_image_and_decache(w);
 
 	// if it's an external image, our own cache will also get in your way
 	char *sfn;

@@ -1059,6 +1059,15 @@ void winwidget_free_image(winwidget w)
 	return;
 }
 
+void winwidget_free_image_and_decache(winwidget w)
+{
+	if (w->im) {
+		gib_imlib_free_image_and_decache(w->im);
+	}
+	w->im = NULL;
+	winwidget_free_image(w);
+}
+
 void feh_debug_print_winwid(winwidget w)
 {
 	printf("winwid_debug:\n" "winwid = %p\n" "win = %ld\n" "w = %d\n"
