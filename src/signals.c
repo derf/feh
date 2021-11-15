@@ -101,7 +101,7 @@ void feh_handle_signal(int signo)
 			else if (signo == SIGUSR2)
 				slideshow_change_image(winwid, SLIDE_PREV, 1);
 		} else {
-			feh_reload_image(winwid, 0, 0);
+			feh_reload_image(winwid, 0, 1);
 		}
 	} else if (opt.multiwindow) {
 		for (i = window_num - 1; i >= 0; i--)
