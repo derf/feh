@@ -144,6 +144,7 @@ FORMAT SPECIFIERS
  %s     image size in bytes
  %S     image size with appropriate unit (kB/MB)
  %t     image format
+ %T     temporary output filename
  %u     current file number
  %w     image width
  %v     " PACKAGE " version

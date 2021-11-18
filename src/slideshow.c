@@ -511,6 +511,14 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 					strncat(ret, file->info->format, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
+			case 'T':
+				if (file) {
+					if (file->tempname == NULL) {
+						file->tempname = feh_unique_filename("/tmp/","feh_tempname");
+					}
+					strncat(ret, file->tempname, sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
 			case 'u':
 				f = current_file ? current_file : gib_list_find_by_data(filelist, file);
 				snprintf(buf, sizeof(buf), "%d", f ? gib_list_num(filelist, f) + 1 : 0);

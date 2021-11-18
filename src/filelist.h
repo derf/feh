@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct __feh_file {
 	char *filename;
+	char *tempname;
 	char *caption;
 	char *name;
 

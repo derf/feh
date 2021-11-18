@@ -49,6 +49,7 @@ feh_file *feh_file_new(char *filename)
 	newfile = (feh_file *) emalloc(sizeof(feh_file));
 	newfile->caption = NULL;
 	newfile->filename = estrdup(filename);
+	newfile->tempname = NULL;
 	s = strrchr(filename, '/');
 	if (s)
 		newfile->name = estrdup(s + 1);
@@ -67,6 +68,10 @@ void feh_file_free(feh_file * file)
 		return;
 	if (file->filename)
 		free(file->filename);
+	if (file->tempname) {
+		unlink(file->tempname);
+		free(file->tempname);
+	}
 	if (file->name)
 		free(file->name);
 	if (file->caption)
