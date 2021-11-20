@@ -838,7 +838,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.use_conversion_cache = 0;
 			break;
 		case OPTION_window_id:
-			opt.x11_windowid = atol(optarg);
+			opt.x11_windowid = strtol(optarg, NULL, 0);
 			break;
 		case OPTION_zoom_step:
 			opt.zoom_rate = atof(optarg);
