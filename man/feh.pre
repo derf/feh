@@ -264,6 +264,14 @@ Automatic reload is not supported in montage, index, or thumbnail mode.
 Automatically rotate images based on EXIF data.
 Does not alter the image files.
 .
+.It Cm --rotate Ar 0 | Ar 90 | Ar 180 | Ar 270
+.
+Rotate each image
+.Ar degrees
+clockwise after loading it.
+.
+.Pp
+.
 .It Cm -Z , --auto-zoom
 .
 Zoom pictures to screen size in fullscreen / fixed geometry mode.

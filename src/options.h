@@ -128,6 +128,7 @@ struct __fehoptions {
 	int default_zoom;
 	int zoom_mode;
 	double zoom_rate;
+	int rotate;
 	unsigned char adjust_reload;
 	int xinerama_index;
 	char *x11_class;
@@ -254,6 +255,7 @@ OPTION_auto_reload,
 OPTION_class,
 OPTION_no_conversion_cache,
 OPTION_window_id,
+OPTION_rotate,
 };
 
 //typedef enum __fehoption fehoption;
