@@ -264,6 +264,10 @@ Automatic reload is not supported in montage, index, or thumbnail mode.
 Automatically rotate images based on EXIF data.
 Does not alter the image files.
 .
+Note that Imlib2 version 1.7.5+ performs auto-rotation by itself, so this option is obsolete on systems with Imlib2 version 1.7.5 or later.
+.Nm
+currently cannot detect this at runtime.
+.
 .It Cm -Z , --auto-zoom
 .
 Zoom pictures to screen size in fullscreen / fixed geometry mode.
@@ -2137,6 +2141,15 @@ stdin or network URLs on systems using an Imlib2 version older than 1.7.4.
 .
 .Pp
 .
+Imlib2 releases 1.7.5+ automatically rotate images based on their EXIF tags.
+When combined with the
+.Cm --auto-rotate
+option, this causes images to be rotated twice and end up in an incorrect orientation.
+As a workaround, do not use
+.Cm --auto-rotate
+on systems with Imlib2 version 1.7.5 or later.
+.Pp
+.
 On systems with giflib 5.1.2,
 .Nm
 may be unable to load gif images.
@@ -2176,14 +2189,15 @@ If you find a bug, please report it to
 .Aq derf+feh@finalrewind.org
 or via
 .Aq https://github.com/derf/feh/issues .
-You are also welcome to direct any feh-related comments/questions/... to #feh
-on irc.oftc.net.
 .
 .Pp
 .
 Please include the feh version
 .Aq the output of Qq feh --version ,
 steps to reproduce the bug and, if necessary, images to reproduce it.
+Note that
+.Nm
+is a hobby project, so bug reports may be addressed with significant delays.
 .
 .
 .Sh LICENSE
