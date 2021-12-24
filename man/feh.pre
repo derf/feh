@@ -261,8 +261,11 @@ Automatic reload is not supported in montage, index, or thumbnail mode.
 .It Cm --auto-rotate
 .
 .Pq optional feature, $MAN_EXIF$ in this build
+.Pq deprecated in favor of Imlib2's auto-orientation support
 Automatically rotate images based on EXIF data.
 Does not alter the image files.
+.
+.Pp
 .
 Note that Imlib2 version 1.7.5+ performs auto-rotation by itself, so this option is obsolete on systems with Imlib2 version 1.7.5 or later.
 .Nm

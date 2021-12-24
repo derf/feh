@@ -758,7 +758,12 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			opt.draw_exif = 1;
 			break;
 		case OPTION_auto_rotate:
+#if defined(IMLIB2_VERSION_MAJOR) && defined(IMLIB2_VERSION_MINOR) && defined(IMLIB2_VERSION_MICRO) && (IMLIB2_VERSION_MAJOR > 1 || IMLIB2_VERSION_MINOR > 7 || IMLIB2_VERSION_MICRO >= 5)
+			weprintf("This feh release was built with Imlib2 version %d.%d.%d, which transparently adjusts for image orientation according to EXIF data.", IMLIB2_VERSION_MAJOR, IMLIB2_VERSION_MINOR, IMLIB2_VERSION_MICRO);
+			weprintf("--auto-rotate would rotate an already correctly oriented image, resulting in incorrect orientation. It has been disabled in this build. Rebuild feh with Imlib2 <1.7.5 to enable --auto-rotate.");
+#else
 			opt.auto_rotate = 1;
+#endif
 			break;
 #endif
 		case OPTION_no_xinerama:
