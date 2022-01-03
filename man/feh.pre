@@ -1334,6 +1334,10 @@ Human-readable image size
 .
 Image format
 .
+.It \&%T
+.
+Temporary output filename
+.
 .It %u
 .
 Number of current file

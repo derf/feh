@@ -249,7 +249,9 @@ void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum fe
 int feh_is_image(feh_file * file)
 {
 	unsigned char buf[16];
-	FILE *fh = fopen(file->filename, "r");
+	char *filename = file->tempname ? file->tempname : file->filename;
+
+	FILE *fh = fopen(filename, "r");
 	if (!fh) {
 		return 0;
 	}
@@ -297,7 +299,7 @@ int feh_is_image(feh_file * file)
 		// PNM et al.
 		return 1;
 	}
-	if (strstr(file->filename, ".tga")) {
+	if (strstr(filename, ".tga")) {
 		// TGA
 		return 1;
 	}
@@ -324,7 +326,7 @@ int feh_is_image(feh_file * file)
 		// XPM
 		return 1;
 	}
-	if (strstr(file->filename, ".bz2") || strstr(file->filename, ".gz")) {
+	if (strstr(filename, ".bz2") || strstr(filename, ".gz")) {
 		// Imlib2 supports compressed images. It relies on the filename to
 		// determine the appropriate loader and does not use magic bytes here.
 		return 1;
@@ -343,42 +345,42 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	enum { SRC_IMLIB, SRC_HTTP, SRC_MAGICK, SRC_DCRAW } image_source = SRC_IMLIB;
 	char *tmpname = NULL;
 	char *real_filename = NULL;
+	char *filename;
 
 	D(("filename is %s, image is %p\n", file->filename, im));
 
 	if (!file || !file->filename)
 		return 0;
-
-	if (path_is_url(file->filename)) {
+	filename = file->tempname ? file->tempname : file->filename;
+	if (path_is_url(filename)) {
 		image_source = SRC_HTTP;
 
-		if ((tmpname = feh_http_load_image(file->filename)) == NULL) {
+		if ((tmpname = feh_http_load_image(filename)) == NULL) {
 			feh_err = LOAD_ERROR_CURL;
 			err = IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST;
 		}
 	}
 	else {
 		if (feh_is_image(file)) {
-			*im = imlib_load_image_with_error_return(file->filename, &err);
+			*im = imlib_load_image_with_error_return(filename, &err);
 		} else {
 			feh_err = LOAD_ERROR_MAGICBYTES;
 			err = IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
 		}
 	}
-
 	if (opt.conversion_timeout >= 0 && (
 			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||
 			(err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT))) {
-		if (feh_file_is_raw(file->filename)) {
+		if (feh_file_is_raw(filename)) {
 			image_source = SRC_DCRAW;
-			tmpname = feh_dcraw_load_image(file->filename);
+			tmpname = feh_dcraw_load_image(filename);
 			if (!tmpname) {
 				feh_err = LOAD_ERROR_DCRAW;
 			}
 		} else {
 			image_source = SRC_MAGICK;
 			feh_err = LOAD_ERROR_IMLIB;
-			tmpname = feh_magick_load_image(file->filename);
+			tmpname = feh_magick_load_image(filename);
 			if (!tmpname) {
 				feh_err = LOAD_ERROR_IMAGEMAGICK;
 			}
@@ -388,7 +390,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 	if (tmpname) {
 		*im = imlib_load_image_with_error_return(tmpname, &err);
 		if (!err && im) {
-			real_filename = file->filename;
+			real_filename = filename;
 			file->filename = tmpname;
 
 			/*
