@@ -314,6 +314,11 @@ int feh_is_image(feh_file * file)
 		// imlib2 releases do not support heic/heif images as of 2021-01.
 		return 1;
 	}
+	if (!memcmp(buf + 4, "ftypavif", 8) || !memcmp(buf + 4, "ftypavis", 8)) {
+		// AVIF Image & Image Sequence - note that this is only supported in imlib2-heif.
+		// Ordinary imlib2 releases do not support AVIF images as of 2022-01.
+		return 1;
+	}
 	if ((buf[0] == 0xff && buf[1] == 0x0a) || !memcmp(buf, "\x00\x00\x00\x0cJXL \x0d\x0a\x87\x0a", 12)) {
 		// JXL - note that this is only supported in imlib2-jxl. Ordinary
 		// imlib2 releases do not support JXL images as of 2021-06.
