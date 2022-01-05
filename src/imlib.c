@@ -44,6 +44,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "exif.h"
 #endif
 
+#ifdef HAVE_LIBMAGIC
+#include <magic.h>
+#endif
+
 Display *disp = NULL;
 Visual *vis = NULL;
 Screen *scr = NULL;
@@ -242,98 +246,62 @@ void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum fe
  * avoid calling Imlib2 for files it probably cannot handle. See
  * <https://phab.enlightenment.org/T8739> and
  * <https://github.com/derf/feh/issues/505>.
- *
- * Note that this drops support for bz2-compressed files, unless
- * FEH_SKIP_MAGIC is set
  */
 int feh_is_image(feh_file * file)
 {
-	unsigned char buf[16];
-	FILE *fh = fopen(file->filename, "r");
-	if (!fh) {
-		return 0;
-	}
-	// Files smaller than buf will be padded with zeroes
-	memset(buf, 0, sizeof(buf));
-	if (fread(buf, 1, 16, fh) <= 0) {
-		fclose(fh);
-		return 0;
-	}
-	fclose(fh);
+#ifdef HAVE_LIBMAGIC
+	magic_t magic;
+	const char * mime_type;
+	int is_image = 0;
 
-	if (buf[0] == 0xff && buf[1] == 0xd8) {
-		// JPEG
-		return 1;
-	}
-	if (!memcmp(buf, "\x89PNG\x0d\x0a\x1a\x0a", 8)) {
-		// PNG
-		return 1;
-	}
-	if (buf[0] == 'A' && buf[1] == 'R' && buf[2] == 'G' && buf[3] == 'B') {
-		// ARGB
-		return 1;
-	}
-	if (buf[0] == 'B' && buf[1] == 'M') {
-		// BMP
-		return 1;
-	}
-	if (!memcmp(buf, "farbfeld", 8)) {
-		// farbfeld
-		return 1;
-	}
-	if (buf[0] == 'G' && buf[1] == 'I' && buf[2] == 'F') {
-		// GIF
-		return 1;
-	}
-	if (buf[0] == 0x00 && buf[1] == 0x00 && buf[2] <= 0x02 && buf[3] == 0x00) {
-		// ICO
-		return 1;
-	}
-	if (!memcmp(buf, "FORM", 4)) {
-		// Amiga IFF ILBM
-		return 1;
-	}
-	if (buf[0] == 'P' && buf[1] >= '1' && buf[1] <= '7') {
-		// PNM et al.
-		return 1;
-	}
-	if (strstr(file->filename, ".tga")) {
-		// TGA
-		return 1;
-	}
-	if (!memcmp(buf, "II\x2a\x00", 4) || !memcmp(buf, "MM\x00\x2a", 4)) {
-		// TIFF
-		return 1;
-	}
-	if (!memcmp(buf, "RIFF", 4)) {
-		// might be webp
-		return 1;
-	}
-	if (!memcmp(buf + 4, "ftyphei", 7) || !memcmp(buf + 4, "ftypmif1", 8)) {
-		// HEIC/HEIF - note that this is only supported in imlib2-heic. Ordinary
-		// imlib2 releases do not support heic/heif images as of 2021-01.
-		return 1;
-	}
-	if ((buf[0] == 0xff && buf[1] == 0x0a) || !memcmp(buf, "\x00\x00\x00\x0cJXL \x0d\x0a\x87\x0a", 12)) {
-		// JXL - note that this is only supported in imlib2-jxl. Ordinary
-		// imlib2 releases do not support JXL images as of 2021-06.
-		return 1;
-	}
-	buf[15] = 0;
-	if (strstr((char *)buf, "XPM")) {
-		// XPM
-		return 1;
-	}
-	if (strstr(file->filename, ".bz2") || strstr(file->filename, ".gz")) {
-		// Imlib2 supports compressed images. It relies on the filename to
-		// determine the appropriate loader and does not use magic bytes here.
-		return 1;
-	}
-	// moved to the end as this variable won't be set in most cases
 	if (getenv("FEH_SKIP_MAGIC")) {
 		return 1;
 	}
-	return 0;
+
+	if (!(magic = magic_open(MAGIC_MIME_TYPE | MAGIC_SYMLINK))) {
+		weprintf("unable to initialize magic library\n");
+		return 0;
+	}
+
+	if (magic_load(magic, NULL) != 0) {
+		weprintf("cannot load magic database: %s\n", magic_error(magic));
+		magic_close(magic);
+		return 0;
+	}
+
+	mime_type = magic_file(magic, file->filename);
+
+	if (mime_type) {
+		D(("file %s has mime type: %s\n", file->filename, mime_type));
+
+		if (strncmp(mime_type, "image/", 6) == 0) {
+			is_image = 1;
+		}
+
+		/* imlib2 supports loading compressed images, let's have a look inside */
+		if (strcmp(mime_type, "application/gzip") == 0 ||
+		    strcmp(mime_type, "application/x-bzip2") == 0 ||
+		    strcmp(mime_type, "application/x-xz") == 0) {
+			magic_setflags(magic, magic_getflags(magic) | MAGIC_COMPRESS);
+			mime_type = magic_file(magic, file->filename);
+
+			if (mime_type) {
+				D(("uncompressed file %s has mime type: %s\n", file->filename, mime_type));
+
+				if (strncmp(mime_type, "image/", 6) == 0) {
+					is_image = 1;
+				}
+			}
+		}
+	}
+
+	magic_close(magic);
+
+	return is_image;
+#else
+	(void)file;
+	return 1;
+#endif
 }
 
 int feh_load_image(Imlib_Image * im, feh_file * file)

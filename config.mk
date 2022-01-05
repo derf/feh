@@ -6,6 +6,7 @@ curl ?= 1
 debug ?= 0
 exif ?= 0
 help ?= 0
+magic ?= 1
 mkstemps ?= 1
 verscmp ?= 1
 xinerama ?= 1
@@ -66,6 +67,11 @@ endif
 
 ifeq (${mkstemps},1)
 	CFLAGS += -DHAVE_MKSTEMPS
+endif
+
+ifeq (${magic},1)
+	CFLAGS += -DHAVE_LIBMAGIC
+	LDLIBS += -lmagic
 endif
 
 ifeq (${verscmp},1)
