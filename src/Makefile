@@ -4,8 +4,6 @@ TARGETS = \
 	events.c \
 	feh_png.c \
 	filelist.c \
-	getopt.c \
-	getopt1.c \
 	gib_hash.c \
 	gib_imlib.c \
 	gib_list.c \

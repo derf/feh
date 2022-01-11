@@ -63,6 +63,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 #include <sys/wait.h>
 #include <math.h>
+#include <getopt.h>
 
 #include <Imlib2.h>
 #include "gib_hash.h"
@@ -74,7 +75,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "menu.h"
 
 #include "utils.h"
-#include "getopt.h"
 
 #include "debug.h"
 
