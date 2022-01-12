@@ -69,6 +69,10 @@ int main(int argc, char **argv)
 #endif
 	}
 
+#ifdef HAVE_LIBMAGIC
+	init_magic();
+#endif
+
 	feh_event_init();
 
 	if (opt.index)
@@ -261,6 +265,10 @@ void feh_clean_exit(void)
 
 	if(disp)
 		XCloseDisplay(disp);
+
+#ifdef HAVE_LIBMAGIC
+	uninit_magic();
+#endif
 
 	/*
 	 * Only restore the old terminal settings if

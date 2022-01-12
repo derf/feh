@@ -145,6 +145,10 @@ void init_slideshow_mode(void);
 void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
+#ifdef HAVE_LIBMAGIC
+void uninit_magic(void);
+void init_magic(void);
+#endif
 void feh_clean_exit(void);
 int feh_should_ignore_image(Imlib_Image * im);
 int feh_load_image(Imlib_Image * im, feh_file * file);

@@ -46,6 +46,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef HAVE_LIBMAGIC
 #include <magic.h>
+
+magic_t magic = NULL;
 #endif
 
 Display *disp = NULL;
@@ -239,6 +241,33 @@ void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum fe
 	}
 }
 
+#ifdef HAVE_LIBMAGIC
+void uninit_magic(void)
+{
+	if (!magic) {
+		return;
+	}
+
+	magic_close(magic);
+	magic = NULL;
+}
+void init_magic(void)
+{
+	if (getenv("FEH_SKIP_MAGIC")) {
+		return;
+	}
+
+	if (!(magic = magic_open(MAGIC_NONE))) {
+		weprintf("unable to initialize magic library\n");
+		return;
+	}
+
+	if (magic_load(magic, NULL) != 0) {
+		weprintf("cannot load magic database: %s\n", magic_error(magic));
+		uninit_magic();
+	}
+}
+
 /*
  * This is a workaround for an Imlib2 regression, causing unloadable image
  * detection to be excessively slow (and, thus, causing feh to hang for a while
@@ -247,62 +276,47 @@ void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum fe
  * <https://phab.enlightenment.org/T8739> and
  * <https://github.com/derf/feh/issues/505>.
  */
-int feh_is_image(feh_file * file)
+int feh_is_image(feh_file * file, int magic_flags)
 {
-#ifdef HAVE_LIBMAGIC
-	magic_t magic;
-	const char * mime_type;
-	int is_image = 0;
+	const char * mime_type = NULL;
 
-	if (getenv("FEH_SKIP_MAGIC")) {
+	if (!magic) {
 		return 1;
 	}
 
-	if (!(magic = magic_open(MAGIC_MIME_TYPE | MAGIC_SYMLINK))) {
-		weprintf("unable to initialize magic library\n");
-		return 0;
-	}
-
-	if (magic_load(magic, NULL) != 0) {
-		weprintf("cannot load magic database: %s\n", magic_error(magic));
-		magic_close(magic);
-		return 0;
-	}
-
+	magic_setflags(magic, MAGIC_MIME_TYPE | MAGIC_SYMLINK | magic_flags);
 	mime_type = magic_file(magic, file->filename);
 
-	if (mime_type) {
-		D(("file %s has mime type: %s\n", file->filename, mime_type));
-
-		if (strncmp(mime_type, "image/", 6) == 0) {
-			is_image = 1;
-		}
-
-		/* imlib2 supports loading compressed images, let's have a look inside */
-		if (strcmp(mime_type, "application/gzip") == 0 ||
-		    strcmp(mime_type, "application/x-bzip2") == 0 ||
-		    strcmp(mime_type, "application/x-xz") == 0) {
-			magic_setflags(magic, magic_getflags(magic) | MAGIC_COMPRESS);
-			mime_type = magic_file(magic, file->filename);
-
-			if (mime_type) {
-				D(("uncompressed file %s has mime type: %s\n", file->filename, mime_type));
-
-				if (strncmp(mime_type, "image/", 6) == 0) {
-					is_image = 1;
-				}
-			}
-		}
+	if (!mime_type) {
+		return 0;
 	}
 
-	magic_close(magic);
+	D(("file %s has mime type: %s\n", file->filename, mime_type));
 
-	return is_image;
-#else
-	(void)file;
-	return 1;
-#endif
+	if (strncmp(mime_type, "image/", 6) == 0) {
+		return 1;
+	}
+
+	/* no infinite loop on compressed content, please */
+	if (magic_flags) {
+		return 0;
+	}
+
+	/* imlib2 supports loading compressed images, let's have a look inside */
+	if (strcmp(mime_type, "application/gzip") == 0 ||
+	    strcmp(mime_type, "application/x-bzip2") == 0 ||
+	    strcmp(mime_type, "application/x-xz") == 0) {
+		return feh_is_image(file, MAGIC_COMPRESS);
+	}
+
+	return 0;
 }
+#else
+int feh_is_image(__attribute__((unused)) feh_file * file, __attribute__((unused)) int magic_flags)
+{
+	return 1;
+}
+#endif
 
 int feh_load_image(Imlib_Image * im, feh_file * file)
 {
@@ -326,7 +340,7 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		}
 	}
 	else {
-		if (feh_is_image(file)) {
+		if (feh_is_image(file, 0)) {
 			*im = imlib_load_image_with_error_return(file->filename, &err);
 		} else {
 			feh_err = LOAD_ERROR_MAGICBYTES;
