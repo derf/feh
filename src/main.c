@@ -49,6 +49,11 @@ int main(int argc, char **argv)
 	srandom(getpid() * time(NULL) % ((unsigned int) -1));
 
 	setup_signal_handlers();
+
+#ifdef HAVE_LIBMAGIC
+	init_magic();
+#endif
+
 	init_parse_options(argc, argv);
 
 	init_imlib_fonts();
@@ -261,6 +266,10 @@ void feh_clean_exit(void)
 
 	if(disp)
 		XCloseDisplay(disp);
+
+#ifdef HAVE_LIBMAGIC
+	uninit_magic();
+#endif
 
 	/*
 	 * Only restore the old terminal settings if
