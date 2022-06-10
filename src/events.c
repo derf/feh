@@ -681,16 +681,18 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 	} else {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
-		if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL)) {
-			feh_thumbnail *thumbnail;
-			int x, y;
+		if (winwid != NULL) {
+			if (winwid->type == WIN_TYPE_THUMBNAIL) {
+				feh_thumbnail *thumbnail;
+				int x, y;
 
-			x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
-			y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
-			thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
-			feh_thumbnail_select(winwid, thumbnail);
-		} else {
-			feh_event_handle_generic(winwid, ev->xmotion.state | Mod3Mask, NoSymbol, 0);
+				x = (ev->xbutton.x - winwid->im_x) / winwid->zoom;
+				y = (ev->xbutton.y - winwid->im_y) / winwid->zoom;
+				thumbnail = feh_thumbnail_get_thumbnail_from_coords(x, y);
+				feh_thumbnail_select(winwid, thumbnail);
+			} else {
+				feh_event_handle_generic(winwid, ev->xmotion.state | Mod3Mask, NoSymbol, 0);
+			}
 		}
 	}
 	return;
