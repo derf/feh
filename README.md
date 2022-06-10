@@ -22,7 +22,6 @@ Dependencies
 
  * Imlib2
  * libcurl (disable with make curl=0)
- * libmagic (disable with make magic=0)
  * libpng
  * libX11
  * libXinerama (disable with make xinerama=0)
@@ -31,6 +30,10 @@ If built with exif=1:
 
  * libexif-dev
  * libexif12
+
+If built with magic=1:
+
+ * libmagic
 
 Recommended Binaries
 ---
@@ -92,7 +95,7 @@ indicates that the corresponding feature is enabled by default.
 | help | 0 | include help text (refers to the manpage otherwise) |
 | inotify | 0 | enable inotify, needed for `--auto-reload` |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
-| magic | 1 | Build against libmagic to filter unsupported file formats |
+| magic | 0 | Use libmagic to filter unsupported file formats |
 | mkstemps | 1 | Whether your libc provides `mkstemps()`. If set to 0, feh will be unable to load gif images via libcurl |
 | verscmp | 1 | Whether your libc provides `strvercmp()`. If set to 0, feh will use an internal implementation. |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
