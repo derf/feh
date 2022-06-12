@@ -13,6 +13,7 @@ all: ${TARGETS}
 	-e 's/\$$MAN_DEBUG\$$/${MAN_DEBUG}/' \
 	-e 's/\$$MAN_EXIF\$$/${MAN_EXIF}/' \
 	-e 's/\$$MAN_INOTIFY\$$/${MAN_INOTIFY}/' \
+	-e 's/\$$MAN_MAGIC\$$/${MAN_MAGIC}/' \
 	-e 's/\$$MAN_XINERAMA\$$/${MAN_XINERAMA}/' \
 	< ${@:.1=.pre} > $@
 

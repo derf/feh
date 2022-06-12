@@ -976,6 +976,10 @@ static void show_version(void)
 		"help "
 #endif
 
+#ifdef HAVE_LIBMAGIC
+		"magic "
+#endif
+
 #if _FILE_OFFSET_BITS == 64
 		"stat64 "
 #endif

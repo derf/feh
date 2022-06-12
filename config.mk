@@ -72,6 +72,9 @@ endif
 ifeq (${magic},1)
 	CFLAGS += -DHAVE_LIBMAGIC
 	LDLIBS += -lmagic
+	MAN_MAGIC = enabled
+else
+	MAN_MAGIC = disabled
 endif
 
 ifeq (${verscmp},1)
