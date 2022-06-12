@@ -11,7 +11,7 @@ Sun, 12 Jun 2022 13:12:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       in feh is no longer required. For a slight speed-up, or to use feh with
       an affected Imlib2 version (1.6.x or 1.7.0), compile feh with 'magic=1'.
       In this case, feh will use libmagic to determine whether a file is an
-      image, and only pass images to Imlib2.
+      image, and only pass images to Imlib2. (Patch by Christian Hesse)
     * Fix crash (segmentation fault due to null pointer dereference) when
       toggling fullscreen mode while moving the cursor.
     * Note that feh no longer supplies its own getopt_long function.
