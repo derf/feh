@@ -1,3 +1,23 @@
+Sun, 12 Jun 2022 13:12:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.9
+    * Fix compilation on macOS by defining _DARWIN_C_SOURCE for
+      mkdtemp and mkstemps. (Patch by Ryan Schmidt)
+    * Remove magic byte check before passing an image to Imlib2.
+      This check was introduced in feh 3.6 to work around an issue with
+      Imlib2 being slow to determine image loadability in some cases
+      <https://phab.enlightenment.org/T8739>. By now, an Imlib2 version without
+      this issue should be available in all recent distributions, so the check
+      in feh is no longer required. For a slight speed-up, or to use feh with
+      an affected Imlib2 version (1.6.x or 1.7.0), compile feh with 'magic=1'.
+      In this case, feh will use libmagic to determine whether a file is an
+      image, and only pass images to Imlib2.
+    * Fix crash (segmentation fault due to null pointer dereference) when
+      toggling fullscreen mode while moving the cursor.
+    * Note that feh no longer supplies its own getopt_long function.
+      getopt_long is provided by a wide range of libc implementations, so
+      there is no need for feh to duplicate it. (Patch by Guilherme Janczak)
+
 Mon, 03 Jan 2022 11:29:03 +0100  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.8
