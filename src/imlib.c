@@ -895,6 +895,7 @@ static char *feh_http_load_image(char *url)
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
 			ebuff = emalloc(CURL_ERROR_SIZE);
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
+			curl_easy_setopt(curl, CURLOPT_USERAGENT, PACKAGE "/" VERSION);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
