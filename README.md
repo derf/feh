@@ -24,6 +24,7 @@ Dependencies
  * libcurl (disable with make curl=0)
  * libpng
  * libX11
+ * libXt
  * libXinerama (disable with make xinerama=0)
 
 If built with exif=1:
