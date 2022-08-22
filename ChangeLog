@@ -1,3 +1,9 @@
+Mon, 22 Aug 2022 17:49:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+
+* Release v3.9.1
+    * Set libcurl user agent to "feh/3.9.1". Previously, feh did not send a
+      user agent.
+
 Sun, 12 Jun 2022 13:12:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.9
