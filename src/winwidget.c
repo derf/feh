@@ -739,7 +739,7 @@ void winwidget_inotify_remove(winwidget winwid)
 #ifdef HAVE_INOTIFY
 void winwidget_inotify_add(winwidget winwid, feh_file * file)
 {
-    if (opt.auto_reload) {
+    if (opt.auto_reload && !path_is_url(file->filename)) {
         D(("Adding inotify watch for %s\n", file->filename));
         char dir[PATH_MAX];
         feh_file_dirname(dir, file, PATH_MAX);
