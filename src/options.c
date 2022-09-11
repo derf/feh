@@ -633,6 +633,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case OPTION_montage:
 			opt.index = 1;
+			opt.montage = 1;
 			break;
 		case OPTION_reverse:
 			opt.reverse = 1;
