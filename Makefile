@@ -12,7 +12,7 @@ build-applications:
 	@${MAKE} -C share/applications
 
 test: all
-	@if ! uname -m | fgrep -q -e arm -e mips; then \
+	@if ! uname -m | grep -q -e arm -e mips; then \
 		PACKAGE=${PACKAGE} prove test/feh.t test/mandoc.t; \
 	else \
 		PACKAGE=${PACKAGE} prove test/feh.t test/mandoc.t || cat test/imlib2-bug-notice; \
