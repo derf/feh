@@ -1003,12 +1003,12 @@ zoom the image like the
 .Cm --bg-fill
 mode.
 .
-.It Cm --zoom-step Ar percent
+.It Cm --zoom-step Ar index
 .
-Zoom images in and out by
-.Ar percent
-.Pq default: 25
-when using the zoom keys and buttons.
+Zoom images in and out by a factor of the nth root
+.Pq Ar index
+of 2 when using the zoom keys and buttons. The default is the 3rd root,
+which means that there will be 3 steps between powers of 2.
 .
 .El
 .

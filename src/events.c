@@ -40,6 +40,8 @@ fehkey *feh_str_to_kb(char *action);
 
 feh_event_handler *ev_handler[LASTEvent];
 
+static const double zoom_rate = M_LN2 / 128.0;
+
 static void feh_event_handle_ButtonPress(XEvent * ev);
 static void feh_event_handle_ButtonRelease(XEvent * ev);
 static void feh_event_handle_LeaveNotify(XEvent * ev);
@@ -242,29 +244,31 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
-		winwid->old_zoom = winwid->zoom;
+		winwid->old_step = round(log(winwid->zoom) / zoom_rate);
 
 		/* required to adjust the image position in zoom mode */
 		winwid->im_click_offset_x = (winwid->click_offset_x
-				- winwid->im_x) / winwid->old_zoom;
+				- winwid->im_x) / winwid->zoom;
 		winwid->im_click_offset_y = (winwid->click_offset_y
-				- winwid->im_y) / winwid->old_zoom;
+				- winwid->im_y) / winwid->zoom;
 
 	} else if (feh_is_bb(EVENT_zoom_in, button, state)) {
 		D(("Zoom_In Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		if (winwid->zoom >= ZOOM_MAX || opt.step_rate <= 0)
+			return;
+
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
-		winwid->old_zoom = winwid->zoom;
 
 		/* required to adjust the image position in zoom mode */
 		winwid->im_click_offset_x = (winwid->click_offset_x
-				- winwid->im_x) / winwid->old_zoom;
+				- winwid->im_x) / winwid->zoom;
 		winwid->im_click_offset_y = (winwid->click_offset_y
-				- winwid->im_y) / winwid->old_zoom;
+				- winwid->im_y) / winwid->zoom;
 
 		/* copied from zoom_in, keyevents.c */
-		winwid->zoom = winwid->zoom * opt.zoom_rate;
+		winwid->zoom = exp(++winwid->zoom_step * opt.step_rate);
 
 		if (winwid->zoom > ZOOM_MAX)
 			winwid->zoom = ZOOM_MAX;
@@ -281,18 +285,20 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	} else if (feh_is_bb(EVENT_zoom_out, button, state)) {
 		D(("Zoom_Out Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		if (winwid->zoom <= ZOOM_MIN || opt.step_rate <= 0)
+			return;
+
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
-		winwid->old_zoom = winwid->zoom;
 
 		/* required to adjust the image position in zoom mode */
 		winwid->im_click_offset_x = (winwid->click_offset_x
-				- winwid->im_x) / winwid->old_zoom;
+				- winwid->im_x) / winwid->zoom;
 		winwid->im_click_offset_y = (winwid->click_offset_y
-				- winwid->im_y) / winwid->old_zoom;
+				- winwid->im_y) / winwid->zoom;
 
 		/* copied from zoom_out, keyevents.c */
-		winwid->zoom = winwid->zoom / opt.zoom_rate;
+		winwid->zoom = exp(--winwid->zoom_step * opt.step_rate);
 
 		if (winwid->zoom < ZOOM_MIN)
 			winwid->zoom = ZOOM_MIN;
@@ -400,11 +406,16 @@ static void feh_event_handle_ButtonRelease(XEvent * ev)
 		opt.mode = MODE_NORMAL;
 		winwid->mode = MODE_NORMAL;
 
-		if ((feh_is_bb(EVENT_zoom, button, state))
-				&& (ev->xbutton.x == winwid->click_offset_x)
-				&& (ev->xbutton.y == winwid->click_offset_y)) {
-			winwid->zoom = 1.0;
-			winwidget_center_image(winwid);
+		if ((feh_is_bb(EVENT_zoom, button, state))) {
+			if ((ev->xbutton.x == winwid->click_offset_x)
+					&& (ev->xbutton.y == winwid->click_offset_y)) {
+				winwid->zoom = 1.0;
+				winwid->zoom_step = 0;
+				winwidget_center_image(winwid);
+			} else {
+				winwid->zoom_step = round(log(winwid->zoom) / opt.step_rate);
+				winwidget_sanitise_offsets(winwid);
+			}
 		} else
 			winwidget_sanitise_offsets(winwid);
 
@@ -543,14 +554,8 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
-			if (ev->xmotion.x > winwid->click_offset_x)
-				winwid->zoom = winwid->old_zoom + (
-						((double) ev->xmotion.x - (double) winwid->click_offset_x)
-						/ 128.0);
-			else
-				winwid->zoom = winwid->old_zoom - (
-						((double) winwid->click_offset_x - (double) ev->xmotion.x)
-						/ 128.0);
+			int step = winwid->old_step + ev->xmotion.x - winwid->click_offset_x;
+			winwid->zoom = exp(step * zoom_rate);
 
 			if (winwid->zoom < ZOOM_MIN)
 				winwid->zoom = ZOOM_MIN;
