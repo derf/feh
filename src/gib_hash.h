@@ -55,7 +55,7 @@ gib_hash_node *gib_hash_node_new(char *key, void *data);
 void           gib_hash_node_free(gib_hash_node *node);
 void           gib_hash_node_free_and_data(gib_hash_node *node);
 
-gib_hash *gib_hash_new();
+gib_hash *gib_hash_new(void);
 void      gib_hash_free(gib_hash *hash);
 void      gib_hash_free_and_data(gib_hash *hash);
 

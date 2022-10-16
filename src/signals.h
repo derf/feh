@@ -26,6 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef SIGNALS_H
 #define SIGNALS_H
 
-void setup_signal_handlers();
+void setup_signal_handlers(void);
 extern volatile int sig_exit;
 #endif

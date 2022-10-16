@@ -936,7 +936,7 @@ void feh_menu_init_main(void)
 	return;
 }
 
-void feh_menu_init_common()
+void feh_menu_init_common(void)
 {
 	int num_desks, i;
 	char buf[30];
