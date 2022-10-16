@@ -35,7 +35,7 @@ struct __fehkey keys[EVENT_LIST_END];
 struct termios old_term_settings;
 unsigned char control_via_stdin = 0;
 
-void setup_stdin() {
+void setup_stdin(void) {
 	struct termios ctrl;
 
 	control_via_stdin = 1;
@@ -55,7 +55,7 @@ void setup_stdin() {
 		eprintf("tcsetattr failed");
 }
 
-void restore_stdin() {
+void restore_stdin(void) {
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term_settings) == -1)
 		eprintf("tcsetattr failed");
 }
@@ -314,7 +314,7 @@ void feh_event_invoke_action(winwidget winwid, unsigned char action)
 	return;
 }
 
-void feh_event_handle_stdin()
+void feh_event_handle_stdin(void)
 {
 	char stdin_buf[2];
 	static char is_esc = 0;

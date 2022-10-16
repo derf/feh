@@ -53,7 +53,7 @@ void           gib_hash_node_free_and_data(gib_hash_node *node)
 	return;
 }
 
-gib_hash *gib_hash_new()
+gib_hash *gib_hash_new(void)
 {
 	gib_hash *hash = emalloc(sizeof(gib_hash));
 	hash->base = gib_hash_node_new("__gib_hash_new",NULL);

@@ -593,7 +593,7 @@ int feh_thumbnail_get_thumbnail(Imlib_Image * image, feh_file * file,
 	return status;
 }
 
-static char *feh_thumbnail_get_prefix()
+static char *feh_thumbnail_get_prefix(void)
 {
 	char *dir = NULL, *home, *xdg_cache_home;
 
@@ -882,13 +882,13 @@ void feh_thumbnail_select_prev(winwidget winwid, int jump)
 	}
 }
 
-void feh_thumbnail_show_selected()
+void feh_thumbnail_show_selected(void)
 {
 	if (td.selected && td.selected->file)
 		feh_thumbnail_show_fullsize(td.selected->file);
 }
 
-feh_file* feh_thumbnail_get_selected_file()
+feh_file* feh_thumbnail_get_selected_file(void)
 {
 	if (td.selected)
 		return td.selected->file;

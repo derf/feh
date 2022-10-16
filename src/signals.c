@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 void feh_handle_signal(int);
 volatile int sig_exit = 0;
 
-void setup_signal_handlers()
+void setup_signal_handlers(void)
 {
 	struct sigaction feh_sh;
 	sigset_t feh_ss;

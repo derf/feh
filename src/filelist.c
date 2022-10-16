@@ -37,7 +37,6 @@ gib_list *filelist = NULL;
 gib_list *original_file_items = NULL; /* original file items from argv */
 int filelist_len = 0;
 gib_list *current_file = NULL;
-extern int errno;
 
 static gib_list *rm_filelist = NULL;
 
@@ -156,7 +155,7 @@ static void feh_print_stat_error(char *path)
 	}
 }
 
-static void add_stdin_to_filelist()
+static void add_stdin_to_filelist(void)
 {
 	char buf[1024];
 	size_t readsize;
@@ -657,7 +656,7 @@ char *feh_absolute_path(char *path)
 	return(ret);
 }
 
-void feh_save_filelist()
+void feh_save_filelist(void)
 {
 	char *tmpname;
 	char *base_dir = "";
