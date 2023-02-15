@@ -792,9 +792,9 @@ in paused mode.
 .
 Sort file list according to image parameters.
 Allowed sort types are:
-.Cm name , filename , dirname , mtime , width , height , pixels , size , format .
+.Cm name , none , filename , dirname , mtime , width , height , pixels , size , format .
 For sort modes other than
-.Cm name , filename , dirname ,
+.Cm name , none , filename , dirname ,
 or
 .Cm mtime ,
 a preload run is
@@ -822,6 +822,11 @@ you can use
 .Cm --version-sort
 to sort numbers naturally, so that e.g. 10.jpg comes after 2.jpg.
 .
+.Pp
+.
+.Cm none
+is the default; you can specify it explicitly to discard a sort mode that has
+been specified at an earlier point in the command line arguments.
 .It Cm -| , --start-at Ar filename
 .
 Start the filelist at

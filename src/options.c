@@ -537,6 +537,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case OPTION_sort:
 			if (!strcasecmp(optarg, "name"))
 				opt.sort = SORT_NAME;
+			else if (!strcasecmp(optarg, "none"))
+				opt.sort = SORT_NONE;
 			else if (!strcasecmp(optarg, "filename"))
 				opt.sort = SORT_FILENAME;
 			else if (!strcasecmp(optarg, "dirname"))
