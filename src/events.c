@@ -40,8 +40,6 @@ fehkey *feh_str_to_kb(char *action);
 
 feh_event_handler *ev_handler[LASTEvent];
 
-static const double zoom_rate = M_LN2 / 128.0;
-
 static void feh_event_handle_ButtonPress(XEvent * ev);
 static void feh_event_handle_ButtonRelease(XEvent * ev);
 static void feh_event_handle_LeaveNotify(XEvent * ev);
@@ -244,7 +242,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
-		winwid->old_step = round(log(winwid->zoom) / zoom_rate);
+		winwid->old_step = round(log(winwid->zoom) / opt.zoom_rate);
 
 		/* required to adjust the image position in zoom mode */
 		winwid->im_click_offset_x = (winwid->click_offset_x
@@ -553,9 +551,9 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 
 		winwid = winwidget_get_from_window(ev->xmotion.window);
-		if (winwid) {
+		if (winwid && opt.zoom_rate > 0) {
 			int step = winwid->old_step + ev->xmotion.x - winwid->click_offset_x;
-			winwid->zoom = exp(step * zoom_rate);
+			winwid->zoom = exp(step * opt.zoom_rate);
 
 			if (winwid->zoom < ZOOM_MIN)
 				winwid->zoom = ZOOM_MIN;
