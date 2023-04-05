@@ -46,8 +46,11 @@ if ( $version =~ m{ Compile-time \s switches : \s .* help }ox ) {
 	$has_help = 1;
 }
 
+# Imlib2 1.8+ returns "Invalid image file" rather than "No Imlib2 loader".
+# feh compiled with magic=1 returns "Does not look like an image (magic bytes missing)"
+# Here, we accept all three.
 my $re_warning
-  = qr{${feh_name} WARNING: test/fail/... \- No Imlib2 loader for that file format\n};
+  = qr{${feh_name} WARNING: test/fail/... \- (Invalid image file|No Imlib2 loader for that file format|Does not look like an image \(magic bytes missing\))\n};
 my $re_loadable    = qr{test/ok/...};
 my $re_unloadable  = qr{test/fail/...};
 my $re_list_action = qr{test/ok/... 16x16};
