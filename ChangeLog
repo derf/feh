@@ -1,3 +1,11 @@
+Thu, 06 Apr 2023 16:19:16 +0200
+
+* Release v3.10
+    * Add --sort=none option to un-set sort modes specified earlier
+    * Improve error messages for Imlib2 ≥ 1.8
+    * Fix build with clang 16. (Patch by orbea)
+    * Fix tests when building with magic=1
+
 Mon, 22 Aug 2022 17:49:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
 
 * Release v3.9.1
