@@ -233,6 +233,14 @@ void feh_print_load_error(char *file, winwidget w, Imlib_Load_Error err, enum fe
 		case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
 			im_weprintf(w, "%s - Cannot write - out of disk space", file);
 			break;
+#if defined(IMLIB2_VERSION_MAJOR) && defined(IMLIB2_VERSION_MINOR) && (IMLIB2_VERSION_MAJOR > 1 || IMLIB2_VERSION_MINOR > 7)
+		case IMLIB_LOAD_ERROR_IMAGE_READ:
+			im_weprintf(w, "%s - Invalid image file", file);
+			break;
+		case IMLIB_LOAD_ERROR_IMAGE_FRAME:
+			im_weprintf(w, "%s - Requested frame not in image", file);
+			break;
+#endif
 		default:
 			im_weprintf(w, "While loading %s - Unknown error (%d)",
 					file, err);
