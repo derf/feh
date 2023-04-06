@@ -47,7 +47,9 @@ extern "C"
 {
 #endif
 
+/*
 int gib_imlib_load_image(Imlib_Image * im, char *filename);
+*/
 int gib_imlib_image_get_width(Imlib_Image im);
 int gib_imlib_image_get_height(Imlib_Image im);
 int gib_imlib_image_has_alpha(Imlib_Image im);
