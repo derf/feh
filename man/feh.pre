@@ -1665,6 +1665,10 @@ It is saved in the directory specified by
 .Cm --output-dir ,
 if set, and in the current working directory otherwise.
 .
+.It t Bq print_filename
+.
+Print the filename of the current image.
+.
 .It w Bq size_to_image
 .
 Change window size to fit current image size

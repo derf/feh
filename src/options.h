@@ -339,6 +339,7 @@ enum key_action {
 	EVENT_zoom,
 	EVENT_blur,
 	EVENT_rotate,
+	EVENT_print_filename,
 	EVENT_LIST_END
 };
 
