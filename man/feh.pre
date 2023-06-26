@@ -664,7 +664,10 @@ and next image.
 .Cm quit
 will cause
 .Nm
-to quit when trying to advance past the last image in the slide show.
+to quit when trying to advance past the last image in the slide show. This is
+the behavior of the obsolete
+.Cm --cycle-once
+option.
 .
 .Pp
 .
