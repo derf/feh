@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-## Copyright © 2011 by Daniel Friesel <derf@finalrewind.org>
+## Copyright © 2011 by Birte Kristina Friesel <derf@finalrewind.org>
 ## License: WTFPL:
 ##   0. You just DO WHAT THE FUCK YOU WANT TO.
 use strict;

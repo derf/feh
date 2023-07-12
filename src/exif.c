@@ -1,7 +1,7 @@
 /* exif.c
 
 Copyright (C) 2012      Dennis Real.
-Copyright (C) 2021      Daniel Friesel.
+Copyright (C) 2021      Birte Kristina Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
