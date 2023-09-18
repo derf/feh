@@ -1353,6 +1353,11 @@ Number of current file
 .
 Image width
 .
+.It %W
+.
+Window dimensions and offset as WxH+x+y
+.Pq X11 geometry format .
+.
 .It %v
 .
 .Nm

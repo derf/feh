@@ -529,6 +529,12 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
+			case 'W':
+				if (winwid) {
+					snprintf(buf, sizeof(buf), "%dx%d+%d+%d", winwid->w, winwid->h, winwid->x, winwid->y);
+					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
 			case 'z':
 				if (winwid) {
 					snprintf(buf, sizeof(buf), "%.2f", winwid->zoom);
