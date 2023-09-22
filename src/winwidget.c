@@ -783,7 +783,7 @@ void feh_event_handle_inotify(void)
                 } else if (event->mask & (IN_CLOSE_WRITE | IN_MOVED_TO)) {
                     if (strcmp(event->name, FEH_FILE(windows[j]->file->data)->name) == 0) {
                         D(("inotify says file changed\n"));
-                        feh_reload_image(windows[j], 0, 0);
+                        feh_reload_image(windows[j], 0, 1);
                     }
                 }
                 break;
@@ -1057,6 +1057,15 @@ void winwidget_free_image(winwidget w)
 	w->im_w = 0;
 	w->im_h = 0;
 	return;
+}
+
+void winwidget_free_image_and_decache(winwidget w)
+{
+	if (w->im) {
+		gib_imlib_free_image_and_decache(w->im);
+	}
+	w->im = NULL;
+	winwidget_free_image(w);
 }
 
 void feh_debug_print_winwid(winwidget w)
