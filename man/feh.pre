@@ -1353,10 +1353,13 @@ Number of current file
 .
 Image width
 .
-.It %W
-.
-Window dimensions and offset as WxH+x+y
-.Pq X11 geometry format .
+.\" .It %W
+.\" .
+.\" Window dimensions and offset as WxH+x+y
+.\" .Pq X11 geometry format .
+.\" Note that this is currently only properly updated when changing images;
+.\" offsets for the first image after starting feh and after changing window
+.\" geometry may be bogus.
 .
 .It %v
 .
