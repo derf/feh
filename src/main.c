@@ -107,6 +107,28 @@ int main(int argc, char **argv)
 	return(sig_exit);
 }
 
+static void feh_process_signal(void)
+{
+	winwidget winwid = winwidget_get_first_window_of_type(WIN_TYPE_SLIDESHOW);
+	int i;
+	int signo = sig_received;
+	sig_received = 0;
+
+	if (winwid) {
+		if (filelist_len > 1) {
+			if (signo == SIGUSR1)
+				slideshow_change_image(winwid, SLIDE_NEXT, 1);
+			else if (signo == SIGUSR2)
+				slideshow_change_image(winwid, SLIDE_PREV, 1);
+		} else {
+			feh_reload_image(winwid, 0, 0);
+		}
+	} else if (opt.multiwindow) {
+		for (i = window_num - 1; i >= 0; i--)
+			feh_reload_image(windows[i], 0, 0);
+	}
+}
+
 /* Return 0 to stop iterating, 1 if ok to continue. */
 int feh_main_iteration(int block)
 {
@@ -123,6 +145,10 @@ int feh_main_iteration(int block)
 
 	if (window_num == 0 || sig_exit != 0)
 		return(0);
+
+	if (sig_received) {
+		feh_process_signal();
+	}
 
 	if (first) {
 		/* Only need to set these up the first time */
@@ -156,6 +182,10 @@ int feh_main_iteration(int block)
 
 		if (window_num == 0 || sig_exit != 0)
 			return(0);
+
+		if (sig_received) {
+			feh_process_signal();
+		}
 	}
 	XFlush(disp);
 
@@ -248,6 +278,10 @@ int feh_main_iteration(int block)
 	}
 	if (window_num == 0 || sig_exit != 0)
 		return(0);
+
+	if (sig_received) {
+		feh_process_signal();
+	}
 
 	return(1);
 }

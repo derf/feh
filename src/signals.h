@@ -28,4 +28,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 void setup_signal_handlers(void);
 extern volatile int sig_exit;
+extern volatile int sig_received;
 #endif
