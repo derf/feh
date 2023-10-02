@@ -1,4 +1,9 @@
-Thu, 06 Apr 2023 16:19:16 +0200
+Mon, 02 Oct 2023 04:27:56 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.10.1
+    * Do not call signal-unsafe functions within signal handlers
+
+Thu, 06 Apr 2023 16:19:16 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.10
     * Add --sort=none option to un-set sort modes specified earlier
