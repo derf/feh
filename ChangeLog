@@ -6,13 +6,13 @@ Thu, 06 Apr 2023 16:19:16 +0200
     * Fix build with clang 16. (Patch by orbea)
     * Fix tests when building with magic=1
 
-Mon, 22 Aug 2022 17:49:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 22 Aug 2022 17:49:11 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.9.1
     * Set libcurl user agent to "feh/3.9.1". Previously, feh did not send a
       user agent.
 
-Sun, 12 Jun 2022 13:12:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 12 Jun 2022 13:12:00 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.9
     * Fix compilation on macOS by defining _DARWIN_C_SOURCE for
@@ -32,7 +32,7 @@ Sun, 12 Jun 2022 13:12:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       getopt_long is provided by a wide range of libc implementations, so
       there is no need for feh to duplicate it. (Patch by Guilherme Janczak)
 
-Mon, 03 Jan 2022 11:29:03 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 03 Jan 2022 11:29:03 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.8
     * Add button ID "0" to cursor bindings. This pseudo-button is triggered
@@ -45,19 +45,19 @@ Mon, 03 Jan 2022 11:29:03 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       mis-orientation of images, as Imlib2 has already adjusted the
       orientation).
 
-Sat, 25 Sep 2021 09:21:25 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 25 Sep 2021 09:21:25 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.7.2
     * Fix crash when running feh without stdin file descriptor
 
-Sat, 24 Jul 2021 22:30:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 24 Jul 2021 22:30:12 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.7.1
     * Support JPEG XL files when using imlib2-jxl (patch by Alistair)
     * Fix support for images smaller than 16 bytes (patch by David Buchanan)
     * Fix some out of bounds reads (patches by Tobias Stoeckmann)
 
-Sun, 09 May 2021 11:31:55 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 09 May 2021 11:31:55 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.7
     * Use compact representation instead of key-value pairs for common EXIF data
@@ -71,21 +71,21 @@ Sun, 09 May 2021 11:31:55 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix Ctrl+key causing unintended behaviour when controlling feh via stdin
     * Fix high CPU usage when closing stdin after starting feh from a terminal
 
-Mon, 25 Jan 2021 17:46:57 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 25 Jan 2021 17:46:57 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6.3
     * Fix --start-at not handling URL-encoded file:/// paths properly. Notably,
       this also fixes feh not displaying images with spaces or unicode
       elements in their path when opened from a file manager.
 
-Sat, 09 Jan 2021 12:28:06 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 09 Jan 2021 12:28:06 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6.2
     * Fix save_filelist not respecting --output-dir
     * Fix file descriptor leak when attempting to load truncated image files.
       The issue was introduced in v3.6.
 
-Sun, 06 Dec 2020 08:34:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 06 Dec 2020 08:34:15 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6.1
     * Fix excessive memory consumption when showing long-running slideshows
@@ -98,7 +98,7 @@ Sun, 06 Dec 2020 08:34:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix memory leak in --draw-exif
     * Fix memory leak when reloading HTTP files with --no-conversion-cache
 
-Mon, 30 Nov 2020 19:44:47 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 30 Nov 2020 19:44:47 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.6
     * Add flip and rotate options to the menu
@@ -111,7 +111,7 @@ Mon, 30 Nov 2020 19:44:47 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       <https://github.com/derf/feh/issues/505> for details.
 
 
-Sat, 29 Aug 2020 08:49:08 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 29 Aug 2020 08:49:08 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.5
     * Enable --version-sort on systems without strverscmp support. This
@@ -121,13 +121,13 @@ Sat, 29 Aug 2020 08:49:08 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Add %a format specifier (slideshow state: "playing" / "paused")
     * Fix crashes when combining --reload and --multiwindow
 
-Fri, 29 May 2020 23:52:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 29 May 2020 23:52:35 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.4.1
     * Fix lossless rotate not being lossless when using feh with Imlib2 v1.6
       or later
 
-Sat, 11 Apr 2020 09:51:01 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 11 Apr 2020 09:51:01 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.4
     * Images loaded via HTTPS/curl, ImageMagick, and dcraw are now cached
@@ -145,7 +145,7 @@ Sat, 11 Apr 2020 09:51:01 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix a memory leak when repeatedly cycling through slideshows containing
       images loaded via libcurl, ImageMagick or dcraw.
 
-Tue, 03 Dec 2019 17:27:46 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 03 Dec 2019 17:27:46 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.3
     * New option --class allows setting the X11 class hint per feh instance
@@ -153,7 +153,7 @@ Tue, 03 Dec 2019 17:27:46 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Improve handling of NULL returns from Imlib2 calls (patch by Ben Boeckel)
     * Fix compilation with libcurl < v7.32
 
-Mon, 22 Jul 2019 20:17:03 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 22 Jul 2019 20:17:03 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.2.1
     * Use --no-fehbg option in ~/.fehbg. This fixes cases where an X11
@@ -164,7 +164,7 @@ Mon, 22 Jul 2019 20:17:03 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix TOCTTOU when setting the file mode of ~/.fehbg
       (patch by Tobias Stoeckmann)
 
-Wed, 10 Jul 2019 17:40:29 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 10 Jul 2019 17:40:29 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.2
     * Build feh with inotify=1 to automatically reload changed files in
@@ -173,13 +173,13 @@ Wed, 10 Jul 2019 17:40:29 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Reload current image(s) when receiving SIGUSR1 or SIGUSR2 in single-image
       slideshows or in multiwindow mode
 
-Sun, 17 Feb 2019 08:41:53 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 17 Feb 2019 08:41:53 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Releasev v3.1.3
     * Fix missing filename in ~/.fehbg when using --no-xinerama on a feh
       binary compiled with xinerama=1. This issue was introduced in v3.1.2.
 
-Mon, 11 Feb 2019 17:24:13 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 11 Feb 2019 17:24:13 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.1.2
     * Fix missing filenames in ~/.fehbg when using --bg-* on directories and/or
@@ -188,7 +188,7 @@ Mon, 11 Feb 2019 17:24:13 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       'start paused' flag
     * Fix repeated --info option not properly overriding the 'draw info' flag
 
-Fri, 07 Dec 2018 22:51:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 07 Dec 2018 22:51:15 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.1.1
     * Decrease libcurl timeout from indefinite to 30 minutes. This should
@@ -200,7 +200,7 @@ Fri, 07 Dec 2018 22:51:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       Previously, signals were ignored during a (possibly slow) libcurl
       network transfer, which was not intended behaviour.
 
-Wed, 21 Nov 2018 19:37:34 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 21 Nov 2018 19:37:34 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.1
     * Running "feh --start-at .../file.jpg" without specifying images,
@@ -216,7 +216,7 @@ Wed, 21 Nov 2018 19:37:34 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       error in previous versions.
     * Respect -j / --output-dir when using save_image or save_filelist actions.
 
-Fri, 09 Nov 2018 17:17:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 09 Nov 2018 17:17:15 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.0
     * Remove deprecated webcam scripts (feh-cam and gen-cam-menu)
@@ -233,7 +233,7 @@ Fri, 09 Nov 2018 17:17:15 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       file as well as the displayed image. This was the default behaviour in
       feh 1.x and 2.x
 
-Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 27 Oct 2018 19:46:48 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.28.1
     * Do not ignore quit signals (SIGTERM, SIGINT, SIGQUIT) during preload
@@ -241,7 +241,7 @@ Sat, 27 Oct 2018 19:46:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       patch by Olof-Joachim Frahm)
     * Improve randomness on non-glibc systems
 
-Mon, 17 Sep 2018 21:17:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 17 Sep 2018 21:17:04 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.28
     * Decrease loading time for RAW images by utilizing dcraw to display the
@@ -255,7 +255,7 @@ Mon, 17 Sep 2018 21:17:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       <https://github.com/ulteq>), quit replaces --cycle-once (which is now
       deprecated), and resume is the default (continue at the first image).
 
-Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 17 Jul 2018 17:33:10 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.27.1
     * Fix feh occasionally becoming unresponsive when asked to terminate
@@ -264,7 +264,7 @@ Tue, 17 Jul 2018 17:33:10 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix --keep-zoom-vp issues introduced in 2.27
       (patch by <https://github.com/ulteq>)
 
-Thu, 28 Jun 2018 17:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 28 Jun 2018 17:26:54 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.27
     * Fix size_to_image ("w") command when both --scale-down and --keep-zoom-vp
@@ -281,17 +281,17 @@ Thu, 28 Jun 2018 17:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       is enabled
     * All patches provided by <https://github.com/ulteq>. Thanks a lot!
 
-Tue, 26 Jun 2018 10:33:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 26 Jun 2018 10:33:04 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.4
     * Correctly save --bg-max in ~/.fehbg (patch by Sebastian Bickerle)
 
-Fri, 18 May 2018 22:58:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 18 May 2018 22:58:02 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.3
     * Properly escape --image-bg argument in ~/.fehbg (broken in 2.26.1)
 
-Sat, 12 May 2018 16:33:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 12 May 2018 16:33:56 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.2
     * Show correct filelist position in windows opened from thumbnail mode.
@@ -299,7 +299,7 @@ Sat, 12 May 2018 16:33:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Improve support for key input from stdin
     * Do not push menus off the screen when hitting screen limits
 
-Fri, 11 May 2018 15:11:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 11 May 2018 15:11:17 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26.1
     * Restore pre-2.21 ~/.fehbg behaviour. This fixes nondeterministic
@@ -309,7 +309,7 @@ Fri, 11 May 2018 15:11:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix /tmp being cluttered with temporary ImageMagick files when using
       --magick-timeout and a conversion takes longer than allowed
 
-Thu, 19 Apr 2018 21:43:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 19 Apr 2018 21:43:12 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.26
     * Save absolute file paths in ~/.fehbg, similar to the behaviour prior to
@@ -317,13 +317,13 @@ Thu, 19 Apr 2018 21:43:12 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Add %g (window dimensions) and %Z (precise zoom level) format specifiers
     * Improve -z/--randomize randomness
 
-Wed, 07 Mar 2018 17:49:52 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 07 Mar 2018 17:49:52 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.25.1
     * Fix compilation issues when using CFLAGS=-m64 on some gcc versions
     * Re-render current image when toggle_fixed_geometry is input
 
-Sun, 04 Mar 2018 08:53:50 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 04 Mar 2018 08:53:50 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.25
     * Add --version-sort option to enable natural sorting of file and directory
@@ -338,7 +338,7 @@ Sun, 04 Mar 2018 08:53:50 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix filelists specified by -f/--filelist not being reloaded when using
       --reload
 
-Mon, 26 Feb 2018 21:41:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 26 Feb 2018 21:41:38 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.24
     * Improve performance when using --{max,min}-dimension in slideshow mode
@@ -347,12 +347,12 @@ Mon, 26 Feb 2018 21:41:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       (introduced in feh 2.23.1)
 
 
-Mon, 12 Feb 2018 22:11:55 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 12 Feb 2018 22:11:55 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23.2
     * Fix support for nested quotes in .confeg/feh/themes
 
-Wed, 31 Jan 2018 17:38:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 31 Jan 2018 17:38:25 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23.1
     * The Makefile no longer honors CPPFLAGS and instead consistently uses
@@ -361,7 +361,7 @@ Wed, 31 Jan 2018 17:38:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Minor performance improvements (patches by ulteq)
     * Stability improvements when using --magick-timeout (patch by ulteq)
 
-Thu, 28 Dec 2017 19:26:29 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 28 Dec 2017 19:26:29 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.23
     * Fix broken thumbnail/index windows when using --scale-down
@@ -369,18 +369,18 @@ Thu, 28 Dec 2017 19:26:29 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       for significant performance improvements especially in small slideshows
     * Add --cache-size option to set Imlib2 image cache size
 
-Tue, 07 Nov 2017 17:36:26 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 07 Nov 2017 17:36:26 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22.2
     * Fix HTTPS certificate errors on some systems (broken in 2.22)
 
-Tue, 07 Nov 2017 07:51:48 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 07 Nov 2017 07:51:48 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22.1
     * Allow ~/.fehbg to be sourced (instead of executed) from other shell
       scripts again (broken in 2.22)
 
-Sat, 04 Nov 2017 14:55:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 04 Nov 2017 14:55:38 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.22
     * Add support for CURL_CA_BUNDLE environment variable when loading images
@@ -388,7 +388,7 @@ Sat, 04 Nov 2017 14:55:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix ~/.fehbg not being updated when setting a wallpaper via menu
       (broken in 2.21)
 
-Sat, 07 Oct 2017 12:14:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 07 Oct 2017 12:14:17 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.21
     * Add toggle_fixed_geometry ('g') key binding to toggle window auto-resize
@@ -397,7 +397,7 @@ Sat, 07 Oct 2017 12:14:17 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix --force-aliasing (and possibly other options) missing from ~/.fehbg
       when using them for background setting
 
-Thu, 07 Sep 2017 20:20:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 07 Sep 2017 20:20:11 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.20
     * Fix clang/gcc warnings (Patches by orbea)
@@ -410,27 +410,27 @@ Thu, 07 Sep 2017 20:20:11 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Remove images from the filelist if they were removed by executing a
       user-defined action <https://github.com/derf/feh/issues/322>
 
-Mon, 21 Aug 2017 19:04:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 21 Aug 2017 19:04:00 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.3
     * Save geometry data in .fehbg when setting a wallpaper with --geometry
     * Fix Imlib2 developer warning and improve out-of-memory error message
       when using --thumbnails / --index on large directories
 
-Sat, 12 Aug 2017 05:05:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 12 Aug 2017 05:05:24 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.2
     * Show ImageMagick loader errors unless --quiet is specified
     * Fix crash when handling certain media keys (introduced in 2.19.1)
 
-Tue, 25 Jul 2017 18:40:33 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 25 Jul 2017 18:40:33 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19.1
     * Fix Shift modifier not being recognized for tab, space and similar keys.
       This lead to keybindings like Shift+Tab or Shift+Space being parsed as if
       the Shift modifier had not been specified
 
-Tue, 06 Jun 2017 20:40:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 06 Jun 2017 20:40:00 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.19
     * Follow the freedesktop.org Thumbnail Managing Standard by saving
@@ -440,7 +440,7 @@ Tue, 06 Jun 2017 20:40:00 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Install app icons with the correct permissions of 644
     * Documentation improvements
 
-Tue, 04 Apr 2017 21:22:16 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 04 Apr 2017 21:22:16 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18.3
     * Fix double-free/OOB-write in E17 IPC. This only affects the
@@ -457,19 +457,19 @@ Tue, 04 Apr 2017 21:22:16 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix memory leak when saving a filelist or image whose target filename
       already exists. (patch by Tobias Stoeckmann)
 
-Thu, 16 Feb 2017 23:05:39 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 16 Feb 2017 23:05:39 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18.2
     * Fix crash when using both --thumbnails and --title. This bug was
       introduced in v2.18.1.
 
-Sun, 22 Jan 2017 19:11:32 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 22 Jan 2017 19:11:32 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18.1
     * Fix image-specific format specifiers not being updated correctly
       (e.g. %z not displaying the correct zoom value after zooming in / out)
 
-Tue, 01 Nov 2016 10:55:04 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 01 Nov 2016 10:55:04 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.18
     * Move README to README.md
@@ -478,13 +478,13 @@ Tue, 01 Nov 2016 10:55:04 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Only for builds with exif=1: Disable EXIF-based auto rotation by
       default, add --auto-rotate option to enable it (Patch by Elliot Wolk)
 
-Wed, 31 Aug 2016 20:27:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 31 Aug 2016 20:27:20 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.17.1
     * Fix compilation on systems where HOST_NAME_MAX is not defined, such as
       FreeBSD (patch by Niclas Zeising)
 
-Sun, 28 Aug 2016 21:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 28 Aug 2016 21:26:54 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.17
     * Install feh icon (both 48x48 and scalable SVG) to /usr/share/icons
@@ -500,20 +500,20 @@ Sun, 28 Aug 2016 21:26:54 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * feh now also sets the X11 _NET_WM_PID and WM_CLIENT_MACHINE window
       properties
 
-Sun, 31 Jul 2016 16:59:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 31 Jul 2016 16:59:07 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.16.2
     * Also support in-place editing for images loaded via libcurl or
       imagemagick. Results will not be written back to disk in this case.
 
-Fri, 24 Jun 2016 00:31:56 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 24 Jun 2016 00:31:56 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.16.1
     * Fix crash when trying to rotate a JPEG image without having
       jpegtran / jpegexiforient installed
     * Handle failing fork() calls gracefully
 
-Thu, 09 Jun 2016 08:59:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 09 Jun 2016 08:59:35 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.16
     * Fix invalid key/button definitions mis-assigning keys/buttons to other
@@ -526,13 +526,13 @@ Thu, 09 Jun 2016 08:59:35 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Add navigation keys next_dir (]) and prev_dir ([) to jump to the first
       image of the nex/previous directory (Patch by Sung Pae)
 
-Fri, 27 May 2016 13:15:49 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 27 May 2016 13:15:49 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.4
     * Fix toggle_filenames key displaying wrong file numbers in multiwindow
       mode
 
-Thu, 28 Apr 2016 11:41:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 28 Apr 2016 11:41:04 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.3
     * Rescale image when resizing a window and --scale-down or --geometry is
@@ -541,18 +541,18 @@ Thu, 28 Apr 2016 11:41:04 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       size which will not be updated when changing images (as was the case in
       feh < 2.15). This may or may not be fixed in the future.
 
-Sat, 16 Apr 2016 18:32:38 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 16 Apr 2016 18:32:38 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.2
     * Fix --keep-zoom-vp not keeping the viewport x/y offsets (broken by 2.15)
 
-Fri, 15 Apr 2016 10:18:37 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 15 Apr 2016 10:18:37 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15.1
     * Fix w (size_to_image) key not updating window size when --scale-down
       or --geometry is active
 
-Sat, 09 Apr 2016 20:42:23 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sat, 09 Apr 2016 20:42:23 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.15
     * Patch by William Woodruff: Add --insecure option to disable HTTPS
@@ -571,7 +571,7 @@ Sat, 09 Apr 2016 20:42:23 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       start with a space. Titles starting with a space are treated as part of
       of the command so that actions like '[ -L %F ] && foo' still work
 
-Thu, 18 Feb 2016 20:40:19 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 18 Feb 2016 20:40:19 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14.2
     * make test: Ignore results on arm and mips since they expose a bug in
@@ -584,7 +584,7 @@ Thu, 18 Feb 2016 20:40:19 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * -f / --filelist: Fix bug in "-" / "/dev/stdin" handling affecting feh
       running in ksh and possibly other environments
 
-Thu, 04 Feb 2016 20:31:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 04 Feb 2016 20:31:38 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14.1
     * Skip a small set of build tests on Debian and derivatives, since they
@@ -593,7 +593,7 @@ Thu, 04 Feb 2016 20:31:38 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=813729> for more
       information
 
-Sun, 04 Oct 2015 10:01:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 04 Oct 2015 10:01:20 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.14
     * Add --xinerama-index option for background setting
@@ -610,12 +610,12 @@ Sun, 04 Oct 2015 10:01:20 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       active xinerama screen by setting the XINERAMA_SCREEN environment
       variable
 
-Sun, 24 May 2015 11:45:18 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 24 May 2015 11:45:18 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.13.1
     * Fix --scale-down breaking image centering in fullscreen mode
 
-Sun, 17 May 2015 20:40:36 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 17 May 2015 20:40:36 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.13
     * print --verbose output to stderr
@@ -628,14 +628,14 @@ Sun, 17 May 2015 20:40:36 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix potential out of bounds array access in EXIF code
       (when built with exif=1)
 
-Wed, 08 Apr 2015 11:18:41 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 08 Apr 2015 11:18:41 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.12.1
     * Handle missing HOME in environment
     * Fix memory leak when a slideshow contains many unloadable images
     * Fix memory leak when --prelaod removes files from the filelist
 
-Thu, 15 May 2014 23:41:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 15 May 2014 23:41:07 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.12
     * feh-cam and gen-cam-menu are no longer installed by default. Use
@@ -653,7 +653,7 @@ Thu, 15 May 2014 23:41:07 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       --thumb-title and --title)
     * Update help (when built with help=1)
 
-Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Sun, 27 Apr 2014 20:28:02 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.11
     * Patch by Michael Vorburger: Fix erroneous free() in case of failed
@@ -669,7 +669,7 @@ Sun, 27 Apr 2014 20:28:02 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Respect --image-bg=checks in fullscreen mode (default remains black)
       (closes #156)
 
-Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 28 Feb 2014 18:20:25 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.10
     * Allow non-centered wallpapers using the --geometry option
@@ -685,7 +685,7 @@ Fri, 28 Feb 2014 18:20:25 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       (Patch by Brian Mattern)
     * Always use absolute paths in .fehbg
 
-Tue, 11 Jun 2013 08:27:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 11 Jun 2013 08:27:24 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.9.3
     * Patch by David Gowers: Add %L format code (temporary copy of filelist)
@@ -693,20 +693,20 @@ Tue, 11 Jun 2013 08:27:24 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       --customlist, --index-info, --info, --thumb-title, --title)
     * Fix tests failing when compiled with help=1
 
-Fri, 03 May 2013 21:16:59 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Fri, 03 May 2013 21:16:59 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.9.2
     * Fix -F --zoom 100 not working in Gnome+Unity when compiling feh with
       gcc and enabled optimizations (not -O0)
     * EXIF updates by Dennis Real
 
-Thu, 14 Feb 2013 12:52:02 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 14 Feb 2013 12:52:02 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.9.1
     * Set correct window dimensions on any Xinerama screen, not just the
       first one (active screen is determined by current pointer location)
 
-Wed, 13 Feb 2013 01:46:56 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 13 Feb 2013 01:46:56 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.9
     * Add --keep-zoom-vp option to keep zoom and offsets when switching
@@ -718,7 +718,7 @@ Wed, 13 Feb 2013 01:46:56 +0100  Daniel Friesel <derf+feh@finalrewind.org>
       error
     * Add button bindings to zoom in / out (patch by sdaau)
 
-Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
+Mon, 24 Dec 2012 15:45:54 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.8
     * Do not apply --scale-down to the thumbnail window. It will be applied
@@ -739,19 +739,19 @@ Mon, 24 Dec 2012 15:45:54 +0100  Daniel Friesel <derf+feh@finalrewind.org>
     * Make 'z' (jump_random) work in thumbnail mode as well, fix thumbnail
       selection roll-over <https://github.com/derf/feh/issues/115>
 
-Tue, 16 Oct 2012 06:29:58 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 16 Oct 2012 06:29:58 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.7
     * Add --min-dim and --max-dim options to only process images with certain
       dimensions
 
-Thu, 27 Sep 2012 16:48:48 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 27 Sep 2012 16:48:48 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.6.3
     * Fix segfault when doing lossless mirror/rotate and jpegexiforient is
       not present <https://github.com/derf/feh/issues/100>
 
-Wed, 26 Sep 2012 17:06:50 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Wed, 26 Sep 2012 17:06:50 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.6.2
     * Set EXIF orientation tag to 1 ("0,0 is top left" aka normal) after
@@ -761,7 +761,7 @@ Wed, 26 Sep 2012 17:06:50 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Fix spelling in feh(1)
     * Compile debug builds with -O0
 
-Thu, 13 Sep 2012 12:00:06 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Thu, 13 Sep 2012 12:00:06 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.6.1
     * Fix freedesktop.org Thumbnail Managing Standard implementation:
@@ -773,7 +773,7 @@ Thu, 13 Sep 2012 12:00:06 +0200  Daniel Friesel <derf+feh@finalrewind.org>
     * Show error message if load failed and magick is disabled (was broken
       by feh 2.4)
 
-Tue, 28 Aug 2012 11:46:19 +0200  Daniel Friesel <derf+feh@finalrewind.org>
+Tue, 28 Aug 2012 11:46:19 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v2.6
     * Dennis Real: EXIF mode fixes, support for more camera models
@@ -794,7 +794,7 @@ Tue, 28 Aug 2012 11:46:19 +0200  Daniel Friesel <derf+feh@finalrewind.org>
       less confusing. Set --magick-timeout to a non-negative value to enable
       it (--magick-timeout 5 for feh-2.5 behaviour)
 
-Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
+Sun, 25 Mar 2012 13:13:26 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.5
     * Add R, * and / bindings for <keypad begin>, <keypad *> and <keypad />
@@ -805,7 +805,7 @@ Sun, 25 Mar 2012 13:13:26 +0200  Daniel Friesel <derf@finalrewind.org>
     * Do not scroll past image borders when using key bindings
     * --loadable / --unloadable: indicate result in exit status
 
-Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
+Tue, 06 Mar 2012 13:13:35 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.4
     * exif-support fixes by Dennis Real
@@ -817,7 +817,7 @@ Tue, 06 Mar 2012 13:13:35 +0100  Daniel Friesel <derf@finalrewind.org>
       ignore out of memory errors
     * Use ImageMagick (convert) as loader for unsupported file formats
 
-Thu, 02 Feb 2012 21:04:06 +0100  Daniel Friesel <derf@finalrewind.org>
+Thu, 02 Feb 2012 21:04:06 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.3
     * Add %F and %N format specifiers, containing an escaped version of %f/%n.
@@ -834,7 +834,7 @@ Thu, 02 Feb 2012 21:04:06 +0100  Daniel Friesel <derf@finalrewind.org>
     * Accept offset-only arguments for --geometry
       <https://github.com/derf/feh/issues/73>
 
-Mon, 02 Jan 2012 11:54:01 +0100  Daniel Friesel <derf@finalrewind.org>
+Mon, 02 Jan 2012 11:54:01 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.2
     * Add --no-fehbg option to disable ~/.fehbg creation (patch by Felix Crux)
@@ -846,7 +846,7 @@ Mon, 02 Jan 2012 11:54:01 +0100  Daniel Friesel <derf@finalrewind.org>
     * Follow HTTP redirects
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=653689>
 
-Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
+Wed, 02 Nov 2011 10:56:10 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.1
     * Experimental --scale-down and --auto-zoom tiling support
@@ -855,7 +855,7 @@ Wed, 02 Nov 2011 10:56:10 +0100  Daniel Friesel <derf@finalrewind.org>
     * Fix http image load for long image names
       <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=646421>
 
-Mon, 10 Oct 2011 12:25:00 +0200  Daniel Friesel <derf@finalrewind.org>
+Mon, 10 Oct 2011 12:25:00 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v2.0
     * The --bg-options now accept multiple filenames, one per Xinerama screen
@@ -871,7 +871,7 @@ Mon, 10 Oct 2011 12:25:00 +0200  Daniel Friesel <derf@finalrewind.org>
       hosts if the local system is 32bit (for 32<->32 and 64<->64, this works
       anyways)
 
-Mon, 26 Sep 2011 09:35:41 +0200  Daniel Friesel <derf@finalrewind.org>
+Mon, 26 Sep 2011 09:35:41 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.16.2
     * Fix useless memory use when using feh --reload on HTTP URLs
@@ -881,13 +881,13 @@ Mon, 26 Sep 2011 09:35:41 +0200  Daniel Friesel <derf@finalrewind.org>
     * Fix --title-font fallback behaviour
     * Fix delayed title display when using --title-font
 
-Sun, 11 Sep 2011 12:46:50 +0200  Daniel Friesel <derf@finalrewind.org>
+Sun, 11 Sep 2011 12:46:50 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.16.1
     * Fix reload after image rotation and similar (broken by 1.16)
       <https://github.com/derf/feh/issues/63>
 
-Mon, 05 Sep 2011 10:56:58 +0200  Daniel Friesel <derf@finalrewind.org>
+Mon, 05 Sep 2011 10:56:58 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.16
     * Reload image after executing an action with the hold-action flag set
@@ -910,14 +910,14 @@ Mon, 05 Sep 2011 10:56:58 +0200  Daniel Friesel <derf@finalrewind.org>
     * When using --no-menus and clicking the menu button, feh will now ignore
       it instead of quitting (which was undocumented behaviour anyways)
 
-Tue, 16 Aug 2011 22:48:06 +0200  Daniel Friesel <derf@finalrewind.org>
+Tue, 16 Aug 2011 22:48:06 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.15.1
     * Fix segfault when selecting menu items (broken by 1.15)
       <https://github.com/derf/feh/issues/58>,
       <https://bugs.archlinux.org/task/25612>
 
-Mon, 15 Aug 2011 11:12:34 +0200  Daniel Friesel <derf@finalrewind.org>
+Mon, 15 Aug 2011 11:12:34 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.15
     * Respect --image-bg option in full-screen mode
@@ -942,7 +942,7 @@ Mon, 15 Aug 2011 11:12:34 +0200  Daniel Friesel <derf@finalrewind.org>
     * Add experimental reload functionality for directories
       <https://github.com/derf/feh/issues/14>
 
-Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
+Mon, 04 Jul 2011 14:46:36 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.14.2
     * Fix --draw-filename "x of y" being cut off by short filenames
@@ -954,13 +954,13 @@ Mon, 04 Jul 2011 14:46:36 +0200  Daniel Friesel <derf@finalrewind.org>
     * Fix minor documentation bugs
     * Fix minor memleak in the recursive file loader for directories
 
-Thu, 19 May 2011 22:32:42 +0200  Daniel Friesel <derf@finalrewind.org>
+Thu, 19 May 2011 22:32:42 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.14.1
     * Fix compilation with curl=0
     * Make zoom_default key work properly with --geometry
 
-Wed, 11 May 2011 11:37:32 +0200  Daniel Friesel <derf@finalrewind.org>
+Wed, 11 May 2011 11:37:32 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.14
     * Only create caption directory when actually writing out a caption.
@@ -998,7 +998,7 @@ Wed, 11 May 2011 11:37:32 +0200  Daniel Friesel <derf@finalrewind.org>
       theme definition handling.  Having a theme line with just one
       option/value pair used to produce undefined behaviour
 
-Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
+Sat, 23 Apr 2011 22:00:27 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.13
     * Fix segfault upon unloadable images when image-related format specifiers
@@ -1012,7 +1012,7 @@ Sat, 23 Apr 2011 22:00:27 +0200  Daniel Friesel <derf@finalrewind.org>
       the respective mode (scale/fill/max/center) on each Xinerama screen. Use
       --no-xinerama to disable this.
 
-Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
+Sat, 12 Mar 2011 22:49:53 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.12
     * Add --zoom fill as equivalent for --auto-zoom
@@ -1026,7 +1026,7 @@ Sat, 12 Mar 2011 22:49:53 +0100  Daniel Friesel <derf@finalrewind.org>
     * Remove builtin http client (--builtin)
     * Fix compilation issues with libpng 1.5.1
 
-Wed, 09 Feb 2011 20:11:26 +0100  Daniel Friesel <derf@finalrewind.org>
+Wed, 09 Feb 2011 20:11:26 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.11.2
     * Use wget --no-clobber to prevent TOCTTOU-based hole allowing a
@@ -1035,7 +1035,7 @@ Wed, 09 Feb 2011 20:11:26 +0100  Daniel Friesel <derf@finalrewind.org>
       It is still possible for an attacker to _create_ arbitrary files via the
       same hole.
 
-Wed, 26 Jan 2011 21:07:19 +0100  Daniel Friesel <derf@finalrewind.org>
+Wed, 26 Jan 2011 21:07:19 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.11.1
     * Show correct image dimensions in for cached thumbnails
@@ -1043,7 +1043,7 @@ Wed, 26 Jan 2011 21:07:19 +0100  Daniel Friesel <derf@finalrewind.org>
     * Remove support for FEH_OPTIONS (was deprecated >5 years ago)
     * Restrict available modifiers to Control/Mod1/Mod4
 
-Sat, 22 Jan 2011 11:48:33 +0100  Daniel Friesel <derf@finalrewind.org>
+Sat, 22 Jan 2011 11:48:33 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.11
     * Patch by Pascal Bleser: Use getaddrinfo for builtin http client,
@@ -1055,7 +1055,7 @@ Sat, 22 Jan 2011 11:48:33 +0100  Daniel Friesel <derf@finalrewind.org>
     * Increase movement steps for Ctrl+Left etc.
     * Make in/out zoom use equal zoom ratio
 
-Fri, 03 Dec 2010 19:41:45 +0100  Daniel Friesel <derf@finalrewind.org>
+Fri, 03 Dec 2010 19:41:45 +0100  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.10.1
     * Partially fix --scale-down behaviour (zooming is still broken)
@@ -1063,7 +1063,7 @@ Fri, 03 Dec 2010 19:41:45 +0100  Daniel Friesel <derf@finalrewind.org>
     * Fix segfaults after trying to load several unloadable images
     * Fix fehrc created by feh (contined escape errors)
 
-Thu, 07 Oct 2010 20:15:12 +0200  Daniel Friesel <derf@finalrewind.org>
+Thu, 07 Oct 2010 20:15:12 +0200  Birte Friesel <derf@finalrewind.org>
 
 * Release v1.10 (aka "2.0 will come real soon now")
     * Patch by Stefan Mark: Add --bg-max (scaled with borders)
@@ -1079,7 +1079,7 @@ Thu, 07 Oct 2010 20:15:12 +0200  Daniel Friesel <derf@finalrewind.org>
     * Zoom button: Zoom to 100% on button release, not button click
     * --draw-filename: Always show position in filelist
 
-Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
+Tue, 24 Aug 2010 19:23:36 +0200  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.9
     * Add --fullscreen option, --full-screen is now deprecated
@@ -1094,7 +1094,7 @@ Tue, 24 Aug 2010 19:23:36 +0200  Daniel Friesel <derf@chaosdorf.de>
     * When zooming via keyboard: Always zoom around the center of the window
     * The image can now be panned with Ctrl + arrow keys
 
-Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
+Fri, 25 Jun 2010 16:07:20 +0200  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.8
     * support LDLIBS in Makefile/config.mk
@@ -1115,7 +1115,7 @@ Fri, 25 Jun 2010 16:07:20 +0200  Daniel Friesel <derf@chaosdorf.de>
     * Don't add ?randomnumber to URLs when downloading them, it confuses some
       servers and is not really necessary in general
 
-Thu Jun 10 12:12:04 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+Thu Jun 10 12:12:04 CEST 2010  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.7
     * Fix segfault in Thumbnail mode when trying to open a no longer
@@ -1133,14 +1133,14 @@ Thu Jun 10 12:12:04 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
     * caption mode: Automatically create caption directory if it doesn't exist
     * Slideshow mode: SIGUSR1 = next image, SIGUSR2 = previous image
 
-Sat Jun  5 21:35:25 CEST 2010  Daniel Friesel <derf@chaosdorf.de
+Sat Jun  5 21:35:25 CEST 2010  Birte Friesel <derf@chaosdorf.de
 
 * Release v1.6.1
     * Fix omitted image borders at high zoom levels
     * Re-add getopt_long files (possibly relevant for non-glibc systems)
     * Do not require a running X server for -L, -u, -U options
 
-Tue Jun  1 10:21:19 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+Tue Jun  1 10:21:19 CEST 2010  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.6
     * Patch by aaptel: Support numpad keys for actions
@@ -1156,7 +1156,7 @@ Tue Jun  1 10:21:19 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
     * Fix "make uninstall". You do NOT want to call this for feh versions
       1.4.2 to 1.5
 
-Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+Thu May  6 08:34:39 CEST 2010  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.5
     * Rewrite parts of the menu code & fix a memory leak while there
@@ -1164,7 +1164,7 @@ Thu May  6 08:34:39 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
     * Add keybinding to toggle pointer visibility (see --hide-pointer)
     * Sort manual a bit
 
-Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+Thu Apr 22 22:28:09 CEST 2010  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.4.3
      * Warp the pointer when reaching a window border in pan mode
@@ -1174,7 +1174,7 @@ Thu Apr 22 22:28:09 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
          is. The zoom happen around at that pixel.
      * Manpage review
 
-Fri Apr  2 16:20:55 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
+Fri Apr  2 16:20:55 CEST 2010  Birte Friesel <derf@chaosdorf.de>
 
 * Release v1.4.2
      * Replace autoconf by config.mk
@@ -1183,7 +1183,7 @@ Fri Apr  2 16:20:55 CEST 2010  Daniel Friesel <derf@chaosdorf.de>
      * patch by dylan: Remove temporary files if url opening fails
      * Fix problems with unexpectedly empty filelists
 
-Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
+Tue Mar 16 07:56:36 CET 2010  Birte Friesel <derf@chaosdorf.de>
 
   * Release v1.4.1
      * Fix chrome theme in the default .fehrc
@@ -1191,7 +1191,7 @@ Tue Mar 16 07:56:36 CET 2010  Daniel Friesel <derf@chaosdorf.de>
      * Add manual for feh-cam and gen-cam-menu (from Debian)
      * Fix lossless rotate for filenames with spaces etc.
 
-Thu Mar  4 14:55:02 CET 2010  Daniel Friesel <derf@chaosdorf.de>
+Thu Mar  4 14:55:02 CET 2010  Birte Friesel <derf@chaosdorf.de>
 
   * Release v1.4
      * Lots of documentation fixes/improvements
@@ -1205,7 +1205,7 @@ Thu Mar  4 14:55:02 CET 2010  Daniel Friesel <derf@chaosdorf.de>
      * Use jpegtran binary instead of libjpeg for lossless rotation
      * Add --bg-fill option (patch by Anonymous)
 
-Mon Feb  8 21:47:56 CET 2010  Daniel Friesel <derf@chaosdorf.de>
+Mon Feb  8 21:47:56 CET 2010  Birte Friesel <derf@chaosdorf.de>
 
   * Release v1.3.5
      * Import various Debian patches
