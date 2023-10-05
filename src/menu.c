@@ -825,21 +825,17 @@ void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox
 
 void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 {
-	ImlibPolygon poly;
-
-	x -= ox;
+        // Draw filled triangle
+        x -= ox;
 	y -= oy;
 
 	imlib_context_set_image(dst);
-
-	poly = imlib_polygon_new();
-	imlib_polygon_add_point(poly, x, y + 3);
-	imlib_polygon_add_point(poly, x + 3, y + 6);
-	imlib_polygon_add_point(poly, x, y + 9);
 	imlib_context_set_color(0, 0, 0, 255);
-	imlib_image_fill_polygon(poly);
-	imlib_polygon_free(poly);
 
+	for (int i= 0; i <= 3; i++) {
+	  imlib_image_draw_line(x+i, y+3+i, x+i, y+9-i, 0);
+	}
+	  
 	return;
 }
 
