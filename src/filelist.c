@@ -180,6 +180,7 @@ static void add_stdin_to_filelist(void)
 	while ((readsize = fread(buf, sizeof(char), sizeof(buf), stdin)) > 0) {
 		if (fwrite(buf, sizeof(char), readsize, outfile) < readsize) {
 			free(sfn);
+			fclose(outfile);
 			return;
 		}
 	}
