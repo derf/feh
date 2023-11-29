@@ -171,7 +171,6 @@ with a non-negative value to enable support for these formats.
 .Pq optional feature, $MAN_MAGIC$ in this build
 .Nm
 can use libmagic to only pass image files to Imlib2.
-This feature is $MAN_MAGIC$ in this build.
 When using
 .Nm
 with lots of non-image files
