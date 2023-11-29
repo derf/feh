@@ -154,17 +154,25 @@ pnm, tiff, and bmp.
 The gif format is also supported, but only for static images.
 In case of animations, only the first frame will be shown.
 .
-If the convert binary
-.Pq supplied by ImageMagick
-is available, it also has limited support for many other file types, such as
-svg, xcf and otf.
-If dcraw is available,
-.Nm
-also supports RAW files provided by cameras and will display the embedded
-thumbnails.
-Use
+.Pp
+.
+When invoked with
 .Cm --conversion-timeout Ar timeout
-with a non-negative value to enable support for these formats.
+.Po
+and a non-negative
+.Ar timeout
+value
+.Pc ,
+.Nm
+also has limited support for various other file types by means of external
+conversion programs.
+If the dcraw binary is available,
+.Nm
+will use it to display the thumbnails embedded into RAW files provided by
+digital cameras and similar.
+If the ImageMagick convert binary is available,
+.Nm
+will use it to load file types such as svg, xcf, and otf.
 .
 .Pp
 .
