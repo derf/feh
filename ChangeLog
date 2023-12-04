@@ -1,3 +1,9 @@
+Mon, 04 Dec 2023 21:25:49 +0100  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.10.2
+    * Fix crash in right-click / menu rendering code on some distributions
+      (patch by Ametov Imil)
+
 Mon, 02 Oct 2023 04:27:56 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.10.1
