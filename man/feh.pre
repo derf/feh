@@ -437,6 +437,10 @@ Specify
 as extra directory in which to search for fonts; can be used multiple times to
 add multiple paths.
 .
+.It Cm --tap-zones
+.
+Enable tap zones for previous/next file in slide show mode
+.
 .It Cm --force-aliasing
 .
 Disable anti-aliasing for zooming, background setting etc.
