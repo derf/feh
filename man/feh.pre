@@ -994,7 +994,7 @@ when setting the wallpaper.
 .Pp
 .
 Use
-.Cm xrandr --listmonitor
+.Cm xrandr --listmonitors
 to determine how Xinerama monitor IDs map to screens/monitors in your setup.
 .
 .
