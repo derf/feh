@@ -62,6 +62,7 @@ OPTIONS
                            reloads image with \";\", switches to next otherwise
      --action[1-9]         Extra actions triggered by pressing keys <1>to <9>
  -G, --draw-actions        Show the defined actions in the image window
+     --tap-zones           Enable tap zones for previous/next file in slide show mode
      --force-aliasing      Disable antialiasing
  -m, --montage             Enable montage mode
  -i, --index               Create an index print of all images
