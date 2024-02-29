@@ -301,7 +301,8 @@ int feh_is_image(feh_file * file, int magic_flags)
 
 	D(("file %s has mime type: %s\n", file->filename, mime_type));
 
-	if (strncmp(mime_type, "image/", 6) == 0) {
+	if (strncmp(mime_type, "image/", 6) == 0 ||
+	    strcmp(mime_type, "audio/mpeg") == 0) {
 		return 1;
 	}
 
