@@ -425,7 +425,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"scroll-step"   , 1, 0, OPTION_scroll_step},
 		{"xinerama-index", 1, 0, OPTION_xinerama_index},
 		{"insecure"      , 0, 0, OPTION_insecure},
-		{"no-recursive"  , 0, 0, OPTION_recursive},
+		{"no-recursive"  , 0, 0, OPTION_no_recursive},
 		{"cache-size"    , 1, 0, OPTION_cache_size},
 		{"on-last-slide" , 1, 0, OPTION_on_last_slide},
 		{"conversion-timeout" , 1, 0, OPTION_conversion_timeout},
