@@ -147,7 +147,9 @@ Bugfixes are always welcome, just open a pull request :)
 Before proposing a new feature, please consider the scope of feh: It is an
 image viewer and cataloguer, not an image editor or similar. Also, its option
 list is already pretty long. Please discuss your ideas in a feature request
-before opening a pull request in this case.
+before opening a pull request in this case. Also, keep in mind that feh is
+developed as a hobby project and that there is absolutely no obligation for
+anyone to implement requested features or review merge requests.
 
 Please keep in mind that feh's options, key bindings and format specifiers are
 documented in two different places: The manual (man/feh.pre) and the help text
