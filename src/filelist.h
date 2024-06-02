@@ -36,6 +36,8 @@ struct __feh_file {
 	char *name;
 
 	/* info stuff */
+	time_t mtime;
+	int size;
 	feh_file_info *info;	/* only set when needed */
 #ifdef HAVE_LIBEXIF
 	ExifData *ed;
@@ -45,7 +47,6 @@ struct __feh_file {
 struct __feh_file_info {
 	int width;
 	int height;
-	int size;
 	int pixels;
 	unsigned char has_alpha;
 	char *format;
@@ -71,11 +72,11 @@ enum sort_type {
 	SORT_NAME,
 	SORT_FILENAME,
 	SORT_DIRNAME,
+	SORT_SIZE, // everything after SORT_SIZE requires stat(2) information on the filelist
 	SORT_MTIME,
-	SORT_WIDTH,
+	SORT_WIDTH, // everything after SORT_WIDTH requires preloading the images in the filelist
 	SORT_HEIGHT,
 	SORT_PIXELS,
-	SORT_SIZE,
 	SORT_FORMAT
 };
 
@@ -88,7 +89,8 @@ int file_selector_all(const struct dirent *unused);
 void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
-gib_list *feh_file_info_preload(gib_list * list);
+gib_list *feh_file_info_preload(gib_list * list, int load_images);
+int feh_file_stat(feh_file * file);
 int feh_file_info_load(feh_file * file, Imlib_Image im);
 void feh_file_dirname(char *dst, feh_file * f, int maxlen);
 void feh_prepare_filelist(void);

@@ -50,7 +50,7 @@ void init_list_mode(void)
 					file->info->height,
 					format_size(file->info->pixels));
 			printf("\t%s\t%c\t%s\n",
-					format_size(file->info->size),
+					format_size(file->size),
 					file->info->has_alpha ? 'X' : '-', file->filename);
 		}
 

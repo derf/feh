@@ -53,6 +53,8 @@ feh_file *feh_file_new(char *filename)
 		newfile->name = estrdup(s + 1);
 	else
 		newfile->name = estrdup(filename);
+	newfile->size = -1;
+	newfile->mtime = 0;
 	newfile->info = NULL;
 #ifdef HAVE_LIBEXIF
 	newfile->ed = NULL;
@@ -89,7 +91,6 @@ feh_file_info *feh_file_info_new(void)
 
 	info->width = 0;
 	info->height = 0;
-	info->size = 0;
 	info->pixels = 0;
 	info->has_alpha = 0;
 	info->format = NULL;
@@ -305,7 +306,7 @@ void delete_rm_files(void)
 	return;
 }
 
-gib_list *feh_file_info_preload(gib_list * list)
+gib_list *feh_file_info_preload(gib_list * list, int load_images)
 {
 	gib_list *l;
 	feh_file *file = NULL;
@@ -314,20 +315,27 @@ gib_list *feh_file_info_preload(gib_list * list)
 	for (l = list; l; l = l->next) {
 		file = FEH_FILE(l->data);
 		D(("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
-		if (feh_file_info_load(file, NULL)) {
-			D(("Failed to load file %p\n", file));
-			remove_list = gib_list_add_front(remove_list, l);
-			if (opt.verbose)
-				feh_display_status('x');
-		} else if (((unsigned int)file->info->width < opt.min_width)
-				|| ((unsigned int)file->info->width > opt.max_width)
-				|| ((unsigned int)file->info->height < opt.min_height)
-				|| ((unsigned int)file->info->height > opt.max_height)) {
-			remove_list = gib_list_add_front(remove_list, l);
-			if (opt.verbose)
-				feh_display_status('s');
-		} else if (opt.verbose)
-			feh_display_status('.');
+		if (load_images) {
+			if (feh_file_info_load(file, NULL)) {
+				D(("Failed to load file %p\n", file));
+				remove_list = gib_list_add_front(remove_list, l);
+				if (opt.verbose)
+					feh_display_status('x');
+			} else if (((unsigned int)file->info->width < opt.min_width)
+					|| ((unsigned int)file->info->width > opt.max_width)
+					|| ((unsigned int)file->info->height < opt.min_height)
+					|| ((unsigned int)file->info->height > opt.max_height)) {
+				remove_list = gib_list_add_front(remove_list, l);
+				if (opt.verbose)
+					feh_display_status('s');
+			} else if (opt.verbose)
+				feh_display_status('.');
+		} else {
+			if (feh_file_stat(file)) {
+				D(("Failed to stat file %p\n", file));
+				remove_list = gib_list_add_front(remove_list, l);
+			}
+		}
 		if (sig_exit) {
 			feh_display_status(0);
 			exit(sig_exit);
@@ -348,22 +356,35 @@ gib_list *feh_file_info_preload(gib_list * list)
 	return(list);
 }
 
-int feh_file_info_load(feh_file * file, Imlib_Image im)
+int feh_file_stat(feh_file * file)
 {
 	struct stat st;
-	int need_free = 1;
-	Imlib_Image im1;
-
-	D(("im is %p\n", im));
-
-	if (im)
-		need_free = 0;
 
 	errno = 0;
 	if (stat(file->filename, &st)) {
 		feh_print_stat_error(file->filename);
 		return(1);
 	}
+
+	file->mtime = st.st_mtime;
+
+	file->size = st.st_size;
+
+	return(0);
+}
+
+int feh_file_info_load(feh_file * file, Imlib_Image im)
+{
+	int need_free = 1;
+	Imlib_Image im1;
+
+	if (feh_file_stat(file))
+		return(1);
+
+	D(("im is %p\n", im));
+
+	if (im)
+		need_free = 0;
 
 	if (im)
 		im1 = im;
@@ -380,8 +401,6 @@ int feh_file_info_load(feh_file * file, Imlib_Image im)
 	file->info->pixels = file->info->width * file->info->height;
 
 	file->info->format = estrdup(gib_imlib_image_format(im1));
-
-	file->info->size = st.st_size;
 
 	if (need_free)
 		gib_imlib_free_image_and_decache(im1);
@@ -434,20 +453,8 @@ int feh_cmp_dirname(void *file1, void *file2)
 /* Return -1 if file1 is _newer_ than file2 */
 int feh_cmp_mtime(void *file1, void *file2)
 {
-	struct stat s1, s2;
-
-	if (stat(FEH_FILE(file1)->filename, &s1)) {
-		feh_print_stat_error(FEH_FILE(file1)->filename);
-		return(-1);
-	}
-
-	if (stat(FEH_FILE(file2)->filename, &s2)) {
-		feh_print_stat_error(FEH_FILE(file2)->filename);
-		return(-1);
-	}
-
 	/* gib_list_sort is not stable, so explicitly return 0 as -1 */
-	return(s1.st_mtime >= s2.st_mtime ? -1 : 1);
+	return(FEH_FILE(file1)->mtime >= FEH_FILE(file2)->mtime ? -1 : 1);
 }
 
 int feh_cmp_width(void *file1, void *file2)
@@ -467,7 +474,7 @@ int feh_cmp_pixels(void *file1, void *file2)
 
 int feh_cmp_size(void *file1, void *file2)
 {
-	return((FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
+	return((FEH_FILE(file1)->size - FEH_FILE(file2)->size));
 }
 
 int feh_cmp_format(void *file1, void *file2)
@@ -486,10 +493,16 @@ void feh_prepare_filelist(void)
 	 * is set and we're in thumbnail mode, we need to filter images first so
 	 * we can create a properly sized thumbnail list.
 	 */
-	if (opt.list || opt.preload || opt.customlist || (opt.sort > SORT_MTIME)
+	if (opt.list || opt.preload || opt.customlist || (opt.sort >= SORT_WIDTH)
 			|| (opt.filter_by_dimensions && (opt.index || opt.thumbs || opt.bgmode))) {
 		/* For these sort options, we have to preload images */
-		filelist = feh_file_info_preload(filelist);
+		filelist = feh_file_info_preload(filelist, TRUE);
+		if (!gib_list_length(filelist))
+			show_mini_usage();
+	} else if (opt.sort >= SORT_SIZE) {
+		/* For these sort options, we need stat(2) information on the files,
+		 * but there is no need to load the images. */
+		filelist = feh_file_info_preload(filelist, FALSE);
 		if (!gib_list_length(filelist))
 			show_mini_usage();
 	}

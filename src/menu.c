@@ -835,7 +835,7 @@ void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 	for (int i= 0; i <= 3; i++) {
 	  imlib_image_draw_line(x+i, y+3+i, x+i, y+9-i, 0);
 	}
-	  
+
 	return;
 }
 
@@ -1401,7 +1401,7 @@ static feh_menu *feh_menu_func_gen_info(feh_menu * m)
 	if (!file->info)
 		feh_file_info_load(file, im);
 	if (file->info) {
-		snprintf(buffer, sizeof(buffer), "Size: %dKb", file->info->size / 1024);
+		snprintf(buffer, sizeof(buffer), "Size: %dKb", file->size / 1024);
 		feh_menu_add_entry(mm, buffer, NULL, 0, 0, NULL);
 		snprintf(buffer, sizeof(buffer), "Dimensions: %dx%d", file->info->width, file->info->height);
 		feh_menu_add_entry(mm, buffer, NULL, 0, 0, NULL);
