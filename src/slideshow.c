@@ -496,14 +496,14 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				}
 				break;
 			case 's':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					snprintf(buf, sizeof(buf), "%d", file->info->size);
+				if (file && (file->size >= 0 || !feh_file_stat(file))) {
+					snprintf(buf, sizeof(buf), "%d", file->size);
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 'S':
-				if (file && (file->info || !feh_file_info_load(file, NULL))) {
-					strncat(ret, format_size(file->info->size), sizeof(ret) - strlen(ret) - 1);
+				if (file && (file->size >= 0 || !feh_file_stat(file))) {
+					strncat(ret, format_size(file->size), sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
 			case 't':
