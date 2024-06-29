@@ -703,6 +703,13 @@ int feh_thumbnail_generate(Imlib_Image * image, feh_file * file,
 				thumb_h = td.cache_dim / ratio;
 			else if (ratio != 1.0)
 				thumb_w = td.cache_dim * ratio;
+		} else {
+			/*
+			 * The image is smaller than the specified thumbnail size.
+			 * Do not cache or transform it.
+			 */
+			*image = im_temp;
+			return 1;
 		}
 
 		*image = gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, w, h,
