@@ -183,8 +183,6 @@ void init_thumbnail_mode(void)
 		winwidget_show(winwid);
 	}
 
-	/* make sure we have an ~/.thumbnails/normal directory for storing
-	   permanent thumbnails */
 	td.cache_thumbnails = opt.cache_thumbnails;
 
 	if (td.cache_thumbnails) {
@@ -193,9 +191,15 @@ void init_thumbnail_mode(void)
 		else
 			td.cache_dim = opt.thumb_h;
 
-		if (td.cache_dim > 256) {
-			/* No caching as specified by standard. Sort of. */
+		if (td.cache_dim > 1024) {
+			/* Not specified by XDG thumbnail standard */
 			td.cache_thumbnails = 0;
+		} else if (td.cache_dim > 512) {
+			td.cache_dim = 1024;
+			td.cache_dir = estrdup("xx-large");
+		} else if (td.cache_dim > 256) {
+			td.cache_dim = 512;
+			td.cache_dir = estrdup("x-large");
 		} else if (td.cache_dim > 128) {
 			td.cache_dim = 256;
 			td.cache_dir = estrdup("large");
