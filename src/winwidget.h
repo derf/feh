@@ -107,7 +107,8 @@ struct __winwidget {
 	 * all the way up to INT_MAX (eww)
 	 */
 	double zoom;
-	double old_zoom;
+	int zoom_step;
+	int old_step;
 
 	int click_offset_x;
 	int click_offset_y;
