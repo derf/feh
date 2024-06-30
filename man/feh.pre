@@ -1222,7 +1222,7 @@ will center or appropriately offset the image on each monitor.
 You may even specify more than one file, in that case, the first file is set
 on monitor 0, the second on monitor 1, and so on.
 Use
-.Cm xrandr --listmonitor
+.Cm xrandr --listmonitors
 to determine how Xinerama monitor IDs map to screens / monitors in your setup.
 .
 .Pp
