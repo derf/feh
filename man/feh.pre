@@ -2168,7 +2168,7 @@ for lossless JPEG rotation.
 To view images from URLs such as "http://",
 .Nm
 must be compiled with libcurl support.
-It is $MAN_CURL$ in this build
+It is $MAN_CURL$ in this build.
 .
 .
 .Sh KNOWN BUGS
