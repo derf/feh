@@ -12,7 +12,7 @@ specified, feh displays all files in the current directory.
 
 This README focuses on installation and contribution instructions.  See the
 [feh homepage](https://feh.finalrewind.org/) and the
-[feh(1) manual](https://man.finalrewind.org/1/feh/) for other details.
+[feh(1) manual](https://man.finalrewind.org/1/feh/) for usage instructions.
 
 ## Dependencies
 
