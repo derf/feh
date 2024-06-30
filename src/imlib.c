@@ -1543,9 +1543,11 @@ void feh_edit_inplace(winwidget w, int op)
 			imlib_image_flip_horizontal();
 		else {
 			imlib_image_orientate(op);
-			tmp = w->im_w;
-			w->im_w = w->im_h;
-			w->im_h = tmp;
+			if(op != 2) {
+				tmp = w->im_w;
+				w->im_w = w->im_h;
+				w->im_h = tmp;
+			}
 			if (FEH_FILE(w->file->data)->info) {
 				FEH_FILE(w->file->data)->info->width = w->im_w;
 				FEH_FILE(w->file->data)->info->height = w->im_h;
