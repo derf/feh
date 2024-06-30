@@ -1,3 +1,15 @@
+Sun, 30 Jun 2024 11:47:16 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.10.3
+    * Fix feh not respecting aspect ratio of thumbnails that are smaller than
+      --thumb-width and --thumb-height
+    * Fix --no-recursive behaving like --recursive (Patch by GitHub user
+      wwsmiff, thanks!)
+    * Fix rotation by 180° corrupting images (Patch by GitHub user wwsmiff,
+      thanks!)
+    * Speed up --sort=size and --sort=mtime by caching stat(2) calls
+      (Patch by Naïm Favier, thanks!)
+
 Mon, 04 Dec 2023 21:25:49 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.10.2
