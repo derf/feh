@@ -602,35 +602,42 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		feh_event_invoke_action(winwid, 9);
 	}
 	else if (feh_is_kp(EVENT_zoom_in, state, keysym, button)) {
-		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom * opt.zoom_rate;
+		if (winwid->zoom >= ZOOM_MAX || opt.step_rate <= 0)
+			return;
+
+		double old_zoom = winwid->zoom;
+		winwid->zoom = exp(++winwid->zoom_step * opt.step_rate);
 
 		if (winwid->zoom > ZOOM_MAX)
 			winwid->zoom = ZOOM_MAX;
 
 		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
-			winwid->old_zoom * winwid->zoom);
+			old_zoom * winwid->zoom);
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
-			winwid->old_zoom * winwid->zoom);
+			old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_out, state, keysym, button)) {
-		winwid->old_zoom = winwid->zoom;
-		winwid->zoom = winwid->zoom / opt.zoom_rate;
+		if (winwid->zoom <= ZOOM_MIN || opt.step_rate <= 0)
+			return;
+
+		double old_zoom = winwid->zoom;
+		winwid->zoom = exp(--winwid->zoom_step * opt.step_rate);
 
 		if (winwid->zoom < ZOOM_MIN)
 			winwid->zoom = ZOOM_MIN;
 
 		winwid->im_x = (winwid->w / 2) - (((winwid->w / 2) - winwid->im_x) /
-			winwid->old_zoom * winwid->zoom);
+			old_zoom * winwid->zoom);
 		winwid->im_y = (winwid->h / 2) - (((winwid->h / 2) - winwid->im_y) /
-			winwid->old_zoom * winwid->zoom);
+			old_zoom * winwid->zoom);
 		winwidget_sanitise_offsets(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_default, state, keysym, button)) {
 		winwid->zoom = 1.0;
+		winwid->zoom_step = 0;
 		winwidget_center_image(winwid);
 		winwidget_render_image(winwid, 0, 0);
 	}
