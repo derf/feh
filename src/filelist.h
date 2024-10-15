@@ -106,6 +106,7 @@ char *feh_http_unescape(char * url);
 int feh_cmp_name(void *file1, void *file2);
 int feh_cmp_dirname(void *file1, void *file2);
 int feh_cmp_filename(void *file1, void *file2);
+int feh_cmp_ctime(void *file1, void *file2);
 int feh_cmp_mtime(void *file1, void *file2);
 int feh_cmp_width(void *file1, void *file2);
 int feh_cmp_height(void *file1, void *file2);
