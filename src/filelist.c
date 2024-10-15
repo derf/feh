@@ -367,6 +367,7 @@ int feh_file_stat(feh_file * file)
 	}
 
 	file->mtime = st.st_mtime;
+	file->ctime = st.st_ctime;
 
 	file->size = st.st_size;
 
@@ -457,6 +458,13 @@ int feh_cmp_mtime(void *file1, void *file2)
 	return(FEH_FILE(file1)->mtime >= FEH_FILE(file2)->mtime ? -1 : 1);
 }
 
+/* Return -1 if file1 is _newer_ than file2 */
+int feh_cmp_ctime(void *file1, void *file2)
+{
+	/* gib_list_sort is not stable, so explicitly return 0 as -1 */
+	return(FEH_FILE(file1)->ctime >= FEH_FILE(file2)->ctime ? -1 : 1);
+}
+
 int feh_cmp_width(void *file1, void *file2)
 {
 	return((FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
@@ -526,6 +534,9 @@ void feh_prepare_filelist(void)
 		break;
 	case SORT_DIRNAME:
 		filelist = gib_list_sort(filelist, feh_cmp_dirname);
+		break;
+	case SORT_CTIME:
+		filelist = gib_list_sort(filelist, feh_cmp_ctime);
 		break;
 	case SORT_MTIME:
 		filelist = gib_list_sort(filelist, feh_cmp_mtime);

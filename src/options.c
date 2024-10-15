@@ -544,6 +544,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.sort = SORT_FILENAME;
 			else if (!strcasecmp(optarg, "dirname"))
 				opt.sort = SORT_DIRNAME;
+			else if (!strcasecmp(optarg, "ctime"))
+				opt.sort = SORT_CTIME;
 			else if (!strcasecmp(optarg, "mtime"))
 				opt.sort = SORT_MTIME;
 			else if (!strcasecmp(optarg, "width"))

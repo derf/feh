@@ -37,6 +37,7 @@ struct __feh_file {
 
 	/* info stuff */
 	time_t mtime;
+	time_t ctime;
 	int size;
 	feh_file_info *info;	/* only set when needed */
 #ifdef HAVE_LIBEXIF
@@ -73,6 +74,7 @@ enum sort_type {
 	SORT_FILENAME,
 	SORT_DIRNAME,
 	SORT_SIZE, // everything after SORT_SIZE requires stat(2) information on the filelist
+	SORT_CTIME,
 	SORT_MTIME,
 	SORT_WIDTH, // everything after SORT_WIDTH requires preloading the images in the filelist
 	SORT_HEIGHT,
