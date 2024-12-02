@@ -860,8 +860,11 @@ void winwidget_show(winwidget winwid)
 		 * which should be handled, especially on tiling wm's. To
 		 * remedy this, the handler is executed explicitly:
 		 */
-		if (ev.type == ConfigureNotify)
+		if (ev.type == ConfigureNotify) {
+			winwid->w = -1; /* force render */
 			feh_event_handle_ConfigureNotify(&ev);
+		}
+
 		D(("Window mapped\n"));
 		winwid->visible = 1;
 	}
