@@ -830,6 +830,8 @@ static char *feh_http_load_image(char *url)
 {
 	CURL *curl;
 	CURLcode res;
+	CURLU *curlu;
+	char *encoded;
 	char *sfn;
 	FILE *sfp;
 	int fd = -1;
@@ -858,6 +860,26 @@ static char *feh_http_load_image(char *url)
 		weprintf("open url: libcurl initialization failure");
 		return NULL;
 	}
+
+	/* libcurl requires encoded URL */
+	/* for example, spaces as %20 */
+	curlu = curl_url();
+	if (curl_url_set(curlu, CURLUPART_URL, url, CURLU_URLENCODE) != CURLUE_OK) {
+		weprintf("open url: Invalid URL");
+		curl_url_cleanup(curlu);
+		curl_easy_cleanup(curl);
+		return NULL;
+	}
+
+	if (curl_url_get(curlu, CURLUPART_URL, &encoded, 0) != CURLUE_OK) {
+		weprintf("open url: Invalid URL");
+		curl_url_cleanup(curlu);
+		curl_easy_cleanup(curl);
+		return NULL;
+	}
+	curl_url_cleanup(curlu);
+
+	D(("url %s, encoded %s\n", url, encoded))
 
 	basename = strrchr(url, '/') + 1;
 
@@ -899,7 +921,7 @@ static char *feh_http_load_image(char *url)
 			 * feh hanging indefinitely in unattended slideshows.
 			 */
 			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1800);
-			curl_easy_setopt(curl, CURLOPT_URL, url);
+			curl_easy_setopt(curl, CURLOPT_URL, encoded);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
 			ebuff = emalloc(CURL_ERROR_SIZE);
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
@@ -952,6 +974,7 @@ static char *feh_http_load_image(char *url)
 #endif
 		free(sfn);
 	}
+	curl_free(encoded);
 	curl_easy_cleanup(curl);
 	return NULL;
 }
