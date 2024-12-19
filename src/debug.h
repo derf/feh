@@ -40,6 +40,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifdef DEBUG
 #ifdef __GNUC__
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */
+#define D(a) \
+{ \
+	if (opt.debug) { \
+		printf("%-12s +%-4u %-20s : ",__FILE__,__LINE__,__func__); \
+		printf a; \
+		fflush(stdout); \
+	} \
+  }
+#else
 #define D(a) \
 { \
 	if (opt.debug) { \
@@ -48,6 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		fflush(stdout); \
 	} \
   }
+#endif
 #else					/* __GNUC__ */
 #define D(a) \
 { \
