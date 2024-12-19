@@ -50,6 +50,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 magic_t magic = NULL;
 #endif
 
+#ifdef HAVE_X11SCRNSAVER
+#include <X11/extensions/scrnsaver.h>
+#endif
+
 Display *disp = NULL;
 Visual *vis = NULL;
 Screen *scr = NULL;
@@ -133,6 +137,10 @@ void init_x_and_imlib(void)
 #ifdef HAVE_LIBXINERAMA
 	init_xinerama();
 #endif				/* HAVE_LIBXINERAMA */
+
+#ifdef HAVE_X11SCRNSAVER
+	XScreenSaverSuspend(disp, True);
+#endif
 
 	imlib_context_set_display(disp);
 	imlib_context_set_visual(vis);
