@@ -324,7 +324,8 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			break;
 		}
 
-		if (last) {
+		/* Ignore an errored file in future, if possible (and safe) */
+		if (last && last != current_file) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
 		}
@@ -336,27 +337,26 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		}
 
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
-			int w = gib_imlib_image_get_width(winwid->im);
-			int h = gib_imlib_image_get_height(winwid->im);
-			if (feh_should_ignore_image(winwid->im)) {
-				last = current_file;
-				continue;
+			if (!feh_should_ignore_image(winwid->im)) {
+				int w = gib_imlib_image_get_width(winwid->im);
+				int h = gib_imlib_image_get_height(winwid->im);
+				winwid->mode = MODE_NORMAL;
+				winwid->file = current_file;
+				if ((winwid->im_w != w) || (winwid->im_h != h))
+					winwid->had_resize = 1;
+				winwidget_reset_image(winwid);
+				winwid->im_w = w;
+				winwid->im_h = h;
+				if (render) {
+					winwidget_render_image(winwid, 1, 0);
+				}
+				break;  /* Happy path */
 			}
-			winwid->mode = MODE_NORMAL;
-			winwid->file = current_file;
-			if ((winwid->im_w != w) || (winwid->im_h != h))
-				winwid->had_resize = 1;
-			winwidget_reset_image(winwid);
-			winwid->im_w = w;
-			winwid->im_h = h;
-			if (render) {
-				winwidget_render_image(winwid, 1, 0);
-			}
-			break;
-		} else
-			last = current_file;
+		}
+
+		last = current_file;
 	}
-	if (last)
+	if (last && last != current_file)
 		filelist = feh_file_remove_from_list(filelist, last);
 
 	if (filelist_len == 0)
