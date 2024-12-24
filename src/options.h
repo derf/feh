@@ -145,7 +145,7 @@ struct __fehoptions {
 	unsigned char mode;
 	unsigned char paused;
 
-	double slideshow_delay;
+	char *slideshow_delay;
 
 	signed int conversion_timeout;
 

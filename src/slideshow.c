@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 #include "signals.h"
 
+double get_ssd(char *s);
 void init_slideshow_mode(void)
 {
 	winwidget w = NULL;
@@ -54,6 +55,11 @@ void init_slideshow_mode(void)
 	 * wrong file.
 	 */
 
+    if (opt.slideshow_delay && strcmp(opt.slideshow_delay,"0")==0)
+    {
+            opt.slideshow_delay=(char *) realloc(opt.slideshow_delay,0);
+            opt.slideshow_delay=NULL;
+    }
 	// Try finding an exact filename match first
 	for (; l && opt.start_list_at; l = l->next) {
 		if (!strcmp(opt.start_list_at, FEH_FILE(l->data)->filename)) {
@@ -109,8 +115,9 @@ void init_slideshow_mode(void)
 		if ((w = winwidget_create_from_file(l, WIN_TYPE_SLIDESHOW)) != NULL) {
 			success = 1;
 			winwidget_show(w);
-			if (opt.slideshow_delay > 0.0)
-				feh_add_timer(cb_slide_timer, w, opt.slideshow_delay, "SLIDE_CHANGE");
+            if (opt.slideshow_delay && strcmp(opt.slideshow_delay,"0")!=0)
+                feh_add_timer(cb_slide_timer, w, get_ssd(opt.slideshow_delay), "SLIDE_CHANGE");
+
 			if (opt.reload > 0)
 				feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 			break;
@@ -202,8 +209,8 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	 */
 	int our_filelist_len = filelist_len;
 
-	if (opt.slideshow_delay > 0.0)
-		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
+    if (opt.slideshow_delay && strcmp(opt.slideshow_delay,"0")!=0)
+        feh_add_timer(cb_slide_timer, winwid, get_ssd(opt.slideshow_delay), "SLIDE_CHANGE");
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
@@ -689,4 +696,71 @@ gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
 		}
 	}
 	return (ret);
+}
+/**************************************************************************/
+/* This function entirely responsible for interpreting the data 
+ * from opt.slideshow_delay - its called each time an image is displayed
+ * and a random delay selected from the list. (Can be a list of 1 item)
+ * ************************************************************************/
+double get_ssd(char *s)
+{
+  static int k=-1;
+  static float sumprob; 
+  static int xflag=0; 
+
+  float prob=0.0; 
+  float thisprob=1.0; 
+  float r; // the random number 
+  char *q; 
+  char *p;
+
+  p=s;     // reset pointer to start 
+  if (k<0) // all this done just once as k static sumprob and xflag also static 
+  {
+    k=0;  
+    srand(time(NULL)); // seed random num gen, just once. 
+    // count the commas, sum probabilities 
+    while (*p)
+    {
+      if (*p==',' || *(p+1)==0) // start of new item in list or end of list 
+      { 
+        k++;
+        prob+=thisprob; 
+        thisprob=1.0;           // reset probablity of this item 
+      } 
+      if (*p=='x')
+      { 
+         xflag=1; 
+         if (atof(p+1)>0) thisprob=atof(p+1); 
+      } 
+      p++;
+    }
+    sumprob=prob;  
+    p=s;
+  }
+
+  if (k==1 && xflag==0) 
+     return atof(s); // deal with simplest case, just one value 
+ 
+  r=sumprob*rand() / (float)RAND_MAX; // assign random number 
+
+  // count the commas, sum probabilities, select value  
+  // repeating much the same as above but abort when we get to where we are going. 
+  // remember the above is only done once, but this is done every time. 
+  prob=0.0; 
+  thisprob=1.0; // default if no x given , one time 
+  q=p;          // this will be the result 
+  while (*p)
+  {
+    if (*p==',' || *(p+1)==0) 
+    { 
+      prob+=thisprob; 
+      if (prob>r) break; 
+      q=p+1; 
+      thisprob=1.0; 
+    } 
+    if (*p=='x' && atof(p+1)>0) thisprob=atof(p+1);
+    p++;
+  }
+  return atof(q);
 }
