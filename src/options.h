@@ -129,6 +129,7 @@ struct __fehoptions {
 	int default_zoom;
 	int zoom_mode;
 	double zoom_rate;
+	double step_rate;
 	unsigned char adjust_reload;
 	int xinerama_index;
 	char *x11_class;
@@ -217,6 +218,7 @@ OPTION_bg_scale,
 OPTION_bg_fill,
 OPTION_bg_max,
 OPTION_zoom,
+OPTION_zoom_rate,
 OPTION_zoom_step,
 OPTION_zoom_in_rate,
 OPTION_zoom_out_rate,

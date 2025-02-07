@@ -77,7 +77,8 @@ static winwidget winwidget_allocate(void)
 	ret->im_x = 0;
 	ret->im_y = 0;
 	ret->zoom = 1.0;
-	ret->old_zoom = 1.0;
+	ret->zoom_step = 0;
+	ret->old_step = 0;
 
 	ret->click_offset_x = 0;
 	ret->click_offset_y = 0;
@@ -493,6 +494,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		else if ((opt.zoom_mode && required_zoom > 1)
 				&& (!opt.default_zoom || required_zoom < winwid->zoom))
 			winwid->zoom = required_zoom;
+
+		winwid->zoom_step = round(log(winwid->zoom) / opt.step_rate);
 
 		if (opt.offset_flags & XValue) {
 			if (opt.offset_flags & XNegative) {
@@ -1065,12 +1068,12 @@ void feh_debug_print_winwid(winwidget w)
 	       "h = %d\n" "im_w = %d\n" "im_h = %d\n" "im_angle = %f\n"
 	       "type = %d\n" "had_resize = %d\n" "im = %p\n" "GC = %p\n"
 	       "pixmap = %ld\n" "name = %s\n" "file = %p\n" "mode = %d\n"
-	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n" "old_zoom = %f\n"
-	       "click_offset_x = %d\n" "click_offset_y = %d\n"
+	       "im_x = %d\n" "im_y = %d\n" "zoom = %f\n" "zoom_step = %d\n"
+	       "old_step = %d" "click_offset_x = %d\n" "click_offset_y = %d\n"
 	       "has_rotated = %d\n", (void *)w, w->win, w->w, w->h, w->im_w,
 	       w->im_h, w->im_angle, w->type, w->had_resize, w->im, (void *)w->gc,
 	       w->bg_pmap, w->name, (void *)w->file, w->mode, w->im_x, w->im_y,
-	       w->zoom, w->old_zoom, w->click_offset_x, w->click_offset_y,
+	       w->zoom, w->zoom_step, w->old_step, w->click_offset_x, w->click_offset_y,
 	       w->has_rotated);
 }
 
@@ -1078,7 +1081,7 @@ void winwidget_reset_image(winwidget winwid)
 {
 	if (!opt.keep_zoom_vp) {
 		winwid->zoom = 1.0;
-		winwid->old_zoom = 1.0;
+		winwid->zoom_step = 0;
 		winwid->im_x = 0;
 		winwid->im_y = 0;
 	}
