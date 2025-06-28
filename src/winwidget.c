@@ -549,10 +549,14 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	calc_h = lround(winwid->im_h * winwid->zoom);
 	dw = (winwid->w - winwid->im_x);
 	dh = (winwid->h - winwid->im_y);
-	if (calc_w < dw)
+	if (calc_w < dw) {
 		dw = calc_w;
-	if (calc_h < dh)
+		dx = 0;
+	}
+	if (calc_h < dh) {
 		dh = calc_h;
+		dy = 0;
+	}
 	if (dw > winwid->w)
 		dw = winwid->w;
 	if (dh > winwid->h)
