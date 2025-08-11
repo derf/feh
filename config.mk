@@ -4,7 +4,7 @@ VERSION ?= ${shell git describe --dirty}
 app ?= 0
 curl ?= 1
 debug ?= 0
-gnu ?= 0
+glibc ?= 0
 exif ?= 0
 help ?= 0
 magic ?= 0
@@ -58,7 +58,7 @@ else
 	MAN_DEBUG = .
 endif
 
-ifeq (${gnu},1)
+ifeq (${glibc},1)
 	CFLAGS += -DHAVE_GNU
 endif
 
