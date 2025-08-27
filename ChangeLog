@@ -1,3 +1,11 @@
+Wed, 27 Aug 2025 21:39:43 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.11
+    * New option: --tap-zones enables support for simple prev/next tap zones
+      (patch by Finn Teegen, thanks!)
+    * Fix --scale-down not scaling down the first image in floating i3 windows
+      and similar setups (patch by Awal Garg, thanks!)
+
 Sun, 30 Jun 2024 11:47:16 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.10.3
