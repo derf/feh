@@ -1,6 +1,7 @@
 /* filelist.h
 
 Copyright (C) 1999-2003 Tom Gilbert.
+Copyright (C) 2010-2024 Birte Kristina Friesel.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
