@@ -1,3 +1,9 @@
+Fri, 29 Aug 2025 19:14:26 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.11.1
+    * Correctly center images in fullscreen mode. This fixes a regression
+      introduced in v3.11.
+
 Wed, 27 Aug 2025 21:39:43 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.11
