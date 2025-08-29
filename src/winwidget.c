@@ -551,13 +551,13 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	dh = (winwid->h - winwid->im_y);
 	if (calc_w < dw) {
 		dw = calc_w;
-		if (!opt.full_screen) {
+		if (!winwid->full_screen) {
 			dx = 0;
 		}
 	}
 	if (calc_h < dh) {
 		dh = calc_h;
-		if (!opt.full_screen) {
+		if (!winwid->full_screen) {
 			dy = 0;
 		}
 	}
