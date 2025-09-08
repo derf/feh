@@ -500,8 +500,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			} else {
 				winwid->im_x = - opt.offset_x * winwid->zoom;
 			}
-		} else {
+		} else if (!opt.scale_down || (winwid->w != winwid->im_w)) {
 			winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
+		} else {
+			winwid->im_x = 0;
 		}
 		if (opt.offset_flags & YValue) {
 			if (opt.offset_flags & YNegative) {
@@ -509,8 +511,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			} else {
 				winwid->im_y = - opt.offset_y * winwid->zoom;
 			}
-		} else {
+		} else if (!opt.scale_down || (winwid->h != winwid->im_h)) {
 			winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
+		} else {
+			winwid->im_y = 0;
 		}
 	}
 
@@ -549,17 +553,15 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	calc_h = lround(winwid->im_h * winwid->zoom);
 	dw = (winwid->w - winwid->im_x);
 	dh = (winwid->h - winwid->im_y);
+
+	D(("sx: %4d sy: %4d sw:      sh:      dx: %4d dy: %4d dw: %4d dh: %4d zoom: %f\n",
+	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
+
 	if (calc_w < dw) {
 		dw = calc_w;
-		if (!winwid->full_screen) {
-			dx = 0;
-		}
 	}
 	if (calc_h < dh) {
 		dh = calc_h;
-		if (!winwid->full_screen) {
-			dy = 0;
-		}
 	}
 	if (dw > winwid->w)
 		dw = winwid->w;
@@ -569,7 +571,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	sw = lround(dw / winwid->zoom);
 	sh = lround(dh / winwid->zoom);
 
-	D(("sx: %d sy: %d sw: %d sh: %d dx: %d dy: %d dw: %d dh: %d zoom: %f\n",
+	D(("sx: %4d sy: %4d sw: %4d sh: %4d dx: %4d dy: %4d dw: %4d dh: %4d zoom: %f\n",
 	   sx, sy, sw, sh, dx, dy, dw, dh, winwid->zoom));
 
 	if ((winwid->zoom != 1.0 || winwid->has_rotated) && !force_alias && !winwid->force_aliasing)
