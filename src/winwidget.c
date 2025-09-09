@@ -1118,11 +1118,11 @@ void winwidget_center_image(winwidget winwid)
 		if (opt.geom_flags & WidthValue)
 			winwid->im_x = ((int)opt.geom_w - lround(winwid->im_w * winwid->zoom)) >> 1;
 		else
-			winwid->im_x = 0;
+			winwid->im_x = (int) (winwid->w - lround(winwid->im_w * winwid->zoom)) >> 1;
 		if (opt.geom_flags & HeightValue)
 			winwid->im_y = ((int)opt.geom_h - lround(winwid->im_h * winwid->zoom)) >> 1;
 		else
-			winwid->im_y = 0;
+			winwid->im_y = (int) (winwid->h - lround(winwid->im_h * winwid->zoom)) >> 1;
 	}
 }
 
