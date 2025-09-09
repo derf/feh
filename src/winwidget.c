@@ -500,10 +500,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			} else {
 				winwid->im_x = - opt.offset_x * winwid->zoom;
 			}
-		} else if (!opt.scale_down || (winwid->w != winwid->im_w)) {
-			winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		} else {
-			winwid->im_x = 0;
+			winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
 		}
 		if (opt.offset_flags & YValue) {
 			if (opt.offset_flags & YNegative) {
@@ -511,10 +509,8 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 			} else {
 				winwid->im_y = - opt.offset_y * winwid->zoom;
 			}
-		} else if (!opt.scale_down || (winwid->h != winwid->im_h)) {
-			winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 		} else {
-			winwid->im_y = 0;
+			winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 		}
 	}
 
