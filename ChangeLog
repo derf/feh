@@ -1,3 +1,18 @@
+Tue, 09 Sep 2025 21:49:48 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.11.2
+    * Fix zoom_fit not centering the image correctly if the window is larger
+      than the image
+    * Fix rendering bugs introduced by attempts to fix a --scale-down
+      rendering issue in v3.11 and v3.11.1
+    * Note that this fix comes at the cost of slightly more visible
+      flashing in some cases where feh has to (re-)render an image multiple
+      times, especially if a fixed size is forced by the window manager.
+      While this behaviour can be annoying, it is certainly less annoying than
+      incorrect image offets.
+    * Thanks to Awal Garg for several joint debugging sessions related to
+      --scale-down rendering issues.
+
 Fri, 29 Aug 2025 19:14:26 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.11.1
