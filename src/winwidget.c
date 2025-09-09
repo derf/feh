@@ -962,7 +962,18 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 		winwid->had_resize = 1;
 		XFlush(disp);
 
-		winwidget_get_geometry(winwid, NULL);
+		/*
+		 * Note:
+		 * While calling winwidget_get_geometry(winwid, NULL); at this point
+		 * would help alleviate flashing issues that can occur when feh has
+		 * to render a window two times in a row, or renders the initial image
+		 * with a resolution that differs from the one that is needed to
+		 * accomodate the resize.
+		 *
+		 * However, it would also break --scale-down in floating setups. As
+		 * flashing is less annoying, we do not call winwidget_get_geometry.
+		 * here.
+		 */
 
 		if (force_resize && (opt.geom_flags & (WidthValue | HeightValue))
 				&& (winwid->type != WIN_TYPE_THUMBNAIL)) {
