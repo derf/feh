@@ -35,6 +35,11 @@ struct __fehkey keys[EVENT_LIST_END];
 struct termios old_term_settings;
 unsigned char control_via_stdin = 0;
 
+KeySym feh_current_action_keysym = 0;
+unsigned int feh_current_action_state = 0;
+unsigned int feh_current_action_button = 0;
+
+
 void setup_stdin(void) {
 	struct termios ctrl;
 
@@ -478,6 +483,11 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		return;
 	}
 
+	feh_current_action_keysym = keysym;
+	feh_current_action_state  = state;
+	feh_current_action_button = button;
+
+
 	if (feh_is_kp(EVENT_next_img, state, keysym, button)) {
 		if (opt.slideshow)
 			slideshow_change_image(winwid, SLIDE_NEXT, 1);
@@ -805,5 +815,12 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		}
 		winwidget_render_image(winwid, 1, 0);
 	}
+
+	feh_current_action_keysym = 0;
+	feh_current_action_state  = 0;
+	feh_current_action_button = 0;
+
+
+
 	return;
 }
