@@ -898,23 +898,23 @@ static char *feh_http_load_image(char *url)
 			 * unusually high latencies, while at the same time avoiding
 			 * feh hanging indefinitely in unattended slideshows.
 			 */
-			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1800);
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 1800L);
 			curl_easy_setopt(curl, CURLOPT_URL, url);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, sfp);
 			ebuff = emalloc(CURL_ERROR_SIZE);
 			curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, ebuff);
 			curl_easy_setopt(curl, CURLOPT_USERAGENT, PACKAGE "/" VERSION);
 			curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 #if LIBCURL_VERSION_NUM >= 0x072000 /* 07.32.0 */
 			curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, curl_quit_function);
 #else
 			curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, curl_quit_function);
 #endif
-			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
 			if (opt.insecure_ssl) {
-				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+				curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 			} else if (getenv("CURL_CA_BUNDLE") != NULL) {
 				// Allow the user to specify custom CA certificates.
 				curl_easy_setopt(curl, CURLOPT_CAINFO,
