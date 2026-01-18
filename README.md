@@ -156,3 +156,12 @@ documented in two different places: The manual (man/feh.pre) and the help text
 (src/help.raw). Although the help is not compiled in by default, it should be
 kept up-to-date. On space-constrained embedded systems, it may be more useful
 than the (significantly larger) man page.
+
+## References
+
+Mirrors of the feh repository are available at:
+
+* [Chaosdorf](https://chaosdorf.de/git/derf/feh)
+* [Codeberg](https://chaosdorf.de/git/derf/feh)
+* [Finalrewind](https://git.finalrewind.org/derf/feh/)
+* [GitHub](https://github.com/derf/feh)
