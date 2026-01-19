@@ -699,7 +699,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			 * editing captions in slideshow mode does not make any sense
 			 * at all; this is just in case someone accidentally does it...
 			 */
-			if (opt.slideshow_delay)
+			if (opt.slideshow_delay==NULL)
 				opt.paused = 1;
 			winwid->caption_entry = 1;
 		}

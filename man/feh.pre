@@ -793,17 +793,26 @@ See
 for how to reverse it permanently.
 Default: 20
 .
-.It Cm -D , --slideshow-delay Ar float
+.It Cm -D , --slideshow-delay Ar float-list
 .
-For slideshow mode, wait
-.Ar float
-seconds between automatically changing slides.
-Useful for presentations.
-Specify a negative number to set the delay
-.Pq which will then be Ar float No * (-1) ,
-but start
+For slideshow mode, you can specify the delay between slide changes in seconds. 
+If multiple comma seperated delays are specified then these are used with equal 
+random probability. The list may contain duplicates. 
+If the list starts with a - (no decimal point) the display starts in paused mode. 
+A delay of 0 means perpetual delay (no timed slide changes) while a delay of 
+0.0 gives the least delay possible between slides.
+.
+As a shorthand you may also specify delays like this: 
+   --slideshow-delay 1.0x10,5x2,10
+.Pp
+This will give 10 times the probabiity of 1 second, twice the probability of 5 seconds as well as a single chance of a delay of 10 seconds. 
+The actual probabilities in this case being 10/13, 2/13 and 1/13 respectively. Real values as well as integers may be used for the multiplier.
+.Pp
+The Following would give the same as the above but starting 
 .Nm
 in paused mode.
+.
+   --slideshow-delay -1.0x10,5x2,10
 .
 .It Cm -S , --sort Ar sort_type
 .

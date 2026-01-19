@@ -53,7 +53,7 @@ void init_parse_options(int argc, char **argv)
 	memset(&opt, 0, sizeof(fehoptions));
 	opt.display = 1;
 	opt.aspect = 1;
-	opt.slideshow_delay = 0.0;
+	opt.slideshow_delay = NULL;
 	opt.conversion_timeout = -1;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
@@ -479,14 +479,25 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			imlib_add_path_to_font_path(optarg);
 			break;
 		case OPTION_slideshow_delay:
-			opt.slideshow_delay = atof(optarg);
-			if (opt.slideshow_delay < 0.0) {
-				opt.slideshow_delay *= (-1);
-				opt.paused = 1;
-			} else {
-				opt.paused = 0;
-			}
-			break;
+            if (strcmp(optarg,"0")==0)
+            {
+              opt.slideshow_delay=realloc(opt.slideshow_delay,0);
+              opt.slideshow_delay=NULL;
+              opt.paused = 1;
+            }
+            else if (*optarg=='-')
+            {
+              opt.slideshow_delay=(char *) realloc(opt.slideshow_delay,strlen(optarg));
+              strcpy(opt.slideshow_delay,optarg+1);
+              opt.paused = 1;
+            }
+            else
+            {
+              opt.slideshow_delay=(char *) realloc(opt.slideshow_delay,strlen(optarg)+1);
+              strcpy(opt.slideshow_delay,optarg);
+              opt.paused = 0;
+            }
+            break;
 		case OPTION_thumb_height:
 			opt.thumb_h = atoi(optarg);
 			break;
