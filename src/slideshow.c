@@ -447,6 +447,37 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 					strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
 				}
 				break;
+
+			case 'k': {
+				if (feh_current_action_keysym) {
+					char *name = XKeysymToString(feh_current_action_keysym);
+					if (name)
+						strncat(ret, name, sizeof(ret) - strlen(ret) - 1);
+				}
+				break;
+			}
+			case 'K': {
+				char combo[64] = "";
+				if (feh_current_action_state & ControlMask)
+					strcat(combo, "C-");
+				if (feh_current_action_state & Mod1Mask)
+					strcat(combo, "M-");   // Alt
+				if (feh_current_action_state & ShiftMask)
+					strcat(combo, "S-");
+				if (feh_current_action_state & Mod4Mask)
+					strcat(combo, "Super-");
+
+				if (feh_current_action_keysym) {
+					char *name = XKeysymToString(feh_current_action_keysym);
+					if (name)
+						strncat(combo, name, sizeof(combo) - strlen(combo) - 1);
+				}
+
+				strncat(ret, combo, sizeof(ret) - strlen(ret) - 1);
+				break;
+			}
+
+
 			case 'l':
 				snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
 				strncat(ret, buf, sizeof(ret) - strlen(ret) - 1);
