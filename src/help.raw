@@ -98,6 +98,9 @@ OPTIONS
  -Y, --hide-pointer        Hide the pointer
      --conversion-timeout  INT  Load unknown files with dcraw or ImageMagick,
                            timeout after INT seconds (0: no timeout)
+     --force-conversion    Force image conversion and skip the regular imlib2
+                           image loading. Use conversion timeout of 0 if
+                           timeout is not set or negative.
      --min-dimension WxH   Only show images with width >= W and height >= H
      --max-dimension WxH   Only show images with width <= W and height <= H
      --scroll-step COUNT   scroll COUNT pixels when movement key is pressed

@@ -173,6 +173,9 @@ digital cameras and similar.
 If the ImageMagick convert binary is available,
 .Nm
 will use it to load file types such as svg, xcf, and otf.
+Additionally
+.Cm --force-conversion
+can be used to skip the regular imlib2 image loading before trying to convert.
 .
 .Pp
 .
@@ -338,6 +341,15 @@ zero causes
 .Nm
 to try indefinitely.
 Negative values restore the default by disabling conversion altogether.
+.
+.It Cm --force-conversion
+.
+Force image conversion and skip the regular imlib2 image loading.
+If
+.Cm --conversion-timeout
+is not set or negative,
+.Cm --conversion-timeout
+will be set to zero.
 .
 .It Cm --class Ar class
 .

@@ -430,6 +430,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"cache-size"    , 1, 0, OPTION_cache_size},
 		{"on-last-slide" , 1, 0, OPTION_on_last_slide},
 		{"conversion-timeout" , 1, 0, OPTION_conversion_timeout},
+		{"force-conversion" , 0, 0, OPTION_force_conversion},
 		{"version-sort"  , 0, 0, OPTION_version_sort},
 		{"offset"        , 1, 0, OPTION_offset},
 #ifdef HAVE_INOTIFY
@@ -829,6 +830,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case OPTION_conversion_timeout:
 			opt.conversion_timeout = atoi(optarg);
+			break;
+		case OPTION_force_conversion:
+			opt.force_conversion = 1;
 			break;
 		case OPTION_version_sort:
 			opt.version_sort = 1;
