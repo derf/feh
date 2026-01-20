@@ -423,6 +423,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"force-aliasing", 0, 0, OPTION_force_aliasing},
 		{"no-fehbg"      , 0, 0, OPTION_no_fehbg},
 		{"keep-zoom-vp"  , 0, 0, OPTION_keep_zoom_vp},
+		{"keep-offset"   , 0, 0, OPTION_keep_offset},
 		{"scroll-step"   , 1, 0, OPTION_scroll_step},
 		{"xinerama-index", 1, 0, OPTION_xinerama_index},
 		{"insecure"      , 0, 0, OPTION_insecure},
@@ -795,6 +796,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			break;
 		case OPTION_keep_zoom_vp:
 			opt.keep_zoom_vp = 1;
+			break;
+		case OPTION_keep_offset:
+			opt.keep_offset = 1;
 			break;
 		case OPTION_scroll_step:
 			opt.scroll_step = atoi(optarg);
