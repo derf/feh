@@ -43,8 +43,6 @@ fehoptions opt;
 
 void init_parse_options(int argc, char **argv)
 {
-	/* TODO: sort these to match declaration of __fehoptions */
-
 	/* For setting the command hint on X windows */
 	cmdargc = argc;
 	cmdargv = argv;
@@ -53,33 +51,35 @@ void init_parse_options(int argc, char **argv)
 	memset(&opt, 0, sizeof(fehoptions));
 	opt.display = 1;
 	opt.aspect = 1;
-	opt.slideshow_delay = 0.0;
-	opt.conversion_timeout = -1;
-	opt.thumb_w = 60;
-	opt.thumb_h = 60;
-	opt.thumb_redraw = 10;
-	opt.scroll_step = 20;
-	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
-	opt.font = NULL;
-	opt.max_height = opt.max_width = UINT_MAX;
-
-	opt.zoom_rate = 1.25;
-
-	opt.start_list_at = NULL;
+	opt.use_conversion_cache = 1;
 	opt.jump_on_resort = 1;
-
-	opt.screen_clip = 1;
-	opt.cache_size = 4;
-#ifdef HAVE_LIBXINERAMA
-	/* if we're using xinerama, then enable it by default */
-	opt.xinerama = 1;
-	opt.xinerama_index = -1;
-#endif				/* HAVE_LIBXINERAMA */
 #ifdef HAVE_INOTIFY
 	opt.auto_reload = 1;
 #endif				/* HAVE_INOTIFY */
-	opt.use_conversion_cache = 1;
+#ifdef HAVE_LIBXINERAMA
+	/* if we're using xinerama, then enable it by default */
+	opt.xinerama = 1;
+#endif				/* HAVE_LIBXINERAMA */
+	opt.screen_clip = 1;
+	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
+	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
+	opt.start_list_at = NULL;
+	opt.thumb_w = 60;
+	opt.thumb_h = 60;
+	opt.thumb_redraw = 10;
+	
+	opt.zoom_rate = 1.25;
 
+#ifdef HAVE_LIBXINERAMA
+	/* if we're using xinerama, then enable it by default */
+	opt.xinerama_index = -1;
+#endif				/* HAVE_LIBXINERAMA */
+	opt.scroll_step = 20;
+	opt.cache_size = 4;
+	opt.max_height = opt.max_width = UINT_MAX;
+	opt.slideshow_delay = 0.0;
+	opt.conversion_timeout = -1;
+	
 	feh_getopt_theme(argc, argv);
 
 	D(("About to check for theme configuration\n"));
