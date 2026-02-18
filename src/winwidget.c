@@ -608,7 +608,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 				winwidget_rename(winwid, tmp);
 				free(tmp);
 			} else if (opt.thumb_title && winwid->type == WIN_TYPE_THUMBNAIL_VIEWER) {
-				char *tmp = feh_printf(opt.title, FEH_FILE(winwid->file->data), winwid);
+				char *tmp = feh_printf(opt.thumb_title, FEH_FILE(winwid->file->data), winwid);
 				winwidget_rename(winwid, tmp);
 				free(tmp);
 			}
