@@ -626,7 +626,7 @@ gib_list *feh_read_filelist(char *filename)
 	for (; fgets(s, sizeof(s), fp);) {
 		D(("Got line '%s'\n", s));
 		s1[0] = '\0';
-		sscanf(s, "%[^\n]", (char *) &s1);
+		sscanf(s, "%[^\r\n]", (char *) &s1);
 		if (!(*s1) || (*s1 == '\n'))
 			continue;
 		D(("Got filename %s from filelist file\n", s1));
