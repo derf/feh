@@ -1279,6 +1279,7 @@ void feh_draw_info(winwidget w)
 	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data), w);
 
 	info_pipe = popen(info_cmd, "r");
+	free(info_cmd);
 
 	if (!info_pipe) {
 		info_buf[0] = estrdup("Failed to run info command");

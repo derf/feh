@@ -327,8 +327,10 @@ void init_thumbnail_mode(void)
 
 			lineno = 0;
 			if (opt.index_info) {
-				line = lines = feh_wrap_string(create_index_string(file),
+				char *tmp = create_index_string(file);
+				line = lines = feh_wrap_string(tmp,
 						opt.thumb_w * 3, td.font_main, NULL);
+				free(tmp);
 
 				while (line) {
 					gib_imlib_get_text_size(td.font_main, (char *) line -> data,

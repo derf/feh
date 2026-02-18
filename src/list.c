@@ -42,9 +42,11 @@ void init_list_mode(void)
 
 	for (l = filelist; l; l = l->next) {
 		file = FEH_FILE(l->data);
-		if (opt.customlist)
-			printf("%s\n", feh_printf(opt.customlist, file, NULL));
-		else {
+		if (opt.customlist) {
+			char *tmp = feh_printf(opt.customlist, file, NULL);
+			puts(tmp);
+			free(tmp);
+		} else {
 			printf("%d\t%s\t%d\t%d\t%s", ++j,
 					file->info->format, file->info->width,
 					file->info->height,
