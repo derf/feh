@@ -607,7 +607,7 @@ void feh_menu_calc_size(feh_menu * m)
 {
 	int prev_w, prev_h;
 	feh_menu_item *i;
-	int j = 0, count = 0, max_w = 0, max_h = 0, next_w = 0;
+	int max_w = 0, max_h = 0, next_w = 0;
 	int toggle_w = 1;
 
 	prev_w = m->w;
@@ -632,7 +632,6 @@ void feh_menu_calc_size(feh_menu * m)
 			if (FEH_MENU_TOGGLE_H > max_h)
 				max_h = FEH_MENU_TOGGLE_H;
 		}
-		count++;
 	}
 
 	m->h = FEH_MENU_PAD_TOP;
@@ -648,7 +647,6 @@ void feh_menu_calc_size(feh_menu * m)
 		else
 			i->h = FEH_MENU_SEP_MAX_H;
 		m->h += i->h;
-		j++;
 	}
 	m->h += FEH_MENU_PAD_BOTTOM;
 	m->w = next_w + toggle_w + max_w + FEH_MENU_PAD_LEFT + FEH_MENU_PAD_RIGHT;
