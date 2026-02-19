@@ -116,6 +116,7 @@ struct __fehoptions {
 	double reload;
 	int sort;
 	int version_sort;
+	int ignore_case_sort;
 	int debug;
 	int geom_enabled;
 	int geom_flags;
@@ -256,6 +257,7 @@ OPTION_auto_reload,
 OPTION_class,
 OPTION_no_conversion_cache,
 OPTION_window_id,
+OPTION_ignore_case_sort,
 };
 
 //typedef enum __fehoption fehoption;
