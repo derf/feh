@@ -62,7 +62,6 @@ void init_parse_options(int argc, char **argv)
 #endif				/* HAVE_LIBXINERAMA */
 	opt.screen_clip = 1;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
-	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
 	opt.start_list_at = NULL;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
