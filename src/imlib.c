@@ -336,6 +336,11 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 
 	D(("filename is %s, image is %p\n", file->filename, im));
 
+	if (opt.force_conversion && opt.conversion_timeout < 0) {
+		D(("Conversion forced without conversion timeout! Setting timeout to zero (infinite).\n"));
+		opt.conversion_timeout = 0;
+	}
+
 	if (!file || !file->filename)
 		return 0;
 
@@ -348,7 +353,11 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 		}
 	}
 	else {
-		if (feh_is_image(file, 0)) {
+		if (opt.force_conversion) {
+			/* Use unknown error for later processing of converted image */
+			err = IMLIB_LOAD_ERROR_UNKNOWN;
+		}
+		else if (feh_is_image(file, 0)) {
 			*im = imlib_load_image_with_error_return(file->filename, &err);
 		} else {
 			feh_err = LOAD_ERROR_MAGICBYTES;
@@ -360,12 +369,14 @@ int feh_load_image(Imlib_Image * im, feh_file * file)
 			(err == IMLIB_LOAD_ERROR_UNKNOWN) ||
 			(err == IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT))) {
 		if (feh_file_is_raw(file->filename)) {
+			D(("Trying image conversion with dcraw.\n"));
 			image_source = SRC_DCRAW;
 			tmpname = feh_dcraw_load_image(file->filename);
 			if (!tmpname) {
 				feh_err = LOAD_ERROR_DCRAW;
 			}
 		} else {
+			D(("Trying image conversion with imagemagick.\n"));
 			image_source = SRC_MAGICK;
 			feh_err = LOAD_ERROR_IMLIB;
 			tmpname = feh_magick_load_image(file->filename);

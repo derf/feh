@@ -148,6 +148,7 @@ struct __fehoptions {
 	double slideshow_delay;
 
 	signed int conversion_timeout;
+	int force_conversion;
 
 	Imlib_Font menu_fn;
 };
@@ -250,6 +251,7 @@ OPTION_no_recursive,
 OPTION_cache_size,
 OPTION_on_last_slide,
 OPTION_conversion_timeout,
+OPTION_force_conversion,
 OPTION_version_sort,
 OPTION_offset,
 OPTION_auto_reload,
