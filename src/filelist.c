@@ -421,12 +421,47 @@ void feh_file_dirname(char *dst, feh_file * f, int maxlen)
 	dst[n] = '\0';
 }
 
+char *to_lower_str(const char *s)
+{
+	if (!s)
+		return NULL;
+
+	char *lower = strdup(s);
+	if (!lower) {
+		return NULL;
+	}
+	for (char *ptr = lower; *ptr; ++ptr) {
+		*ptr = tolower(*ptr);
+	}
+	return lower;
+}
+
 static inline int strcmp_or_strverscmp(const char *s1, const char *s2)
 {
-	if (!opt.version_sort)
-		return(strcmp(s1, s2));
-	else
+	if (!opt.version_sort) {
+		/* Version sort disabled */
+
+		if (!opt.ignore_case_sort)
+			return(strcmp(s1, s2));
+		else
+			return(strcasecmp(s1, s2));
+	}
+
+	/* Version sort enabled */
+	if (!opt.ignore_case_sort) {
 		return(strverscmp(s1, s2));
+	} else {
+		char *lower1 = to_lower_str(s1);
+		char *lower2 = to_lower_str(s2);
+		int result;
+		if (lower1 && lower2)
+			result = strverscmp(lower1, lower2);
+		else
+			result = strverscmp(s1, s2);
+		free(lower1);
+		free(lower2);
+		return(result);
+	}
 }
 
 int feh_cmp_filename(void *file1, void *file2)
