@@ -24,6 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+/*
+ * mkstemps(3) is a nonstandard extension that requires defining
+ * _GNU_SOURCE for glibc
+ */
+#ifdef HAVE_GNU
+#define _GNU_SOURCE
+#endif
+
 #include "feh.h"
 #include "filelist.h"
 #include "signals.h"
