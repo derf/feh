@@ -94,7 +94,11 @@ void init_index_mode(void)
 	text_area_h = fh + 5;
 
 	/* This includes the text area for index data */
-	tot_thumb_h = opt.thumb_h + text_area_h;
+	if(opt.montage) {
+		tot_thumb_h = opt.thumb_h;
+	} else {
+		tot_thumb_h = opt.thumb_h + text_area_h;
+	}
 
 	/* Use bg image dimensions for default size */
 	if (opt.bg && opt.bg_file) {
