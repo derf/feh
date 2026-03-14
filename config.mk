@@ -5,6 +5,7 @@ app ?= 0
 curl ?= 1
 debug ?= 0
 exif ?= 0
+gif ?= 1
 help ?= 0
 magic ?= 0
 mkstemps ?= 1
@@ -95,6 +96,11 @@ ifeq (${exif},1)
 	MAN_EXIF = available
 else
 	MAN_EXIF = not available
+endif
+
+ifeq (${gif},1)
+	CFLAGS += -DHAVE_LIBGIF
+	LDLIBS += -lgif
 endif
 
 ifeq (${inotify},1)

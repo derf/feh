@@ -87,6 +87,10 @@ static winwidget winwidget_allocate(void)
     ret->inotify_wd = -1;
 #endif
 
+#ifdef HAVE_LIBGIF
+	ret->gif = NULL;
+#endif
+
 	return(ret);
 }
 
@@ -133,6 +137,10 @@ winwidget winwidget_create_from_file(gib_list * list, char type)
 		winwidget_destroy(ret);
 		return(NULL);
 	}
+
+#ifdef HAVE_LIBGIF
+	gif_animation_start(ret);
+#endif
 
 	if (!ret->win) {
 		ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
@@ -1071,6 +1079,12 @@ void winwidget_rename(winwidget winwid, char *newname)
 
 void winwidget_free_image(winwidget w)
 {
+#ifdef HAVE_LIBGIF
+	if (w->gif) {
+		gif_animation_stop(w);
+		/* gif_animation_stop sets w->im = NULL to prevent double-free */
+	} else
+#endif
 	if (w->im) {
 		gib_imlib_free_image(w->im);
 	}

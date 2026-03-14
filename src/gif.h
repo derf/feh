@@ -1,7 +1,6 @@
-/* structs.h
+/* gif.h
 
-Copyright (C) 1999-2003 Tom Gilbert.
-Copyright (C) 2010-2020 Birte Kristina Friesel.
+Animated GIF support for feh.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -24,21 +23,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef STRUCTS_H
-#define STRUCTS_H
-
-typedef struct __fehtimer _fehtimer;
-typedef _fehtimer *fehtimer;
-typedef struct __feh_file feh_file;
-typedef struct __feh_file_info feh_file_info;
-typedef struct __winwidget _winwidget;
-typedef _winwidget *winwidget;
-typedef struct __fehoptions fehoptions;
-typedef struct __fehkey fehkey;
-typedef struct __fehkb fehkb;
+#ifndef GIF_H
+#define GIF_H
 
 #ifdef HAVE_LIBGIF
-typedef struct gif_anim gif_anim;
-#endif
 
-#endif
+#include <Imlib2.h>
+#include "structs.h"
+
+struct gif_anim {
+	Imlib_Image *frames;
+	int *delays;        /* delay per frame in centiseconds */
+	int frame_count;
+	int current_frame;
+	int loop_count;     /* 0 = infinite, >0 = finite */
+	int loops_done;
+};
+
+gif_anim *gif_load(const char *filename);
+void gif_free(gif_anim *anim);
+void gif_animation_start(winwidget w);
+void gif_animation_stop(winwidget w);
+
+#endif /* HAVE_LIBGIF */
+#endif /* GIF_H */

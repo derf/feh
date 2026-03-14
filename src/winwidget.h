@@ -120,6 +120,10 @@ struct __winwidget {
 #ifdef HAVE_INOTIFY
 	int inotify_wd;
 #endif
+
+#ifdef HAVE_LIBGIF
+	gif_anim *gif;
+#endif
 };
 
 #ifdef HAVE_INOTIFY

@@ -198,6 +198,10 @@ void feh_event_handle_inotify(void);
 int strverscmp(const char *l0, const char *r0);
 #endif
 
+#ifdef HAVE_LIBGIF
+#include "gif.h"
+#endif
+
 /* Imlib stuff */
 extern Display *disp;
 extern Visual *vis;

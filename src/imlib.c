@@ -542,6 +542,9 @@ void feh_reload_image(winwidget w, int resize, int force_new)
 		winwidget_free_image(w);
 
 	w->im = tmp;
+#ifdef HAVE_LIBGIF
+	gif_animation_start(w);
+#endif
 	winwidget_reset_image(w);
 
 	w->mode = MODE_NORMAL;

@@ -32,6 +32,10 @@ ifeq (${exif},1)
 		exif_nikon.c
 endif
 
+ifeq (${gif},1)
+	TARGETS += gif.c
+endif
+
 ifneq (${verscmp},1)
 	TARGETS += strverscmp.c
 endif

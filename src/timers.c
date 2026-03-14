@@ -88,7 +88,7 @@ void feh_remove_timer_by_data(void *data)
 	return;
 }
 
-static void feh_remove_timer(char *name)
+void feh_remove_timer(char *name)
 {
 	fehtimer ft, ptr, pptr;
 
