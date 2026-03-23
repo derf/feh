@@ -271,8 +271,10 @@ void init_index_mode(void)
 
 			lineno = 0;
 			if (opt.index_info) {
-				line = lines = feh_wrap_string(create_index_string(file),
+				char *tmp = create_index_string(file);
+				line = lines = feh_wrap_string(tmp,
 						opt.thumb_w * 3, fn, NULL);
+				free(tmp);
 
 				while (line) {
 					gib_imlib_get_text_size(fn, (char *) line->data,
@@ -447,7 +449,9 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 		file->info = feh_file_info_new();
 	}
 
-	line = lines = feh_wrap_string(create_index_string(file), opt.thumb_w * 3, fn, NULL);
+	char *tmp = create_index_string(file);
+	line = lines = feh_wrap_string(tmp, opt.thumb_w * 3, fn, NULL);
+	free(tmp);
 
 	while (line) {
 		gib_imlib_get_text_size(fn, (char *) line->data,

@@ -540,7 +540,6 @@ gib_string_split(const char *string, const char *delimiter)
 {
    gib_list *string_list = NULL;
    char *s;
-   unsigned int n = 1;
 
    if (!string || !delimiter)
       return NULL;
@@ -561,7 +560,6 @@ gib_string_split(const char *string, const char *delimiter)
          strncpy(new_string, string, len);
          new_string[len] = 0;
          string_list = gib_list_add_front(string_list, new_string);
-         n++;
          string = s + delimiter_len;
          s = strstr(string, delimiter);
       }
@@ -569,7 +567,6 @@ gib_string_split(const char *string, const char *delimiter)
    }
    if (*string)
    {
-      n++;
       string_list = gib_list_add_front(string_list, strdup((char *)string));
    }
 
