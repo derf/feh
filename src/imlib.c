@@ -876,15 +876,15 @@ static char *feh_http_load_image(char *url)
 #endif
 
 	sfn = estrjoin("", path, tmpname, NULL);
-	free(tmpname);
 
 	D(("sfn is %s\n", sfn))
 
 #ifdef HAVE_MKSTEMPS
-	fd = mkstemps(sfn, strlen(basename) + 1);
+	fd = mkstemps(sfn, strlen(tmpname) - strlen("feh_curl_XXXXXX"));
 #else
 	fd = mkstemp(sfn);
 #endif
+	free(tmpname);
 
 	if (fd != -1) {
 		sfp = fdopen(fd, "w+");
