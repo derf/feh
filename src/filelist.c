@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filelist.h"
 #include "signals.h"
 #include "options.h"
+#include "utils.h"
 
 #ifdef HAVE_LIBCURL
 #include <curl/curl.h>
@@ -331,7 +332,7 @@ gib_list *feh_file_info_preload(gib_list * list, int load_images)
 			} else if (opt.verbose)
 				feh_display_status('.');
 		} else {
-			if (feh_file_stat(file)) {
+			if (!path_is_url(file->filename) && feh_file_stat(file)) {
 				D(("Failed to stat file %p\n", file));
 				remove_list = gib_list_add_front(remove_list, l);
 			}
