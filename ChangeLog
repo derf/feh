@@ -1,3 +1,10 @@
+Thu, 02 Apr 2026 09:59:36 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.11.4
+    * Fix formatting in man page for groff 1.23.0+ (patch by Keith Thompson)
+    * Do not skip URLs when `--sort mtime` or similar are used
+    * Define `_GNU_SOURCE` macro for mkstemps usage (if enabled)
+
 Thu, 19 Feb 2026 16:46:02 +0100  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.11.3
