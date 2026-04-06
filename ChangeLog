@@ -8,6 +8,8 @@ Mon, 06 Apr 2026 11:13:12 +0200  Birte Friesel <derf+feh@finalrewind.org>
       %N, which have been available since v2.3 (Feb 2012), do escape
       shell-specific syntax. Migration path: Replace %f (or '%f') and %n (or
       '%n') with %F and %N (without '') in --action and --info commands.
+      Reported by Paavan Bagla, Archit Goyal, Michael Hurtado, Venkat Nallam,
+      and Jaden Wang <https://github.com/derf/feh/issues/821>.
 
 Thu, 02 Apr 2026 09:59:36 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
