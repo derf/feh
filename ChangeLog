@@ -1,3 +1,8 @@
+Mon, 06 Apr 2026 21:47:59 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.12.1
+    * Update tests to reflect the %f/%F changes implemented in v3.12
+
 Mon, 06 Apr 2026 11:13:12 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.12
