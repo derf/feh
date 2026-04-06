@@ -165,7 +165,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 fehkey *feh_str_to_kb(char * action);
 void feh_action_run(feh_file * file, char *action, winwidget winwid);
 char *format_size(double size);
-char *feh_printf(char *str, feh_file * file, winwidget winwid);
+char *feh_printf(char *str, feh_file * file, winwidget winwid, int shell);
 void im_weprintf(winwidget w, char *fmt, ...);
 void feh_draw_zoom(winwidget w);
 void feh_draw_checks(winwidget win);

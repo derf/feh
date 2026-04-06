@@ -1294,12 +1294,20 @@ Information about slideshow state (playing/paused)
 .
 .It %f
 .
-Image path/filename
+Image path/filename.
+Not supported in
+.Cm \-\-action
+and
+.Cm \-\-info
+due to lack of shell escapes
+.Pq use %F instead .
 .
 .It %F
 .
-Escaped image path/filename
-.Pq for use in shell commands
+Escaped image path/filename for use in
+.Cm \-\-action ,
+.Cm \-\-info ,
+and other shell commands.
 .
 .It %g
 .
@@ -1324,11 +1332,20 @@ Current mode
 .
 .It %n
 .
-Image name
+Image name.
+Not supported in
+.Cm \-\-action
+and
+.Cm \-\-info
+due to lack of shell escapes
+.Pq use \&%N instead .
 .
 .It \&%N
 .
-Escaped image name
+Escaped image name for use in
+.Cm \-\-action ,
+.Cm \-\-info ,
+and other shell commands.
 .
 .It %o
 .

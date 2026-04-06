@@ -380,7 +380,7 @@ void feh_action_run(feh_file * file, char *action, winwidget winwid)
 {
 	if (action) {
 		D(("Running action %s\n", action));
-		char *sys = feh_printf(action, file, winwid);
+		char *sys = feh_printf(action, file, winwid, 1);
 
 		if (opt.verbose && !opt.list && !opt.customlist)
 			fprintf(stderr, "Running action -->%s<--\n", sys);
@@ -405,7 +405,7 @@ char *format_size(double size)
 	return ret;
 }
 
-char *feh_printf(char *str, feh_file * file, winwidget winwid)
+char *feh_printf(char *str, feh_file * file, winwidget winwid, int shell)
 {
 	char *c;
 	char buf[20];
@@ -437,7 +437,10 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				}
 				break;
 			case 'f':
-				if (file) {
+				if (shell) {
+					eprintf("%%f format specifier is not allowed in shell commands. Use %%F instead.");
+				}
+				else if (file) {
 					if (strlen(file->filename) > ret_size - ret_used) {
 						ret_size += 4096;
 						ret = erealloc(ret, ret_size);
@@ -483,7 +486,10 @@ char *feh_printf(char *str, feh_file * file, winwidget winwid)
 				strncat(ret, mode, ret_size - ret_used);
 				break;
 			case 'n':
-				if (file) {
+				if (shell) {
+					eprintf("%%n format specifier is not allowed in shell commands. Use %%N instead.");
+				}
+				else if (file) {
 					strncat(ret, file->name, ret_size - ret_used);
 				}
 				break;

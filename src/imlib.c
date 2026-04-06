@@ -1284,7 +1284,7 @@ void feh_draw_info(winwidget w)
 
 	fn = feh_load_font(w);
 
-	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data), w);
+	info_cmd = feh_printf(opt.info_cmd, FEH_FILE(w->file->data), w, 1);
 
 	info_pipe = popen(info_cmd, "r");
 	free(info_cmd);

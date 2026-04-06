@@ -475,7 +475,7 @@ void get_index_string_dim(feh_file *file, Imlib_Font fn, int *fw, int *fh)
 
 char *create_index_string(feh_file * file)
 {
-	return feh_printf(opt.index_info, file, NULL);
+	return feh_printf(opt.index_info, file, NULL, 0);
 }
 
 char *create_index_title_string(int num, int w, int h)

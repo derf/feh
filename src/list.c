@@ -43,7 +43,7 @@ void init_list_mode(void)
 	for (l = filelist; l; l = l->next) {
 		file = FEH_FILE(l->data);
 		if (opt.customlist) {
-			char *tmp = feh_printf(opt.customlist, file, NULL);
+			char *tmp = feh_printf(opt.customlist, file, NULL, 0);
 			puts(tmp);
 			free(tmp);
 		} else {
