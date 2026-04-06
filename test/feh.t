@@ -67,28 +67,28 @@ $cmd->stdout_like($re_loadable);
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
-	cmd => "$feh --loadable --action 'echo touch %f' $images" );
+	cmd => "$feh --loadable --action 'echo touch %F' $images" );
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/loadable_action');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
-	cmd => "$feh --loadable --action ';echo touch %f' $images" );
+	cmd => "$feh --loadable --action ';echo touch %F' $images" );
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/loadable_naction');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
-	cmd => "$feh --unloadable --action 'echo rm %f' $images" );
+	cmd => "$feh --unloadable --action 'echo rm %F' $images" );
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/unloadable_action');
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
-	cmd => "$feh --unloadable --action ';echo rm %f' $images" );
+	cmd => "$feh --unloadable --action ';echo rm %F' $images" );
 
 $cmd->exit_is_num(1);
 $cmd->stdout_is_file('test/nx_action/unloadable_naction');
@@ -146,7 +146,7 @@ $cmd->stdout_is_file("test/${list_dir}/default");
 $cmd->stderr_is_eq('');
 
 $cmd = Test::Command->new(
-	cmd => "$feh --quiet --list --action 'echo \"%f %wx%h\" >&2' $images" );
+	cmd => "$feh --quiet --list --action 'echo %F \"%wx%h\" >&2' $images" );
 
 $cmd->exit_is_num(0);
 $cmd->stdout_is_file("test/${list_dir}/default");
