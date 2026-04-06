@@ -1,3 +1,14 @@
+Mon, 06 Apr 2026 11:13:12 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.12
+    * Disallow %f and %n format specifiers in --action and --info strings;
+      abort with an error message if those are encountered. Use %F and %N
+      instead. Rationale: %f and %n do not escape shell-specific syntax and
+      are thus a security risk when passing untrusted file names to feh. %F and
+      %N, which have been available since v2.3 (Feb 2012), do escape
+      shell-specific syntax. Migration path: Replace %f (or '%f') and %n (or
+      '%n') with %F and %N (without '') in --action and --info commands.
+
 Thu, 02 Apr 2026 09:59:36 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.11.4
