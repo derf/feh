@@ -38,6 +38,7 @@ struct __feh_file {
 
 	/* info stuff */
 	time_t mtime;
+	long mtime_nsec; /* sub-second from stat; 0 if unavailable */
 	int size;
 	feh_file_info *info;	/* only set when needed */
 #ifdef HAVE_LIBEXIF
@@ -92,6 +93,7 @@ void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
 gib_list *feh_file_info_preload(gib_list * list, int load_images);
 int feh_file_stat(feh_file * file);
+void feh_filelist_refresh_mtime(gib_list *list);
 int feh_file_info_load(feh_file * file, Imlib_Image im);
 void feh_file_dirname(char *dst, feh_file * f, int maxlen);
 void feh_prepare_filelist(void);

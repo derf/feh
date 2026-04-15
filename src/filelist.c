@@ -56,6 +56,7 @@ feh_file *feh_file_new(char *filename)
 		newfile->name = estrdup(filename);
 	newfile->size = -1;
 	newfile->mtime = 0;
+	newfile->mtime_nsec = 0;
 	newfile->info = NULL;
 #ifdef HAVE_LIBEXIF
 	newfile->ed = NULL;
@@ -357,6 +358,19 @@ gib_list *feh_file_info_preload(gib_list * list, int load_images)
 	return(list);
 }
 
+static long feh_stat_mtime_nsec(const struct stat *st)
+{
+#if defined(__APPLE__)
+	return st->st_mtimespec.tv_nsec;
+#elif defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) \
+		|| defined(__OpenBSD__) || defined(__DragonFly__)
+	return st->st_mtim.tv_nsec;
+#else
+	(void)st;
+	return 0;
+#endif
+}
+
 int feh_file_stat(feh_file * file)
 {
 	struct stat st;
@@ -368,10 +382,23 @@ int feh_file_stat(feh_file * file)
 	}
 
 	file->mtime = st.st_mtime;
+	file->mtime_nsec = feh_stat_mtime_nsec(&st);
 
 	file->size = st.st_size;
 
 	return(0);
+}
+
+void feh_filelist_refresh_mtime(gib_list *list)
+{
+	gib_list *l;
+
+	for (l = list; l; l = l->next) {
+		feh_file *f = FEH_FILE(l->data);
+
+		if (!path_is_url(f->filename))
+			feh_file_stat(f);
+	}
 }
 
 int feh_file_info_load(feh_file * file, Imlib_Image im)
@@ -451,11 +478,21 @@ int feh_cmp_dirname(void *file1, void *file2)
 	return(feh_cmp_name(file1, file2));
 }
 
-/* Return -1 if file1 is _newer_ than file2 */
+/* Return <0 if file1 is _newer_ than file2 (newest sorts first) */
 int feh_cmp_mtime(void *file1, void *file2)
 {
-	/* gib_list_sort is not stable, so explicitly return 0 as -1 */
-	return(FEH_FILE(file1)->mtime >= FEH_FILE(file2)->mtime ? -1 : 1);
+	feh_file *a = FEH_FILE(file1);
+	feh_file *b = FEH_FILE(file2);
+
+	if (a->mtime > b->mtime)
+		return -1;
+	if (a->mtime < b->mtime)
+		return 1;
+	if (a->mtime_nsec > b->mtime_nsec)
+		return -1;
+	if (a->mtime_nsec < b->mtime_nsec)
+		return 1;
+	return strcmp_or_strverscmp(a->name, b->name);
 }
 
 int feh_cmp_width(void *file1, void *file2)

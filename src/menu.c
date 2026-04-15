@@ -1289,6 +1289,7 @@ void feh_menu_cb(feh_menu * m, feh_menu_item * i, int action, unsigned short dat
 			}
 			break;
 		case CB_SORT_MTIME:
+			feh_filelist_refresh_mtime(filelist);
 			filelist = gib_list_sort(filelist, feh_cmp_mtime);
 			if (opt.jump_on_resort) {
 				slideshow_change_image(m->fehwin, SLIDE_FIRST, 1);
