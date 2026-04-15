@@ -194,14 +194,14 @@ void winwidget_create_window(winwidget ret, int w, int h)
 		}
 		if (opt.geom_flags & XValue) {
 			if (opt.geom_flags & XNegative) {
-				x = scr->width - opt.geom_x;
+				x = scr->width - w - opt.geom_x;
 			} else {
 				x = opt.geom_x;
 			}
 		}
 		if (opt.geom_flags & YValue) {
 			if (opt.geom_flags & YNegative) {
-				y = scr->height - opt.geom_y;
+				y = scr->height - h - opt.geom_y;
 			} else {
 				y = opt.geom_y;
 			}
