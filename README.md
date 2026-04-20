@@ -157,6 +157,10 @@ documented in two different places: The manual (man/feh.pre) and the help text
 kept up-to-date. On space-constrained embedded systems, it may be more useful
 than the (significantly larger) man page.
 
+"AI" (as in, Large Language Models / LLMs such as ChatGPT, Claude, Copilot,
+Cursor, Grok, etc.) may not be used to generate code for contributions to this
+project.
+
 ## References
 
 Mirrors of the feh repository are available at:
