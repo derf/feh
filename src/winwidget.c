@@ -485,32 +485,36 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		double required_zoom = 1.0;
 		feh_calc_needed_zoom(&required_zoom, winwid->im_w, winwid->im_h, winwid->w, winwid->h);
 
-		winwid->zoom = opt.default_zoom ? (0.01 * opt.default_zoom) : 1.0;
+		if (!winwid->manual_zoom) {
+			winwid->zoom = opt.default_zoom ? (0.01 * opt.default_zoom) : 1.0;
 
-		if ((opt.scale_down || (winwid->full_screen && !opt.default_zoom))
-				&& winwid->zoom > required_zoom)
-			winwid->zoom = required_zoom;
-		else if ((opt.zoom_mode && required_zoom > 1)
-				&& (!opt.default_zoom || required_zoom < winwid->zoom))
-			winwid->zoom = required_zoom;
+			if ((opt.scale_down || (winwid->full_screen && !opt.default_zoom))
+					&& winwid->zoom > required_zoom)
+				winwid->zoom = required_zoom;
+			else if ((opt.zoom_mode && required_zoom > 1)
+					&& (!opt.default_zoom || required_zoom < winwid->zoom))
+				winwid->zoom = required_zoom;
 
-		if (opt.offset_flags & XValue) {
-			if (opt.offset_flags & XNegative) {
-				winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.offset_x;
+			if (opt.offset_flags & XValue) {
+				if (opt.offset_flags & XNegative) {
+					winwid->im_x = winwid->w - (winwid->im_w * winwid->zoom) - opt.offset_x;
+				} else {
+					winwid->im_x = - opt.offset_x * winwid->zoom;
+				}
 			} else {
-				winwid->im_x = - opt.offset_x * winwid->zoom;
+				winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
+			}
+			if (opt.offset_flags & YValue) {
+				if (opt.offset_flags & YNegative) {
+					winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.offset_y;
+				} else {
+					winwid->im_y = - opt.offset_y * winwid->zoom;
+				}
+			} else {
+				winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
 			}
 		} else {
-			winwid->im_x = (int) (winwid->w - (winwid->im_w * winwid->zoom)) >> 1;
-		}
-		if (opt.offset_flags & YValue) {
-			if (opt.offset_flags & YNegative) {
-				winwid->im_y = winwid->h - (winwid->im_h * winwid->zoom) - opt.offset_y;
-			} else {
-				winwid->im_y = - opt.offset_y * winwid->zoom;
-			}
-		} else {
-			winwid->im_y = (int) (winwid->h - (winwid->im_h * winwid->zoom)) >> 1;
+			winwidget_sanitise_offsets(winwid);
 		}
 	}
 
@@ -618,6 +622,7 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
+	XFlush(disp);
 	return;
 }
 
@@ -640,6 +645,7 @@ void winwidget_render_image_cached(winwidget winwid)
 		feh_draw_info(winwid);
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
+	XFlush(disp);
 }
 
 double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h)
@@ -1103,6 +1109,7 @@ void winwidget_reset_image(winwidget winwid)
 		winwid->im_x = 0;
 		winwid->im_y = 0;
 	}
+	winwid->manual_zoom = 0;
 	winwid->im_angle = 0.0;
 	winwid->has_rotated = 0;
 	return;
