@@ -514,6 +514,8 @@ void feh_menu_hide(feh_menu * m, int func_free)
 	if (m == menu_root) {
 		if (menu_cover) {
 			D(("DESTROYING menu cover\n"));
+			if (m->fehwin)
+				XSetInputFocus(disp, m->fehwin->win, RevertToPointerRoot, CurrentTime);
 			XDestroyWindow(disp, menu_cover);
 			menu_cover = 0;
 		}
