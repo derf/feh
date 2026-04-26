@@ -61,9 +61,24 @@ void init_parse_options(int argc, char **argv)
 	opt.xinerama = 1;
 #endif				/* HAVE_LIBXINERAMA */
 	opt.screen_clip = 1;
+
+	opt.output_file = NULL;
+	opt.output_dir = NULL;
+	opt.bg_file = NULL;
+	opt.image_bg = NULL;
 	opt.font = NULL;
+	opt.title_font = NULL;
+	opt.title = NULL;
+	opt.thumb_title = NULL;
+	opt.fontpath = NULL;
+	opt.filelistfile = NULL;
 	opt.menu_font = estrdup(DEFAULT_MENU_FONT);
+	opt.customlist = NULL;
+	opt.caption_path = NULL;
 	opt.start_list_at = NULL;
+	opt.info_cmd = NULL;
+	opt.index_info = NULL;
+
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
 	opt.thumb_redraw = 10;
