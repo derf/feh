@@ -253,6 +253,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	} else if (feh_is_bb(EVENT_zoom_in, button, state)) {
 		D(("Zoom_In Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->manual_zoom = 1;
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
 		winwid->old_zoom = winwid->zoom;
@@ -281,6 +282,7 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 	} else if (feh_is_bb(EVENT_zoom_out, button, state)) {
 		D(("Zoom_Out Button Press event\n"));
 		D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+		winwid->manual_zoom = 1;
 		winwid->click_offset_x = ev->xbutton.x;
 		winwid->click_offset_y = ev->xbutton.y;
 		winwid->old_zoom = winwid->zoom;
