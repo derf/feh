@@ -453,6 +453,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"class"         , 1, 0, OPTION_class},
 		{"no-conversion-cache", 0, 0, OPTION_no_conversion_cache},
 		{"window-id", 1, 0, OPTION_window_id},
+		{"ignore-case-sort"  , 0, 0, OPTION_ignore_case_sort},
 		{0, 0, 0, 0}
 	};
 	int optch = 0, cmdx = 0;
@@ -874,6 +875,9 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 			} else {
 				opt.zoom_rate = 1 + ((float)opt.zoom_rate / 100);
 			}
+			break;
+		case OPTION_ignore_case_sort:
+		    opt.ignore_case_sort = 1;
 			break;
 		default:
 			break;
