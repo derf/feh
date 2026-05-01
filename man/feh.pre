@@ -198,10 +198,13 @@ The environment variable's value does not matter, it just needs to be set.
 .It Cm \-A , \-\-action Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
 Specify a shell command as an action to perform on the image.
-In slideshow or multiwindow mode, the action will be run when
-the action_0 key is pressed, in list mode, it will be run for each file.
-In loadable/unloadable mode, it will be run for each loadable/unloadable
-file, respectively.
+In slideshow or multiwindow mode, the action will be run when the
+.Cm action_0
+key
+.Pq default: Return
+is pressed.
+In list mode, it will be run for each file, and in loadable/unloadable mode,
+it will be run for each loadable/unloadable file, respectively.
 In thumbnail mode, clicking on an image will cause the action to run instead
 of opening the image.
 .
@@ -246,7 +249,7 @@ Use format specifiers to refer to image info, see
 .Sx FORMAT SPECIFIERS
 for details.
 Example usage:
-.Qq feh \-A Qo mv %F \[ti]/images/%N Qc * .
+.Qq feh \-A Qo mv -n %F \[ti]/images/%N Qc * .
 .
 .It Cm \-\-action1 No .. Cm \-\-action9 Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
