@@ -83,6 +83,7 @@ struct __fehoptions {
 	unsigned char text_bg;
 	unsigned char no_fehbg;
 	unsigned char keep_zoom_vp;
+	unsigned char keep_offset;
 	unsigned char insecure_ssl;
 	unsigned char filter_by_dimensions;
 	unsigned char edit;
@@ -221,6 +222,7 @@ OPTION_zoom_step,
 OPTION_zoom_in_rate,
 OPTION_zoom_out_rate,
 OPTION_keep_zoom_vp,
+OPTION_keep_offset,
 OPTION_no_screen_clip,
 OPTION_index_info,
 OPTION_magick_timeout,
