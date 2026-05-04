@@ -194,7 +194,6 @@ void cb_reload_timer(void *data)
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
 	gib_list *last = NULL;
-	gib_list *previous_file = current_file;
 	int i = 0;
 	int jmp = 1;
 	/* We can't use filelist_len in the for loop, since that changes when we
@@ -209,20 +208,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 	   intelligent behaviour :-) */
 	if (filelist_len < 2 && opt.on_last_slide != ON_LAST_SLIDE_QUIT)
 		return;
-
-	/* Ok. I do this in such an odd way to ensure that if the last or first *
-	   image is not loadable, it will go through in the right direction to *
-	   find the correct one. Otherwise SLIDE_LAST would try the last file, *
-	   then loop forward to find a loadable one. */
-	if (change == SLIDE_FIRST) {
-		current_file = gib_list_last(filelist);
-		change = SLIDE_NEXT;
-		previous_file = NULL;
-	} else if (change == SLIDE_LAST) {
-		current_file = filelist;
-		change = SLIDE_PREV;
-		previous_file = NULL;
-	}
 
 	/* The for loop prevents us looping infinitely */
 	for (i = 0; i < our_filelist_len; i++) {
@@ -240,6 +225,16 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		}
 #endif
 		switch (change) {
+		case SLIDE_FIRST:
+			current_file = filelist;
+			/* important. if the load fails, we want to try the next file */
+			change = SLIDE_NEXT;
+			break;
+		case SLIDE_LAST:
+			current_file = gib_list_last(filelist);
+			/* important. if the load fails, we want to try the previous file */
+			change = SLIDE_PREV;
+			break;
 		case SLIDE_NEXT:
 			current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
 			break;
@@ -327,12 +322,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		if (last) {
 			filelist = feh_file_remove_from_list(filelist, last);
 			last = NULL;
-		}
-
-		if (opt.on_last_slide == ON_LAST_SLIDE_HOLD && previous_file &&
-			((current_file == filelist && change == SLIDE_NEXT) ||
-			(previous_file == filelist && change == SLIDE_PREV))) {
-				current_file = previous_file;
 		}
 
 		if (winwidget_loadimage(winwid, FEH_FILE(current_file->data))) {
@@ -703,6 +692,9 @@ gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
 				if (opt.on_last_slide == ON_LAST_SLIDE_QUIT) {
 					exit(0);
 				}
+				if(opt.on_last_slide == ON_LAST_SLIDE_HOLD) {
+					break;
+				}
 				if (opt.randomize) {
 					/* Randomize the filename order */
 					filelist = gib_list_randomize(filelist);
@@ -714,6 +706,8 @@ gib_list *feh_list_jump(gib_list * root, gib_list * l, int direction, int num)
 		} else {
 			if (ret->prev)
 				ret = ret->prev;
+			else if(opt.on_last_slide == ON_LAST_SLIDE_HOLD)
+				break;
 			else
 				ret = gib_list_last(ret);
 		}
