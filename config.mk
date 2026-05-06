@@ -104,7 +104,11 @@ else
 	MAN_INOTIFY = disabled
 endif
 
-MAN_DATE ?= ${shell date '+%B %d, %Y'}
+# The environment variable SOURCE_DATE_EPOCH is used by build environments
+# to produce reproducible binary builds. In fact you can set both manually,
+# SOURCE_DATE_EPOCH and MAN_DATE.
+SOURCE_DATE_EPOCH ?= $(shell date +%s)
+MAN_DATE ?= ${shell date --utc --date=@$(SOURCE_DATE_EPOCH) '+%B %d, %Y'}
 
 # Uncomment this to use dmalloc
 #CFLAGS += -DWITH_DMALLOC
