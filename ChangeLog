@@ -1,3 +1,11 @@
+Thu, 07 May 2026 19:52:27 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.12.2
+    * Treat audio/mpeg files as images and display their cover image,
+      if present (patch by Christian Hesse)
+    * Fix menu-related focusing issues under Xwayland (patch by Pete Scheyen)
+    * Support reproducible builds for feh(1) manual (patch by Christian Hesse)
+
 Mon, 06 Apr 2026 21:47:59 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.12.1
