@@ -45,6 +45,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/extensions/Xinerama.h>
 #include <X11/X.h>
 #endif				/* HAVE_LIBXINERAMA */
+
+/* Globals for passing key event info into actions (%k / %K in feh_printf) */
+extern KeySym feh_current_action_keysym;
+extern unsigned int feh_current_action_state;
+extern unsigned int feh_current_action_button;
+
+
+
+
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
