@@ -10,6 +10,7 @@ magic ?= 0
 mkstemps ?= 1
 verscmp ?= 1
 xinerama ?= 1
+x11scrnsaver ?= 1
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
@@ -87,6 +88,12 @@ ifeq (${xinerama},1)
 	MAN_XINERAMA = enabled
 else
 	MAN_XINERAMA = disabled
+endif
+
+ifeq (${x11scrnsaver},1)
+	CFLAGS += -DHAVE_X11SCRNSAVER
+	LDLIBS += -lXss
+else
 endif
 
 ifeq (${exif},1)
