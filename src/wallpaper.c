@@ -250,9 +250,10 @@ static void feh_wm_set_bg_maxed(Pixmap pmap, Imlib_Image im, int use_filelist,
 ** as the last time the program was called.
 */
 void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int use_filelist) {
-	char * home = getenv("HOME");
+	char *home = getenv("HOME");
+	char *custom_path = getenv("FEH_FEHBG");
 
-	if (!home)
+	if(!home && !custom_path)
 		return;
 
 	FILE *fp;
@@ -268,7 +269,10 @@ void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int u
 	else
 		exec_method = cmdargv[0];
 
-	path = estrjoin("/", home, ".fehbg", NULL);
+	if(custom_path)
+		path = custom_path;
+	else
+		path = estrjoin("/", home, ".fehbg", NULL);
 
 	if ((fp = fopen(path, "w")) == NULL) {
 		weprintf("Can't write to %s", path);
@@ -339,7 +343,9 @@ void feh_wm_gen_bg_script(char* fil, int centered, int scaled, int filled, int u
 		}
 		fclose(fp);
 	}
-	free(path);
+
+	if(!custom_path)
+		free(path);
 
 	if(exec_method != cmdargv[0])
 		free(exec_method);
