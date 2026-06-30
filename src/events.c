@@ -181,6 +181,7 @@ void feh_event_init(void)
 		ev_handler[i] = NULL;
 
 	ev_handler[KeyPress] = feh_event_handle_keypress;
+	ev_handler[KeyRelease] = feh_event_handle_keyrelease;
 	ev_handler[ButtonPress] = feh_event_handle_ButtonPress;
 	ev_handler[ButtonRelease] = feh_event_handle_ButtonRelease;
 	ev_handler[ConfigureNotify] = feh_event_handle_ConfigureNotify;
