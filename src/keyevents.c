@@ -35,6 +35,21 @@ struct __fehkey keys[EVENT_LIST_END];
 struct termios old_term_settings;
 unsigned char control_via_stdin = 0;
 
+// bit mask for held directions state
+static unsigned int held_directions = 0;
+#define DIR_LEFT  (1 << 0)
+#define DIR_RIGHT (1 << 1)
+#define DIR_UP    (1 << 2)
+#define DIR_DOWN  (1 << 3)
+/* USAGE for DIR_LEFT as example
+    set:
+held_directions |= DIR_LEFT
+    reset:
+held_directions &= ~DIR_LEFT
+    check:
+held_directions & (DIR_LEFT | DIR_RIGHT)
+*/
+
 void setup_stdin(void) {
 	struct termios ctrl;
 
@@ -410,7 +425,111 @@ void feh_event_handle_keypress(XEvent * ev)
 	if (winwid == NULL)
 		return;
 
+	switch (keysym) {
+		case XK_Left:
+		case XK_KP_Left:
+			held_directions |= DIR_LEFT;
+			break;
+		case XK_Right:
+		case XK_KP_Right:
+			held_directions |= DIR_RIGHT;
+			break;
+		case XK_Up:
+		case XK_KP_Up:
+			held_directions |= DIR_UP;
+			break;
+		case XK_Down:
+		case XK_KP_Down:
+			held_directions |= DIR_DOWN;
+			break;
+	}
+
+	{
+		unsigned int hor = held_directions & (DIR_LEFT | DIR_RIGHT);
+		unsigned int ver = held_directions & (DIR_UP | DIR_DOWN);
+		int hor_blocked = (hor == (DIR_LEFT | DIR_RIGHT));
+		int ver_blocked = (ver == (DIR_UP | DIR_DOWN));
+
+		if (hor_blocked) hor = 0;
+		if (ver_blocked) ver = 0;
+
+		if (hor_blocked || ver_blocked) {
+			if ((hor_blocked
+					&& (feh_is_kp(EVENT_scroll_left, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_right, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_left_page, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_right_page, state, keysym, 0)))
+				|| (ver_blocked
+					&& (feh_is_kp(EVENT_scroll_up, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_down, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_up_page, state, keysym, 0)
+						|| feh_is_kp(EVENT_scroll_down_page, state, keysym, 0)))) {
+				return;
+			}
+		}
+
+		if (hor && ver) {
+			int dx = 0, dy = 0;
+
+			if (feh_is_kp(EVENT_scroll_left_page, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_right_page, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_up_page, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_down_page, state, keysym, 0)) {
+				int s = 0;
+				if (hor) s = winwid->w;
+				if (ver) s = winwid->h;
+				dx = (hor & DIR_LEFT) ? s : -s;
+				dy = (ver & DIR_UP)   ? s : -s;
+			} else if (feh_is_kp(EVENT_scroll_left, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_right, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_up, state, keysym, 0)
+					|| feh_is_kp(EVENT_scroll_down, state, keysym, 0)) {
+				dx = (hor & DIR_LEFT) ? opt.scroll_step : -opt.scroll_step;
+				dy = (ver & DIR_UP)   ? opt.scroll_step : -opt.scroll_step;
+			} else {
+				feh_event_handle_generic(winwid, state, keysym, 0);
+				return;
+			}
+
+			winwid->im_x += dx;
+			winwid->im_y += dy;
+			winwidget_sanitise_offsets(winwid);
+			winwidget_render_image(winwid, 0, 1);
+			return;
+		}
+	}
+
 	feh_event_handle_generic(winwid, state, keysym, 0);
+}
+
+void feh_event_handle_keyrelease(XEvent *ev)
+{
+	KeySym keysym;
+	char kbuf[20];
+
+	if (ev->xkey.window == menu_cover)
+		return;
+
+	XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
+
+	switch (keysym) {
+		case XK_Left:
+		case XK_KP_Left:
+			held_directions &= ~DIR_LEFT;
+			break;
+		case XK_Right:
+		case XK_KP_Right:
+			held_directions &= ~DIR_RIGHT;
+			break;
+		case XK_Up:
+		case XK_KP_Up:
+			held_directions &= ~DIR_UP;
+			break;
+		case XK_Down:
+		case XK_KP_Down:
+			held_directions &= ~DIR_DOWN;
+			break;
+	}
 }
 
 fehkey *feh_str_to_kb(char *action)
