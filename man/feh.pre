@@ -249,7 +249,7 @@ Use format specifiers to refer to image info, see
 .Sx FORMAT SPECIFIERS
 for details.
 Example usage:
-.Qq feh \-A Qo mv -n %F \[ti]/images/%N Qc * .
+.Qq feh \-A Qo mv \-n %F \[ti]/images/%N Qc * .
 .
 .It Cm \-\-action1 No .. Cm \-\-action9 Oo Ar flag Oc Ns Oo [ Ar title ] Oc Ns Ar action
 .
@@ -2137,7 +2137,7 @@ Open each image in \[ti]/Pictures/holidays in its own window
 Show the images in .../presentation, sorted by name, in fullscreen,
 automatically change to the next image after 5 seconds
 .
-.It feh \-rSwidth \-A Qo mv %F \[ti]/images/\&%N Qc \[ti]/Pictures
+.It feh \-rSwidth \-A Qo mv \-n %F \[ti]/images/\&%N Qc \[ti]/Pictures
 .
 View all images in \[ti]/Pictures and below, sorted by width, move an image to
 \[ti]/image/image_name when enter is pressed
