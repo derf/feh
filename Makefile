@@ -49,7 +49,7 @@ install-font:
 	@echo installing fonts to ${font_dir}
 	@mkdir -p ${font_dir}
 	@chmod 755 ${font_dir}
-	@cp share/fonts/*.style share/fonts/*.ttf ${font_dir}
+	@cp share/fonts/*.ttf ${font_dir}
 	@chmod 644 ${font_dir}/*
 
 install-img:
