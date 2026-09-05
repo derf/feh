@@ -6,6 +6,7 @@ curl ?= 1
 debug ?= 0
 exif ?= 0
 help ?= 0
+install_fonts ?= 1
 magic ?= 0
 mkstemps ?= 1
 verscmp ?= 1
@@ -28,12 +29,14 @@ man_dir = ${main_dir}/share/man
 bin_dir = ${main_dir}/bin
 doc_dir = ${main_dir}/share/doc/feh
 image_dir = ${main_dir}/share/feh/images
-font_dir = ${main_dir}/share/feh/fonts
+font_dir ?= ${main_dir}/share/feh/fonts
 example_dir = ${main_dir}/share/doc/feh/examples
 desktop_dir = ${main_dir}/share/applications
 icon_dir = ${ICON_PREFIX}/hicolor
 48_icon_dir = ${icon_dir}/48x48/apps
 scalable_icon_dir = ${icon_dir}/scalable/apps
+
+INSTALL_TARGETS = man doc bin img icon examples applications
 
 # default CFLAGS
 CFLAGS ?= -g -O2
@@ -59,6 +62,10 @@ endif
 
 ifeq (${help},1)
 	CFLAGS += -DINCLUDE_HELP
+endif
+
+ifeq (${install_fonts}, 1)
+	INSTALL_TARGETS += font
 endif
 
 ifeq (${stat64},1)

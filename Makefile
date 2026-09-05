@@ -1,6 +1,6 @@
-include config.mk
-
 all: build-src build-man build-applications
+
+include config.mk
 
 build-src:
 	@${MAKE} -C src
@@ -22,8 +22,7 @@ test-x11: all
 	test/run-interactive
 	prove test/feh-bg-i.t
 
-install: install-man install-doc install-bin install-font install-img
-install: install-icon install-examples install-applications
+install: $(addprefix install-, ${INSTALL_TARGETS})
 
 install-man: man/feh.1
 	@echo installing manuals to ${man_dir}

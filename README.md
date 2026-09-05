@@ -47,17 +47,11 @@ feh's build process uses make flags to enable/disable optional features and
 fine-tune the build and installation process. It uses (hopefully) reasonable
 defaults, so you can skip this section if you like.
 
-Make flags can be passed as **make** arguments or set as environment variables,
-like so:
+Make flags can be passed as **make** arguments, like so:
 
 ```bash
 $ make flag=bool
 $ make install flag=bool
-```
-or
-```bash
-$ export flag=bool
-$ make && make install
 ```
 
 The following flags are respected by the makefile. A default value of **1**
@@ -70,6 +64,7 @@ indicates that the corresponding feature is enabled by default.
 | debug | 0 | debug build, enables `--debug` |
 | exif | 0 | Builtin EXIF tag display support |
 | help | 0 | include help text (refers to the manpage otherwise) |
+| `install_fonts` | 1 | Install the bundled NotoSans-Medium.ttf font to `font_dir`. Package maintainers may set this to 0 and adjust `font_dir` to use a system-wide NotoSans-Medium instance instead. |
 | inotify | 0 | enable inotify, needed for `--auto-reload` |
 | stat64 | 0 | Support CIFS shares from 64bit hosts on 32bit machines |
 | magic | 0 | Use libmagic to filter unsupported file formats |
