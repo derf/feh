@@ -430,7 +430,7 @@ will read the filelist from its standard input.
 Set global font.
 Should be a truetype font, resident in the current directory or the font
 directory, and should be defined in the form fontname/size, like
-.Qq yudit/12
+.Qq NotoSans-Medium/12
 .Pq which is the default .
 .
 .It Cm \-C , \-\-fontpath Ar path
@@ -599,7 +599,7 @@ If you only care about one parameter, set the other to 0
 .
 Use
 .Ar font
-.Pq truetype, with size, like Qq yudit/12
+.Pq truetype, with size, like Qq NotoSans-Medium/12
 as menu font.
 .
 .It Cm \-\-min\-dimension Ar width No x Ar height
