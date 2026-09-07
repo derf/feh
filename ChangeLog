@@ -1,3 +1,23 @@
+Mon, 07 Sep 2026 20:27:15 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.13
+    * Switch default font from yudit to NotoSans Medium, and bundle its ttf
+      file with feh. NotoSans has much better Unicode support than yudit,
+      covering pretty much all of Latin, Cyrillic and Greek scripts.  Note that
+      it does not support Chinese, Japanese and Korean scripts -- please use
+      the (not-yet-bundled) Noto CJK font family for those.  yudit.ttf remains
+      present to retain compatibility with users who have hardcoded it in
+      themes, shell aliases, and feh commands in general.
+    * Add new "make install" option: install_fonts=0 (default 1) skips
+      installation of the bundled NotoSans-Medium.ttf and yudit.ttf files
+      to font_dir. This may be helpful for distributions who wish to introduce
+      a dependency on a system-wide NotoSans package instead. Note that this
+      will increase feh's dependency footprint by far more than the single ttf
+      file it uses, though. You should also make provisions to retain
+      yudit.ttf where feh expects it (see above).
+    * The font_path used within "make" can now be overridden from the
+      commandline.
+
 Fri, 28 Aug 2026 19:39:56 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.12.4
