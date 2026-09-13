@@ -207,6 +207,8 @@ static void feh_event_handle_ButtonPress(XEvent * ev)
 		return;
 	}
 
+	winwid->just_mapped = 0;
+
 	state = ev->xbutton.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
 	button = ev->xbutton.button;
 
@@ -440,7 +442,19 @@ void feh_event_handle_ConfigureNotify(XEvent * ev)
 					opt.geom_h = w->h;
 				}
 				winwidget_render_image(w, 0, 0);
+				if (w->just_mapped) {
+					/*
+					 * Looks like we're being adjusted by a tiling window manager.
+					 * Set fixed geometry so that we will not make further (futile) resize attempts.
+					 * This avoids flickering during image changes when feh is running in a tiling window.
+					 * It's still kind of an ugly workaround.
+					 */
+					D(("Environment looks like a tiling window manager -- setting fixed geometry mode\n"));
+					opt.geom_enabled = 1;
+					opt.geom_flags |= WidthValue | HeightValue;
+				}
 			}
+			w->just_mapped = 0;
 		}
 	}
 
@@ -567,6 +581,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 					- (winwid->im_click_offset_y * winwid->zoom);
 
 			winwidget_render_image(winwid, 0, 1);
+			winwid->just_mapped = 0;
 		}
 	} else if ((opt.mode == MODE_PAN) || (opt.mode == MODE_NEXT)) {
 		int orig_x, orig_y;
@@ -634,6 +649,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			if ((winwid->im_x != orig_x)
 					|| (winwid->im_y != orig_y))
 				winwidget_render_image(winwid, 0, 1);
+			winwid->just_mapped = 0;
 		}
 	} else if (opt.mode == MODE_ROTATE) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -656,6 +672,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->im_angle = (ev->xmotion.x - winwid->w / 2) / ((double) winwid->w / 2) * 3.1415926535;
 			D(("angle: %f\n", winwid->im_angle));
 			winwidget_render_image(winwid, 0, 1);
+			winwid->just_mapped = 0;
 		}
 	} else if (opt.mode == MODE_BLUR) {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -680,6 +697,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 				gib_imlib_free_image_and_decache(winwid->im);
 				winwid->im = ptr;
 			}
+			winwid->just_mapped = 0;
 		}
 	} else {
 		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
@@ -696,6 +714,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			} else {
 				feh_event_handle_generic(winwid, ev->xmotion.state | Mod3Mask, NoSymbol, 0, NULL, 0);
 			}
+			winwid->just_mapped = 0;
 		}
 	}
 	return;

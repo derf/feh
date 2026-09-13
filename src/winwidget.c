@@ -82,6 +82,7 @@ static winwidget winwidget_allocate(void)
 	ret->click_offset_x = 0;
 	ret->click_offset_y = 0;
 	ret->has_rotated = 0;
+	ret->just_mapped = 0;
 
 #ifdef HAVE_INOTIFY
     ret->inotify_wd = -1;
@@ -881,6 +882,7 @@ void winwidget_show(winwidget winwid)
 		if (ev.type == ConfigureNotify)
 			feh_event_handle_ConfigureNotify(&ev);
 		D(("Window mapped\n"));
+		winwid->just_mapped = 1;
 		winwid->visible = 1;
 	}
 	return;

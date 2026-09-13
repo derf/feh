@@ -116,6 +116,7 @@ struct __winwidget {
 	time_t click_start_time;
 
 	unsigned char has_rotated;
+	unsigned char just_mapped;
 
 #ifdef HAVE_INOTIFY
 	int inotify_wd;
