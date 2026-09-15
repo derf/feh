@@ -1182,15 +1182,18 @@ In many desktop environments,
 can also be used as a background setter.
 Unless you pass the
 .Cm \-\-no\-fehbg
-option, it will write a script to set the current background to
-.Pa \[ti]/.fehbg .
+option, it will write a script to set the current background to the file
+specified by the
+.Ev FEH_FEHBG
+environment variable or
+.Pa \[ti]/.fehbg
+if it isn't set.
 So to have your background restored every time you start X, you can add
+for example
 .Qq \[ti]/.fehbg &
 to your X startup script
 .Pq such as Pa \[ti]/.xinitrc .
-Note that the commandline written to
-.Pa \[ti]/.fehbg
-always includes the
+Note that the commandline written to the script always includes the
 .Cm \-\-no\-fehbg
 option to ensure that it is not inadvertently changed by differences in
 X11 screen layout or similar.
