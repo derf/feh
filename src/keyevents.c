@@ -628,6 +628,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		feh_event_invoke_action(winwid, 9);
 	}
 	else if (feh_is_kp(EVENT_zoom_in, state, keysym, button)) {
+		winwid->manual_zoom = 1;
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom * opt.zoom_rate;
 
@@ -642,6 +643,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 		winwidget_render_image(winwid, 0, 0);
 	}
 	else if (feh_is_kp(EVENT_zoom_out, state, keysym, button)) {
+		winwid->manual_zoom = 1;
 		winwid->old_zoom = winwid->zoom;
 		winwid->zoom = winwid->zoom / opt.zoom_rate;
 
