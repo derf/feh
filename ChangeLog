@@ -1,3 +1,9 @@
+Wed, 16 Sep 2026 20:31:29 +0200  Birte Friesel <derf+feh@finalrewind.org>
+
+* Release v3.13.1
+    * Improve behaviour of --scale-down in tiling window managers.
+      Newly loaded images should now no longer flicker.
+
 Mon, 07 Sep 2026 20:27:15 +0200  Birte Friesel <derf+feh@finalrewind.org>
 
 * Release v3.13
