@@ -349,6 +349,10 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 			winwidget_reset_image(winwid);
 			winwid->im_w = w;
 			winwid->im_h = h;
+			if(opt.keep_offset) {
+				winwid->im_x = opt.offset_x;
+				winwid->im_y = opt.offset_y;
+			}
 			if (render) {
 				winwidget_render_image(winwid, 1, 0);
 			}
