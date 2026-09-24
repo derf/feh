@@ -1831,7 +1831,7 @@ Scroll to the left
 .
 Scroll to the right
 .
-.It Ao keypad up Ac , Ao Ctrl+Up Ac Bq scroll_up
+.It Ao keypad Up Ac , Ao Ctrl+Up Ac Bq scroll_up
 .
 Scroll up
 .
@@ -1841,19 +1841,19 @@ Scroll down.
 Note that the scroll keys work without anti-aliasing for performance reasons;
 hit the render key after scrolling to anti-alias the image.
 .
-.It Aq Alt+Left Bq scroll_left_page
+.It Ao Alt+Left Ac Bq scroll_left_page
 .
 Scroll to the left by one page
 .
-.It Aq Alt+Right Bq scroll_right_page
+.It Ao Alt+Right Ac Bq scroll_right_page
 .
 Scroll to the right by one page
 .
-.It Aq Alt+Up Bq scroll_up_page
+.It Ao Alt+Up Ac Bq scroll_up_page
 .
 Scroll up by one page
 .
-.It Aq Alt+Down Bq scroll_down_page
+.It Ao Alt+Down Ac Bq scroll_down_page
 .
 Scroll down by one page
 .
