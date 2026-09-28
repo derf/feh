@@ -20,7 +20,7 @@ jobs:
         xinerama: [0, 1]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
       - name: APT
         run: sudo apt-get -y update
       - name: Install Dependencies
