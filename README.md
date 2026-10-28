@@ -23,6 +23,13 @@ This README focuses on installation and contribution instructions.  See the
  * libXt
  * libXinerama (disable with `xinerama=0`)
 
+For native Wayland support (disable with `wayland=0`):
+
+ * libwayland-client and libwayland-cursor
+ * libxkbcommon
+ * libdecor
+ * wayland-protocols, wayland-scanner, pkg-config, and Linux input headers (build time)
+
 Only when building with `exif=1`:
 
  * libexif-dev
@@ -70,6 +77,7 @@ indicates that the corresponding feature is enabled by default.
 | magic | 0 | Use libmagic to filter unsupported file formats |
 | mkstemps | 1 | Whether your libc provides `mkstemps()`. If set to 0, feh will be unable to load gif images via libcurl |
 | verscmp | 1 | Whether your libc provides `strvercmp()`. If set to 0, feh will use an internal implementation. |
+| wayland | 1 | Native Wayland windows and input |
 | xinerama | 1 | Support Xinerama/XRandR multiscreen setups |
 
 For example, `make xinerama=0 debug=1` will disable Xinerama support and

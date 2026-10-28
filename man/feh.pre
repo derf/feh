@@ -36,6 +36,9 @@ libcurl remote file support $MAN_CURL$
 Xinerama multi-monitor support $MAN_XINERAMA$
 .
 .It
+native Wayland support $MAN_WAYLAND$
+.
+.It
 libexif builtin EXIF reader $MAN_EXIF$
 .
 .It
@@ -288,6 +291,24 @@ currently cannot detect this at runtime.
 .
 Zoom pictures to screen size in fullscreen / fixed geometry mode.
 .
+.It Cm \-\-backend Ar backend
+.
+Select the display backend:
+.Cm auto
+(the default),
+.Cm wayland ,
+or
+.Cm x11 .
+Automatic selection tries Wayland when
+.Ev WAYLAND_DISPLAY
+or
+.Ev WAYLAND_SOCKET
+is set, then falls back to X11 if the connection fails.
+Wallpaper setting and
+.Cm \-\-window\-id
+select X11 automatically.
+An explicit backend selection does not fall back.
+.
 .It Cm \-x , \-\-borderless
 .
 Create borderless windows.
@@ -344,7 +365,7 @@ Negative values restore the default by disabling conversion altogether.
 .
 .It Cm \-\-class Ar class
 .
-Set the X11 class hint to
+Set the X11 class hint, or the Wayland application ID, to
 .Ar class .
 .
 Default: feh
@@ -492,6 +513,7 @@ Use a fixed window size as specified in the X-style geometry
 .Ar string ,
 e.g. 640x480.
 An optional +x+y window offset can be specified.
+On Wayland, the compositor chooses the window position and ignores this offset.
 Combine with
 .Cm \-\-scale\-down
 to scale down larger images like in fullscreen mode.
@@ -514,6 +536,7 @@ Accepted values: default, checks, or an XColor
 .Pq e.g. Qo black Qc or Qo #428bdd Qc .
 Note that some shells treat the hash symbol as a special character, so you
 may need to quote or escape it for the XColor code to work.
+On Wayland, colours must be black, white, #RGB, or #RRGGBB.
 .
 In windowed mode, the default is checks
 .Pq a checkered background so transparent image parts are easy to see .
@@ -974,6 +997,9 @@ attributes, such as full-screen mode.
 .It Cm \-\-xinerama\-index Ar monitor
 .
 .Pq optional feature, $MAN_XINERAMA$ in this build
+On Wayland, select the output for fullscreen windows by its zero-based index
+in the compositor's output list.
+.Pp
 Override
 .Nm Ns No 's
 idea of the active Xinerama monitor.

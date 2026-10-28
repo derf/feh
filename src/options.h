@@ -27,6 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+enum feh_backend {
+	FEH_BACKEND_AUTO,
+	FEH_BACKEND_X11,
+	FEH_BACKEND_WAYLAND
+};
+
 enum on_last_slide_action {
 	ON_LAST_SLIDE_RESUME = 0,
 	ON_LAST_SLIDE_QUIT,
@@ -34,6 +40,7 @@ enum on_last_slide_action {
 };
 
 struct __fehoptions {
+	enum feh_backend backend;
 	unsigned char multiwindow;
 	unsigned char montage;
 	unsigned char index;
@@ -256,6 +263,7 @@ OPTION_auto_reload,
 OPTION_class,
 OPTION_no_conversion_cache,
 OPTION_window_id,
+OPTION_backend,
 };
 
 //typedef enum __fehoption fehoption;

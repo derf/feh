@@ -15,6 +15,7 @@ all: ${TARGETS}
 	-e 's/\$$MAN_INOTIFY\$$/${MAN_INOTIFY}/' \
 	-e 's/\$$MAN_MAGIC\$$/${MAN_MAGIC}/' \
 	-e 's/\$$MAN_XINERAMA\$$/${MAN_XINERAMA}/' \
+	-e 's/\$$MAN_WAYLAND\$$/${MAN_WAYLAND}/' \
 	< ${@:.1=.pre} > $@
 
 clean:

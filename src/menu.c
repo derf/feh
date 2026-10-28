@@ -104,13 +104,17 @@ feh_menu *feh_menu_new(void)
 	attr.save_under = False;
 	attr.do_not_propagate_mask = True;
 
-	m->win = XCreateWindow(
-			disp, root, 1, 1, 1, 1, 0, depth, InputOutput, vis,
-			CWOverrideRedirect | CWSaveUnder | CWBackingStore
-			| CWColormap | CWBackPixmap | CWBorderPixel | CWDontPropagate, &attr);
-	XSelectInput(disp, m->win,
-			ButtonPressMask | ButtonReleaseMask | EnterWindowMask
-			| LeaveWindowMask | PointerMotionMask | ButtonMotionMask);
+	m->wl = NULL;
+	m->win = 0;
+	if (!feh_is_wayland()) {
+		m->win = XCreateWindow(
+				disp, root, 1, 1, 1, 1, 0, depth, InputOutput, vis,
+				CWOverrideRedirect | CWSaveUnder | CWBackingStore
+				| CWColormap | CWBackPixmap | CWBorderPixel | CWDontPropagate, &attr);
+		XSelectInput(disp, m->win,
+				ButtonPressMask | ButtonReleaseMask | EnterWindowMask
+				| LeaveWindowMask | PointerMotionMask | ButtonMotionMask);
+	}
 
 	m->name = NULL;
 	m->fehwin = NULL;
@@ -158,7 +162,10 @@ void feh_menu_free(feh_menu * m)
 
 	if (m->name)
 		free(m->name);
-	XDestroyWindow(disp, m->win);
+	if (feh_is_wayland())
+		feh_wl_menu_hide(m);
+	else
+		XDestroyWindow(disp, m->win);
 	if (m->pmap)
 		XFreePixmap(disp, m->pmap);
 	if (m->updates)
@@ -312,7 +319,8 @@ void feh_menu_item_activate(feh_menu * m, feh_menu_item * i)
 	   freeing menus on hiding, it will break ;-) */
 	if ((i) && (i->action)) {
 		feh_menu_hide(menu_root, False);
-		feh_main_iteration(0);
+		if (!feh_is_wayland())
+			feh_main_iteration(0);
 		feh_menu_cb(m, i, i->action, i->data);
 		if (m->func_free)
 			m->func_free(m);
@@ -377,6 +385,15 @@ void feh_menu_show_at(feh_menu * m, int x, int y)
 {
 	if (m->calc)
 		feh_menu_calc_size(m);
+	if (feh_is_wayland()) {
+		if (!menu_root)
+			menu_root = m;
+		m->visible = 1;
+		m->x = x;
+		m->y = y;
+		feh_wl_menu_show(m);
+		return;
+	}
 	if (!menu_cover) {
 		XSetWindowAttributes attr;
 
@@ -413,13 +430,13 @@ void feh_menu_show_at_xy(feh_menu * m, winwidget winwid, int x, int y)
 	if (!m)
 		return;
 
-	if (m->calc)
-		feh_menu_calc_size(m);
 	m->fehwin = winwid;
-	if ((x + m->w) > scr->width)
-		x = scr->width - m->w;
-	if ((y + m->h) > scr->height)
-		y = scr->height - m->h;
+	if (m->calc || feh_is_wayland())
+		feh_menu_calc_size(m);
+	if ((x + m->w) > feh_screen_width())
+		x = feh_screen_width() - m->w;
+	if ((y + m->h) > feh_screen_height())
+		y = feh_screen_height() - m->h;
 
 #if 0
 /* #ifdef HAVE_LIBXINERAMA */
@@ -449,11 +466,11 @@ void feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m, feh_menu_item *
 	if (!m)
 		return;
 
-	if (m->calc)
+	m->fehwin = parent_m->fehwin;
+	if (m->calc || feh_is_wayland())
 		feh_menu_calc_size(m);
 	mx = parent_m->x + parent_m->w;
 	my = parent_m->y + i->y - FEH_MENU_PAD_TOP;
-	m->fehwin = parent_m->fehwin;
 	parent_m->next = m;
 	m->prev = parent_m;
 	feh_menu_move(m, mx, my);
@@ -466,7 +483,7 @@ void feh_menu_move(feh_menu * m, int x, int y)
 	if (!m)
 		return;
 
-	if (m->visible)
+	if (m->visible && !feh_is_wayland())
 		XMoveWindow(disp, m->win, x, y);
 
 	m->x = x;
@@ -522,7 +539,10 @@ void feh_menu_hide(feh_menu * m, int func_free)
 		menu_root = NULL;
 	}
 	m->visible = 0;
-	XUnmapWindow(disp, m->win);
+	if (feh_is_wayland())
+		feh_wl_menu_hide(m);
+	else
+		XUnmapWindow(disp, m->win);
 	if (func_free && m->func_free)
 		m->func_free(m);
 	else
@@ -589,12 +609,14 @@ feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text, char *submenu,
 	return(mi);
 }
 
-void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h)
+void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h, Imlib_Font font, double scale)
 {
 	int tw, th;
 
 	if (i->text) {
-		gib_imlib_get_text_size(opt.menu_fn, i->text, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+		gib_imlib_get_text_size(font, i->text, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+		tw = ceil(tw / scale);
+		th = ceil(th / scale);
 		*w = tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT;
 		*h = th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM;
 	} else {
@@ -611,6 +633,14 @@ void feh_menu_calc_size(feh_menu * m)
 	feh_menu_item *i;
 	int max_w = 0, max_h = 0, next_w = 0;
 	int toggle_w = 1;
+	double scale = m->fehwin ? m->fehwin->canvas_scale : 1;
+	Imlib_Font font = opt.menu_fn;
+
+	if (scale != 1) {
+		font = feh_load_font_scaled(opt.menu_font, scale);
+		if (!font)
+			eprintf("Couldn't load scaled menu font");
+	}
 
 	prev_w = m->w;
 	prev_h = m->h;
@@ -619,7 +649,7 @@ void feh_menu_calc_size(feh_menu * m)
 	for (i = m->items; i; i = i->next) {
 		int w, h;
 
-		feh_menu_entry_get_size(i, &w, &h);
+		feh_menu_entry_get_size(i, &w, &h, font, scale);
 		if (w > max_w)
 			max_w = w;
 		if (h > max_h)
@@ -658,7 +688,8 @@ void feh_menu_calc_size(feh_menu * m)
 			XFreePixmap(disp, m->pmap);
 		m->pmap = 0;
 		m->needs_redraw = 1;
-		XResizeWindow(disp, m->win, m->w, m->h);
+		if (!feh_is_wayland())
+			XResizeWindow(disp, m->win, m->w, m->h);
 		m->updates = imlib_update_append_rect(m->updates, 0, 0, m->w, m->h);
 	}
 	D(("menu size calculated. w=%d h=%d\n", m->w, m->h));
@@ -681,11 +712,25 @@ void feh_menu_calc_size(feh_menu * m)
 		}
 	}
 
+	if (scale != 1)
+		gib_imlib_free_font(font);
 	return;
 }
 
-void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
+void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy, Imlib_Font font, double scale)
 {
+	feh_menu_item item = *i;
+
+	item.x *= scale;
+	item.y *= scale;
+	item.w *= scale;
+	item.h *= scale;
+	item.text_x *= scale;
+	item.toggle_x *= scale;
+	item.sub_x *= scale;
+	i = &item;
+	ox *= scale;
+	oy *= scale;
 	D(("drawing item %p (text %s)\n", i, i->text));
 
 	if (i->text) {
@@ -701,35 +746,35 @@ void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy)
 		}
 
 		/* draw text */
-		gib_imlib_text_draw(im, opt.menu_fn, NULL,
-				i->x - ox + i->text_x, i->y - oy + FEH_MENUITEM_PAD_TOP,
+		gib_imlib_text_draw(im, font, NULL,
+				i->x - ox + i->text_x, i->y - oy + FEH_MENUITEM_PAD_TOP * scale,
 				i->text, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
 		if (i->submenu) {
 			D(("submenu item\n"));
 			feh_menu_draw_submenu_at(i->x + i->sub_x,
 						 i->y +
-						 FEH_MENUITEM_PAD_TOP +
+						 FEH_MENUITEM_PAD_TOP * scale +
 						 ((i->h -
-						   FEH_MENUITEM_PAD_TOP -
-						   FEH_MENUITEM_PAD_BOTTOM
+						   FEH_MENUITEM_PAD_TOP * scale -
+						   FEH_MENUITEM_PAD_BOTTOM * scale
 						   -
-						   FEH_MENU_SUBMENU_H) /
-						  2), im, ox, oy);
+						   FEH_MENU_SUBMENU_H * scale) /
+						  2), im, ox, oy, scale);
 		}
 		if (i->is_toggle) {
 			D(("toggleable item\n"));
 			feh_menu_draw_toggle_at(i->x + i->toggle_x,
 						i->y +
-						FEH_MENUITEM_PAD_TOP +
+						FEH_MENUITEM_PAD_TOP * scale +
 						((i->h -
-						  FEH_MENUITEM_PAD_TOP -
-						  FEH_MENUITEM_PAD_BOTTOM -
-						  FEH_MENU_TOGGLE_H) / 2),
-						FEH_MENU_TOGGLE_W, FEH_MENU_TOGGLE_H, im, ox, oy, MENU_ITEM_IS_ON(i));
+						  FEH_MENUITEM_PAD_TOP * scale -
+						  FEH_MENUITEM_PAD_BOTTOM * scale -
+						  FEH_MENU_TOGGLE_H * scale) / 2),
+						FEH_MENU_TOGGLE_W * scale, FEH_MENU_TOGGLE_H * scale, im, ox, oy, MENU_ITEM_IS_ON(i));
 		}
 	} else {
 		D(("separator item\n"));
-		feh_menu_draw_separator_at(i->x, i->y, i->w, i->h, im, ox, oy);
+		feh_menu_draw_separator_at(i->x, i->y, i->w, i->h, im, ox, oy, scale);
 	}
 	return;
 }
@@ -741,6 +786,12 @@ void feh_menu_redraw(feh_menu * m)
 	if ((!m->needs_redraw) || (!m->visible) || (!m->updates))
 		return;
 	m->needs_redraw = 0;
+	if (feh_is_wayland()) {
+		feh_wl_menu_redraw(m);
+		imlib_updates_free(m->updates);
+		m->updates = NULL;
+		return;
+	}
 	if (!m->pmap)
 		m->pmap = XCreatePixmap(disp, m->win, m->w, m->h, depth);
 	XSetWindowBackgroundPixmap(disp, m->win, m->pmap);
@@ -758,7 +809,7 @@ void feh_menu_redraw(feh_menu * m)
 			im = imlib_create_image(w, h);
 			gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 0, 0, 0, 0);
 			if (im) {
-				feh_menu_draw_to_buf(m, im, x, y);
+				feh_menu_draw_to_buf(m, im, x, y, 1);
 				gib_imlib_render_image_on_drawable(m->pmap, im, x, y, 1, 0, 0);
 				gib_imlib_free_image(im);
 				XClearArea(disp, m->win, x, y, w, h, False);
@@ -780,24 +831,32 @@ feh_menu *feh_menu_find(char *name)
 	return(NULL);
 }
 
-void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy)
+void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy, double scale)
 {
 	feh_menu_item *i;
 	int w, h;
+	Imlib_Font font = opt.menu_fn;
 
-	w = gib_imlib_image_get_width(im);
-	h = gib_imlib_image_get_height(im);
+	w = (int) ceil(gib_imlib_image_get_width(im) / scale);
+	h = (int) ceil(gib_imlib_image_get_height(im) / scale);
 
-	feh_menu_draw_menu_bg(m, im, ox, oy);
+	if (scale != 1) {
+		font = feh_load_font_scaled(opt.menu_font, scale);
+		if (!font)
+			eprintf("Couldn't load scaled menu font");
+	}
+	feh_menu_draw_menu_bg(m, im, ox, oy, scale);
 
 	for (i = m->items; i; i = i->next) {
 		if (RECTS_INTERSECT(i->x, i->y, i->w, i->h, ox, oy, w, h))
-			feh_menu_draw_item(i, im, ox, oy);
+			feh_menu_draw_item(i, im, ox, oy, font, scale);
 	}
+	if (scale != 1)
+		gib_imlib_free_font(font);
 	return;
 }
 
-void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy)
+void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy, double scale)
 {
 	int w, h;
 
@@ -805,7 +864,7 @@ void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy)
 	h = gib_imlib_image_get_height(im);
 
 	if (m->bg)
-		gib_imlib_blend_image_onto_image(im, m->bg, 0, ox, oy, w, h, 0, 0, w, h, 0, 0, 0);
+		gib_imlib_blend_image_onto_image(im, m->bg, 0, ox, oy, w / scale, h / scale, 0, 0, w, h, 0, 0, 0);
 	else
 		gib_imlib_image_fill_rectangle(im, 0, 0, w, h, 205, 203, 176, 255);
 
@@ -823,7 +882,7 @@ void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox
 	return;
 }
 
-void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
+void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy, double scale)
 {
         // Draw filled triangle
         x -= ox;
@@ -832,16 +891,16 @@ void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy)
 	imlib_context_set_image(dst);
 	imlib_context_set_color(0, 0, 0, 255);
 
-	for (int i= 0; i <= 3; i++) {
-	  imlib_image_draw_line(x+i, y+3+i, x+i, y+9-i, 0);
+	for (int i= 0; i <= 3 * scale; i++) {
+	  imlib_image_draw_line(x+i, y+3*scale+i, x+i, y+9*scale-i, 0);
 	}
 
 	return;
 }
 
-void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy)
+void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, double scale)
 {
-	gib_imlib_image_fill_rectangle(dst, x - ox + 2, y - oy + 2, w - 4, h - 4, 0, 0, 0, 255);
+	gib_imlib_image_fill_rectangle(dst, x - ox + 2 * scale, y - oy + 2 * scale, w - 4 * scale, h - 4 * scale, 0, 0, 0, 255);
 	return;
 }
 
@@ -858,7 +917,7 @@ void feh_raise_all_menus(void)
 	feh_menu_list *l;
 
 	for (l = menus; l; l = l->next) {
-		if (l->menu->visible)
+		if (l->menu->visible && !feh_is_wayland())
 			XRaiseWindow(disp, l->menu->win);
 	}
 	return;
@@ -924,7 +983,8 @@ void feh_menu_init_main(void)
 	else {
 		feh_menu_add_entry(m, "Change View", "EDIT", 0, 0, NULL);
 	}
-	feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
+	if (!feh_is_wayland())
+		feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
 	feh_menu_add_entry(m, NULL, NULL, 0, 0, NULL);
 	feh_menu_add_entry(m, "Hide", NULL, CB_REMOVE, 0, NULL);
 	feh_menu_add_entry(m, "Delete", "CONFIRM", 0, 0, NULL);
@@ -968,6 +1028,11 @@ void feh_menu_init_common(void)
 	feh_menu_add_entry(m, "Rotate 90 CCW", NULL, CB_EDIT_ROTATE, 3, NULL);
 	feh_menu_add_entry(m, "Mirror", NULL, CB_EDIT_MIRROR, 0, NULL);
 	feh_menu_add_entry(m, "Flip", NULL, CB_EDIT_FLIP, 0, NULL);
+
+	if (feh_is_wayland()) {
+		common_menus = 1;
+		return;
+	}
 
 	menu_bg = feh_menu_new();
 	menu_bg->name = estrdup("BACKGROUND");
@@ -1075,7 +1140,8 @@ void feh_menu_init_single_win(void)
 	feh_menu_add_entry(m, "Save Image", NULL, CB_SAVE_IMAGE, 0, NULL);
 	feh_menu_add_entry(m, "Save List", NULL, CB_SAVE_FILELIST, 0, NULL);
 	feh_menu_add_entry(m, "Edit in Place", "EDIT", 0, 0, NULL);
-	feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
+	if (!feh_is_wayland())
+		feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
 	if (opt.multiwindow || opt.slideshow) {
 		feh_menu_add_entry(m, NULL, NULL, 0, 0, NULL);
 		feh_menu_add_entry(m, "Hide", NULL, CB_REMOVE, 0, NULL);
@@ -1111,7 +1177,8 @@ void feh_menu_init_thumbnail_win(void)
 	feh_menu_add_entry(m, "Resize Window", NULL, CB_FIT, 0, NULL);
 	feh_menu_add_entry(m, "Save Image", NULL, CB_SAVE_IMAGE, 0, NULL);
 	feh_menu_add_entry(m, "Save List", NULL, CB_SAVE_FILELIST, 0, NULL);
-	feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
+	if (!feh_is_wayland())
+		feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
 	feh_menu_add_entry(menu_thumbnail_win, NULL, NULL, 0, 0, NULL);
 	mi = feh_menu_add_entry(menu_thumbnail_win, "Options", "OPTIONS", 0, 0, NULL);
 	mi->func_gen_sub = feh_menu_func_gen_options;
@@ -1141,7 +1208,8 @@ void feh_menu_init_thumbnail_viewer(void)
 	feh_menu_add_entry(m, "Save Image", NULL, CB_SAVE_IMAGE, 0, NULL);
 	feh_menu_add_entry(m, "Save List", NULL, CB_SAVE_FILELIST, 0, NULL);
 	feh_menu_add_entry(m, "Edit in Place", "EDIT", 0, 0, NULL);
-	feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
+	if (!feh_is_wayland())
+		feh_menu_add_entry(m, "Background", "BACKGROUND", 0, 0, NULL);
 	feh_menu_add_entry(m, NULL, NULL, 0, 0, NULL);
 	feh_menu_add_entry(m, "Hide", NULL, CB_REMOVE_THUMB, 0, NULL);
 	feh_menu_add_entry(m, "Delete", "THUMBVIEW_CONFIRM", 0, 0, NULL);
@@ -1165,6 +1233,10 @@ void feh_menu_cb_opt_fullscreen(feh_menu * m, feh_menu_item * i)
 	int curr_screen = 0;
 
 	MENU_ITEM_TOGGLE(i);
+	if (feh_is_wayland()) {
+		feh_wl_fullscreen(m->fehwin, MENU_ITEM_IS_ON(i));
+		return;
+	}
 	if (MENU_ITEM_IS_ON(i))
 		m->fehwin->full_screen = TRUE;
 	else

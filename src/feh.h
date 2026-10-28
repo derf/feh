@@ -73,6 +73,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "structs.h"
 #include "menu.h"
+#include "display.h"
 
 #include "utils.h"
 
@@ -161,12 +162,14 @@ void setup_stdin(void);
 void restore_stdin(void);
 void feh_event_handle_keypress(XEvent * ev);
 void feh_event_handle_stdin(void);
+void feh_event_handle_menu_key(unsigned int state, KeySym keysym);
 void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysym, unsigned int button, char *buf, unsigned int buf_len);
 fehkey *feh_str_to_kb(char * action);
 void feh_action_run(feh_file * file, char *action, winwidget winwid);
 char *format_size(double size);
 char *feh_printf(char *str, feh_file * file, winwidget winwid, int shell);
 void im_weprintf(winwidget w, char *fmt, ...);
+Imlib_Font feh_load_font_scaled(char *name, double scale);
 void feh_draw_zoom(winwidget w);
 void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);

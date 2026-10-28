@@ -488,8 +488,8 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 	int dx, dy;
 	int scr_width, scr_height;
 
-	scr_width = scr->width;
-	scr_height = scr->height;
+	scr_width = feh_screen_width();
+	scr_height = feh_screen_height();
 #ifdef HAVE_LIBXINERAMA
 	if (opt.xinerama && xinerama_screens) {
 		scr_width = xinerama_screens[xinerama_screen].width;
@@ -556,7 +556,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			}
 		}
 	} else if (opt.mode == MODE_ZOOM) {
-		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+		while (disp && XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
@@ -586,7 +586,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 	} else if ((opt.mode == MODE_PAN) || (opt.mode == MODE_NEXT)) {
 		int orig_x, orig_y;
 
-		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+		while (disp && XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
 			if (opt.mode == MODE_NEXT) {
@@ -616,34 +616,36 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			 * parse. Since that event would undo the effect of the pointer
 			 * warp, we need to change the click_offset to compensate this.
 			 */
-			if ((winwid->w - ev->xmotion.x <= 1) && (winwid->im_x < 0))
-			{
-				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0, 3,
-					ev->xmotion.y);
-				winwid->click_offset_x -= winwid->w - 4;
-			}
-			// TODO needlessly warps for certain zoom levels
-			else if ((ev->xmotion.x <= 1) && (winwid->im_x >
-					(winwid->w - winwid->im_w * winwid->zoom)))
-			{
-				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
-					winwid->w - 4, ev->xmotion.y);
-				winwid->click_offset_x += winwid->w - 4;
-			}
-			else if ((winwid->h - ev->xmotion.y <= 1)
-					&& (winwid->im_y < 0))
-			{
-				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
-					ev->xmotion.x, 3);
-				winwid->click_offset_y -= winwid->h - 4;
-			}
-			// TODO needlessly warps for certain zoomlevels
-			else if ((ev->xmotion.y <= 1) && (winwid->im_y >
-					(winwid->h - winwid->im_h * winwid->zoom)))
-			{
-				XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
-					ev->xmotion.x, winwid->h - 4);
-				winwid->click_offset_y += winwid->h - 4;
+			if (disp) {
+				if ((winwid->w - ev->xmotion.x <= 1) && (winwid->im_x < 0))
+				{
+					XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0, 3,
+						ev->xmotion.y);
+					winwid->click_offset_x -= winwid->w - 4;
+				}
+				// TODO needlessly warps for certain zoom levels
+				else if ((ev->xmotion.x <= 1) && (winwid->im_x >
+						(winwid->w - winwid->im_w * winwid->zoom)))
+				{
+					XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
+						winwid->w - 4, ev->xmotion.y);
+					winwid->click_offset_x += winwid->w - 4;
+				}
+				else if ((winwid->h - ev->xmotion.y <= 1)
+						&& (winwid->im_y < 0))
+				{
+					XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
+						ev->xmotion.x, 3);
+					winwid->click_offset_y -= winwid->h - 4;
+				}
+				// TODO needlessly warps for certain zoomlevels
+				else if ((ev->xmotion.y <= 1) && (winwid->im_y >
+						(winwid->h - winwid->im_h * winwid->zoom)))
+				{
+					XWarpPointer(disp, None, winwid->win, 0, 0, 0, 0,
+						ev->xmotion.x, winwid->h - 4);
+					winwid->click_offset_y += winwid->h - 4;
+				}
 			}
 
 			if ((winwid->im_x != orig_x)
@@ -652,7 +654,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->just_mapped = 0;
 		}
 	} else if (opt.mode == MODE_ROTATE) {
-		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+		while (disp && XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
 			D(("Rotating\n"));
@@ -675,7 +677,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->just_mapped = 0;
 		}
 	} else if (opt.mode == MODE_BLUR) {
-		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+		while (disp && XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid) {
 			Imlib_Image temp, ptr;
@@ -700,7 +702,7 @@ static void feh_event_handle_MotionNotify(XEvent * ev)
 			winwid->just_mapped = 0;
 		}
 	} else {
-		while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
+		while (disp && XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
 		winwid = winwidget_get_from_window(ev->xmotion.window);
 		if (winwid != NULL) {
 			if (winwid->type == WIN_TYPE_THUMBNAIL) {

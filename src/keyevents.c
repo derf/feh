@@ -365,6 +365,29 @@ void feh_event_handle_stdin(void)
 	is_esc = 0;
 }
 
+void feh_event_handle_menu_key(unsigned int state, KeySym keysym)
+{
+	feh_menu_item *selected_item;
+	feh_menu *selected_menu;
+
+	if (!menu_root)
+		return;
+	selected_item = feh_menu_find_selected_r(menu_root, &selected_menu);
+	if (feh_is_kp(EVENT_menu_close, state, keysym, 0))
+		feh_menu_hide(menu_root, True);
+	else if (feh_is_kp(EVENT_menu_parent, state, keysym, 0))
+		feh_menu_select_parent(selected_menu);
+	else if (feh_is_kp(EVENT_menu_down, state, keysym, 0))
+		feh_menu_select_next(selected_menu, selected_item);
+	else if (feh_is_kp(EVENT_menu_up, state, keysym, 0))
+		feh_menu_select_prev(selected_menu, selected_item);
+	else if (feh_is_kp(EVENT_menu_child, state, keysym, 0))
+		feh_menu_select_submenu(selected_menu);
+	else if (feh_is_kp(EVENT_menu_select, state, keysym, 0))
+		feh_menu_item_activate(selected_menu, selected_item);
+	return;
+}
+
 void feh_event_handle_keypress(XEvent * ev)
 {
 	int state;
@@ -373,8 +396,6 @@ void feh_event_handle_keypress(XEvent * ev)
 	KeySym keysym;
 	XKeyEvent *kev;
 	winwidget winwid = NULL;
-	feh_menu_item *selected_item;
-	feh_menu *selected_menu;
 
 	winwid = winwidget_get_from_window(ev->xkey.window);
 
@@ -402,19 +423,7 @@ void feh_event_handle_keypress(XEvent * ev)
 
 	/* menus are showing, so this is a menu control keypress */
 	if (ev->xbutton.window == menu_cover) {
-		selected_item = feh_menu_find_selected_r(menu_root, &selected_menu);
-		if (feh_is_kp(EVENT_menu_close, state, keysym, 0))
-			feh_menu_hide(menu_root, True);
-		else if (feh_is_kp(EVENT_menu_parent, state, keysym, 0))
-			feh_menu_select_parent(selected_menu);
-		else if (feh_is_kp(EVENT_menu_down, state, keysym, 0))
-			feh_menu_select_next(selected_menu, selected_item);
-		else if (feh_is_kp(EVENT_menu_up, state, keysym, 0))
-			feh_menu_select_prev(selected_menu, selected_item);
-		else if (feh_is_kp(EVENT_menu_child, state, keysym, 0))
-			feh_menu_select_submenu(selected_menu);
-		else if (feh_is_kp(EVENT_menu_select, state, keysym, 0))
-			feh_menu_item_activate(selected_menu, selected_item);
+		feh_event_handle_menu_key(state, keysym);
 		return;
 	}
 
@@ -457,7 +466,8 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 					build_caption_filename(FEH_FILE(winwid->file->data), 1);
 				winwid->caption_entry = 0;
 				winwidget_render_image_cached(winwid);
-				XFreePixmap(disp, winwid->bg_pmap_cache);
+				if (winwid->bg_pmap_cache)
+					XFreePixmap(disp, winwid->bg_pmap_cache);
 				winwid->bg_pmap_cache = 0;
 				fp = fopen(caption_filename, "w");
 				if (!fp) {
@@ -475,7 +485,8 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			free(FEH_FILE(winwid->file->data)->caption);
 			FEH_FILE(winwid->file->data)->caption = NULL;
 			winwidget_render_image_cached(winwid);
-			XFreePixmap(disp, winwid->bg_pmap_cache);
+			if (winwid->bg_pmap_cache)
+				XFreePixmap(disp, winwid->bg_pmap_cache);
 			winwid->bg_pmap_cache = 0;
 			break;
 		case XK_BackSpace:
@@ -486,7 +497,7 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 			;
 			char *caption = FEH_FILE(winwid->file->data)->caption;
 			size_t cpos = strlen(caption);
-			while (--cpos && (caption[cpos] & 0x80) && !(caption[cpos] & 0x40)) {}
+			while (cpos && --cpos && (caption[cpos] & 0x80) && !(caption[cpos] & 0x40)) {}
 			caption[cpos] = '\0';
 			winwidget_render_image_cached(winwid);
 			break;
@@ -791,6 +802,10 @@ void feh_event_handle_generic(winwidget winwid, unsigned int state, KeySym keysy
 				curr_screen = xinerama_screen = opt.xinerama_index;
 		}
 #endif				/* HAVE_LIBXINERAMA */
+		if (feh_is_wayland()) {
+			feh_wl_fullscreen(winwid, !winwid->full_screen);
+			return;
+		}
 		winwid->full_screen = !winwid->full_screen;
 		winwidget_destroy_xwin(winwid);
 		winwidget_create_window(winwid, winwid->im_w, winwid->im_h);

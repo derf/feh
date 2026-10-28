@@ -2,6 +2,8 @@
 /src/deps.mk
 /src/*.o
 /src/*.inc
+/src/*-client-protocol.h
+/src/*-protocol.c
 /src/feh
 /man/*.1
 *~

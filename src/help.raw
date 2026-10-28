@@ -7,6 +7,7 @@ Usage : " PACKAGE " [options] <files or directories ...>
 OPTIONS
  -h, --help                Show help and exit
  -v, --version             Show version information and exit
+     --backend BACKEND     Select auto (default), wayland, or x11 display backend
  -V, --verbose             Show progress bars and other extra information
  -q, --quiet               Hide non-fatal errors. May be used with --verbose
  -T, --theme THEME         Load options with name THEME
@@ -91,7 +92,8 @@ OPTIONS
  -M, --menu-font FONT      Use FONT for the font in menus.
  -B, --image-bg STYLE      Set background for transparent images and the like.
                            Accepted values: default, checks, or a XColor (eg. #428bdd)
-     --xinerama-index I    Assumee that I is the active xinerama screen
+                           Wayland: default, checks, black, white, #RGB, #RRGGBB
+     --xinerama-index I    Select Xinerama screen or Wayland fullscreen output I
  -N, --no-menus            Don't load or show any menus.
      --no-xinerama         Disable Xinerama support
      --no-screen-clip      Do not limit window size to screen size
@@ -104,6 +106,7 @@ OPTIONS
      --cache-size NUM      imlib cache size in mebibytes (0 .. 2048)
      --auto-reload         automatically reload shown image if file was changed
      --window-id ID        Draw to an existing X11 window by its ID
+     --class CLASS         Set X11 class hint or Wayland application ID
 
 MONTAGE MODE OPTIONS
  -X, --ignore-aspect       Set thumbnail to specified width/height without

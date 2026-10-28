@@ -103,6 +103,7 @@ struct _feh_menu {
 	char *name;
 	winwidget fehwin;
 	Window win;
+	struct feh_wl_popup *wl;
 	Pixmap pmap;
 	int x, y, w, h;
 	int item_w, item_h;
@@ -135,9 +136,9 @@ feh_menu_item *feh_menu_add_entry(feh_menu * m, char *text,
 feh_menu_item *feh_menu_add_toggle_entry(feh_menu * m, char *text,
 	char *submenu,
 	int action, unsigned short data, void (*func_free) (void *data), int setting);
-void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h);
+void feh_menu_entry_get_size(feh_menu_item * i, int *w, int *h, Imlib_Font font, double scale);
 void feh_menu_calc_size(feh_menu * m);
-void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy);
+void feh_menu_draw_item(feh_menu_item * i, Imlib_Image im, int ox, int oy, Imlib_Font font, double scale);
 void feh_menu_redraw(feh_menu * m);
 void feh_menu_move(feh_menu * m, int x, int y);
 void feh_menu_slide_all_menus_relative(int dx, int dy);
@@ -146,10 +147,10 @@ void feh_menu_init_single_win(void);
 void feh_menu_init_common(void);
 void feh_menu_init_thumbnail_viewer(void);
 void feh_menu_init_thumbnail_win(void);
-void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy);
-void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy);
-void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy);
-void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy);
+void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy, double scale);
+void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy, double scale);
+void feh_menu_draw_submenu_at(int x, int y, Imlib_Image dst, int ox, int oy, double scale);
+void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, double scale);
 void feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, int selected);
 void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox, int oy, int on);
 void feh_redraw_menus(void);

@@ -17,6 +17,7 @@ jobs:
       matrix:
         curl: [0, 1]
         exif: [0, 1]
+        wayland: [0, 1]
         xinerama: [0, 1]
 
     steps:
@@ -31,8 +32,11 @@ jobs:
       - name: Install libexif
         if: matrix.exif
         run: sudo apt-get -y install libexif-dev
+      - name: Install Wayland
+        if: matrix.wayland
+        run: sudo apt-get -y install pkg-config libwayland-dev wayland-protocols libxkbcommon-dev libdecor-0-dev
       - name: Install Xinerama
         if: matrix.xinerama
         run: sudo apt-get -y install libxinerama-dev
       - name: Build and Test
-        run: for inotify in 0 1; do for verscmp in 0 1; do make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=$inotify verscmp=$verscmp xinerama=${{ matrix.xinerama }} && make test && make clean; done; done
+        run: for inotify in 0 1; do for verscmp in 0 1; do make curl=${{ matrix.curl }} exif=${{ matrix.exif }} inotify=$inotify verscmp=$verscmp wayland=${{ matrix.wayland }} xinerama=${{ matrix.xinerama }} && make test wayland=${{ matrix.wayland }} && make clean; done; done

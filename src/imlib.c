@@ -1006,31 +1006,58 @@ void feh_imlib_image_fill_text_bg(Imlib_Image im, int w, int h)
 	imlib_context_set_blend(1);
 }
 
+Imlib_Font feh_load_font_scaled(char *name, double scale)
+{
+	Imlib_Font fn;
+	char *size, *scaled;
+	int points;
+
+	if (scale == 1)
+		return(gib_imlib_load_font(name));
+	for (int i = 0; i < 2; i++) {
+		size = strrchr(name, '/');
+		if (size && (points = atoi(size + 1)) > 0 && points <= INT_MAX / scale) {
+			scaled = emalloc(strlen(name) + 32);
+			snprintf(scaled, strlen(name) + 32, "%.*s/%d",
+				(int) (size - name), name, (int) lround(points * scale));
+			fn = imlib_load_font(scaled);
+			free(scaled);
+			if (fn)
+				return(fn);
+		}
+		name = DEFAULT_FONT_BIG;
+	}
+	return(gib_imlib_load_font(name));
+}
+
 static Imlib_Font feh_load_font(winwidget w)
 {
 	static Imlib_Font fn = NULL;
+	static char *font_name = NULL;
+	static double font_scale = 0;
+	char *name = opt.font;
 
-	if (opt.font)
-		fn = gib_imlib_load_font(opt.font);
-
-	if (!fn) {
-		if (w && w->full_screen)
-			fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
-		else
-			fn = gib_imlib_load_font(DEFAULT_FONT);
+	if (!name)
+		name = w->full_screen ? DEFAULT_FONT_BIG : DEFAULT_FONT;
+	if (fn && (font_name != name || font_scale != w->canvas_scale)) {
+		gib_imlib_free_font(fn);
+		fn = NULL;
 	}
-
 	if (!fn) {
+		fn = feh_load_font_scaled(name, w->canvas_scale);
+		font_name = name;
+		font_scale = w->canvas_scale;
+	}
+	if (!fn)
 		eprintf("Couldn't load font to draw a message");
-	}
-
-	return fn;
+	return(fn);
 }
 
 
 void feh_draw_zoom(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
 	char buf[100];
@@ -1046,17 +1073,17 @@ void feh_draw_zoom(winwidget w)
 	/* Work out how high the font is */
 	gib_imlib_get_text_size(fn, buf, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
-	tw += 3;
-	th += 3;
+	tw += 3 * scale;
+	th += 3 * scale;
 	im = imlib_create_image(tw, th);
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, buf, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
+	gib_imlib_text_draw(im, fn, NULL, 2 * scale, 2 * scale, buf, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, scale, scale, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	winwidget_draw_overlay(w, im, 0, w->h * scale - th);
 	gib_imlib_free_image_and_decache(im);
 	return;
 }
@@ -1087,37 +1114,39 @@ void im_weprintf(winwidget w, char *fmt, ...)
 
 void feh_draw_errstr(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int tw = 0, th = 0;
 	Imlib_Image im = NULL;
 
 	if (!w->im)
 		return;
 
-	fn = feh_load_font(NULL);
+	fn = feh_load_font(w);
 
 	/* Work out how high the font is */
 	gib_imlib_get_text_size(fn, w->errstr, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
-	tw += 3;
-	th += 3;
+	tw += 3 * scale;
+	th += 3 * scale;
 	im = imlib_create_image(tw, th);
 	if (!im)
 		eprintf("Couldn't create errstr image. Out of memory?");
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, 2 * scale, 2 * scale, w->errstr, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, scale, scale, w->errstr, IMLIB_TEXT_TO_RIGHT, 255, 0, 0, 255);
 	free(w->errstr);
 	w->errstr = NULL;
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 1, 0);
+	winwidget_draw_overlay(w, im, 0, w->h * scale - th);
 	gib_imlib_free_image_and_decache(im);
 }
 
 void feh_draw_filename(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int tw = 0, th = 0, nw = 0;
 	Imlib_Image im = NULL;
 	char *s = NULL;
@@ -1150,26 +1179,26 @@ void feh_draw_filename(winwidget w)
 			tw = nw;
 	}
 
-	tw += 3;
-	th += 3;
+	tw += 3 * scale;
+	th += 3 * scale;
 	im = imlib_create_image(tw, 2 * th);
 	if (!im)
 		eprintf("Couldn't create image. Out of memory?");
 
 	feh_imlib_image_fill_text_bg(im, tw, 2 * th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, FEH_FILE(w->file->data)->filename,
+	gib_imlib_text_draw(im, fn, NULL, 2 * scale, 2 * scale, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
+	gib_imlib_text_draw(im, fn, NULL, scale, scale, FEH_FILE(w->file->data)->filename,
 			IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 	if (s) {
-		gib_imlib_text_draw(im, fn, NULL, 2, th + 1, s, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, th, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+		gib_imlib_text_draw(im, fn, NULL, 2 * scale, th + scale, s, IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+		gib_imlib_text_draw(im, fn, NULL, scale, th, s, IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 		free(s);
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 1, 0);
+	winwidget_draw_overlay(w, im, 0, 0);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
@@ -1178,7 +1207,8 @@ void feh_draw_filename(winwidget w)
 #ifdef HAVE_LIBEXIF
 void feh_draw_exif(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int width = 0, height = 0, line_width = 0, line_height = 0;
 	Imlib_Image im = NULL;
 	int no_lines = 0, i;
@@ -1254,7 +1284,7 @@ void feh_draw_exif(winwidget w)
 		return;
 
 	height *= no_lines;
-	width += 4;
+	width += 4 * scale;
 
 	im = imlib_create_image(width, height);
 	if (!im)
@@ -1266,9 +1296,9 @@ void feh_draw_exif(winwidget w)
 
 	for (i = 0; i < no_lines; i++)
 	{
-		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
+		gib_imlib_text_draw(im, fn, NULL, 2 * scale, (i * line_height) + 2 * scale,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
+		gib_imlib_text_draw(im, fn, NULL, scale, (i * line_height) + scale,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 		free(info_buf[i]);
 
@@ -1279,7 +1309,7 @@ void feh_draw_exif(winwidget w)
 		h_offset = info_height;
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - h_offset - height, 1, 1, 0);
+	winwidget_draw_overlay(w, im, 0, w->h * scale - h_offset - height);
 
 	gib_imlib_free_image_and_decache(im);
 	return;
@@ -1289,7 +1319,8 @@ void feh_draw_exif(winwidget w)
 
 void feh_draw_info(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int width = 0, height = 0, line_width = 0, line_height = 0;
 	Imlib_Image im = NULL;
 	int no_lines = 0, i;
@@ -1338,7 +1369,7 @@ void feh_draw_info(winwidget w)
 		return;
 
 	height *= no_lines;
-	width += 4;
+	width += 4 * scale;
 
 	im = imlib_create_image(width, height);
 	if (!im)
@@ -1347,16 +1378,15 @@ void feh_draw_info(winwidget w)
 	feh_imlib_image_fill_text_bg(im, width, height);
 
 	for (i = 0; i < no_lines; i++) {
-		gib_imlib_text_draw(im, fn, NULL, 2, (i * line_height) + 2,
+		gib_imlib_text_draw(im, fn, NULL, 2 * scale, (i * line_height) + 2 * scale,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-		gib_imlib_text_draw(im, fn, NULL, 1, (i * line_height) + 1,
+		gib_imlib_text_draw(im, fn, NULL, scale, (i * line_height) + scale,
 				info_buf[i], IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 		free(info_buf[i]);
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0,
-			w->h - height, 1, 1, 0);
+	winwidget_draw_overlay(w, im, 0, w->h * scale - height);
 
 	info_height = height;
 
@@ -1400,13 +1430,14 @@ char *build_caption_filename(feh_file * file, short create_dir)
 
 void feh_draw_caption(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int tw = 0, th = 0, ww, hh;
 	int x, y;
 	Imlib_Image im = NULL;
 	char *p;
 	gib_list *lines, *l;
-	static gib_style *caption_style = NULL;
+	gib_style *caption_style = NULL;
 	feh_file *file;
 
 	if (!w->file) {
@@ -1447,19 +1478,21 @@ void feh_draw_caption(winwidget w)
 	caption_style->bits = gib_list_add_front(caption_style->bits,
 		gib_style_bit_new(0, 0, 0, 0, 0, 0));
 	caption_style->bits = gib_list_add_front(caption_style->bits,
-		gib_style_bit_new(1, 1, 0, 0, 0, 255));
+		gib_style_bit_new(scale, scale, 0, 0, 0, 255));
 
 	fn = feh_load_font(w);
 
 	if (*(file->caption) == '\0') {
 		p = estrdup("Caption entry mode - Hit ESC to cancel");
-		lines = feh_wrap_string(p, w->w, fn, NULL);
+		lines = feh_wrap_string(p, w->w * scale, fn, NULL);
 		free(p);
 	} else
-		lines = feh_wrap_string(file->caption, w->w, fn, NULL);
+		lines = feh_wrap_string(file->caption, w->w * scale, fn, NULL);
 
-	if (!lines)
+	if (!lines) {
+		gib_style_free(caption_style);
 		return;
+	}
 
 	/* Work out how high/wide the caption is */
 	l = lines;
@@ -1470,15 +1503,15 @@ void feh_draw_caption(winwidget w)
 			tw = ww;
 		th += hh;
 		if (l->next)
-			th += 1;	/* line spacing */
+			th += scale;	/* line spacing */
 		l = l->next;
 	}
 
 	/* we don't want the caption overlay larger than our window */
-	if (th > w->h)
-		th = w->h;
-	if (tw > w->w)
-		tw = w->w;
+	if (th > w->h * scale)
+		th = w->h * scale;
+	if (tw > w->w * scale)
+		tw = w->w * scale;
 
 	im = imlib_create_image(tw, th);
 	if (!im)
@@ -1502,13 +1535,14 @@ void feh_draw_caption(winwidget w)
 			gib_imlib_text_draw(im, fn, caption_style, x, y, p,
 				IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-		y += hh + 1;	/* line spacing */
+		y += hh + scale;	/* line spacing */
 		l = l->next;
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, (w->w - tw) / 2, w->h - th, 1, 1, 0);
+	winwidget_draw_overlay(w, im, (w->w * scale - tw) / 2, w->h * scale - th);
 	gib_imlib_free_image_and_decache(im);
 	gib_list_free_and_data(lines);
+	gib_style_free(caption_style);
 	return;
 }
 
@@ -1815,7 +1849,8 @@ void feh_edit_inplace_lossless(winwidget w, int op)
 
 void feh_draw_actions(winwidget w)
 {
-	static Imlib_Font fn = NULL;
+	Imlib_Font fn = NULL;
+	double scale = w->canvas_scale;
 	int tw = 0, th = 0;
 	int th_offset = 0;
 	int max_tw = 0;
@@ -1862,8 +1897,8 @@ void feh_draw_actions(winwidget w)
 	}
 
 	tw = max_tw;
-	tw += 3;
-	th += 3;
+	tw += 3 * scale;
+	th += 3 * scale;
 	line_th = th;
 	th = (th * num_actions) + line_th;
 
@@ -1879,8 +1914,8 @@ void feh_draw_actions(winwidget w)
 
 	feh_imlib_image_fill_text_bg(im, tw, th);
 
-	gib_imlib_text_draw(im, fn, NULL, 2, 2, "defined actions:", IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-	gib_imlib_text_draw(im, fn, NULL, 1, 1, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+	gib_imlib_text_draw(im, fn, NULL, 2 * scale, 2 * scale, "defined actions:", IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
+	gib_imlib_text_draw(im, fn, NULL, scale, scale, "defined actions:", IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
 	for (i = 0; i < 10; i++) {
 		if (opt.action_titles[i]) {
@@ -1891,17 +1926,17 @@ void feh_draw_actions(winwidget w)
 			strcat(line, ": ");
 			strcat(line, opt.action_titles[i]);
 
-			gib_imlib_text_draw(im, fn, NULL, 2,
-					(cur_action * line_th) + 2, line,
+			gib_imlib_text_draw(im, fn, NULL, 2 * scale,
+					(cur_action * line_th) + 2 * scale, line,
 					IMLIB_TEXT_TO_RIGHT, 0, 0, 0, 255);
-			gib_imlib_text_draw(im, fn, NULL, 1,
-					(cur_action * line_th) + 1, line,
+			gib_imlib_text_draw(im, fn, NULL, scale,
+					(cur_action * line_th) + scale, line,
 					IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 			free(line);
 		}
 	}
 
-	gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0 + th_offset, 1, 1, 0);
+	winwidget_draw_overlay(w, im, 0, 0 + th_offset);
 
 	gib_imlib_free_image_and_decache(im);
 	return;

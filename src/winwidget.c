@@ -67,6 +67,7 @@ static winwidget winwidget_allocate(void)
 	ret->visible = 0;
 	ret->caption_entry = 0;
 	ret->force_aliasing = opt.force_aliasing;
+	ret->canvas_scale = 1;
 
 	/* Zoom stuff */
 	ret->mode = MODE_NORMAL;
@@ -171,6 +172,12 @@ void winwidget_create_window(winwidget ret, int w, int h)
 	long host_name_max;
 	char *hostname;
 #endif /* HOST_NAME_MAX */
+
+	if (feh_is_wayland()) {
+		feh_wl_create_window(ret, w, h);
+		winwidget_register(ret);
+		return;
+	}
 
 	D(("winwidget_create_window %dx%d\n", w, h));
 
@@ -375,6 +382,10 @@ void winwidget_create_window(winwidget ret, int w, int h)
 void winwidget_update_title(winwidget ret)
 {
 	char *name;
+	if (feh_is_wayland()) {
+		feh_wl_title(ret);
+		return;
+	}
 	Atom prop_name = XInternAtom(disp, "_NET_WM_NAME", False);
 	Atom prop_icon = XInternAtom(disp, "_NET_WM_ICON_NAME", False);
 	Atom prop_utf8 = XInternAtom(disp, "UTF8_STRING", False);
@@ -402,7 +413,7 @@ void winwidget_update_caption(winwidget winwid)
 		/* cache bg pixmap. during caption entry, multiple redraws are done
 		 * because the caption overlay changes - the image doesn't though, so re-
 		 * rendering that is a waste of time */
-		if (winwid->caption_entry) {
+		if (winwid->caption_entry && !feh_is_wayland()) {
 			GC gc;
 			if (winwid->bg_pmap_cache)
 				XFreePixmap(disp, winwid->bg_pmap_cache);
@@ -418,6 +429,10 @@ void winwidget_update_caption(winwidget winwid)
 
 void winwidget_setup_pixmaps(winwidget winwid)
 {
+	if (feh_is_wayland()) {
+		feh_wl_prepare_image(winwid);
+		return;
+	}
 	if (winwid->full_screen) {
 		if (!(winwid->bg_pmap)) {
 			if (winwid->gc == None) {
@@ -575,7 +590,22 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 		antialias = 1;
 
 	D(("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
-	if (winwid->has_rotated)
+	if (feh_is_wayland()) {
+		Imlib_Image image = winwid->im;
+		double scale = winwid->canvas_scale;
+		if (winwid->has_rotated) {
+			imlib_context_set_image(image);
+			imlib_context_set_anti_alias(antialias);
+			image = imlib_create_rotated_image(winwid->im_angle);
+		}
+		if (image && sw > 0 && sh > 0 && dw > 0 && dh > 0)
+			gib_imlib_blend_image_onto_image(winwid->canvas, image, 0,
+				sx, sy, sw, sh, lround(dx * scale), lround(dy * scale),
+				lround(dw * scale), lround(dh * scale),
+				1, 1, antialias);
+		if (image && image != winwid->im)
+			gib_imlib_free_image_and_decache(image);
+	} else if (winwid->has_rotated)
 		gib_imlib_render_image_part_on_drawable_at_size_with_rotation
 			(winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
 			winwid->im_angle, 1, 1, antialias);
@@ -618,6 +648,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 	} else if ((opt.mode == MODE_ZOOM) && !antialias)
 		feh_draw_zoom(winwid);
 
+	if (feh_is_wayland()) {
+		feh_wl_present(winwid);
+		return;
+	}
 	XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
 	XClearWindow(disp, winwid->win);
 	return;
@@ -625,6 +659,10 @@ void winwidget_render_image(winwidget winwid, int resize, int force_alias)
 
 void winwidget_render_image_cached(winwidget winwid)
 {
+	if (feh_is_wayland()) {
+		winwidget_render_image(winwid, 0, 0);
+		return;
+	}
 	static GC gc = None;
 
 	if (gc == None) {
@@ -692,6 +730,8 @@ Pixmap feh_create_checks(void)
 
 void feh_draw_checks(winwidget win)
 {
+	if (feh_is_wayland())
+		return;
 	static GC gc = None;
 	XGCValues gcval;
 
@@ -706,6 +746,15 @@ void feh_draw_checks(winwidget win)
 
 void winwidget_destroy_xwin(winwidget winwid)
 {
+	if (feh_is_wayland()) {
+		if (winwid->wl) {
+			if (menu_root && menu_root->fehwin == winwid)
+				feh_menu_hide(menu_root, True);
+			winwidget_unregister(winwid);
+			feh_wl_destroy_window(winwid);
+		}
+		return;
+	}
 	if (winwid->win) {
 		winwidget_unregister(winwid);
 		XDestroyWindow(disp, winwid->win);
@@ -855,6 +904,11 @@ void winwidget_show(winwidget winwid)
 {
 	XEvent ev;
 
+	if (feh_is_wayland()) {
+		feh_wl_show(winwid);
+		return;
+	}
+
 	/* feh_debug_print_winwid(winwid); */
 	if (!winwid->visible) {
 		XMapWindow(disp, winwid->win);
@@ -890,6 +944,8 @@ void winwidget_show(winwidget winwid)
 
 void winwidget_move(winwidget winwid, int x, int y)
 {
+	if (feh_is_wayland())
+		return;
 	if (winwid && ((winwid->x != x) || (winwid->y != y))) {
 		winwid->x = (x > scr->width) ? scr->width : x;
 		winwid->y = (y > scr->height) ? scr->height : y;
@@ -903,6 +959,10 @@ void winwidget_move(winwidget winwid, int x, int y)
 
 void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 {
+	if (feh_is_wayland()) {
+		feh_wl_resize(winwid, w, h, force_resize);
+		return;
+	}
 	XWindowAttributes attributes;
 	int tc_x, tc_y, px, py;
 	int scr_width = scr->width;
@@ -1003,7 +1063,10 @@ void winwidget_resize(winwidget winwid, int w, int h, int force_resize)
 
 void winwidget_hide(winwidget winwid)
 {
-	XUnmapWindow(disp, winwid->win);
+	if (feh_is_wayland())
+		feh_wl_hide(winwid);
+	else
+		XUnmapWindow(disp, winwid->win);
 	winwid->visible = 0;
 	return;
 }
@@ -1018,7 +1081,8 @@ static void winwidget_register(winwidget win)
 		windows = emalloc(window_num * sizeof(winwidget));
 	windows[window_num - 1] = win;
 
-	XSaveContext(disp, win->win, xid_context, (XPointer) win);
+	if (!feh_is_wayland())
+		XSaveContext(disp, win->win, xid_context, (XPointer) win);
 	return;
 }
 
@@ -1039,13 +1103,21 @@ static void winwidget_unregister(winwidget win)
 			}
 		}
 	}
-	XDeleteContext(disp, win->win, xid_context);
+	if (!feh_is_wayland())
+		XDeleteContext(disp, win->win, xid_context);
 	return;
 }
 
 winwidget winwidget_get_from_window(Window win)
 {
 	winwidget ret = NULL;
+
+	if (feh_is_wayland()) {
+		for (int i = 0; i < window_num; i++)
+			if (windows[i]->win == win)
+				return(windows[i]);
+		return(NULL);
+	}
 
 	if (XFindContext(disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
 		return(ret);
@@ -1122,6 +1194,12 @@ void winwidget_center_image(winwidget winwid)
 {
 	int scr_width, scr_height;
 
+	if (feh_is_wayland()) {
+		winwid->im_x = (winwid->w - lround(winwid->im_w * winwid->zoom)) / 2;
+		winwid->im_y = (winwid->h - lround(winwid->im_h * winwid->zoom)) / 2;
+		return;
+	}
+
 	scr_width = scr->width;
 	scr_height = scr->height;
 
@@ -1196,6 +1274,11 @@ void winwidget_set_pointer(winwidget winwid, int visible)
 	Pixmap bm_no;
 	static char bm_no_data[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
+	if (feh_is_wayland()) {
+		feh_wl_set_pointer(winwid, visible);
+		return;
+	}
+
 	if (visible)
 		XUndefineCursor(disp, winwid->win);
 	else {
@@ -1231,6 +1314,13 @@ void winwidget_get_geometry(winwidget winwid, int *rect)
 	if (!rect)
 		rect = inner_rect;
 
+	if (feh_is_wayland()) {
+		rect[0] = rect[1] = 0;
+		rect[2] = winwid->w;
+		rect[3] = winwid->h;
+		return;
+	}
+
 	XGetGeometry(disp, winwid->win, &root, &(rect[0]), &(rect[1]), (unsigned
 				int *)&(rect[2]), (unsigned int *)&(rect[3]), &bw, &bp);
 
@@ -1250,7 +1340,10 @@ void winwidget_show_menu(winwidget winwid)
 	unsigned int c;
 	Window r;
 
-	XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
+	if (feh_is_wayland())
+		feh_wl_pointer_position(winwid, &x, &y);
+	else
+		XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
 	if (winwid->type == WIN_TYPE_SINGLE) {
 		if (!menu_single_win)
 			feh_menu_init_single_win();
@@ -1268,4 +1361,15 @@ void winwidget_show_menu(winwidget winwid)
 			feh_menu_init_main();
 		feh_menu_show_at_xy(menu_main, winwid, x, y);
 	}
+}
+
+void winwidget_draw_overlay(winwidget w, Imlib_Image im, int x, int y)
+{
+	if (feh_is_wayland()) {
+		int iw = gib_imlib_image_get_width(im), ih = gib_imlib_image_get_height(im);
+		gib_imlib_blend_image_onto_image(w->canvas, im, 0, 0, 0, iw, ih,
+			x, y, iw, ih, 1, 1, 0);
+	} else
+		gib_imlib_render_image_on_drawable(w->bg_pmap, im, x, y, 1, 1, 0);
+	return;
 }

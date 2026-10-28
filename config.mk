@@ -10,7 +10,11 @@ install_fonts ?= 1
 magic ?= 0
 mkstemps ?= 1
 verscmp ?= 1
+wayland ?= 1
 xinerama ?= 1
+
+PKG_CONFIG ?= pkg-config
+WAYLAND_SCANNER ?= wayland-scanner
 
 # Prefix for all installed files
 PREFIX ?= /usr/local
@@ -109,6 +113,14 @@ ifeq (${inotify},1)
 	MAN_INOTIFY = enabled
 else
 	MAN_INOTIFY = disabled
+endif
+
+ifeq (${wayland},1)
+	CFLAGS += -DHAVE_WAYLAND ${shell ${PKG_CONFIG} --cflags wayland-client wayland-cursor xkbcommon libdecor-0}
+	LDLIBS += ${shell ${PKG_CONFIG} --libs wayland-client wayland-cursor xkbcommon libdecor-0}
+	MAN_WAYLAND = enabled
+else
+	MAN_WAYLAND = disabled
 endif
 
 # The environment variable SOURCE_DATE_EPOCH is used by build environments

@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	init_imlib_fonts();
 
 	if (opt.display) {
-		init_x_and_imlib();
+		feh_display_init();
 		init_keyevents();
 		init_buttonbindings();
 #ifdef HAVE_INOTIFY
@@ -149,6 +149,9 @@ int feh_main_iteration(int block)
 	if (sig_received) {
 		feh_process_signal();
 	}
+
+	if (feh_is_wayland())
+		return(feh_wl_iteration(block));
 
 	if (first) {
 		/* Only need to set these up the first time */
@@ -291,6 +294,11 @@ void feh_clean_exit(void)
 	delete_rm_files();
 
 	free(opt.menu_font);
+
+	if (feh_is_wayland()) {
+		winwidget_destroy_all();
+		feh_wl_shutdown();
+	}
 
 #ifdef HAVE_INOTIFY
     if (opt.auto_reload)

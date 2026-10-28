@@ -85,10 +85,7 @@ void init_parse_options(int argc, char **argv)
 	
 	opt.zoom_rate = 1.25;
 
-#ifdef HAVE_LIBXINERAMA
-	/* if we're using xinerama, then enable it by default */
 	opt.xinerama_index = -1;
-#endif				/* HAVE_LIBXINERAMA */
 	opt.scroll_step = 20;
 	opt.cache_size = 4;
 	opt.max_height = opt.max_width = UINT_MAX;
@@ -399,6 +396,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"stretch"       , 0, 0, OPTION_stretch},
 		{"thumbnails"    , 0, 0, OPTION_thumbnails},
 		{"unloadable"    , 0, 0, OPTION_unloadable},
+		{"backend"       , 1, 0, OPTION_backend},
 		{"version"       , 0, 0, OPTION_version},
 		{"multiwindow"   , 0, 0, OPTION_multiwindow},
 		{"borderless"    , 0, 0, OPTION_borderless},
@@ -678,6 +676,16 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		case OPTION_unloadable:
 			opt.unloadables = 1;
 			opt.display = 0;
+			break;
+		case OPTION_backend:
+			if (!strcmp(optarg, "auto"))
+				opt.backend = FEH_BACKEND_AUTO;
+			else if (!strcmp(optarg, "x11"))
+				opt.backend = FEH_BACKEND_X11;
+			else if (!strcmp(optarg, "wayland"))
+				opt.backend = FEH_BACKEND_WAYLAND;
+			else
+				eprintf("Invalid backend %s (expected auto, x11, or wayland)", optarg);
 			break;
 		case OPTION_version:
 			show_version();
@@ -1007,6 +1015,10 @@ static void show_version(void)
 
 #ifdef HAVE_STRVERSCMP
          "verscmp "
+#endif
+
+#ifdef HAVE_WAYLAND
+		"wayland "
 #endif
 
 #ifdef HAVE_LIBXINERAMA

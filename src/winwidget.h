@@ -75,6 +75,9 @@ enum win_type {
 
 struct __winwidget {
 	Window win;
+	struct feh_wl_window *wl;
+	Imlib_Image canvas;
+	double canvas_scale;
 	int x;
 	int y;
 	int w;
@@ -130,6 +133,7 @@ void winwidget_inotify_add(winwidget winwid, feh_file * file);
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);
 void winwidget_show(winwidget winwid);
+void winwidget_draw_overlay(winwidget w, Imlib_Image im, int x, int y);
 void winwidget_show_menu(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
