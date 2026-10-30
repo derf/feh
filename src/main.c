@@ -66,8 +66,12 @@ int main(int argc, char **argv)
         if (opt.auto_reload) {
             opt.inotify_fd = inotify_init();
             if (opt.inotify_fd < 0) {
+                int inotify_errno = errno;
                 opt.auto_reload = 0;
                 weprintf("inotify_init failed:");
+                if (inotify_errno == EMFILE)
+                    weprintf("Too many inotify instances in use, consider raising "
+                            "fs.inotify.max_user_instances");
                 weprintf("Disabling inotify-based auto-reload");
             }
         }
@@ -254,7 +258,7 @@ int feh_main_iteration(int block)
 			else if ((count > 0) && control_via_stdin && (FD_ISSET(STDIN_FILENO, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
-			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
+			else if ((count > 0) && opt.auto_reload && (FD_ISSET(opt.inotify_fd, &fdset)))
                 feh_event_handle_inotify();
 #endif
 		}
@@ -271,7 +275,7 @@ int feh_main_iteration(int block)
 			else if ((count > 0) && control_via_stdin && (FD_ISSET(STDIN_FILENO, &fdset)))
 				feh_event_handle_stdin();
 #ifdef HAVE_INOTIFY
-			else if ((count > 0) && (FD_ISSET(opt.inotify_fd, &fdset)))
+			else if ((count > 0) && opt.auto_reload && (FD_ISSET(opt.inotify_fd, &fdset)))
                 feh_event_handle_inotify();
 #endif
 		}
